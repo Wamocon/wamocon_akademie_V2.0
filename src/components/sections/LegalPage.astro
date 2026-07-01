@@ -1,0 +1,66 @@
+---
+import { legal } from '../../data/academy';
+import type { Lang } from '../../i18n/config';
+
+interface Props {
+  lang: Lang;
+  kind: keyof typeof legal;
+}
+
+const { lang, kind } = Astro.props;
+const page = legal[kind][lang];
+---
+
+<section class="legal-page surface-light">
+  <div class="container legal-page__inner">
+    <span class="eyebrow">{page.title}</span>
+    <h1>{page.title}</h1>
+    <div class="legal-page__blocks">
+      {
+        page.blocks.map((block) => (
+          <article>
+            {block.split('\n').map((line, index) => index === 0 ? <h2>{line}</h2> : <p>{line}</p>)}
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .legal-page {
+    min-height: 70vh;
+    padding-block: clamp(5rem, 9vw, 8rem);
+  }
+
+  .legal-page__inner {
+    max-width: 920px;
+  }
+
+  .legal-page h1 {
+    margin: 1rem 0 2rem;
+    color: var(--color-text-dark);
+  }
+
+  .legal-page__blocks {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .legal-page article {
+    padding: 1.25rem;
+    border: 1px solid var(--color-line-dark);
+    border-radius: var(--radius-md);
+    background: #fff;
+  }
+
+  .legal-page h2 {
+    margin-bottom: 0.7rem;
+    font-size: clamp(1.2rem, 2.3vw, 1.6rem);
+  }
+
+  .legal-page p {
+    color: var(--color-muted-dark);
+    white-space: pre-line;
+  }
+</style>

@@ -1,0 +1,114 @@
+---
+import { assets } from '../../data/academy';
+import { company, legalNav, nav, ui, type Lang, type NavLink } from '../../i18n/config';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const year = new Date().getFullYear();
+const t = (key: keyof (typeof ui)['de']) => ui[lang][key];
+const flatten = (items: NavLink[]): NavLink[] =>
+  items.flatMap((item) => (item.children ? [item, ...item.children] : [item]));
+const links = flatten(nav).filter((item) => item.key !== 'about-group');
+const socials = [
+  ['YouTube', company.social.youtube],
+  ['Facebook', company.social.facebook],
+  ['Instagram', company.social.instagram],
+] as const;
+---
+
+<footer class="footer">
+  <div class="footer__inner container">
+    <div class="footer__brand">
+      <img src={assets.logo} alt="WAMOCON Academy" width="220" height="174" />
+      <p>© {year} {company.name}.<br />{t('footer.rights')}</p>
+    </div>
+
+    <nav class="footer__nav" aria-label={t('footer.navigation')}>
+      {links.map((item) => <a href={item[lang].href}>{item[lang].label}</a>)}
+      <a href={legalNav.privacy[lang].href}>{legalNav.privacy[lang].label}</a>
+      <a href={legalNav.imprint[lang].href}>{legalNav.imprint[lang].label}</a>
+    </nav>
+
+    <address class="footer__contact">
+      <strong>{company.name}</strong>
+      <span>{company.street}<br />{company.city}</span>
+      <a href={company.phoneHref}>{company.phone}</a>
+      <a href={company.emailHref}>{company.email}</a>
+      <span>{company.hours[lang].map((line) => <>{line}<br /></>)}</span>
+      <ul aria-label={t('footer.follow')}>
+        {socials.map(([label, href]) => <li><a href={href} target="_blank" rel="noopener noreferrer">{label}</a></li>)}
+      </ul>
+    </address>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--color-line);
+    background: #0b0d11;
+  }
+
+  .footer__inner {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr 1.1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    padding-block: clamp(3rem, 6vw, 5rem);
+  }
+
+  .footer__brand img {
+    width: min(190px, 62vw);
+    height: auto;
+    margin-bottom: 1.5rem;
+  }
+
+  .footer__brand p,
+  .footer__contact,
+  .footer__nav a {
+    color: var(--color-muted);
+  }
+
+  .footer__nav {
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+  }
+
+  .footer__nav a:hover,
+  .footer__contact a:hover {
+    color: #fff;
+  }
+
+  .footer__contact {
+    display: grid;
+    gap: 0.75rem;
+    font-style: normal;
+  }
+
+  .footer__contact strong {
+    color: #fff;
+  }
+
+  .footer__contact ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .footer__contact li a {
+    display: inline-flex;
+    padding: 0.45rem 0.7rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill);
+    font-size: 0.86rem;
+  }
+
+  @media (max-width: 820px) {
+    .footer__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

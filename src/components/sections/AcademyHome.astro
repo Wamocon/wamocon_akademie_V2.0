@@ -1,0 +1,407 @@
+---
+import { assets, home, steps } from '../../data/academy';
+import type { Lang } from '../../i18n/config';
+import Button from '../ui/Button.astro';
+import CoursesGrid from './CoursesGrid.astro';
+import LeadForm from './LeadForm.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const h = home;
+const coursesHref = lang === 'de' ? '/bildungsprogramme-fr-softwaretester/' : '/en/educational-programs/';
+const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certification/';
+---
+
+<section class="academy-hero">
+  <div class="academy-hero__media" aria-hidden="true">
+    <img src={assets.hero} alt="" width="1680" height="945" loading="eager" fetchpriority="high" />
+  </div>
+  <div class="academy-hero__overlay"></div>
+  <div class="academy-hero__inner container">
+    <div class="academy-hero__copy" data-reveal>
+      <h1>{h.hero.title}</h1>
+      <p>{h.hero[lang]}</p>
+      <Button href="#beratung" size="lg">{h.hero.cta[lang]}</Button>
+    </div>
+    <ul class="academy-hero__stats" data-reveal>
+      {h.hero.stats.map((stat) => <li><strong>{stat.value}</strong><span>{stat[lang]}</span></li>)}
+    </ul>
+  </div>
+</section>
+
+<section class="section intro">
+  <div class="container intro__grid">
+    <div class="intro__copy" data-reveal>
+      <span class="eyebrow">WAMOCON Academy</span>
+      <h2>{h.intro.heading[lang]}</h2>
+      {h.intro.paragraphs[lang].map((p) => <p>{p}</p>)}
+    </div>
+    <div class="intro__side" data-reveal>
+      <img src={assets.trainerGroup} alt="WAMOCON Academy Trainer" width="1536" height="864" loading="lazy" />
+      <div class="mission">
+        <span>{lang === 'de' ? 'Unsere Mission' : 'Our mission'}</span>
+        <p>{h.intro.mission[lang]}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section surface-light success">
+  <div class="container">
+    <div class="success__head" data-reveal>
+      <span class="eyebrow">{lang === 'de' ? 'Karriere' : 'Career'}</span>
+      <h2>{h.success.heading[lang]}</h2>
+      <p>{h.success.text[lang]}</p>
+    </div>
+    <div class="success__compare">
+      <article class="compare-card compare-card--muted" data-reveal>
+        <h3>{h.success.without.title[lang]}</h3>
+        <ul>{h.success.without.items[lang].map((item) => <li>{item}</li>)}</ul>
+      </article>
+      <article class="compare-card" data-reveal>
+        <h3>{h.success.with.title[lang]}</h3>
+        <ul>{h.success.with.items[lang].map((item) => <li>{item}</li>)}</ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section courses-home">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">{lang === 'de' ? 'Hauptkurse' : 'Main courses'}</span>
+      <h2>{lang === 'de' ? 'Hauptkurse und Bildungsprogramme' : 'Main courses and educational programs'}</h2>
+    </div>
+    <CoursesGrid lang={lang} />
+    <div class="courses-home__cta" data-reveal>
+      <Button href={coursesHref} variant="outline">{lang === 'de' ? 'Mehr Details' : 'More details'}</Button>
+    </div>
+  </div>
+</section>
+
+<section class="section surface-light istqb">
+  <div class="container istqb__grid">
+    <div class="istqb__copy" data-reveal>
+      <span class="eyebrow">ISTQB®</span>
+      <h2>{h.istqb.title}</h2>
+      <p>{h.istqb[lang]}</p>
+      <p>{h.istqb.closing[lang]}</p>
+      <Button href={istqbHref}>{lang === 'de' ? 'Mehr über ISTQB®' : 'More about ISTQB®'}</Button>
+    </div>
+    <figure class="istqb__certificate" data-reveal>
+      <img src={assets.certificate} alt="ISTQB Accredited Training Provider" width="960" height="1358" loading="lazy" />
+    </figure>
+  </div>
+</section>
+
+<section class="section steps">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">{lang === 'de' ? 'Optimal vorbereitet' : 'Optimally prepared'}</span>
+      <h2>{lang === 'de' ? 'Von der Bewerbung bis zum IT-Projekt: 6 Schritte zum gefragten Softwaretester' : 'From the application to the IT project: 6 steps to becoming a sought-after software tester'}</h2>
+    </div>
+    <ol class="steps__list">
+      {steps[lang].map((step, index) => <li data-reveal><span>{String(index + 1).padStart(2, '0')}</span><p>{step}</p></li>)}
+    </ol>
+    <p class="steps__closing" data-reveal>
+      {lang === 'de'
+        ? 'Entdecken Sie jetzt, wie diese sechs entscheidenden Schritte Ihre Karriere verändern können. Melden Sie sich noch heute an!'
+        : 'Discover now how these six decisive steps can change your career. Sign up today!'}
+    </p>
+  </div>
+</section>
+
+<LeadForm lang={lang} type="lead" />
+
+<style>
+  .academy-hero {
+    position: relative;
+    min-height: min(820px, calc(100vh - 86px));
+    display: grid;
+    align-items: end;
+    overflow: hidden;
+  }
+
+  .academy-hero__media,
+  .academy-hero__overlay {
+    position: absolute;
+    inset: 0;
+  }
+
+  .academy-hero__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .academy-hero__overlay {
+    background:
+      linear-gradient(90deg, rgba(7, 10, 18, 0.88), rgba(7, 10, 18, 0.45) 52%, rgba(7, 10, 18, 0.18)),
+      linear-gradient(0deg, rgba(15, 17, 21, 1), rgba(15, 17, 21, 0) 42%);
+  }
+
+  .academy-hero__inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: clamp(2rem, 5vw, 4rem);
+    padding-block: clamp(5rem, 12vw, 8rem) clamp(3rem, 7vw, 5rem);
+  }
+
+  .academy-hero__copy {
+    min-width: 0;
+    width: 100%;
+    max-width: min(800px, 100%);
+  }
+
+  .academy-hero__copy h1 {
+    max-width: 9ch;
+    margin-bottom: 1.25rem;
+  }
+
+  .academy-hero__copy p {
+    max-width: min(64ch, 100%);
+    margin-bottom: 1.6rem;
+    color: var(--color-muted);
+    font-size: clamp(1.05rem, 2vw, 1.35rem);
+    overflow-wrap: break-word;
+  }
+
+  .academy-hero__stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    min-width: 0;
+    width: 100%;
+    max-width: 760px;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+  }
+
+  .academy-hero__stats li {
+    padding: 1.15rem;
+    border-right: 1px solid var(--color-line);
+  }
+
+  .academy-hero__stats li:last-child {
+    border-right: 0;
+  }
+
+  .academy-hero__stats strong {
+    display: block;
+    color: #fff;
+    font-size: clamp(2rem, 5vw, 3.8rem);
+    line-height: 1;
+  }
+
+  .academy-hero__stats span {
+    color: var(--color-muted);
+  }
+
+  .intro__grid,
+  .istqb__grid {
+    display: grid;
+    grid-template-columns: 1fr 0.9fr;
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: center;
+  }
+
+  .intro__copy h2,
+  .section-head h2,
+  .istqb__copy h2 {
+    margin: 0.8rem 0 1.2rem;
+  }
+
+  .intro__copy p,
+  .success__head p,
+  .istqb__copy p {
+    margin-bottom: 1rem;
+    color: var(--color-muted);
+  }
+
+  .intro__side img,
+  .istqb__certificate {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+  }
+
+  .mission {
+    margin-top: 1rem;
+    padding: 1.35rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .mission span {
+    color: var(--color-accent);
+    font-weight: var(--fw-semibold);
+  }
+
+  .mission p {
+    margin-top: 0.45rem;
+    color: #fff;
+    font-size: 1.1rem;
+  }
+
+  .success__head {
+    max-width: 900px;
+  }
+
+  .success__head p,
+  .istqb__copy p {
+    color: var(--color-muted-dark);
+  }
+
+  .success__compare {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .compare-card {
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border: 1px solid var(--color-line-dark);
+    border-radius: var(--radius-md);
+    background: #fff;
+    box-shadow: var(--shadow-card);
+  }
+
+  .compare-card--muted {
+    background: var(--color-surface-soft);
+  }
+
+  .compare-card h3 {
+    margin-bottom: 1rem;
+  }
+
+  .compare-card li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.7rem;
+    color: var(--color-muted-dark);
+  }
+
+  .compare-card li::before {
+    content: '+';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+    font-weight: var(--fw-bold);
+  }
+
+  .compare-card--muted li::before {
+    content: '—';
+    color: var(--color-muted-dark);
+  }
+
+  .section-head {
+    max-width: 820px;
+    margin-bottom: 2rem;
+  }
+
+  .courses-home__cta {
+    margin-top: 2rem;
+    text-align: center;
+  }
+
+  .istqb__certificate {
+    max-height: 680px;
+    background: #e7f6ff;
+  }
+
+  .istqb__certificate img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .steps__list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .steps__list li {
+    min-height: 145px;
+    padding: 1.2rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .steps__list span {
+    display: block;
+    color: var(--color-accent);
+    font-size: 2rem;
+    font-weight: var(--fw-bold);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .steps__closing {
+    max-width: 780px;
+    margin: 2rem auto 0;
+    color: var(--color-muted);
+    text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    .intro__grid,
+    .istqb__grid,
+    .success__compare {
+      grid-template-columns: 1fr;
+    }
+
+    .steps__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 620px) {
+    .academy-hero {
+      min-height: auto;
+    }
+
+    .academy-hero__inner {
+      padding-top: 7rem;
+      padding-bottom: 3rem;
+    }
+
+    .academy-hero__copy h1 {
+      max-width: 8ch;
+      font-size: clamp(2.45rem, 14vw, 4rem);
+    }
+
+    .academy-hero__copy p {
+      font-size: 1rem;
+    }
+
+    .academy-hero__copy,
+    .academy-hero__stats {
+      justify-self: start;
+      width: calc(100vw - 2.5rem);
+      max-width: calc(100vw - 2.5rem);
+    }
+
+    .academy-hero__stats,
+    .steps__list {
+      grid-template-columns: 1fr;
+    }
+
+    .academy-hero__stats li {
+      border-right: 0;
+      border-bottom: 1px solid var(--color-line);
+    }
+
+    .academy-hero__stats li:last-child {
+      border-bottom: 0;
+    }
+  }
+</style>

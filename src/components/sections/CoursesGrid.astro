@@ -1,0 +1,136 @@
+---
+import { courses, dates } from '../../data/academy';
+import type { Lang } from '../../i18n/config';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const dateData = dates[lang];
+---
+
+<div class="courses-grid">
+  {
+    courses.map((course) => (
+      <article class="course-card" data-reveal>
+        <span>{course.type[lang]}</span>
+        <h3>{course.title[lang]}</h3>
+        <dl>
+          <div>
+            <dt>{lang === 'de' ? 'Dauer' : 'Duration'}</dt>
+            <dd>{course.duration[lang]}</dd>
+          </div>
+          <div>
+            <dt>{lang === 'de' ? 'Format' : 'Format'}</dt>
+            <dd>{course.format[lang]}</dd>
+          </div>
+        </dl>
+      </article>
+    ))
+  }
+</div>
+
+<aside class="dates-card" data-reveal>
+  <div>
+    <span class="eyebrow">{lang === 'de' ? 'Termine im Überblick' : 'Dates at a glance'}</span>
+    <h3>{dateData.title}</h3>
+    <p>{dateData.month}</p>
+  </div>
+  <ul>
+    {dateData.rows.map(([day, status]) => <li><span>{day}</span><strong>{status}</strong></li>)}
+  </ul>
+</aside>
+
+<style>
+  .courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+    gap: 1rem;
+  }
+
+  .course-card,
+  .dates-card {
+    border: 1px solid var(--color-line-dark);
+    border-radius: var(--radius-md);
+    background: #fff;
+    color: var(--color-text-dark);
+    box-shadow: var(--shadow-card);
+  }
+
+  .course-card {
+    display: grid;
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+
+  .course-card > span {
+    color: var(--color-accent);
+    font-size: 0.82rem;
+    font-weight: var(--fw-semibold);
+    text-transform: uppercase;
+  }
+
+  .course-card h3 {
+    font-size: 1.15rem;
+  }
+
+  .course-card dl {
+    display: grid;
+    gap: 0.55rem;
+    color: var(--color-muted-dark);
+  }
+
+  .course-card div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    border-top: 1px solid var(--color-line-dark);
+    padding-top: 0.55rem;
+  }
+
+  .course-card dt {
+    font-weight: var(--fw-semibold);
+  }
+
+  .dates-card {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 1rem;
+    margin-top: 1.25rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .dates-card h3 {
+    margin-top: 0.7rem;
+  }
+
+  .dates-card p {
+    color: var(--color-accent);
+    font-weight: var(--fw-semibold);
+    margin-top: 0.45rem;
+  }
+
+  .dates-card ul {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .dates-card li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid var(--color-line-dark);
+    padding-bottom: 0.75rem;
+  }
+
+  .dates-card strong {
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 760px) {
+    .dates-card {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

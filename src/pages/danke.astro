@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const lang = 'de';
+---
+
+<BaseLayout title="Danke" description="Vielen Dank für Ihre Anfrage bei WAMOCON Academy." lang={lang}>
+  <section class="thank-you surface-light">
+    <div class="container">
+      <span class="eyebrow">Danke</span>
+      <h1>Danke</h1>
+      <p>Ihre Anfrage wurde gesendet. Wir melden uns schnellstmöglich bei Ihnen.</p>
+      <a href="/">Zur Startseite</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .thank-you { min-height: 70vh; padding-block: clamp(6rem, 12vw, 10rem); }
+  .thank-you h1 { margin: 1rem 0; color: var(--color-text-dark); }
+  .thank-you p { max-width: 54ch; color: var(--color-muted-dark); }
+  .thank-you a { display: inline-flex; margin-top: 1.5rem; color: var(--color-accent); font-weight: var(--fw-semibold); }
+</style>

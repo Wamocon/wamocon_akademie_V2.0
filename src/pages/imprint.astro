@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LegalPage from '../components/sections/LegalPage.astro';
+import { legal } from '../data/academy';
+
+const lang = 'en';
+---
+
+<BaseLayout title={legal.imprint[lang].title} description="Imprint of WAMOCON Academy GmbH." lang={lang}>
+  <LegalPage lang={lang} kind="imprint" />
+</BaseLayout>
