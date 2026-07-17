@@ -5,13 +5,12 @@
  */
 import Button from '../../ui/Button.astro';
 import { home } from '../../../data/home';
-import { nav, ui, legalNav, type Lang } from '../../../i18n/config';
+import { nav, legalNav, type Lang } from '../../../i18n/config';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
-const t = (k: keyof (typeof ui)['de']) => ui[lang][k];
 const aboutHref = nav.find((n) => n.key === 'about')![lang].href;
 const privacyHref = legalNav.privacy[lang].href;
 

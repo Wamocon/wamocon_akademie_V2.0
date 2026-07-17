@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
+import CookieBanner from '../components/ui/CookieBanner.astro';
 import { assets } from '../data/academy';
 import { getAlternateLangUrl } from '../i18n/utils';
 import type { Lang } from '../i18n/config';
@@ -11,13 +12,15 @@ interface Props {
   description: string;
   lang: Lang;
   image?: string;
+  showFooterContact?: boolean;
 }
 
-const { title, description, lang, image = assets.hero } = Astro.props;
+const { title, description, lang, image = assets.hero, showFooterContact = true } = Astro.props;
 const site = Astro.site ?? new URL('https://test-it-academy.com');
 const canonical = new URL(Astro.url.pathname, site).href;
 const altPath = getAlternateLangUrl(Astro.url.pathname, lang);
 const altLang = lang === 'de' ? 'en' : 'de';
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
 ---
 
 <!doctype html>
@@ -38,24 +41,17 @@ const altLang = lang === 'de' ? 'en' : 'de';
     <meta property="og:image" content={new URL(image, site).href} />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href={assets.favicon} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
-    />
   </head>
   <body>
-    <a class="skip-link" href="#main">Skip to content</a>
+    <a class="skip-link" href="#main">{lang === 'de' ? 'Zum Inhalt springen' : 'Skip to content'}</a>
     <Header lang={lang} />
-    <main id="main">
-      <slot />
-    </main>
-    <Footer lang={lang} />
+    <main id="main"><slot /></main>
+    <Footer lang={lang} showContact={showFooterContact} />
+    <CookieBanner lang={lang} />
 
     <script>
       const revealEls = Array.from(document.querySelectorAll('[data-reveal]'));
-      const show = (el) => el.classList.add('is-visible');
+      const show = (el: Element) => el.classList.add('is-visible');
       if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver(
           (entries) => entries.forEach((entry) => entry.isIntersecting && show(entry.target)),
@@ -63,60 +59,108 @@ const altLang = lang === 'de' ? 'en' : 'de';
         );
         revealEls.forEach((el) => observer.observe(el));
         window.setTimeout(() => revealEls.forEach(show), 1000);
-      } else {
-        revealEls.forEach(show);
-      }
+      } else revealEls.forEach(show);
     </script>
 
-    <script>
-      const bar = document.createElement('div');
-      bar.className = 'scroll-progress';
-      bar.setAttribute('aria-hidden', 'true');
-      document.body.appendChild(bar);
-      const updateProgress = () => {
-        const root = document.documentElement;
-        const max = root.scrollHeight - root.clientHeight;
-        bar.style.transform = `scaleX(${max > 0 ? root.scrollTop / max : 0})`;
-      };
-      window.addEventListener('scroll', updateProgress, { passive: true });
-      updateProgress();
-    </script>
+    <script is:inline define:vars={{ turnstileSiteKey }}>
+      // @ts-nocheck
+      const isLocalPreview = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
+      const ACTIVE_TURNSTILE_SITE_KEY = isLocalPreview ? '' : turnstileSiteKey;
+      let turnstileLoader;
 
-    <script>
-      const initLeadForms = () => {
-        document.querySelectorAll('form.js-lead-form').forEach((form) => {
-          form.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            if (!form.reportValidity()) return;
-            const button = form.querySelector('button[type="submit"]');
-            if (button) button.disabled = true;
-            const data = new FormData(form);
-            const payload = {
-              type: String(data.get('type') || 'lead'),
-              lang: String(data.get('lang') || 'de'),
-              name: String(data.get('name') || ''),
-              phone: String(data.get('phone') || ''),
-              email: String(data.get('email') || ''),
-              comment: String(data.get('comment') || ''),
-              consent: data.get('consent') === 'on' || data.get('consent') === 'true',
-              company: String(data.get('company') || ''),
-            };
-            const redirect = form.dataset.redirect || (payload.lang === 'de' ? '/danke/' : '/thanks/');
-            try {
-              await fetch('/api/lead', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-              });
-            } catch {
-            } finally {
-              window.location.assign(redirect);
-            }
-          });
+      const loadTurnstile = () => {
+        if (!ACTIVE_TURNSTILE_SITE_KEY || window.turnstile) return Promise.resolve();
+        if (turnstileLoader) return turnstileLoader;
+        turnstileLoader = new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+          script.async = true;
+          script.defer = true;
+          script.onload = resolve;
+          script.onerror = reject;
+          document.head.appendChild(script);
         });
+        return turnstileLoader;
       };
-      initLeadForms();
-      document.addEventListener('astro:after-swap', initLeadForms);
+
+      const ensureTurnstile = async (form) => {
+        if (!ACTIVE_TURNSTILE_SITE_KEY || form.querySelector('.cf-turnstile')) return;
+        await loadTurnstile();
+        if (!window.turnstile || form.querySelector('.cf-turnstile')) return;
+        const container = document.createElement('div');
+        container.className = 'cf-turnstile';
+        const hidden = document.createElement('input');
+        hidden.type = 'hidden';
+        hidden.name = 'cf-turnstile-response';
+        const submit = form.querySelector('button[type="submit"]');
+        if (submit) submit.before(container, hidden);
+        else form.append(container, hidden);
+        form.dataset.turnstileWidget = String(window.turnstile.render(container, {
+          sitekey: ACTIVE_TURNSTILE_SITE_KEY,
+          theme: 'dark',
+          size: window.matchMedia('(max-width: 479px)').matches ? 'compact' : 'flexible',
+          callback: (token) => { hidden.value = token; },
+          'error-callback': () => { hidden.value = ''; },
+          'expired-callback': () => { hidden.value = ''; },
+        }));
+      };
+
+      document.querySelectorAll('form.js-lead-form').forEach((form) => {
+        const startProtection = () => ensureTurnstile(form).catch(() => {});
+        form.addEventListener('focusin', startProtection, { once: true });
+        form.addEventListener('pointerenter', startProtection, { once: true });
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          if (!form.reportValidity()) return;
+          const status = form.querySelector('.lead-form__status');
+          const language = form.querySelector('input[name="lang"]')?.value || 'de';
+          if (ACTIVE_TURNSTILE_SITE_KEY) {
+            await ensureTurnstile(form).catch(() => {});
+            if (!form.querySelector('input[name="cf-turnstile-response"]')?.value) {
+              if (status) {
+                status.textContent = language === 'en'
+                  ? 'Please complete the security check.'
+                  : 'Bitte bestätigen Sie die Sicherheitsprüfung.';
+                status.hidden = false;
+              }
+              return;
+            }
+          }
+          const button = form.querySelector('button[type="submit"]');
+          if (button) button.disabled = true;
+          const data = new FormData(form);
+          const payload = {
+            type: String(data.get('type') || 'lead'),
+            source: window.location.pathname,
+            lang: String(data.get('lang') || 'de'),
+            name: String(data.get('name') || ''),
+            phone: String(data.get('phone') || ''),
+            email: String(data.get('email') || ''),
+            comment: String(data.get('comment') || data.get('message') || ''),
+            publicationConsent: data.get('publicationConsent') === 'on',
+            company: String(data.get('company') || ''),
+            'cf-turnstile-response': String(data.get('cf-turnstile-response') || ''),
+          };
+          const redirect = form.dataset.redirect || (payload.lang === 'de' ? '/danke/' : '/thanks/');
+          try {
+            const response = await fetch('/api/lead', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-WAMOCON-Form': 'academy' },
+              body: JSON.stringify(payload),
+            });
+            if (!response.ok) throw new Error(`Lead endpoint returned ${response.status}`);
+            window.location.assign(redirect);
+          } catch {
+            if (status) {
+              status.textContent = language === 'en'
+                ? 'The request could not be sent. Please try again or call us.'
+                : 'Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es erneut oder rufen Sie uns an.';
+              status.hidden = false;
+            }
+            if (button) button.disabled = false;
+          }
+        });
+      });
     </script>
   </body>
 </html>

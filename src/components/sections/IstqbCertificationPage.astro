@@ -1,0 +1,1153 @@
+---
+import LeadForm from './LeadForm.astro';
+
+interface Props {
+  lang?: 'de' | 'en';
+}
+
+const { lang = 'de' } = Astro.props;
+const isEn = lang === 'en';
+const asset = (name: string) => `/images/academy/${name}`;
+
+const careerBenefits = isEn ? [
+  {
+    title: 'Occupational safety and demand',
+    text: 'High demand: Software testers are in high demand in the IT industry, as quality assurance plays a central role in the development of software.\n\nStability: As software development is a continuous process, there is always a need for qualified testers.',
+  },
+  {
+    title: 'Career development and further training',
+    text: 'Diverse career paths: Software testers can specialize in different areas, such as automation testing, performance testing or security testing.\n\nFurther training opportunities: There are numerous certifications and training courses (e.g. ISTQB®) that further improve career opportunities.',
+  },
+  {
+    title: 'Technical skills and knowledge',
+    text: 'Technical know-how: Testers work closely with developers and develop a deep understanding of software architectures and programming languages.\n\nProblem solving skills: Testers must be analytical and detail-oriented to find and document bugs.',
+  },
+  {
+    title: 'Working environment and flexibility',
+    text: 'Teamwork: Software testers often work in agile teams and have the opportunity to work on different projects and with different technologies.\n\nRemote work: Many positions in the field of software testing offer the opportunity to work from home.',
+  },
+  {
+    title: 'Personal satisfaction and influence',
+    text: 'Quality assurance: Testers play a crucial role in ensuring the quality and reliability of software products, which can lead to a high level of job satisfaction.\n\nImpact: Good testers have a direct impact on the end products and can help improve the user experience.',
+  },
+  {
+    title: 'Competitive salary',
+    text: 'Software testers generally earn a competitive salary that increases with experience and specialization.',
+  },
+] : [
+  {
+    title: 'Berufliche Sicherheit und Nachfrage',
+    text: 'Hohe Nachfrage: Softwaretester sind in der IT-Branche sehr gefragt, da die Qualitätssicherung eine zentrale Rolle bei der Entwicklung von Software spielt.\n\nStabilität: Da Softwareentwicklung ein kontinuierlicher Prozess ist, gibt es immer Bedarf an qualifizierten Testern.',
+  },
+  {
+    title: 'Karriereentwicklung und Weiterbildung',
+    text: 'Vielfältige Karrierewege: Softwaretester können sich auf verschiedene Bereiche spezialisieren, wie z.B. Automatisierungstests, Performance-Tests oder Sicherheitstests.\n\nWeiterbildungsmöglichkeiten: Es gibt zahlreiche Zertifizierungen und Schulungen (z.B. ISTQB®), die die Karrierechancen weiter verbessern.',
+  },
+  {
+    title: 'Technische Fähigkeiten und Wissen',
+    text: 'Technisches Know-how: Tester arbeiten eng mit Entwicklern zusammen und entwickeln ein tiefes Verständnis für Softwarearchitekturen und Programmiersprachen.\n\nProblemlösungsfähigkeiten: Tester müssen analytisch und detailorientiert arbeiten, um Fehler zu finden und zu dokumentieren.',
+  },
+  {
+    title: 'Arbeitsumfeld und Flexibilität',
+    text: 'Teamarbeit: Softwaretester arbeiten oft in agilen Teams und haben die Möglichkeit, in verschiedenen Projekten und mit unterschiedlichen Technologien zu arbeiten.\n\nRemote-Arbeit: Viele Positionen im Bereich Softwaretest bieten die Möglichkeit, von zu Hause aus zu arbeiten.',
+  },
+  {
+    title: 'Persönliche Zufriedenheit und Einfluss',
+    text: 'Qualitätssicherung: Tester spielen eine entscheidende Rolle dabei, die Qualität und Zuverlässigkeit von Softwareprodukten zu gewährleisten, was zu einer hohen beruflichen Zufriedenheit führen kann.\n\nEinfluss: Gute Tester haben einen direkten Einfluss auf die Endprodukte und können dazu beitragen, die Benutzererfahrung zu verbessern.',
+  },
+  {
+    title: 'Wettbewerbsfähiges Gehalt',
+    text: 'Softwaretester verdienen in der Regel ein wettbewerbsfähiges Gehalt, das mit zunehmender Erfahrung und Spezialisierung weiter steigt.',
+  },
+] as const;
+
+const certificationBenefits = isEn ? [
+  {
+    icon: 'tild6430-3331-4166-b437-616166393834__scenario_text_pater.svg',
+    title: 'International recognition',
+    text: 'The ISTQB® certificate is recognized worldwide, which expands your career prospects at global levels and strengthens the credibility of your skills.',
+  },
+  {
+    icon: 'tild6636-3734-4663-b530-393237653062__research_eye_browser.svg',
+    title: 'Sound know-how',
+    text: 'The seminar provides a sound understanding of software testing practices, which improves communication within teams and enables more effective workflows.',
+  },
+  {
+    icon: 'tild6533-3234-4631-b238-623763316231__startup_company_rock.svg',
+    title: 'Career development',
+    text: 'The ISTQB® certificate is a career driver. It increases your marketability, opens doors to more demanding positions and supports professional success.',
+  },
+  {
+    icon: 'tild6164-3262-4339-b261-633333383939__it_programmer_develo.svg',
+    title: 'Improved collaboration',
+    text: 'The ISTQB® certificate promotes a common language and understanding of test processes, facilitates communication between testers and developers and increases efficiency.',
+  },
+  {
+    icon: 'tild3631-3838-4332-b337-623663633938__diagram_graph_analyt.svg',
+    title: 'More efficient test processes',
+    text: 'The ISTQB® certificate teaches proven methods for making test processes more efficient. This increases productivity, shortens development cycles and reduces costs.',
+  },
+  {
+    icon: 'tild3734-6236-4464-a438-386162323263__certificate_present.svg',
+    title: 'Strengthening quality assurance',
+    text: 'ISTQB® certified testers ensure software quality, promote customer satisfaction, strengthen confidence in products and support the long-term success of the company.',
+  },
+] : [
+  {
+    icon: 'tild6430-3331-4166-b437-616166393834__scenario_text_pater.svg',
+    title: 'Internationale Anerkennung',
+    text: 'Das ISTQB® Zertifikat ist weltweit anerkannt, was deine beruflichen Perspektiven auf globalen Ebenen erweitert und die Glaubwürdigkeit deiner Fähigkeiten stärkt.',
+  },
+  {
+    icon: 'tild6636-3734-4663-b530-393237653062__research_eye_browser.svg',
+    title: 'Fundiertes Know-how',
+    text: 'Die seminar vermittelt ein fundiertes Verständnis von Softwaretestpraktiken, was die Kommunikation in Teams verbessert und effektivere Arbeitsabläufe ermöglicht.',
+  },
+  {
+    icon: 'tild6533-3234-4631-b238-623763316231__startup_company_rock.svg',
+    title: 'Karriereentwicklung',
+    text: 'Das ISTQB® Zertifikat ist ein Karrieretreiber. Es erhöht deine Marktfähigkeit, öffnet Türen zu anspruchsvolleren Positionen und unterstützt berufliche Erfolge.',
+  },
+  {
+    icon: 'tild6164-3262-4339-b261-633333383939__it_programmer_develo.svg',
+    title: 'Verbesserte Zusammenarbeit',
+    text: 'Das ISTQB® Zertifikat fördert eine gemeinsame Sprache und Verständnis für Testprozesse, erleichtert die Kommunikation zwischen Testern und Entwicklern und stärkt die Effizienz.',
+  },
+  {
+    icon: 'tild3631-3838-4332-b337-623663633938__diagram_graph_analyt.svg',
+    title: 'Effizientere Testprozesse',
+    text: 'Das ISTQB® Zertifikat vermittelt bewährte Methoden, um Testprozesse effizienter zu gestalten. Das steigert die Produktivität, verkürzt Entwicklungszyklen und senkt Kosten.',
+  },
+  {
+    icon: 'tild3734-6236-4464-a438-386162323263__certificate_present.svg',
+    title: 'Qualitätssicherung stärken',
+    text: 'ISTQB® zertifizierte Tester sichern Softwarequalität, fördern Kundenzufriedenheit, stärken Vertrauen in Produkte und unterstützen den langfristigen Unternehmenserfolg.',
+  },
+] as const;
+
+const hurdles = isEn ? [
+  {
+    title: 'Experience gaps and skills shortages',
+    paragraphs: [
+      'Experience gaps: Many employers prefer candidates with practical experience, which makes it difficult for newcomers to gain their first professional experience.',
+      'High demand for skilled workers: Competition for skilled positions is intense, making it harder for newcomers to gain a foothold.',
+    ],
+  },
+  {
+    title: 'Complexity of ISTQB® certification',
+    paragraphs: [
+      'Extensive knowledge: ISTQB® certification requires a broad and deep understanding of testing processes and methodologies, which can be challenging for newcomers.',
+      'Preparation and exam: Preparing for the exam can be time-consuming and demanding, especially for those who have no previous professional experience.',
+    ],
+  },
+  {
+    title: 'Financial and time resources',
+    paragraphs: [
+      'Costs for training and exams: ISTQB® certification and related preparation courses can be expensive, which can be a financial burden for beginners.',
+      'Time management: Working professionals or students need to manage their time effectively to successfully complete the preparation, which can be an additional challenge.',
+    ],
+  },
+] : [
+  {
+    title: 'Erfahrungslücken und Fachkräftemangel',
+    paragraphs: [
+      'Erfahrungslücken: Viele Arbeitgeber bevorzugen Kandidaten mit praktischer Erfahrung, was es Neueinsteigern schwer macht, erste Berufserfahrungen zu sammeln.',
+      'Hohe Nachfrage nach Fachkräften: Der Wettbewerb um qualifizierte Positionen ist intensiv, was es Einsteigern schwerer macht, Fuß zu fassen.',
+    ],
+  },
+  {
+    title: 'Komplexität der ISTQB® Zertifizierung',
+    paragraphs: [
+      'Umfangreiches Wissen: Die ISTQB® Zertifizierung erfordert ein breites und tiefes Verständnis der Testprozesse und -methoden, was für Neueinsteiger eine große Herausforderung darstellen kann.',
+      'Vorbereitung und Prüfung: Die Vorbereitung auf die Prüfung kann zeitaufwendig und anspruchsvoll sein, insbesondere für diejenigen, die noch keine Berufserfahrung haben.',
+    ],
+  },
+  {
+    title: 'Finanzielle und zeitliche Ressourcen',
+    paragraphs: [
+      'Kosten für Schulungen und Prüfungen: Die ISTQB® Zertifizierung und entsprechende Vorbereitungskurse können teuer sein, was für Einsteiger eine finanzielle Belastung darstellen kann.',
+      'Zeitmanagement: Berufstätige oder Studierende müssen ihre Zeit effektiv managen, um die Vorbereitung erfolgreich abzuschließen, was eine zusätzliche Herausforderung sein kann.',
+    ],
+  },
+] as const;
+
+const webinarTopics = isEn ? [
+  ['Entry into SOFTWARETESTING', 'Target group and benefits of the webinar.'],
+  ['What does a certified software tester earn?', 'Insight into salary structures and career prospects.'],
+  ['What typical challenges does a tester face?', 'Discussion of common problems and hurdles in test management.'],
+  ['State funding program: Education voucher', 'Funding may be available in individual cases. The responsible employment agency or job centre decides eligibility, covered costs and approval. Please obtain written confirmation before registering.'],
+  ['What makes a successful software tester?', 'Important skills and characteristics of a successful tester.'],
+] : [
+  ['Einstieg ins SOFTWARETESTING', 'Zielgruppe und Nutzen des Webinars.'],
+  ['Was verdient ein zertifizierter Softwaretester?', 'Einblick in Gehaltsstrukturen und Karriereaussichten.'],
+  ['Vorwelchen typischen Herausforderungen steht ein Tester?', 'Diskussion der gängigen Probleme und Hürden im Testmanagement.'],
+  ['Staatliches Förderprogramm: Bildungsgutschein', 'Eine Förderung kann im Einzelfall möglich sein. Über Voraussetzungen, förderfähige Kosten und Bewilligung entscheiden die zuständige Agentur für Arbeit oder das Jobcenter. Bitte lassen Sie die Förderung vor einer Anmeldung schriftlich bestätigen.'],
+  ['Was zeichnet einen erfolgreichen Softwaretester aus?', 'Wichtige Fähigkeiten und Eigenschaften eines erfolgreichen Testers.'],
+] as const;
+
+const participationSteps = isEn ? [
+  {
+    title: 'Sign in',
+    text: 'Leave your name, e-mail address and telephone number in the registration form. We will handle your data with absolute confidentiality.',
+  },
+  {
+    title: 'Confirm your e-mail',
+    text: 'Until the webinar begins, you will receive valuable information on the subject of software testing and ISTQB®. This information will familiarize you with the profession and you will receive practical tips.',
+  },
+  {
+    title: 'Webinar start',
+    text: 'You will receive an e-mail one week before the start of the webinar containing your login details so that you can take part in the webinar.',
+  },
+] : [
+  {
+    title: 'Trag dich ein',
+    text: 'Hinterlasse deinen Namen, E-Mail-Adresse und deine Telefonnummer im Anmeldeformular. Wir gehen absolut vertraulich mit deinen Daten um.',
+  },
+  {
+    title: 'Bestätige deine E-Mail',
+    text: 'Bis das Webinar beginnt, erhältst du wertvolle Informationen zum Thema Softwaretesting und ISTQB®. Diese Informationen machen dich schon mit dem Beruf vertraut und du erhältst umsetzbare Tipps.',
+  },
+  {
+    title: 'Webinar Beginn',
+    text: 'Du erhältst eine Woche vor dem Webinar Beginn eine E-Mail, in der die Login Daten enthalten sind, damit du am Webinar teilnehmen kannst.',
+  },
+] as const;
+
+const testimonials = [
+  ['Natalie', 'Y530fsyTCe4'],
+  ['Artur', 'GIzxhk4tzmM'],
+  ['Alexander', 'Nun-eNkeeY0'],
+  ['Olga', 'YI6Jf9-T3_c'],
+  ['Jonathan', 'C6jFQwt6E0o'],
+] as const;
+
+const successStories = isEn ? [
+  {
+    name: 'Leon Christen and his obstacle',
+    challenge: 'Despite countless applications, Leon was unable to find a job. Companies turned him down, even though he had completed a highly regarded degree course.',
+    goal: 'The goal was clear: Leon wanted to get his IT career off to a flying start.',
+    results: ['Qualified ISTQB® Certified Tester', 'Better understanding of his project', 'Gained more responsibility within the company'],
+  },
+  {
+    name: 'Christian-Oliver Friedrich and his obstacle',
+    challenge: 'Christian-Oliver wanted to gain practical experience in real IT projects. However, without practical experience and an ISTQB® tester certificate, this is not possible for him.',
+    goal: 'His goal is to be able to carry out IT projects as a test automation engineer. However, Christian-Oliver must first successfully complete the ISTQB® Tester certificate.',
+    results: ['Passed the ISTQB® certificate on his first attempt', 'Found his way into IT projects as a tester', 'Developed further with ISTQB® Test Automation Engineer'],
+  },
+] : [
+  {
+    name: 'Leon Christen und sein Hindernis',
+    challenge: 'Leon konnte trotz unzähliger Bewerbungen keinen Arbeitsplatz finden. Unternehmen lehnten ihn ab, obwohl er einen hoch angesehenen Studiengang absolviert hatte.',
+    goal: 'Das Ziel war ganz klar, Leon wollte in seiner IT-Karriere durchstarten.',
+    results: ['Qualifizierter ISTQB® Certified Tester', 'Besseres Verständnis in seinem Projekt', 'Mehr Verantwortung im Unternehmen erhalten'],
+  },
+  {
+    name: 'Christian-Oliver Friedrich und sein Hindernis',
+    challenge: 'Christian-Oliver wollte Praxiserfahrung über echte IT-Projekte sammeln. Jedoch ohne Praxiserfahrung und ISTQB® Tester Zertifikat ist es ihm nicht möglich.',
+    goal: 'Sein Ziel ist es, als Testautomatisierer IT-Projekte durchführen zu können. Dafür muss Christian-Oliver jedoch zuerst das ISTQB® Tester Zertifikat erfolgreich abschließen.',
+    results: ['Mit dem ersten Versuch das ISTQB® Zertifikat bestanden', 'Sein Einstieg ins IT-Projekt als Tester sicher gefunden', 'Sich weiterentwickelt mit ISTQB® Test Automation Engineer'],
+  },
+] as const;
+
+const trainers = [
+  ['Daniel Moretz', 'tild3039-6637-4261-b063-383138633765__img72.jpg'],
+  ['Waleri Moretz', 'tild3830-3230-4130-b766-636531363562__img68.jpg'],
+  ['Nikolaj Schefner', 'tild3732-3031-4537-a430-356132326434__img80.jpg'],
+] as const;
+
+const faqs = isEn ? [
+  ['Why do I need the ISTQB® certificate?', 'The ISTQB® Certified Tester certificate is the most important basis for a software tester. With the certificate, you demonstrate competence, inspire confidence and give your IT career a boost!'],
+  ['What happens to my data?', 'We treat the data you provide in accordance with the requirements of the GDPR and use it exclusively to inform you about our upcoming webinars on software testing and to maintain contact. You have the right at any time to request information about the data we have stored about you, to have it corrected or to request its deletion.'],
+  ['Insurance and torts', 'Our work in this field includes: litigation, research and legal opinions, peaceful settlements.'],
+  ['What is the webinar about?', 'The webinar is your opportunity to gain an overview of the profession of software tester and the chance to take the first step in your IT career.'],
+  ['When does the webinar take place?', 'The webinars usually take place on Thursday evenings. When you register for the webinar, we will send you an invitation to the webinar as well as the exact time and date of the next webinar. Take your chance and register now!'],
+  ['What happens when I have registered?', 'As soon as you have registered for the webinar, you have taken an important step closer to a successful IT career! We will inform you as soon as possible via the contact details provided when the next webinar will take place and send you a personal invitation.'],
+  ['What is software testing?', 'Software testing is an ideal way to start a career in IT. With the specialist training that you undergo during our seminar, you will receive all the tools from theory and practice combined to not only understand exactly what software testing is, but also to qualify and have the best opportunities to start as a software tester!'],
+  ['Is the webinar for me?', 'The webinar is intended for every curious person who is looking for education and training opportunities and wants to start their IT career with the best prerequisites.'],
+  ['Career opportunities as a software tester?', 'As a software tester, all doors are open to you for your IT career! The software tester combines an extraordinary number of topics in IT without going too deep. With the knowledge and skills of a software tester, you build the best basis for your IT career with enormous development potential!'],
+] : [
+  ['Weshalb benötige ich das ISTQB® Zertifikat?', 'Das ISTQB® Certified Tester Zertifikat stellt die wichtigste Basis für einen Softwaretester dar. Mit dem Zertifikat zeigst du Kompetenz, weckst Vertrauen und erhältst einen Boost für deine IT-Karriere!'],
+  ['Was passiert mit meinen Daten?', 'Wir behandeln Ihre bereitgestellten Daten gemäß den Anforderungen der DSGVO und nutzen sie ausschließlich, um Sie über unsere kommenden Webinare zum Thema Softwaretest zu informieren und den Kontakt aufrechtzuerhalten. Du hast jederzeit das Recht dir eine Auskunft über die von dir gespeicherten Daten anzufragen, sie berichtigen zu lassen oder die Löschung zu verlangen.'],
+  ['Versicherung und Schadenersatz', 'Unsere Arbeit in diesem Tätigkeitsbereich umfasst: Rechtsstreitigkeiten, recherchen und Rechtsgutachten, friedliche Siedlungen.'],
+  ['Worum handelt es sich im Webinar?', 'Das Webinar ist deine Möglichkeit einen Überblick zum Beruf des Softwaretesters zu erhalten und die Chance einen ersten Schritt in deine IT-Karriere zu machen.'],
+  ['Wann findet das Webinar statt?', 'Die Webinare finden in der Regel Donnerstagabend statt. Mit der Anmeldung zum Webinar erhältst du von uns die Einladung zum Webinar so wie die genaue Uhrzeit und das Datum, wann das nächste Webinar stattfinde. Nutze deine Chance und melde dich jetzt an!'],
+  ['Was passiert, wenn ich mich angemeldet habe?', 'Sobald du dich zum Webinar angemeldet hast, bist du deiner erfolgreichen IT-Karriere einen wichtigen Schritt näher gekommen! Wir informieren dich innerhalb kürzester Zeit über die angegeben Kontaktdaten, wann das nächste Webinar stattfindet, und senden dir eine persönliche Einladung zu.'],
+  ['Was ist Softwaretesting?', 'Der Softwaretest stellt einen idealen Einstieg in die IT-Karriere dar. Mit der fachlichen Ausbildung, die du während unseres Seminars durchläufst, erhältst du alle Mittel aus der Theorie und Praxis vereint, um nicht nur genau zu verstehen, was Softwaretesting ist, sondern dich auch zu qualifizieren und die besten Chancen für den Start als Softwaretester zu erhalten!'],
+  ['Ist das Webinar etwas für mich?', 'Das Webinar ist für jede neugierige Person gedacht, die nach Aus- und Weiterbildungsmöglichkeiten sucht und einen Einstieg in seine IT-Karriere mit den besten Voraussetzungen wagen will.'],
+  ['Karrierechancen als Softwaretester?', 'Als Softwaretester stehen dir alle Türen für deine IT-Karriere offen! Der Softwaretester vereint so außergewöhnlich viele Themen in der IT, ohne zu tief abzutauchen. Mit dem Wissen und Fähigkeiten des Softwaretesters baust du dir die beste Basis für deine IT-Karriere auf mit einem riesigen Weiterentwicklungspotenzial!'],
+] as const;
+
+const copy = isEn ? {
+  heroLead: 'Learn the steps to work successfully as a software tester. Together we will prepare you optimally for the ISTQB® certification.',
+  heroKicker: 'ISTQB® Certification',
+  heroTitle: 'Become a certified software tester',
+  video: 'WATCH video',
+  careerTitleAccent: 'ISTQB® Certification:',
+  careerTitle: 'Your career leap',
+  careerSub: 'Discover new opportunities in software testing',
+  careerText: 'ISTQB® certification is a globally recognized seal of quality for software testers. It opens doors to new career opportunities and helps you to stand your ground in a competitive market. Discover how this certification can positively influence your professional career.',
+  certificateAccent: 'The ISTQB® certificate',
+  certificateTitle: 'paired with software testing',
+  certificateText: 'As a software tester, you not only have a future-proof profession. The ISTQB® certificate is the key in the IT industry. You will acquire theoretical knowledge and sound practical experience. In our webinar, we present the ISTQB® to you in detail as an educational institution and provide you with support in your professional IT life.',
+  without: 'Without the WAMOCON Academy',
+  withoutItems: ['Low salary', 'Rejection of an application for a position', 'Few opportunities for advancement', 'Lack of expertise in the area of test management'],
+  with: 'With the WAMOCON Academy',
+  withItems: ['Above-average salary', 'Work on projects that you like', 'High development opportunities thanks to ISTQB® certification', 'Expert knowledge from experienced mentors'],
+  futureAccent: 'Start into a secure future',
+  futureTitle: 'with the best benefits for you',
+  quote: '“A career as a software tester offers a stable, sought-after perspective with many opportunities for further development and specialization”',
+  benefitsAccent: 'Your benefits at a glance',
+  benefitsTitle: 'if you hold the ISTQB® certificate as a software tester',
+  benefitsLead: 'As a training provider, we have the opportunity to offer you the training completely free of charge through the employment office.',
+  voucher: 'Voucher description',
+  comparison: 'Comparison with other IT certifications',
+  experienceAccent: 'More than 40 years of testing experience',
+  experienceTitle: 'and ready to train the testing elite of tomorrow',
+  experienceText: 'The vision of the WAMOCON Academy is to make it easier for people like you to enter professional life step by step and to train you with sound specialist knowledge and sufficient practical experience. For this reason, we have been selected as a training provider by the Federal Republic of Germany.',
+  webinarCta: 'Register for the webinar',
+  hurdlesAccent: 'Software tester career and ISTQB® certification:',
+  hurdlesTitle: 'The biggest hurdles for IT newcomers',
+  expect: 'What you can expect in the webinar',
+  expectSub: 'For whom is the live webinar a must?',
+  expectFinal: 'Six successful steps to ISTQB® Certified Tester Foundation Level!',
+  participationAccent: 'How to take part in the free webinar',
+  participationTitle: 'and get the most out of it',
+  participationLead: 'We will take you forward in your professional life safely and reliably.',
+  testimonialsTitle: 'What successful graduates say',
+  testimonialsLead: 'We accompany you step by step on your entry into the IT industry.',
+  participant: 'Participant WAMOCON Academy',
+  successTitle: 'Successful entry into the future-proof',
+  successAccent: 'IT industry',
+  successLead: 'Together with our participants, we were able to achieve significant successes.',
+  challenge: 'The challenge',
+  goal: 'Goal',
+  result: 'Result',
+  trainers: 'The trainers',
+  faqTitle: 'Questions and answers',
+  faqText1: 'We understand that deciding on a career path raises a number of questions. Our webinar gives you the opportunity to discuss your most important concerns live with our speakers.',
+  faqText2: 'So sign up for the webinar and get all your questions answered in real time.',
+} : {
+  heroLead: 'Lerne die Schritte, um erfolgreich als Softwaretester zu arbeiten. Gemeinsam bereiten wir dich optimal auf die ISTQB® Zertifizierung vor.',
+  heroKicker: 'ISTQB® Zertifizierung',
+  heroTitle: 'Werde zum zertifizierten Softwaretester',
+  video: 'Video ANSCHAUEN',
+  careerTitleAccent: 'ISTQB® Zertifizierung:',
+  careerTitle: 'Ihr Karrieresprung',
+  careerSub: 'Neue Chancen im Softwaretesting entdecken',
+  careerText: 'Die ISTQB® Zertifizierung ist ein weltweit anerkanntes Gütesiegel für Softwaretester. Sie öffnet Türen zu neuen Karrieremöglichkeiten und hilft Ihnen, sich in einem wettbewerbsintensiven Markt zu behaupten. Entdecken Sie, wie diese Zertifizierung Ihre berufliche Laufbahn positiv beeinflussen kann.',
+  certificateAccent: 'Das ISTQB® Zertifikat',
+  certificateTitle: 'gepaart mit Softwaretesting',
+  certificateText: 'Als Softwaretester hast du nicht nur einen zukunftssicheren Beruf. Das ISTQB® Zertifikat ist der Schlüssel in der IT-Branche. Dort erwirbst du theoretisches Fachwissen und fundierte Praxis. In unserem Webinar stellen wir dir als Bildungsträger das ISTQB® ausführlich vor und sind eine Stütze für dich in deinem beruflichen IT-Leben.',
+  without: 'Ohne die WAMOCON Academy',
+  withoutItems: ['Niedriges Gehalt', 'Ablehnung der Bewerbung um eine Stelle', 'Geringe Aufstiegsmöglichkeiten', 'Mangelndes Fachwissen im Bereich Testmanagement'],
+  with: 'Mit der WAMOCON Academy',
+  withItems: ['Überdurchschnittliches Gehalt', 'Arbeit an Projekten, die Ihnen gefallen', 'Hohe Entwicklungsmöglichkeiten dank ISTQB®-Zertifizierung', 'Fachwissen von erfahrenen Mentoren'],
+  futureAccent: 'Starte in eine sichere Zukunft',
+  futureTitle: 'mit den besten Vorteilen für dich',
+  quote: '“Eine Karriere als Softwaretester bietet eine stabile, gefragte Perspektive mit vielen Möglichkeiten zur Weiterentwicklung und Spezialisierung”',
+  benefitsAccent: 'Deine Vorteile auf einen Blick,',
+  benefitsTitle: 'wenn du als Softwaretester das ISTQB® Zertifikat besitzt',
+  benefitsLead: 'Als Bildungsträger haben wir die Möglichkeit, dir die Schulung komplett kostenfrei durch das Arbeitsamt anzubieten.',
+  voucher: 'Gutscheinbeschreibung',
+  comparison: 'Vergleich mit anderen IT-Zertifizierungen',
+  experienceAccent: 'Mehr als 40 Jahre Testerfahrung',
+  experienceTitle: 'und bereit, die Testelite von morgen auszubilden',
+  experienceText: 'Die Vision der WAMOCON Academy ist es, Menschen wie dir Schritt für Schritt den Einstieg in das Berufsleben zu erleichtern und dich mit fundiertem Fachwissen und ausreichend Praxiserfahrung auszubilden. Aus diesem Grund wurden wir als Bildungsträger von der Bundesrepublik Deutschland ausgewählt.',
+  webinarCta: 'ZUM webinar',
+  hurdlesAccent: 'Softwaretester-Karriere und ISTQB® Zertifizierung:',
+  hurdlesTitle: 'Die größten Hürden für IT-Neulinge',
+  expect: 'Das erwartet dich im Webinar',
+  expectSub: 'Für wen ist das Live-Webinar ein Muss?',
+  expectFinal: 'In sechs Erfolgsschritten zum ISTQB® Certified Tester Foundation Level!',
+  participationAccent: 'Wie du am kostenfreien Webinar teilnimmst',
+  participationTitle: 'und es optimal für dich nutzt',
+  participationLead: 'Wir bringen dich in deinem beruflichen Leben sicher und zuverlässlich nach vorne.',
+  testimonialsTitle: 'Das sagen erfolgreiche Absolventen',
+  testimonialsLead: 'Wir begleiten dich Schritt für Schritt bei deinem Einstieg in der IT-Branche.',
+  participant: 'Teilnehmerin WAMOCON Academy',
+  successTitle: 'Erfolgreicher Einstieg in die zukunftssichere',
+  successAccent: 'IT-Branche',
+  successLead: 'Gemeinsam mit unseren Teilnehmern konnten wir maßgebliche Erfolge erzielen.',
+  challenge: 'Herausforderung',
+  goal: 'Ziel',
+  result: 'Ergebnis',
+  trainers: 'Die Trainer',
+  faqTitle: 'Fragen und Antworten',
+  faqText1: 'Wir verstehen, dass die Entscheidung für den Karriereweg einige Fragen aufwirft. In unserem Webinar erhältst du die Möglichkeit, mit unseren Referenten deine wichtigsten Anliegen live zu besprechen.',
+  faqText2: 'Trage dich deshalb für das Webinar ein und lasse dir all deine Fragen in Echtzeit beantworten.',
+};
+
+const webinarHash = isEn ? '#popup:Webinar-Anmeldung-en' : '#popup:Webinar-Anmeldung';
+const reviewsHref = isEn ? '/en/reviews' : '/bewertungen';
+const privacyHref = isEn ? '/privacy-policy' : '/datenschutz';
+const redirect = isEn ? '/thanks/' : '/danke/';
+const comparisonImage = asset(
+  isEn
+    ? 'tild3331-6436-4630-b633-303866613763__group_2.jpg'
+    : 'tild6338-3834-4065-b165-333561663465__group_1.jpg'
+);
+const voucherCopy = isEn
+  ? {
+      title: 'Education voucher from the employment office: requirements and application',
+      lead: 'A training voucher can help you to continue your vocational training Here is the most important information on the',
+      process: 'Requirements and the application process:',
+      prerequisites: 'Prerequisites',
+      items: [
+        ['Unemployment or threat of unemployment:', 'You must be unemployed or threatened with unemployment.'],
+        ['Necessity of further training:', 'The further training must be necessary to improve your chances on the job market.'],
+        ['Counseling interview:', 'A personal consultation at the employment agency is required to determine your individual further training needs.'],
+        ['Targeted measure:', 'The further training must be aimed at obtaining a recognized professional qualification or expanding your professional qualifications.'],
+      ],
+      link: 'About the voucher',
+    }
+  : {
+      title: 'Bildungsgutschein vom Arbeitsamt: Voraussetzungen und Beantragung',
+      lead: 'Ein Bildungsgutschein kann Ihnen helfen, eine berufliche Weiterbildung Hier sind die wichtigsten Informationen zu den',
+      process: 'Voraussetzungen und dem Beantragungsprozess:',
+      prerequisites: 'Voraussetzungen',
+      items: [
+        ['Arbeitslosigkeit oder drohende Arbeitslosigkeit:', 'Sie müssen arbeitslos sein oder von Arbeitslosigkeit bedroht sein.'],
+        ['Notwendigkeit der Weiterbildung:', 'Die Weiterbildung muss notwendig sein, um Ihre Chancen auf dem Arbeitsmarkt zu verbessern.'],
+        ['Beratungsgespräch:', 'Ein persönliches Beratungsgespräch bei der Agentur für Arbeit ist erforderlich, um Ihren individuellen Weiterbildungsbedarf zu ermitteln.'],
+        ['Zielgerichtete Maßnahme:', 'Die Weiterbildung muss auf einen anerkannten Berufsabschluss oder eine Erweiterung Ihrer beruflichen Qualifikationen abzielen.'],
+      ],
+      link: 'Über den Gutschein',
+    };
+
+const registrationCopy = isEn
+  ? {
+      title: 'Webinar registration',
+      name: 'Name',
+      email: 'E-Mail',
+      consentPre: 'Information about how we process your inquiry is provided in the ',
+      consentLink: 'privacy policy',
+      consentPost: '.',
+      inquiry: 'This is a non-binding inquiry and does not constitute a purchase.',
+      submit: 'Send request',
+    }
+  : {
+      title: 'Webinar Anmeldung',
+      name: 'Ihr Name',
+      email: 'E-Mail',
+      consentPre: 'Informationen zur Verarbeitung Ihrer Anfrage finden Sie in der ',
+      consentLink: 'Datenschutzerklärung',
+      consentPost: '.',
+      inquiry: 'Dies ist eine unverbindliche Anfrage und kein Kauf.',
+      submit: 'Anfrage senden',
+    };
+---
+
+<section class="page-hero istqb-hero">
+  <div class="istqb-shell istqb-hero__inner">
+    <div class="istqb-hero__copy" data-reveal>
+      <span>{copy.heroKicker}</span>
+      <h1>{copy.heroTitle}</h1>
+      <p>{copy.heroLead}</p>
+      <a class="istqb-button" href="#zeropopup" data-open-modal="istqb-video-modal">{copy.video}</a>
+    </div>
+    <div class="istqb-hero__art" aria-hidden="true">
+      <img class="istqb-hero__cone istqb-hero__cone--back" src={asset('tild6533-3036-4233-a262-396264383730__cone.svg')} alt="" />
+      <img class="istqb-hero__cone istqb-hero__cone--front" src={asset('tild3836-6332-4664-a133-666239613761__cone.svg')} alt="" />
+    </div>
+  </div>
+</section>
+
+<section class="istqb-section istqb-intro">
+  <div class="istqb-shell istqb-split istqb-split--balanced">
+    <div class="istqb-intro__art" aria-hidden="true" data-reveal>
+      <img src={asset('tild6435-3037-4261-b437-346164326231__vadsv.png')} alt="" />
+    </div>
+    <div data-reveal>
+      <h2><span>{copy.careerTitleAccent}</span><br />{copy.careerTitle}</h2>
+      <h3>{copy.careerSub}</h3>
+      <p>{copy.careerText}</p>
+    </div>
+  </div>
+</section>
+
+<section class="istqb-section istqb-certificate">
+  <div class="istqb-shell">
+    <div class="istqb-split istqb-split--media">
+      <div data-reveal>
+        <h2><span>{copy.certificateAccent}</span><br />{copy.certificateTitle}</h2>
+        <p>{copy.certificateText}</p>
+      </div>
+      <div class="istqb-certificate__media" data-reveal>
+        <img class="istqb-certificate__photo" src={asset('tild3464-3762-4433-b130-323731353237__img52.jpg')} alt="Teilnehmende beim Softwaretesting-Training" />
+        <img class="istqb-certificate__document" src={asset('tild3833-6665-4535-b865-613661646166__wma_akkreditierung_i.png')} alt="ISTQB® Akkreditierung" />
+      </div>
+    </div>
+    <div class="istqb-comparison" data-reveal>
+      <article>
+        <h3>{copy.without}</h3>
+        <ul class="istqb-list istqb-list--negative">
+          {copy.withoutItems.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+      <article>
+        <h3>{copy.with}</h3>
+        <ul class="istqb-list istqb-list--positive">
+          {copy.withItems.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="istqb-section istqb-career">
+  <div class="istqb-shell">
+    <header class="istqb-heading" data-reveal>
+      <h2><span>{copy.futureAccent}</span> {copy.futureTitle}</h2>
+      <p>{copy.careerText}</p>
+    </header>
+    <div class="istqb-career__grid">
+      {careerBenefits.map((item) => (
+        <article data-reveal>
+          <h3>{item.title}</h3>
+          <p>{item.text}</p>
+        </article>
+      ))}
+    </div>
+    <blockquote data-reveal>{copy.quote}</blockquote>
+  </div>
+</section>
+
+<section class="istqb-section istqb-benefits">
+  <div class="istqb-shell">
+    <header class="istqb-heading" data-reveal>
+      <h2><span>{copy.benefitsAccent}</span> {copy.benefitsTitle}</h2>
+      <p>{copy.benefitsLead}</p>
+    </header>
+    <div class="istqb-benefits__grid">
+      {certificationBenefits.map((item) => (
+        <article data-reveal>
+          <img src={asset(item.icon)} alt="" width="42" height="42" />
+          <div>
+            <h3>{item.title}</h3>
+            <p>{item.text}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+    <div class="istqb-benefits__actions" data-reveal>
+      <a class="istqb-button" href="#popup:Gutscheinbeschreibung" data-open-modal="istqb-voucher-modal">{copy.voucher}</a>
+      <a class="istqb-button istqb-button--outline" href="#popup:Vergleich-mit-anderen-IT-Zertifizierungen" data-open-modal="istqb-comparison-modal">{copy.comparison}</a>
+    </div>
+  </div>
+</section>
+
+<section class="istqb-section istqb-experience">
+  <div class="istqb-shell istqb-split istqb-split--media">
+    <div data-reveal>
+      <h2><span>{copy.experienceAccent}</span> {copy.experienceTitle}</h2>
+      <p>{copy.experienceText}</p>
+      <a class="istqb-button" href={webinarHash} data-open-modal="istqb-webinar-modal">{copy.webinarCta}</a>
+    </div>
+    <div class="istqb-experience__media" data-reveal>
+      <img src={asset('tild3565-3164-4633-b961-376633653466__photo_2021-09-11_22-.png')} alt="Die Trainer der WAMOCON Academy" />
+      <img class="istqb-experience__badge" src={asset('tild3438-3437-4465-b730-646339663633__frame_929519.png')} alt="" />
+    </div>
+  </div>
+</section>
+
+<section class="istqb-section istqb-hurdles" id="huerden">
+  <div class="istqb-shell">
+    <header class="istqb-heading" data-reveal>
+      <h2><span>{copy.hurdlesAccent}</span> {copy.hurdlesTitle}</h2>
+    </header>
+    <div class="istqb-hurdles__list">
+      {hurdles.map((item, index) => (
+        <article data-reveal>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <div>
+            <h3>{item.title}</h3>
+            {item.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+          </div>
+        </article>
+      ))}
+    </div>
+    <div class="istqb-webinar istqb-split istqb-split--media">
+      <div data-reveal>
+        <h2>{copy.expect}</h2>
+        <h3>{copy.expectSub}</h3>
+        <ul>
+          {webinarTopics.map(([title, text]) => <li><strong>{title}</strong><span>– {text}</span></li>)}
+        </ul>
+        <p class="istqb-webinar__final">{copy.expectFinal}</p>
+      </div>
+      <a class="istqb-webinar__media" href="#zeropopup" data-open-modal="istqb-video-modal" data-reveal>
+        <img src={asset('tild6633-6566-4234-a339-386662643565__site-expert-coding-r.jpg')} alt="Softwaretester am Arbeitsplatz" />
+        <span>{copy.video}</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="istqb-section istqb-participation">
+  <div class="istqb-shell">
+    <header class="istqb-heading" data-reveal>
+      <h2><span>{copy.participationAccent}</span> {copy.participationTitle}</h2>
+      <p>{copy.participationLead}</p>
+    </header>
+    <ol class="istqb-participation__steps">
+      {participationSteps.map((item, index) => (
+        <li data-reveal>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <h3>{item.title}</h3>
+          <p>{item.text}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<section class="istqb-section istqb-testimonials">
+  <div class="istqb-shell">
+    <header class="istqb-heading" data-reveal>
+      <h2><a href={reviewsHref}>{copy.testimonialsTitle}</a></h2>
+      <p>{copy.testimonialsLead}</p>
+    </header>
+    <div class="istqb-testimonials__grid">
+      {testimonials.map(([name, video]) => (
+        <article data-reveal>
+          <button class="istqb-testimonial-video" type="button" data-youtube-id={video} aria-label={`${name}: ${copy.video}`}>
+            <img
+              src={asset('tild6633-6566-4234-a339-386662643565__site-expert-coding-r.jpg')}
+              data-consent-src={`https://img.youtube.com/vi/${video}/sddefault.jpg`}
+              alt={`${name}, ${copy.participant}`}
+              loading="lazy"
+            />
+            <span aria-hidden="true"></span>
+          </button>
+          <strong>{name}</strong>
+          <span>{copy.participant}</span>
+        </article>
+      ))}
+    </div>
+    <a class="istqb-button" href={webinarHash} data-open-modal="istqb-webinar-modal">{copy.webinarCta}</a>
+  </div>
+</section>
+
+<section class="istqb-section istqb-success">
+  <div class="istqb-shell">
+    <header class="istqb-heading" data-reveal>
+      <h2><a href={reviewsHref}>{copy.successTitle}<br /><span>{copy.successAccent}</span></a></h2>
+      <p>{copy.successLead}</p>
+    </header>
+    <div class="istqb-success__grid">
+      {successStories.map((story) => (
+        <article data-reveal>
+          <div class="istqb-success__media" aria-hidden="true"></div>
+          <div>
+            <h3>{story.name}</h3>
+            <h4>{copy.challenge}</h4>
+            <p>{story.challenge}</p>
+            <h4>{copy.goal}</h4>
+            <p>{story.goal}</p>
+            <h4>{copy.result}</h4>
+            <ul>{story.results.map((result) => <li>{result}</li>)}</ul>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="istqb-section istqb-trainers">
+  <div class="istqb-shell">
+    <h2 data-reveal>{copy.trainers}</h2>
+    <div class="istqb-trainers__grid">
+      {trainers.map(([name, image]) => (
+        <figure data-reveal>
+          <img src={asset(image)} alt={name} loading="lazy" />
+          <figcaption>{name}</figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="istqb-section istqb-faq">
+  <div class="istqb-shell">
+    <div class="istqb-faq__intro" data-reveal>
+      <div>
+        <h2>{copy.faqTitle}</h2>
+        <p>{copy.faqText1}</p>
+        <p>{copy.faqText2}</p>
+      </div>
+      <a class="istqb-button" href={webinarHash} data-open-modal="istqb-webinar-modal">{copy.webinarCta}</a>
+    </div>
+    <div class="istqb-faq__items">
+      {faqs.map(([question, answer]) => (
+        <details data-reveal>
+          <summary>{question}<span aria-hidden="true">+</span></summary>
+          <p>{answer}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<dialog class="istqb-modal" id="istqb-video-modal" aria-label={copy.video}>
+  <button class="istqb-modal__close" type="button" data-close-modal aria-label={isEn ? 'Close video' : 'Video schließen'}>×</button>
+  <div class="istqb-modal__video">
+    <iframe
+      title={copy.video}
+      data-consent-src="https://www.youtube-nocookie.com/embed/8t24ww8EVbk?autoplay=1&rel=0"
+      allow="autoplay; encrypted-media; picture-in-picture"
+      allowfullscreen
+    ></iframe>
+  </div>
+</dialog>
+
+<dialog class="istqb-modal istqb-modal--content" id="istqb-voucher-modal" aria-labelledby="voucher-modal-title">
+  <button class="istqb-modal__close" type="button" data-close-modal aria-label={isEn ? 'Close' : 'Schließen'}>×</button>
+  <div class="istqb-modal__content">
+    <h2 id="voucher-modal-title">{voucherCopy.title}</h2>
+    <p>{voucherCopy.lead}</p>
+    <p><strong>{voucherCopy.process}</strong></p>
+    <h3>{voucherCopy.prerequisites}</h3>
+    <ul>
+      {voucherCopy.items.map(([title, text]) => <li><strong>{title}</strong> {text}</li>)}
+    </ul>
+    <a class="istqb-button" href="https://www.arbeitsagentur.de/karriere-und-weiterbildung/bildungsgutschein?locale=de" target="_blank" rel="noopener noreferrer">{voucherCopy.link}</a>
+  </div>
+</dialog>
+
+<dialog class="istqb-modal istqb-modal--comparison" id="istqb-comparison-modal" aria-label={copy.comparison}>
+  <button class="istqb-modal__close" type="button" data-close-modal aria-label={isEn ? 'Close' : 'Schließen'}>×</button>
+  <img src={comparisonImage} alt={copy.comparison} />
+</dialog>
+
+<dialog class="istqb-modal istqb-modal--form" id="istqb-webinar-modal" aria-labelledby="webinar-modal-title">
+  <button class="istqb-modal__close" type="button" data-close-modal aria-label={isEn ? 'Close' : 'Schließen'}>×</button>
+  <form class="istqb-registration-form js-lead-form" data-redirect={redirect}>
+    <h2 id="webinar-modal-title">{registrationCopy.title}</h2>
+    <input type="hidden" name="type" value="webinar" />
+    <input type="hidden" name="lang" value={lang} />
+    <input class="lead-form__trap" type="text" name="company" tabindex="-1" autocomplete="off" />
+    <label>
+      <span>{registrationCopy.name}</span>
+      <input type="text" name="name" placeholder={registrationCopy.name} required />
+    </label>
+    <label>
+      <span>{registrationCopy.email}</span>
+      <input type="email" name="email" placeholder={registrationCopy.email} required />
+    </label>
+    <p class="istqb-registration-form__consent">
+      <span>{registrationCopy.consentPre}<a href={privacyHref}>{registrationCopy.consentLink}</a>{registrationCopy.consentPost}</span>
+    </p>
+    <p class="istqb-registration-form__inquiry">{registrationCopy.inquiry}</p>
+    <p class="lead-form__status" role="alert" aria-live="assertive" hidden></p>
+    <button class="istqb-button" type="submit">{registrationCopy.submit}</button>
+  </form>
+</dialog>
+
+<LeadForm lang={lang} type="certification" compact title={isEn ? 'Get advice' : 'Beratung erhalten'} />
+
+<style>
+  :global(body) { background: #0d0d0d; }
+
+  .istqb-shell {
+    width: min(100%, 1440px);
+    margin-inline: auto;
+    padding-inline: clamp(20px, 2.5vw, 40px);
+  }
+
+  .istqb-section {
+    position: relative;
+    padding-block: clamp(72px, 8vw, 128px);
+    overflow: hidden;
+  }
+
+  .istqb-section h2 {
+    font-size: clamp(2rem, 4.1vw, 4.5rem);
+    line-height: 1.04;
+  }
+
+  .istqb-section h2 span,
+  .istqb-hero__copy > span {
+    color: var(--color-accent);
+  }
+
+  .istqb-section h3 {
+    font-size: clamp(1.15rem, 1.55vw, 1.55rem);
+    line-height: 1.2;
+  }
+
+  .istqb-section p {
+    color: var(--color-muted);
+    font-size: clamp(0.98rem, 1.1vw, 1.08rem);
+    line-height: 1.7;
+  }
+
+  .istqb-button {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.45rem;
+    border: 1px solid var(--color-accent);
+    border-radius: 5px;
+    background: var(--color-accent);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.045em;
+    text-transform: uppercase;
+    transition: transform 180ms ease, background 180ms ease;
+  }
+
+  .istqb-button:hover { background: #e90a00; transform: translateY(-2px); }
+  .istqb-button--outline { background: transparent; }
+
+  .istqb-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(40px, 7vw, 112px);
+    align-items: center;
+  }
+
+  .istqb-split--balanced { grid-template-columns: 0.85fr 1.15fr; }
+  .istqb-split--media { align-items: center; }
+
+  .istqb-heading { max-width: 1160px; margin-bottom: clamp(40px, 6vw, 76px); }
+  .istqb-heading p { max-width: 1020px; margin-top: 1.25rem; }
+
+  .istqb-hero {
+    position: relative;
+    min-height: clamp(690px, 78vh, 820px);
+    display: grid;
+    align-items: center;
+    overflow: hidden;
+    background: #0d0d0d;
+  }
+
+  .istqb-hero::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 180px;
+    background: linear-gradient(transparent, #0d0d0d);
+    pointer-events: none;
+  }
+
+  .istqb-hero__inner {
+    position: relative;
+    min-height: inherit;
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
+    align-items: center;
+    padding-top: 180px;
+    padding-bottom: 72px;
+  }
+
+  .istqb-hero__copy { position: relative; z-index: 2; max-width: 690px; }
+  .istqb-hero__copy p { max-width: 680px; margin-bottom: 1.8rem; color: var(--color-muted); font-size: clamp(1rem, 1.4vw, 1.2rem); }
+  .istqb-hero__copy > span { display: block; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; }
+  .istqb-hero h1 { max-width: 760px; margin: 0.6rem 0 1.2rem; font-size: clamp(2.75rem, 4.8vw, 5rem); line-height: 1.02; }
+
+  .istqb-hero__art { position: absolute; inset: 0 0 0 49%; pointer-events: none; }
+  .istqb-hero__cone { position: absolute; width: min(48vw, 690px); max-width: none; }
+  .istqb-hero__cone--back { top: 78px; right: 6%; transform: rotate(-4deg); opacity: 0.82; }
+  .istqb-hero__cone--front { top: 185px; right: -10%; transform: rotate(14deg); }
+
+  .istqb-intro { padding-top: 64px; }
+  .istqb-intro__art { position: relative; min-height: 500px; }
+  .istqb-intro__art::before {
+    content: '';
+    position: absolute;
+    width: 75%;
+    aspect-ratio: 1;
+    inset: 10% auto auto 6%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 11, 0, 0.28), transparent 66%);
+    filter: blur(18px);
+  }
+  .istqb-intro__art img { position: relative; width: min(100%, 540px); margin-inline: auto; }
+  .istqb-intro h3 { margin: 1.6rem 0 0.7rem; }
+  .istqb-intro p { max-width: 720px; }
+
+  .istqb-certificate { background: #111; }
+  .istqb-certificate__media { position: relative; min-height: 500px; }
+  .istqb-certificate__photo { width: 100%; height: 420px; object-fit: cover; object-position: center; }
+  .istqb-certificate__document { position: absolute; width: 180px; left: -54px; bottom: -20px; filter: drop-shadow(0 18px 30px rgba(0,0,0,.45)); }
+  .istqb-certificate p { margin-top: 1.4rem; }
+
+  .istqb-comparison {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2px;
+    margin-top: clamp(56px, 7vw, 96px);
+  }
+  .istqb-comparison article { padding: clamp(28px, 4vw, 54px); background: #303030; }
+  .istqb-comparison h3 { margin-bottom: 1.5rem; }
+  .istqb-list { display: grid; gap: 1rem; color: var(--color-muted); }
+  .istqb-list li { position: relative; padding-left: 1.8rem; }
+  .istqb-list li::before { position: absolute; left: 0; font-weight: 700; }
+  .istqb-list--negative li::before { content: '—'; color: #ff7670; }
+  .istqb-list--positive li::before { content: '+'; color: #56d990; }
+
+  .istqb-career__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .istqb-career__grid article { min-height: 310px; padding: clamp(24px, 3vw, 38px); background: #303030; }
+  .istqb-career__grid h3 { margin-bottom: 1.1rem; }
+  .istqb-career__grid p { white-space: pre-line; font-size: 0.94rem; }
+  .istqb-career blockquote { max-width: 1120px; margin: 66px auto 0; color: #fff; font-size: clamp(1.35rem, 2.6vw, 2.7rem); font-weight: 600; line-height: 1.35; text-align: center; }
+
+  .istqb-benefits { background: #101010; }
+  .istqb-benefits__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 42px 56px; }
+  .istqb-benefits__grid article { display: grid; grid-template-columns: 44px 1fr; gap: 18px; align-items: start; }
+  .istqb-benefits__grid img { width: 42px; height: 42px; object-fit: contain; }
+  .istqb-benefits__grid h3 { margin-bottom: 0.55rem; }
+  .istqb-benefits__grid p { font-size: 0.92rem; }
+  .istqb-benefits__actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 56px; }
+
+  .istqb-experience__media { position: relative; }
+  .istqb-experience__media > img:first-child { width: 100%; min-height: 510px; object-fit: cover; object-position: center; }
+  .istqb-experience__badge { position: absolute; width: 250px; right: 0; top: 28px; }
+  .istqb-experience p { margin: 1.5rem 0 2rem; }
+
+  .istqb-hurdles { background: #0b0b0b; }
+  .istqb-hurdles__list { display: grid; gap: 0; }
+  .istqb-hurdles__list article { display: grid; grid-template-columns: 78px 1fr; gap: 24px; padding: 32px 0; border-bottom: 1px solid rgba(255,255,255,.12); }
+  .istqb-hurdles__list article > span { color: var(--color-accent); font-size: 1.6rem; font-weight: 700; }
+  .istqb-hurdles__list h3 { margin-bottom: 0.8rem; }
+  .istqb-hurdles__list p + p { margin-top: 0.9rem; }
+  .istqb-webinar { margin-top: clamp(72px, 10vw, 140px); }
+  .istqb-webinar h3 { margin: 1.4rem 0 1.2rem; }
+  .istqb-webinar ul { display: grid; gap: 1.1rem; }
+  .istqb-webinar li { display: grid; gap: 0.28rem; color: var(--color-muted); }
+  .istqb-webinar li strong { color: #fff; }
+  .istqb-webinar__final { margin-top: 1.8rem; color: #fff !important; font-weight: 600; }
+  .istqb-webinar__media { position: relative; display: block; min-height: 570px; overflow: hidden; }
+  .istqb-webinar__media img { width: 100%; height: 100%; min-height: 570px; object-fit: cover; }
+  .istqb-webinar__media span { position: absolute; inset: auto 0 0; display: flex; justify-content: center; padding: 1rem; border: 1px solid var(--color-accent); background: rgba(13,13,13,.86); color: #fff; font-size: .78rem; font-weight: 700; }
+
+  .istqb-participation__steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 42px; margin: 0; padding: 0; list-style: none; }
+  .istqb-participation__steps li { position: relative; padding-top: 58px; }
+  .istqb-participation__steps li > span { position: absolute; top: 0; left: 0; color: var(--color-accent); font-size: 1.8rem; font-weight: 700; }
+  .istqb-participation__steps h3 { margin-bottom: 0.7rem; }
+
+  .istqb-testimonials { background: #101010; }
+  .istqb-testimonials__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; margin-bottom: 38px; }
+  .istqb-testimonials__grid article { display: grid; align-content: start; background: #fff; color: #111; }
+  .istqb-testimonial-video { position: relative; width: 100%; overflow: hidden; background: #050505; }
+  .istqb-testimonial-video span {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 54px;
+    height: 54px;
+    padding: 0;
+    border-radius: 50%;
+    background: rgba(255, 11, 0, 0.92);
+    transform: translate(-50%, -50%);
+  }
+  .istqb-testimonial-video span::after {
+    content: '';
+    position: absolute;
+    inset: 50% auto auto 52%;
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
+    border-left: 14px solid #fff;
+    transform: translate(-50%, -50%);
+  }
+  .istqb-testimonials__grid img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+  .istqb-testimonials__grid iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; }
+  .istqb-testimonials__grid strong { padding: 14px 16px 0; font-size: 0.95rem; }
+  .istqb-testimonials__grid article > span { padding: 3px 16px 16px; color: #555; font-size: 0.72rem; }
+
+  .istqb-success__grid { display: grid; gap: clamp(48px, 7vw, 96px); }
+  .istqb-success__grid article { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(32px, 6vw, 82px); align-items: stretch; }
+  .istqb-success__grid article:nth-child(even) .istqb-success__media { order: 2; }
+  .istqb-success__media { min-height: 360px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.08); background: #030303; }
+  .istqb-success h3 { margin-bottom: 1.3rem; }
+  .istqb-success h4 { margin-top: 1rem; color: var(--color-accent); font-size: 0.82rem; text-transform: uppercase; }
+  .istqb-success p { margin-top: 0.35rem; }
+  .istqb-success ul { display: grid; gap: 0.35rem; margin-top: 0.45rem; color: var(--color-muted); }
+  .istqb-success li { position: relative; padding-left: 1.1rem; }
+  .istqb-success li::before { content: '+'; position: absolute; left: 0; color: var(--color-accent); }
+
+  .istqb-trainers { background: #101010; }
+  .istqb-trainers h2 { margin-bottom: 42px; }
+  .istqb-trainers__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  .istqb-trainers figure { margin: 0; }
+  .istqb-trainers img { width: 100%; aspect-ratio: 1.2 / 1; object-fit: cover; filter: grayscale(.1); }
+  .istqb-trainers figcaption { padding-top: 14px; color: #fff; font-size: 0.86rem; }
+
+  .istqb-faq__intro { display: flex; justify-content: space-between; gap: 40px; align-items: flex-end; margin-bottom: 46px; }
+  .istqb-faq__intro > div { max-width: 980px; }
+  .istqb-faq__intro p { margin-top: 1rem; }
+  .istqb-faq__items details { border-bottom: 1px solid rgba(255, 11, 0, .45); }
+  .istqb-faq__items summary { display: flex; justify-content: space-between; gap: 24px; padding: 22px 0; color: #fff; font-weight: 600; cursor: pointer; list-style: none; }
+  .istqb-faq__items summary::-webkit-details-marker { display: none; }
+  .istqb-faq__items summary span { color: var(--color-accent); font-size: 1.35rem; transition: transform .18s ease; }
+  .istqb-faq__items details[open] summary span { transform: rotate(45deg); }
+  .istqb-faq__items details p { max-width: 1100px; padding: 0 0 24px; }
+
+  .istqb-modal {
+    position: fixed;
+    inset: 50% auto auto 50%;
+    width: min(1000px, calc(100vw - 32px));
+    max-width: none;
+    max-height: min(90vh, 900px);
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    border: 1px solid rgba(255,255,255,.16);
+    background: #101010;
+    color: #fff;
+    transform: translate(-50%, -50%);
+  }
+
+  .istqb-modal::backdrop { background: rgba(0,0,0,.82); backdrop-filter: blur(5px); }
+  .istqb-modal__close {
+    position: absolute;
+    z-index: 3;
+    top: 12px;
+    right: 14px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(0,0,0,.72);
+    color: #fff;
+    font-size: 2rem;
+    line-height: 1;
+  }
+  .istqb-modal__video { aspect-ratio: 16 / 9; background: #000; }
+  .istqb-modal__video iframe { width: 100%; height: 100%; border: 0; }
+  .istqb-modal__content { padding: clamp(36px, 6vw, 72px); }
+  .istqb-modal__content h2,
+  .istqb-registration-form h2 { padding-right: 46px; font-size: clamp(1.8rem, 4vw, 3.4rem); }
+  .istqb-modal__content h3 { margin: 1.5rem 0 .8rem; font-size: 1.35rem; }
+  .istqb-modal__content p { margin-top: 1rem; color: var(--color-muted); }
+  .istqb-modal__content ul { display: grid; gap: .8rem; margin: 1rem 0 2rem; color: var(--color-muted); }
+  .istqb-modal__content li { position: relative; padding-left: 1.2rem; }
+  .istqb-modal__content li::before { content: '—'; position: absolute; left: 0; color: var(--color-accent); }
+  .istqb-modal--comparison { width: min(1120px, calc(100vw - 32px)); padding: clamp(36px, 5vw, 64px); }
+  .istqb-modal--comparison > img { width: 100%; max-height: 76vh; object-fit: contain; }
+  .istqb-modal--form { width: min(680px, calc(100vw - 32px)); }
+  .istqb-registration-form { display: grid; gap: 1rem; padding: clamp(36px, 6vw, 64px); }
+  .istqb-registration-form label { display: grid; gap: .45rem; color: var(--color-muted); font-size: .88rem; }
+  .istqb-registration-form input[type='text'],
+  .istqb-registration-form input[type='email'] { width: 100%; min-height: 52px; padding: .8rem 1rem; border: 1px solid rgba(255,255,255,.22); background: #fff; color: #101010; }
+  .istqb-registration-form__consent { grid-template-columns: auto 1fr; align-items: start; }
+  .istqb-registration-form__consent input { margin-top: .25rem; accent-color: var(--color-accent); }
+  .istqb-registration-form__consent a { text-decoration: underline; }
+  .istqb-registration-form__inquiry { color: #fff; font-size: .9rem; font-weight: 600; }
+  .istqb-registration-form .lead-form__trap { position: absolute; left: -9999px; }
+  .istqb-registration-form .lead-form__status { color: #ff9b96; }
+
+  @media (max-width: 980px) {
+    .istqb-hero__inner { grid-template-columns: 1fr; padding-top: 130px; }
+    .istqb-hero__art { inset: 0 -18% 0 40%; opacity: .36; }
+    .istqb-hero__copy { max-width: 760px; }
+    .istqb-split, .istqb-split--balanced { grid-template-columns: 1fr; }
+    .istqb-intro__art { min-height: 360px; }
+    .istqb-certificate__media { order: -1; }
+    .istqb-career__grid, .istqb-benefits__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .istqb-webinar__media { min-height: 430px; }
+    .istqb-webinar__media img { min-height: 430px; }
+    .istqb-success__grid article { grid-template-columns: 1fr; }
+    .istqb-success__grid article:nth-child(even) .istqb-success__media { order: 0; }
+  }
+
+  @media (max-width: 700px) {
+    .istqb-section { padding-block: 64px; }
+    .istqb-shell { padding-inline: 18px; }
+    .istqb-hero { min-height: 720px; }
+    .istqb-hero__inner { padding-top: 106px; padding-bottom: 58px; }
+    .istqb-hero__art { inset: 0 -62% 0 12%; opacity: .26; }
+    .istqb-hero__cone { width: 720px; }
+    .istqb-hero h1 { font-size: clamp(3rem, 16vw, 5.4rem); }
+    .istqb-intro__art { min-height: 300px; }
+    .istqb-certificate__media { min-height: 330px; }
+    .istqb-certificate__photo { height: 300px; }
+    .istqb-certificate__document { width: 120px; left: 12px; }
+    .istqb-comparison, .istqb-career__grid, .istqb-benefits__grid, .istqb-participation__steps, .istqb-testimonials__grid, .istqb-trainers__grid { grid-template-columns: 1fr; }
+    .istqb-career__grid article { min-height: 0; }
+    .istqb-benefits__grid { gap: 30px; }
+    .istqb-experience__media > img:first-child { min-height: 360px; }
+    .istqb-hurdles__list article { grid-template-columns: 48px 1fr; gap: 10px; }
+    .istqb-faq__intro { align-items: flex-start; flex-direction: column; }
+  }
+
+  @media (max-width: 430px) {
+    .istqb-section h2 { font-size: 2rem; }
+    .istqb-hero__copy p { font-size: .96rem; }
+    .istqb-button { width: 100%; }
+    .istqb-benefits__grid article { grid-template-columns: 36px 1fr; gap: 12px; }
+    .istqb-benefits__grid img { width: 34px; height: 34px; }
+    .istqb-hurdles__list article { grid-template-columns: 1fr; }
+    .istqb-webinar__media, .istqb-webinar__media img { min-height: 340px; }
+    .istqb-success__media { min-height: 260px; }
+    .istqb-modal { width: calc(100vw - 16px); }
+    .istqb-modal__content,
+    .istqb-registration-form { padding: 52px 20px 28px; }
+    .istqb-modal--comparison { padding: 52px 10px 20px; }
+  }
+</style>
+
+<script>
+  const modalLinks = document.querySelectorAll<HTMLAnchorElement>('[data-open-modal]');
+  const modalDialogs = document.querySelectorAll<HTMLDialogElement>('.istqb-modal');
+
+  const clearModalState = (dialog: HTMLDialogElement) => {
+    const frame = dialog.querySelector<HTMLIFrameElement>('[data-consent-src]');
+    if (frame) frame.removeAttribute('src');
+    if (window.location.hash.startsWith('#popup:') || window.location.hash === '#zeropopup') {
+      history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+    }
+  };
+
+  const openModal = (dialog: HTMLDialogElement, hash?: string) => {
+    if (!dialog.open) dialog.showModal();
+    if (hash) history.replaceState(null, '', hash);
+  };
+
+  modalLinks.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      const dialog = document.getElementById(link.dataset.openModal || '') as HTMLDialogElement | null;
+      if (!dialog) return;
+      event.preventDefault();
+      openModal(dialog, link.getAttribute('href') || undefined);
+    });
+  });
+
+  modalDialogs.forEach((dialog) => {
+    dialog.querySelectorAll<HTMLButtonElement>('[data-close-modal]').forEach((button) => {
+      button.addEventListener('click', () => dialog.close());
+    });
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+    dialog.addEventListener('close', () => clearModalState(dialog));
+  });
+
+  document.querySelectorAll<HTMLButtonElement>('[data-youtube-id]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const consent = (window as Window & { wamoconConsent?: { grantExternalMedia?: () => void } }).wamoconConsent;
+      consent?.grantExternalMedia?.();
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube-nocookie.com/embed/${button.dataset.youtubeId}?autoplay=1&rel=0`;
+      iframe.dataset.consentSrc = iframe.src;
+      iframe.title = button.getAttribute('aria-label') || 'YouTube video';
+      iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
+      iframe.setAttribute('allowfullscreen', '');
+      button.replaceWith(iframe);
+    });
+  });
+
+  const hashTargets: Record<string, string> = {
+    '#zeropopup': 'istqb-video-modal',
+    '#popup:Gutscheinbeschreibung': 'istqb-voucher-modal',
+    '#popup:Vergleich-mit-anderen-IT-Zertifizierungen': 'istqb-comparison-modal',
+    '#popup:Webinar-Anmeldung': 'istqb-webinar-modal',
+    '#popup:Webinar-Anmeldung-en': 'istqb-webinar-modal',
+  };
+  const initialDialog = document.getElementById(hashTargets[window.location.hash] || '') as HTMLDialogElement | null;
+  if (initialDialog) openModal(initialDialog);
+</script>

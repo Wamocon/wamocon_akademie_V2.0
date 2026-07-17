@@ -360,11 +360,11 @@ export const home: HomeContent = {
     heading: { de: 'IT-Bildungszentrum', en: 'IT education center' },
     paragraphs: {
       de: [
-        'Softwaretester sind gefragter denn je, Tendenz steigend. Als offizieller Partner des International Software Testing Qualifications Board (ISTQB®) bietet die WAMOCON Akademie hochwertige Aus- und Weiterbildung im Softwaretesten.',
-        'Softwaretester sind gefragter denn je, Tendenz steigend. Als offizieller Partner des International Software Testing Qualifications Board (ISTQB®) bietet die WAMOCON Akademie hochwertige Aus- und Weiterbildung im Softwaretesten.',
+        'Die WAMOCON Academy GmbH ist bei ISTQB® als akkreditierter Trainingsanbieter für deutschsprachige CTFL 4.0- und Agile Tester 1.0-Trainingsmaterialien gelistet.',
+        'Unsere praxisnahen Weiterbildungen vermitteln Kenntnisse im Softwaretesten und bereiten auf die jeweilige Zertifizierungsprüfung vor.',
       ],
       en: [
-        'Software testers are more in demand than ever, and the trend is rising. As an official partner of the International Software Testing Qualifications Board (ISTQB®), the WAMOCON Academy offers high-quality training and further education in software testing.',
+        'WAMOCON Academy GmbH is listed by ISTQB® as an accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 training materials.',
         'Participants receive all the resources and knowledge they need for successful certification and an IT career.',
       ],
     },

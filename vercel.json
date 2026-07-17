@@ -1,8 +1,57 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "astro",
-  "buildCommand": "astro build",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "cleanUrls": true,
-  "trailingSlash": true
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/page53378373.html", "destination": "/", "permanent": true },
+    { "source": "/page53937561.html", "destination": "/datenschutz", "permanent": true },
+    { "source": "/page54047195.html", "destination": "/bildungsprogramme-fr-softwaretester", "permanent": true },
+    { "source": "/page54152991.html", "destination": "/ber-die-akademie", "permanent": true },
+    { "source": "/page54160721.html", "destination": "/istqb-zertifizierung", "permanent": true },
+    { "source": "/page54260389.html", "destination": "/ditele-app", "permanent": true },
+    { "source": "/page54001083.html", "destination": "/bewertungen", "permanent": true },
+    { "source": "/page54263521.html", "destination": "/360-booster-system", "permanent": true },
+    { "source": "/page54299165.html", "destination": "/kontakt", "permanent": true },
+    { "source": "/page54299421.html", "destination": "/impressum", "permanent": true },
+    { "source": "/page55490499.html", "destination": "/en", "permanent": true },
+    { "source": "/page55494043.html", "destination": "/en/educational-programs", "permanent": true },
+    { "source": "/page55498733.html", "destination": "/en/about-us", "permanent": true },
+    { "source": "/page55500201.html", "destination": "/en/istqb-certification", "permanent": true },
+    { "source": "/page55502413.html", "destination": "/en/ditele-app", "permanent": true },
+    { "source": "/page55503825.html", "destination": "/en/reviews", "permanent": true },
+    { "source": "/page55504631.html", "destination": "/en/360-booster-system", "permanent": true },
+    { "source": "/page55505933.html", "destination": "/en/contacts", "permanent": true },
+    { "source": "/page55508025.html", "destination": "/privacy-policy", "permanent": true },
+    { "source": "/page55508603.html", "destination": "/imprint", "permanent": true },
+    { "source": "/Impressum", "destination": "/impressum", "permanent": true }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
+        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin-allow-popups" },
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com https://img.youtube.com; media-src 'self'; font-src 'self' data:; connect-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com https://www.youtube-nocookie.com https://www.google.com; upgrade-insecure-requests" }
+      ]
+    },
+    {
+      "source": "/(css|js|images|media)/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    }
+  ]
 }

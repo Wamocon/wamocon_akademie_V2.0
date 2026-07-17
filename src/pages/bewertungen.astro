@@ -1,12 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import AcademyPage from '../components/sections/AcademyPage.astro';
-import { pages } from '../data/academy';
+import ReviewsPage from '../components/sections/ReviewsPage.astro';
 
 const lang = 'de';
-const page = pages.reviews[lang];
 ---
 
-<BaseLayout title={page.title} description={page.lead} lang={lang} image={pages.reviews.image}>
-  <AcademyPage lang={lang} pageKey="reviews" />
+<BaseLayout
+  title="Bewertungen"
+  description="Unsere Teilnehmer berichten über ihre Erlebnisse und den Mehrwert, den sie von uns bezogen haben."
+  lang={lang}
+>
+  <ReviewsPage lang={lang} />
 </BaseLayout>

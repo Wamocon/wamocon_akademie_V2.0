@@ -1,0 +1,227 @@
+---
+import type { Lang } from '../../i18n/config';
+import LeadForm from './LeadForm.astro';
+import ReviewModal from './ReviewModal.astro';
+
+interface Props { lang: Lang; }
+
+const { lang } = Astro.props;
+const copy = lang === 'de'
+  ? {
+      title: 'Was sagen unsere Teilnehmer?',
+      intro: 'Unsere Teilnehmer berichten über ihre Erlebnisse und den Mehrwert, den sie von uns bezogen haben.',
+      sendEvaluation: 'Senden Sie Ihre Bewertung',
+      storiesLabel: 'Erfolgsgeschichten',
+      testimonialsLabel: 'Teilnehmerstimmen',
+      challenge: 'Herausforderung', goal: 'Ziel', result: 'Ergebnis', onYouTube: 'auf YouTube ansehen', interview: 'im Interview',
+      stories: [
+        {
+          name: 'Leon Christen', title: 'Leon Christen und sein Hindernis', videoId: '1u100i0b9LM',
+          videoTitle: 'Leon und seine Erfahrung über die WMA und seine IT-Karriere',
+          challenge: 'Leon konnte trotz unzähliger Bewerbungen keinen Arbeitsplatz finden. Unternehmen lehnten ihn ab, obwohl er einen hoch angesehenen Studiengang absolviert hatte.',
+          goal: 'Das Ziel war ganz klar, Leon wollte in seiner IT-Karriere durchstarten.',
+          result: ['Qualifizierter ISTQB® Certified Tester', 'Besseres Verständnis in seinem Projekt', 'Mehr Verantwortung im Unternehmen erhalten'],
+        },
+        {
+          name: 'Christian-Oliver Friedrich', title: 'Christian-Oliver Friedrich und sein Hindernis', videoId: '-M1JD6mZVvY',
+          videoTitle: 'Wie eine Entscheidung Christians ganzes Leben veränderte',
+          challenge: 'Christian-Oliver wollte Praxiserfahrung über echte IT-Projekte sammeln. Jedoch ohne Praxiserfahrung und ISTQB® Tester Zertifikat ist es ihm nicht möglich.',
+          goal: 'Sein Ziel ist es, als Testautomatisierer IT-Projekte durchführen zu können. Dafür muss Christian-Oliver jedoch zuerst das ISTQB® Tester Zertifikat erfolgreich abschließen.',
+          result: ['Mit dem ersten Versuch das ISTQB® Zertifikat bestanden', 'Sein Einstieg ins IT-Projekt als Tester sicher gefunden', 'Sich weiterentwickelt mit ISTQB® Test Automation Engineer'],
+        },
+      ],
+      graduates: [
+        { name: 'Natalie', role: 'Teilnehmerin WAMOCON Academy', videoId: 'Y530fsyTCe4' },
+        { name: 'Artur', role: 'Teilnehmer WAMOCON Academy', videoId: 'GIzxhk4tzmM' },
+        { name: 'Alexander', role: 'Teilnehmer WAMOCON Academy', videoId: 'Nun-eNkeeY0' },
+        { name: 'Olga', role: 'Teilnehmerin WAMOCON Academy', videoId: 'YI6Jf9-T3_c' },
+        { name: 'Jonathan', role: 'Teilnehmer WAMOCON Academy', videoId: 'C6jFQwt6E0o' },
+      ],
+      adviceTitle: 'Beratung erhalten',
+      adviceText: 'Rufen Sie uns an +49 6196 5838311, oder hinterlassen Sie unten Ihre Kontaktdaten, damit wir Sie erreichen und Ihre Fragen beantworten können.',
+      name: 'Ihr Name', phone: 'Telefon', email: 'E-Mail', submit: 'Anfrage senden',
+      consentPre: 'Hiermit bestätige ich, dass ich die ', consentLink: 'Datenschutzerklärung',
+      consentPost: ' gelesen habe und damit einverstanden bin, dass die WAMOCON Academy GmbH meine Daten, einschließlich personenbezogener Daten, speichern und verarbeiten darf.',
+    }
+  : {
+      title: 'What do our participants say?',
+      intro: 'Our participants report on their experiences and the added value they have gained from us.',
+      sendEvaluation: 'Send your evaluation',
+      storiesLabel: 'Success stories',
+      testimonialsLabel: 'Participant testimonials',
+      challenge: 'The challenge', goal: 'Goal', result: 'Result', onYouTube: 'watch on YouTube', interview: 'in an interview',
+      stories: [
+        {
+          name: 'Leon Christen', title: 'Leon Christen and his obstacle', videoId: '1u100i0b9LM',
+          videoTitle: 'Leon and his experience with WMA and his IT career',
+          challenge: 'Despite countless applications, Leon was unable to find a job. Companies turned him down even though he had completed a highly regarded degree course.',
+          goal: 'The goal was clear: Leon wanted to get his IT career off to a flying start.',
+          result: ['Qualified ISTQB® Certified Tester', 'Better understanding of his project', 'Gained more responsibility within the company'],
+        },
+        {
+          name: 'Christian-Oliver Friedrich', title: 'Christian-Oliver Friedrich and his obstacle', videoId: '-M1JD6mZVvY',
+          videoTitle: "How one decision changed Christian's whole life",
+          challenge: 'Christian-Oliver wanted to gain practical experience in real IT projects. However, without practical experience and an ISTQB® tester certificate, this is not possible for him.',
+          goal: 'His goal is to be able to carry out IT projects as a test automation engineer. However, Christian-Oliver must first successfully complete the ISTQB® Tester certificate.',
+          result: ['Passed the ISTQB® certificate on his first attempt', 'Found his way into IT projects as a tester', 'Developed further with ISTQB® Test Automation Engineer'],
+        },
+      ],
+      graduates: [
+        { name: 'Natalie', role: 'Participant WAMOCON Academy', videoId: 'Y530fsyTCe4' },
+        { name: 'Artur', role: 'Participant WAMOCON Academy', videoId: 'GIzxhk4tzmM' },
+        { name: 'Alexander', role: 'Participant WAMOCON Academy', videoId: 'Nun-eNkeeY0' },
+        { name: 'Olga', role: 'Participant WAMOCON Academy', videoId: 'YI6Jf9-T3_c' },
+        { name: 'Jonathan', role: 'Participant WAMOCON Academy', videoId: 'C6jFQwt6E0o' },
+      ],
+      adviceTitle: 'Get advice',
+      adviceText: 'Give us a call +49 6196 5838311, or leave your contact details below so that we can reach you and answer your questions.',
+      name: 'Name', phone: 'Phone', email: 'E-Mail', submit: 'Send request',
+      consentPre: 'I hereby confirm that I have read the ', consentLink: 'privacy policy',
+      consentPost: ' and agree that WAMOCON Academy GmbH may store and process my data, including personal data.',
+    };
+
+const stories = copy.stories;
+const graduates = copy.graduates;
+
+const thumbnail = (id: string) => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+const watch = (id: string) => `https://www.youtube.com/watch?v=${id}`;
+---
+
+<div class="reviews-page">
+  <section class="reviews-hero">
+    <div class="reviews-hero__inner container">
+      <h1>{copy.title}</h1>
+      <p>{copy.intro}</p>
+      <button class="reviews-button" type="button" data-review-open>{copy.sendEvaluation}</button>
+    </div>
+    <img class="reviews-hero__shape reviews-hero__shape--small" src="/images/academy/tild3730-6132-4863-b462-623032303533__group_11.png" alt="" />
+    <img class="reviews-hero__shape reviews-hero__shape--large" src="/images/academy/tild3730-6132-4863-b462-623032303533__group_11.png" alt="" />
+  </section>
+
+  <section class="stories" aria-label={copy.storiesLabel}>
+    <div class="container stories__list">
+      {stories.map((story) => (
+        <article class="story">
+          <div class="story__copy">
+            <h2>{story.title}</h2>
+            <dl>
+              <div>
+                <dt>{copy.challenge}</dt>
+                <dd>{story.challenge}</dd>
+              </div>
+              <div>
+                <dt>{copy.goal}</dt>
+                <dd>{story.goal}</dd>
+              </div>
+              <div>
+                <dt>{copy.result}</dt>
+                <dd>{story.result.map((line) => <>{line}<br /></>)}</dd>
+              </div>
+            </dl>
+          </div>
+          <a class="video-preview video-preview--story" href={watch(story.videoId)} target="_blank" rel="noopener noreferrer" aria-label={`${story.videoTitle} ${copy.onYouTube}`}>
+            <img data-consent-src={thumbnail(story.videoId)} alt={`${story.name} ${copy.interview}`} width="480" height="270" loading="lazy" />
+            <span class="video-preview__headline">{story.videoTitle}</span>
+            <span class="video-preview__brand">WAMOCON ACADEMY</span>
+            <span class="video-preview__play" aria-hidden="true">
+              <svg viewBox="0 0 68 48"><path d="M66.5 7.7C65.7 4.8 64 2.3 61.1 1.5 55.8.1 34 0 34 0S12.2.1 6.9 1.5C4 2.3 2.3 4.8 1.5 7.7.1 13.1 0 24 0 24s.1 11 1.5 16.3c.8 2.9 2.5 5.4 5.4 6.2C12.2 47.9 34 48 34 48s21.8-.1 27.1-1.5c2.9-.8 4.6-3.3 5.4-6.2C67.9 35 68 24 68 24s-.1-11-1.5-16.3Z"/><path class="video-preview__triangle" d="m27 14 18 10-18 10Z"/></svg>
+            </span>
+          </a>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="graduates" aria-label={copy.testimonialsLabel}>
+    <div class="container graduates__grid">
+      {graduates.map((graduate) => (
+        <article class="graduate">
+          <a class="video-preview video-preview--graduate" href={watch(graduate.videoId)} target="_blank" rel="noopener noreferrer" aria-label={`${graduate.name} ${copy.onYouTube}`}>
+            <img data-consent-src={thumbnail(graduate.videoId)} alt={`${graduate.name}, ${graduate.role}`} width="480" height="270" loading="lazy" />
+            <span class="video-preview__play" aria-hidden="true">
+              <svg viewBox="0 0 68 48"><path d="M66.5 7.7C65.7 4.8 64 2.3 61.1 1.5 55.8.1 34 0 34 0S12.2.1 6.9 1.5C4 2.3 2.3 4.8 1.5 7.7.1 13.1 0 24 0 24s.1 11 1.5 16.3c.8 2.9 2.5 5.4 5.4 6.2C12.2 47.9 34 48 34 48s21.8-.1 27.1-1.5c2.9-.8 4.6-3.3 5.4-6.2C67.9 35 68 24 68 24s-.1-11-1.5-16.3Z"/><path class="video-preview__triangle" d="m27 14 18 10-18 10Z"/></svg>
+            </span>
+            <span class="graduate__caption"><strong>{graduate.name}</strong><small>{graduate.role}</small></span>
+          </a>
+          <h2>{graduate.name}</h2>
+          <p>{graduate.role}</p>
+        </article>
+      ))}
+    </div>
+    <div class="container graduates__action">
+      <button class="reviews-button" type="button" data-review-open>{copy.sendEvaluation}</button>
+    </div>
+  </section>
+
+  <LeadForm lang={lang} type="reviews" compact complianceMode />
+
+  <ReviewModal lang={lang} />
+</div>
+
+<style>
+  .reviews-page { background: #101010; color: #fff; }
+  .reviews-hero { position: relative; overflow: hidden; padding-top: 180px; }
+  .reviews-hero__inner { position: relative; z-index: 1; min-height: 360px; }
+  .reviews-hero h1 { max-width: 790px; font-size: clamp(2rem, 4vw, 2.5rem); line-height: 1.2; }
+  .reviews-hero p { max-width: 600px; margin-top: 1.4rem; font-size: 1rem; line-height: 1.35; }
+  .reviews-button { min-height: 60px; margin-top: 1.5rem; padding: 0 1.45rem; border-radius: 5px; background: var(--color-accent); color: #fff; font-size: 0.8rem; font-weight: 600; transition: background 180ms, transform 180ms; }
+  .reviews-button:hover { background: #df1911; transform: translateY(-2px); }
+  .reviews-hero__shape { position: absolute; height: auto; pointer-events: none; filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.45)); }
+  .reviews-hero__shape--small { top: 98px; right: -18px; width: 170px; transform: rotate(250deg); }
+  .reviews-hero__shape--large { top: 210px; right: 60px; width: 250px; transform: rotate(151deg); }
+
+  .stories { padding-bottom: 2.8rem; }
+  .stories__list { display: grid; gap: 2rem; }
+  .story { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+  .story h2 { margin-bottom: 1.5rem; font-size: 1.15rem; line-height: 1.3; }
+  .story dl { display: grid; gap: 1.2rem; font-size: 0.89rem; line-height: 1.35; }
+  .story dt { color: var(--color-accent); font-weight: 400; }
+  .story dd { margin: 0; }
+
+  .video-preview { position: relative; display: block; overflow: hidden; background: #000; }
+  .video-preview img { width: 100%; height: 100%; object-fit: cover; transition: transform 400ms var(--ease-out), opacity 200ms; }
+  .video-preview img:not([src]) { opacity: 0; }
+  .video-preview:hover img { transform: scale(1.025); opacity: 0.88; }
+  .video-preview--story { aspect-ratio: 16 / 9; }
+  .video-preview--graduate { aspect-ratio: 1.62 / 1; background: #191919; }
+  .video-preview__headline { position: absolute; top: 0.8rem; left: 5.8rem; right: 1rem; z-index: 1; overflow: hidden; color: #fff; font-size: clamp(0.8rem, 1.65vw, 1.25rem); font-weight: 700; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; text-shadow: 0 2px 8px #000; }
+  .video-preview__brand { position: absolute; top: 2.45rem; left: 5.8rem; z-index: 1; font-size: 0.72rem; font-weight: 600; text-shadow: 0 2px 8px #000; }
+  .video-preview__play { position: absolute; top: 50%; left: 50%; width: 68px; color: #f03; transform: translate(-50%, -50%); transition: transform 180ms; }
+  .video-preview:hover .video-preview__play { transform: translate(-50%, -50%) scale(1.08); }
+  .video-preview__play svg { width: 100%; fill: currentColor; }
+  .video-preview__play .video-preview__triangle { fill: #fff; }
+
+  .graduates { padding: 1.5rem 0 clamp(6rem, 12vw, 10rem); }
+  .graduates__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3rem clamp(1.5rem, 3.2vw, 3rem); }
+  .graduate__caption { position: absolute; inset: auto 0 0; display: grid; min-height: 58px; align-content: center; padding: 0.5rem 1.25rem; background: #fff; color: #5b1717; text-transform: uppercase; }
+  .graduate__caption strong { font-size: 1rem; line-height: 1; }
+  .graduate__caption small { color: #8a8a8a; font-size: 0.62rem; font-weight: 300; text-transform: none; }
+  .graduate h2 { margin-top: 1.25rem; font-size: 1rem; }
+  .graduate p { margin-top: 0.5rem; font-size: 0.9rem; }
+  .graduates__action { margin-top: 2.4rem; }
+
+  @media (max-width: 820px) {
+    .reviews-hero { padding-top: 118px; }
+    .reviews-hero__inner { min-height: 300px; }
+    .reviews-hero__shape { display: none; }
+    .story { grid-template-columns: 1fr; gap: 1.5rem; }
+    .graduates__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 520px) {
+    .reviews-hero__inner { min-height: 328px; }
+    .reviews-hero h1 { max-width: 340px; font-size: 1.9rem; }
+    .reviews-hero p { margin-top: 0.8rem; font-size: 1rem; }
+    .reviews-button { min-height: 55px; margin-top: 1rem; padding-inline: 1.5rem; }
+    .stories__list { gap: 4rem; }
+    .story h2 { margin-bottom: 1.4rem; font-size: 1rem; }
+    .story dl { font-size: 0.88rem; line-height: 1.35; }
+    .video-preview__headline { left: 4.25rem; font-size: 0.82rem; }
+    .video-preview__brand { top: 2.2rem; left: 4.25rem; font-size: 0.62rem; }
+    .graduates { padding-top: 4rem; }
+    .graduates__grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .graduate h2 { margin-top: 0.85rem; }
+    .graduate p { margin-top: 0.35rem; }
+    .graduates__action { margin-top: 2rem; }
+  }
+</style>

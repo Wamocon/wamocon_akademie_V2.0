@@ -1,12 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import AcademyPage from '../components/sections/AcademyPage.astro';
-import { pages } from '../data/academy';
+import DitelePage from '../components/sections/DitelePage.astro';
 
 const lang = 'de';
-const page = pages.ditele[lang];
+const title = 'DiTeLe App';
+const description = 'Die WAMOCON Academy bietet mit ihrer digitalen Lernplattform DiTeLe eine innovative Möglichkeit, umfassende Kurse bequem und effektiv zu absolvieren.';
 ---
 
-<BaseLayout title={page.title} description={page.lead} lang={lang} image={pages.ditele.image}>
-  <AcademyPage lang={lang} pageKey="ditele" />
+<BaseLayout title={title} description={description} lang={lang} image="/images/academy/tild6130-3637-4836-a562-333834303031__jn.png">
+  <DitelePage lang={lang} />
 </BaseLayout>

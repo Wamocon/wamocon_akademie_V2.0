@@ -4,6 +4,7 @@ import type { Lang } from '../../i18n/config';
 import Button from '../ui/Button.astro';
 import CoursesGrid from './CoursesGrid.astro';
 import LeadForm from './LeadForm.astro';
+import OfficeTour from '../ui/OfficeTour.astro';
 
 interface Props {
   lang: Lang;
@@ -17,7 +18,9 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
 
 <section class="academy-hero">
   <div class="academy-hero__media" aria-hidden="true">
-    <img src={assets.hero} alt="" width="1680" height="945" loading="eager" fetchpriority="high" />
+    <video autoplay muted loop playsinline preload="metadata" poster={assets.hero}>
+      <source src="/media/hero-background.mp4" type="video/mp4" />
+    </video>
   </div>
   <div class="academy-hero__overlay"></div>
   <div class="academy-hero__inner container">
@@ -32,40 +35,44 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
   </div>
 </section>
 
-<section class="section intro">
-  <div class="container intro__grid">
-    <div class="intro__copy" data-reveal>
-      <span class="eyebrow">WAMOCON Academy</span>
-      <h2>{h.intro.heading[lang]}</h2>
+<section class="experience">
+  <div class="container experience__top">
+    <div class="experience__copy" data-reveal>
+      <h2>
+        {lang === 'de' ? <>Mehr als <span>25 Jahre praktische</span><br />Erfahrung unserer Trainer</> : <>More than <span>25 years of practical</span><br />experience of our trainers</>}
+      </h2>
       {h.intro.paragraphs[lang].map((p) => <p>{p}</p>)}
     </div>
-    <div class="intro__side" data-reveal>
-      <img src={assets.trainerGroup} alt="WAMOCON Academy Trainer" width="1536" height="864" loading="lazy" />
-      <div class="mission">
-        <span>{lang === 'de' ? 'Unsere Mission' : 'Our mission'}</span>
-        <p>{h.intro.mission[lang]}</p>
+    <aside class="mission" data-reveal>
+      <strong>{lang === 'de' ? 'UNSERE MISSION' : 'OUR MISSION'}</strong>
+      <p>{h.intro.mission[lang]}</p>
+      <img src={assets.missionRing} alt="" width="600" height="600" loading="lazy" aria-hidden="true" />
+    </aside>
+  </div>
+
+  <div class="container success-story">
+    <div class="success-story__video external-media" data-external-media data-reveal>
+      <iframe data-consent-src="https://www.youtube-nocookie.com/embed/Q_0mtjo8GAU?rel=0" title="WAMOCON Academy Karriere-Booster IT" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen hidden></iframe>
+      <div class="external-media__notice" data-external-media-notice>
+        <p>{lang === 'de' ? 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.' : 'This video loads from YouTube only after your consent.'}</p>
+        <button type="button" data-external-media-load>{lang === 'de' ? 'Video laden' : 'Load video'}</button>
       </div>
     </div>
-  </div>
-</section>
-
-<section class="section surface-light success">
-  <div class="container">
-    <div class="success__head" data-reveal>
-      <span class="eyebrow">{lang === 'de' ? 'Karriere' : 'Career'}</span>
-      <h2>{h.success.heading[lang]}</h2>
+    <div class="success-story__copy" data-reveal>
+      <h2>
+        {lang === 'de' ? <><span>Starten Sie Ihre<br />Erfolgsgeschichte mit</span><br />der WAMOCON Academy</> : <><span>Start your success story with</span><br />the WAMOCON Academy</>}
+      </h2>
       <p>{h.success.text[lang]}</p>
+      <img src={assets.accentCurve} alt="" width="320" height="320" loading="lazy" aria-hidden="true" />
     </div>
-    <div class="success__compare">
-      <article class="compare-card compare-card--muted" data-reveal>
-        <h3>{h.success.without.title[lang]}</h3>
-        <ul>{h.success.without.items[lang].map((item) => <li>{item}</li>)}</ul>
-      </article>
-      <article class="compare-card" data-reveal>
-        <h3>{h.success.with.title[lang]}</h3>
-        <ul>{h.success.with.items[lang].map((item) => <li>{item}</li>)}</ul>
-      </article>
-    </div>
+    <article class="compare-panel compare-panel--without" data-reveal>
+      <h3>{h.success.without.title[lang]}</h3>
+      <ul>{h.success.without.items[lang].map((item) => <li>{item}</li>)}</ul>
+    </article>
+    <article class="compare-panel" data-reveal>
+      <h3>{h.success.with.title[lang]}</h3>
+      <ul>{h.success.with.items[lang].map((item) => <li>{item}</li>)}</ul>
+    </article>
   </div>
 </section>
 
@@ -75,7 +82,7 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
       <span class="eyebrow">{lang === 'de' ? 'Hauptkurse' : 'Main courses'}</span>
       <h2>{lang === 'de' ? 'Hauptkurse und Bildungsprogramme' : 'Main courses and educational programs'}</h2>
     </div>
-    <CoursesGrid lang={lang} />
+    <CoursesGrid lang={lang} showAllDateGroups />
     <div class="courses-home__cta" data-reveal>
       <Button href={coursesHref} variant="outline">{lang === 'de' ? 'Mehr Details' : 'More details'}</Button>
     </div>
@@ -100,8 +107,10 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
 <section class="section steps">
   <div class="container">
     <div class="section-head" data-reveal>
-      <span class="eyebrow">{lang === 'de' ? 'Optimal vorbereitet' : 'Optimally prepared'}</span>
-      <h2>{lang === 'de' ? 'Von der Bewerbung bis zum IT-Projekt: 6 Schritte zum gefragten Softwaretester' : 'From the application to the IT project: 6 steps to becoming a sought-after software tester'}</h2>
+      <h2>
+        <span>{lang === 'de' ? 'Von der Bewerbung bis zum IT-Projekt:' : 'From the application to the IT project:'}</span>
+        {lang === 'de' ? '6 Schritte zum gefragten Softwaretester' : '6 steps to becoming a sought-after software tester'}
+      </h2>
     </div>
     <ol class="steps__list">
       {steps[lang].map((step, index) => <li data-reveal><span>{String(index + 1).padStart(2, '0')}</span><p>{step}</p></li>)}
@@ -111,15 +120,27 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
         ? 'Entdecken Sie jetzt, wie diese sechs entscheidenden Schritte Ihre Karriere verändern können. Melden Sie sich noch heute an!'
         : 'Discover now how these six decisive steps can change your career. Sign up today!'}
     </p>
+    <Button href={istqbHref} class="steps__cta">
+      {lang === 'de' ? 'Mehr über ISTQB®' : 'More about ISTQB®'}
+    </Button>
   </div>
 </section>
 
-<LeadForm lang={lang} type="lead" />
+<LeadForm
+  lang={lang}
+  type="lead"
+  title={lang === 'en' ? 'Get advice' : undefined}
+  intro={lang === 'de'
+    ? 'Rufen Sie uns an +49 6196 5838311, oder senden Sie eine unverbindliche Anfrage an die WAMOCON Academy GmbH, damit wir Ihre Fragen beantworten können.'
+    : 'Give us a call +49 6196 5838311, or send a non-binding inquiry to WAMOCON Academy GmbH so that we can answer your questions.'}
+  complianceMode
+/>
+<OfficeTour lang={lang} />
 
 <style>
   .academy-hero {
     position: relative;
-    min-height: min(820px, calc(100vh - 86px));
+    min-height: min(904px, 100svh);
     display: grid;
     align-items: end;
     overflow: hidden;
@@ -131,7 +152,8 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
     inset: 0;
   }
 
-  .academy-hero__media img {
+  .academy-hero__media img,
+  .academy-hero__media video {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -139,52 +161,59 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
 
   .academy-hero__overlay {
     background:
-      linear-gradient(90deg, rgba(7, 10, 18, 0.88), rgba(7, 10, 18, 0.45) 52%, rgba(7, 10, 18, 0.18)),
-      linear-gradient(0deg, rgba(15, 17, 21, 1), rgba(15, 17, 21, 0) 42%);
+      linear-gradient(90deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1)),
+      linear-gradient(0deg, #000 0%, rgba(0, 0, 0, 0.62) 35%, rgba(0, 0, 0, 0.18) 100%);
   }
 
   .academy-hero__inner {
     position: relative;
     z-index: 1;
-    display: grid;
-    gap: clamp(2rem, 5vw, 4rem);
-    padding-block: clamp(5rem, 12vw, 8rem) clamp(3rem, 7vw, 5rem);
+    display: flex;
+    min-height: min(904px, 100svh);
+    max-width: none;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-block: 220px 186px;
   }
 
   .academy-hero__copy {
     min-width: 0;
     width: 100%;
-    max-width: min(800px, 100%);
+    max-width: 100%;
   }
 
   .academy-hero__copy h1 {
-    max-width: 9ch;
-    margin-bottom: 1.25rem;
+    max-width: none;
+    margin-bottom: 10px;
+    font-size: clamp(64px, 5.84vw, 84px);
+    line-height: 1;
+    white-space: nowrap;
   }
 
   .academy-hero__copy p {
-    max-width: min(64ch, 100%);
-    margin-bottom: 1.6rem;
-    color: var(--color-muted);
-    font-size: clamp(1.05rem, 2vw, 1.35rem);
+    max-width: 900px;
+    margin-bottom: 28px;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.55;
     overflow-wrap: break-word;
   }
 
   .academy-hero__stats {
-    display: grid;
+    position: absolute;
+    left: 300px;
+    bottom: 182px;
+    display: flex;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     min-width: 0;
     width: 100%;
-    max-width: 760px;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-md);
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(12px);
+    max-width: 620px;
   }
 
   .academy-hero__stats li {
-    padding: 1.15rem;
-    border-right: 1px solid var(--color-line);
+    width: 168px;
+    padding: 0;
   }
 
   .academy-hero__stats li:last-child {
@@ -194,15 +223,23 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
   .academy-hero__stats strong {
     display: block;
     color: #fff;
-    font-size: clamp(2rem, 5vw, 3.8rem);
+    font-size: 24px;
     line-height: 1;
   }
 
   .academy-hero__stats span {
-    color: var(--color-muted);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 300;
+    line-height: 1.4;
+    white-space: nowrap;
   }
 
-  .intro__grid,
+  .academy-hero__copy :global(.btn) {
+    width: 240px;
+    min-height: 60px;
+  }
+
   .istqb__grid {
     display: grid;
     grid-template-columns: 1fr 0.9fr;
@@ -210,96 +247,79 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
     align-items: center;
   }
 
-  .intro__copy h2,
   .section-head h2,
   .istqb__copy h2 {
     margin: 0.8rem 0 1.2rem;
   }
 
-  .intro__copy p,
-  .success__head p,
   .istqb__copy p {
     margin-bottom: 1rem;
     color: var(--color-muted);
   }
 
-  .intro__side img,
   .istqb__certificate {
     border-radius: var(--radius-md);
     overflow: hidden;
     box-shadow: var(--shadow-card);
   }
 
-  .mission {
-    margin-top: 1rem;
-    padding: 1.35rem;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-md);
-    background: rgba(255, 255, 255, 0.06);
-  }
-
-  .mission span {
-    color: var(--color-accent);
-    font-weight: var(--fw-semibold);
-  }
-
-  .mission p {
-    margin-top: 0.45rem;
-    color: #fff;
-    font-size: 1.1rem;
-  }
-
-  .success__head {
-    max-width: 900px;
-  }
-
-  .success__head p,
   .istqb__copy p {
     color: var(--color-muted-dark);
   }
 
-  .success__compare {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-    margin-top: 2rem;
-  }
-
-  .compare-card {
-    padding: clamp(1.25rem, 3vw, 2rem);
-    border: 1px solid var(--color-line-dark);
-    border-radius: var(--radius-md);
-    background: #fff;
-    box-shadow: var(--shadow-card);
-  }
-
-  .compare-card--muted {
-    background: var(--color-surface-soft);
-  }
-
-  .compare-card h3 {
-    margin-bottom: 1rem;
-  }
-
-  .compare-card li {
+  .experience { padding: 120px 0; overflow: hidden; background: #101010; }
+  .experience__top { display: grid; grid-template-columns: 1.7fr 0.9fr; gap: 72px; align-items: start; }
+  .experience__copy h2,
+  .success-story__copy h2 { margin: 0 0 34px; font-size: clamp(34px, 3.25vw, 48px); line-height: 1.08; }
+  .experience__copy h2 span,
+  .success-story__copy h2 span { color: #ff0b00; }
+  .experience__copy p { max-width: 720px; margin-bottom: 14px; color: #f2f2f2; font-size: 16px; line-height: 1.42; }
+  .mission { position: relative; min-height: 380px; padding: 72px 30px 30px; background: #303030; }
+  .mission strong { position: absolute; top: 0; left: 30px; padding: 15px 17px; background: #101010; color: #ff0b00; font-size: 12px; }
+  .mission p { position: relative; z-index: 2; max-width: 315px; color: #fff; font-size: 22px; line-height: 1.35; }
+  .mission img { position: absolute; right: -140px; bottom: -150px; z-index: 1; width: 390px; height: 390px; object-fit: contain; }
+  .success-story { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 50px; margin-top: 96px; }
+  .success-story__video { min-height: 400px; background: #202020; }
+  .success-story__video iframe { display: block; width: 100%; height: 100%; min-height: 400px; border: 0; }
+  .external-media {
     position: relative;
-    padding-left: 1.5rem;
-    margin-bottom: 0.7rem;
-    color: var(--color-muted-dark);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
   }
-
-  .compare-card li::before {
-    content: '+';
-    position: absolute;
-    left: 0;
-    color: var(--color-accent);
-    font-weight: var(--fw-bold);
+  .external-media iframe[hidden] {
+    display: none;
   }
-
-  .compare-card--muted li::before {
-    content: '—';
-    color: var(--color-muted-dark);
+  .external-media__notice {
+    display: grid;
+    gap: 16px;
+    max-width: 380px;
+    padding: 28px;
+    color: #fff;
+    text-align: center;
   }
+  .external-media__notice p {
+    font-size: 15px;
+    line-height: 1.45;
+  }
+  .external-media__notice button {
+    justify-self: center;
+    min-height: 48px;
+    padding-inline: 24px;
+    border-radius: 5px;
+    background: var(--color-accent);
+    color: #fff;
+    font-weight: var(--fw-semibold);
+  }
+  .success-story__copy { position: relative; padding-top: 25px; }
+  .success-story__copy h2 { margin-bottom: 26px; }
+  .success-story__copy p { position: relative; z-index: 2; max-width: 540px; color: #f2f2f2; font-size: 16px; line-height: 1.42; }
+  .success-story__copy > img { position: absolute; right: -170px; bottom: -80px; width: 270px; height: 270px; object-fit: contain; }
+  .compare-panel { min-height: 165px; padding: 26px 30px; background: #303030; }
+  .compare-panel h3 { margin-bottom: 14px; color: #fff; font-size: 21px; }
+  .compare-panel li { position: relative; padding-left: 18px; margin-bottom: 7px; color: #fff; font-size: 14px; }
+  .compare-panel li::before { content: '+'; position: absolute; left: 0; color: #ff0b00; font-weight: 700; }
+  .compare-panel--without li::before { content: '–'; color: #fff; }
 
   .section-head {
     max-width: 820px;
@@ -325,83 +345,182 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
   .steps__list {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1rem;
+    gap: 34px 32px;
   }
 
   .steps__list li {
-    min-height: 145px;
-    padding: 1.2rem;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-md);
-    background: rgba(255, 255, 255, 0.06);
+    position: relative;
+    display: flex;
+    min-height: 128px;
+    align-items: flex-end;
+    padding: 54px 18px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.62);
+    background: transparent;
   }
 
   .steps__list span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: grid;
+    width: 42px;
+    height: 40px;
+    place-items: center;
+    background: #fff;
+    color: var(--color-accent);
+    font-size: 1rem;
+    font-weight: var(--fw-regular);
+    line-height: 1;
+  }
+
+  .steps__list p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 1rem;
+    line-height: 1.28;
+  }
+
+  .steps .section-head {
+    max-width: none;
+    margin-bottom: 34px;
+  }
+
+  .steps .section-head h2 {
+    max-width: 920px;
+    margin: 0;
+    font-size: clamp(2rem, 3.3vw, 3rem);
+    line-height: 1.08;
+  }
+
+  .steps .section-head h2 span {
     display: block;
     color: var(--color-accent);
-    font-size: 2rem;
-    font-weight: var(--fw-bold);
-    line-height: 1;
-    margin-bottom: 1rem;
   }
 
   .steps__closing {
-    max-width: 780px;
-    margin: 2rem auto 0;
-    color: var(--color-muted);
-    text-align: center;
+    max-width: 720px;
+    margin: 38px 0 14px;
+    color: rgba(255, 255, 255, 0.84);
+    font-size: 0.9rem;
+    line-height: 1.35;
+    text-align: left;
+  }
+
+  .steps :global(.steps__cta) {
+    min-width: 178px;
+    min-height: 46px;
   }
 
   @media (max-width: 900px) {
-    .intro__grid,
     .istqb__grid,
-    .success__compare {
+    .experience__top,
+    .success-story {
       grid-template-columns: 1fr;
     }
+
+    .experience { padding-block: 80px; }
+    .mission { min-height: 330px; }
+    .success-story { margin-top: 70px; }
+    .success-story__copy > img { display: none; }
 
     .steps__list {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
-  @media (max-width: 620px) {
+  @media (max-width: 980px) {
     .academy-hero {
-      min-height: auto;
+      min-height: 100svh;
     }
 
     .academy-hero__inner {
-      padding-top: 7rem;
-      padding-bottom: 3rem;
+      min-height: 100svh;
+      justify-content: flex-start;
+      padding-top: 258px;
+      padding-bottom: 150px;
     }
 
     .academy-hero__copy h1 {
-      max-width: 8ch;
-      font-size: clamp(2.45rem, 14vw, 4rem);
+      max-width: none;
+      margin-bottom: 12px;
+      font-size: clamp(56px, 15.8vw, 62px);
+      line-height: 1.02;
+      white-space: normal;
+      overflow-wrap: normal;
+      word-break: keep-all;
     }
 
     .academy-hero__copy p {
-      font-size: 1rem;
+      margin-bottom: 25px;
+      font-size: 17px;
+      line-height: 1.45;
     }
 
-    .academy-hero__copy,
+    .academy-hero__copy {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .academy-hero__copy :global(.btn) {
+      width: 195px;
+      min-height: 54px;
+      padding-inline: 12px;
+    }
+
     .academy-hero__stats {
-      justify-self: start;
-      width: calc(100vw - 2.5rem);
-      max-width: calc(100vw - 2.5rem);
-    }
-
-    .academy-hero__stats,
-    .steps__list {
-      grid-template-columns: 1fr;
+      right: var(--container-pad);
+      bottom: 224px;
+      left: var(--container-pad);
+      display: grid;
+      width: auto;
+      max-width: none;
+      grid-template-columns: repeat(3, 144px);
     }
 
     .academy-hero__stats li {
-      border-right: 0;
-      border-bottom: 1px solid var(--color-line);
+      width: auto;
+      min-width: 0;
     }
 
-    .academy-hero__stats li:last-child {
-      border-bottom: 0;
+    .academy-hero__stats strong {
+      font-size: 20px;
+    }
+
+    .academy-hero__stats span {
+      display: block;
+      font-size: clamp(13px, 4vw, 16px);
+      white-space: normal;
     }
   }
+
+  @media (max-width: 620px) {
+    .steps .section-head h2 { font-size: clamp(2rem, 10vw, 2.7rem); }
+    .steps__list { grid-template-columns: 1fr; gap: 18px; }
+    .steps__closing { margin-top: 28px; }
+  }
 </style>
+
+<script>
+  function initExternalMediaConsent() {
+    document.querySelectorAll<HTMLElement>('[data-external-media]').forEach((media) => {
+      if (media.dataset.externalMediaReady === 'true') return;
+      media.dataset.externalMediaReady = 'true';
+
+      const iframe = media.querySelector<HTMLIFrameElement>('iframe[data-consent-src]');
+      const notice = media.querySelector<HTMLElement>('[data-external-media-notice]');
+      const loadButton = media.querySelector<HTMLButtonElement>('[data-external-media-load]');
+
+      loadButton?.addEventListener('click', () => {
+        const source = iframe?.dataset.consentSrc;
+        if (!iframe || !source) return;
+        iframe.src = source;
+        iframe.hidden = false;
+        if (notice) notice.hidden = true;
+        media.classList.add('is-loaded');
+      });
+    });
+  }
+
+  initExternalMediaConsent();
+  document.addEventListener('astro:after-swap', initExternalMediaConsent);
+</script>

@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import AcademyPage from '../components/sections/AcademyPage.astro';
+import IstqbCertificationPage from '../components/sections/IstqbCertificationPage.astro';
 import { pages } from '../data/academy';
 
 const lang = 'de';
@@ -8,5 +8,5 @@ const page = pages.certification[lang];
 ---
 
 <BaseLayout title={page.title} description={page.lead} lang={lang} image={pages.certification.image}>
-  <AcademyPage lang={lang} pageKey="certification" />
+  <IstqbCertificationPage lang="de" />
 </BaseLayout>

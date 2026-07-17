@@ -4,11 +4,15 @@ const img = (name: string) => `/images/academy/${name}`;
 
 export const assets = {
   logo: img('tild3162-6531-4739-a437-653366376633__wmatransparent.png'),
-  favicon: img('tildafavicon.ico'),
+  favicon: img('tild3661-6362-4233-a538-636439366365__frame_929516.png'),
   hero: img('tild3034-3664-4337-b734-326139353235__young-programmer-is-.jpg'),
   workspace: img('tild3038-3931-4334-b936-326431363630__software-developers-.jpg'),
+  consultation: img('tild6537-3034-4532-a562-323161646230__04_.png'),
+  missionRing: img('tild6538-3231-4433-a531-633461653736__rectangle.png'),
+  accentCurve: img('tild3730-6132-4863-b462-623032303533__group_11.png'),
   trainerGroup: img('tild3864-3733-4965-b336-663539653137__wma_trainer_gruppenf.jpg'),
   certificate: img('tild3137-3839-4564-b063-326265656661__wma_akkreditierung_i.png'),
+  accreditationStrip: img('tild3438-3437-4465-b730-646339663633__frame_929519.png'),
   diploma: img('tild3365-3962-4030-b130-636430666463__remove-bgai_17248545.png'),
   laptopTrainer: img('tild6130-3637-4836-a562-333834303031__jn.png'),
   testerCloseup: img('tild6633-6566-4234-a339-386662643565__site-expert-coding-r.jpg'),
@@ -16,7 +20,12 @@ export const assets = {
   ditele: img('tild6230-6463-4530-a631-353632323538__-3_deu-1.svg'),
   appEn: img('tild6331-6362-4837-b333-343461653664__-3_eng_1.svg'),
   badge: img('tild3666-6334-4662-a639-333936613364__ki-siegel_wamocon.png'),
+  footerLogo: img('tild3332-6361-4037-b230-633562663766__group_319.svg'),
   magazine: img('tild3736-3363-4433-b632-323661323435__wmc_magazin_eng_-_wm.jpg'),
+  aboutHero: img('tild3838-3030-4564-a133-303164373338__hh.png'),
+  boosterHero: img('tild3038-6537-4261-a337-393132613162__hh.png'),
+  certificationHero: img('tild3836-6332-4664-a133-666239613761__cone.svg'),
+  diteleHero: img('tild3364-6530-4464-b665-656162366131__vdva.png'),
 };
 
 export const pageMeta = {
@@ -36,9 +45,9 @@ export const home = {
   hero: {
     title: 'WAMOCON Academy',
     de:
-      'Unser IT-Bildungszentrum, geprüft und genehmigt vom Regierungspräsidium, bietet Ihnen erstklassige Ausbildungsmöglichkeiten',
+      '– Unser IT-Bildungszentrum, geprüft und genehmigt vom Regierungspräsidium, bietet Ihnen erstklassige Ausbildungsmöglichkeiten',
     en:
-      'Our IT training center, audited and approved by the regional council, offers you first-class training opportunities',
+      '– Our IT training center, audited and approved by the regional council, offers you first-class training opportunities',
     cta: { de: 'Beratung erhalten', en: 'Receive advice' },
     stats: [
       { value: '50+', de: 'IT-Projekte', en: 'IT projects' },
@@ -53,11 +62,11 @@ export const home = {
     },
     paragraphs: {
       de: [
-        'Die WAMOCON Academy ist Ihr Sprungbrett in die Welt des Softwaretestings! Als offizieller Partner des International Software Testing Qualifications Board (ISTQB®) bieten wir Ihnen hochwertige Bildung und Ausbildung, die auf Erfolg ausgerichtet ist. Unsere Studierenden profitieren von umfassenden Ressourcen und fundiertem Wissen, um die ISTQB®-Zertifizierung mit Leichtigkeit zu meistern und ihre Karriere in der boomenden IT-Branche voranzutreiben.',
+        'Die WAMOCON Academy ist Ihr Sprungbrett in die Welt des Softwaretestings. Die WAMOCON Academy GmbH ist bei ISTQB® als akkreditierter Trainingsanbieter für deutschsprachige CTFL 4.0- und Agile Tester 1.0-Trainingsmaterialien gelistet. Unsere praxisnahen Kurse bereiten auf die jeweilige Zertifizierungsprüfung vor.',
         'Egal, ob Sie Berufseinsteiger, Quereinsteiger oder erfahrener Profi sind - bei uns finden Sie die passende Weiterbildung! Erweitern Sie Ihre Fähigkeiten im Testmanagement und heben Sie sich mit einer zusätzlichen Qualifikation gemäß dem ISTQB®-Lehrplan von der Masse ab. Starten Sie jetzt Ihre Erfolgsgeschichte mit der WAMOCON Academy!',
       ],
       en: [
-        'The WAMOCON Academy is your springboard into the world of software testing! As an official partner of the International Software Testing Qualifications Board (ISTQB®), we offer you high-quality education and training that is designed for success. Our students profit from comprehensive resources and in-depth knowledge to master the ISTQB® certification with ease and advance their careers in the booming IT industry.',
+        'WAMOCON Academy is your springboard into software testing. WAMOCON Academy GmbH is listed by ISTQB® as an accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 training materials. Our practical courses prepare participants for the relevant certification examination.',
         'Whether you are a career starter, lateral entrant or experienced professional - we have the right training for you! Expand your test management skills and stand out from the crowd with an additional qualification in accordance with the ISTQB® curriculum. Start your success story now with the WAMOCON Academy!',
       ],
     },
@@ -187,16 +196,16 @@ export const courses = [
 export const steps = {
   de: [
     'Bewerbung',
-    'Teilnahme am Seminar',
     'Vorbereitung auf das Seminar',
+    'Teilnahme am Seminar',
     '(Optional) Wiederholung der Inhalte aus dem Seminar',
     'Zertifizierung ISTQB® Certified Tester Foundation Level',
     'Neuer Job / erfolgreiches IT-Projekt',
   ],
   en: [
     'Application',
-    'Participation in the seminar',
     'Preparation for the seminar',
+    'Participation in the seminar',
     '(Optional) Repetition of the contents of the seminar',
     'Certification ISTQB® Certified Tester Foundation Level',
     'New job / Successful IT project',
@@ -206,32 +215,36 @@ export const steps = {
 export const dates = {
   de: {
     title: 'Kurs ISTQB® Certified Tester Foundation Level',
-    month: 'Januar 2025',
-    rows: [
-      ['Donnerstag, 30. Januar 2025', 'frei'],
-      ['Freitag, 31. Januar 2025', 'frei'],
-      ['Samstag, 01. Februar 2025', 'frei'],
+    groups: [
+      {
+        month: 'In Planung',
+        rows: [
+          ['Neue Termine', 'In Planung'],
+        ],
+      },
     ],
   },
   en: {
     title: 'Dates at a glance',
-    month: 'October 2024',
-    rows: [
-      ['Thursday, October 10, 2024', 'free'],
-      ['Friday, October 11, 2024', 'free'],
-      ['Saturday, October 12, 2024', 'free'],
+    groups: [
+      {
+        month: 'Planned',
+        rows: [
+          ['New dates', 'Planned'],
+        ],
+      },
     ],
   },
-} satisfies Record<Lang, { title: string; month: string; rows: string[][] }>;
+} satisfies Record<Lang, { title: string; groups: { month: string; rows: string[][] }[] }>;
 
 export const pages = {
   courses: {
-    image: assets.workspace,
+    image: img('tild6435-3037-4261-b437-346164326231__vadsv.png'),
     de: {
       title: 'Bildungsprogramme für Softwaretester: Seminare im Überblick',
       eyebrow: 'Kurse',
       lead:
-        'Als offizieller Partner von ISTQB® bietet die Academy zertifizierte Kurse an, die ein tiefes Eintauchen in die Theorie und Praxis des Softwaretests ermöglichen. Mit diesen Kursen bereiten sich Fachleute auf die ISTQB®-Zertifizierung vor – den Goldstandard in der Branche.',
+        'Die WAMOCON Academy GmbH ist im offiziellen ISTQB®-Anbieterverzeichnis für deutschsprachige CTFL 4.0- und Agile Tester 1.0-Trainingsmaterialien gelistet. Die Kurse verbinden Theorie und Praxis des Softwaretestens.',
       sections: [
         {
           title: 'Vorteile unserer Kurse',
@@ -242,7 +255,7 @@ export const pages = {
         {
           title: 'Mit Bildung in die Zukunft: Werden Sie ISTQB® Softwaretester bei WAMOCON Academy',
           text:
-            'WAMOCON bietet als offizieller ISTQB® Partner exklusive Seminare im Testmanagement für Einsteiger und Quereinsteiger an mit intensiven Praxisinhalten. Davon profitieren unsere Seminarteilnehmer und unsere eigenen Mitarbeiter!',
+            'WAMOCON bietet Seminare im Testmanagement für Einsteiger und Quereinsteiger mit intensiven Praxisinhalten und Vorbereitung auf die jeweilige Zertifizierungsprüfung.',
         },
         {
           title: 'Wo soll ich zuerst anfangen?',
@@ -252,7 +265,7 @@ export const pages = {
             'Einstieg ins SOFTWARETESTING – Zielgruppe und Nutzen des Webinars.',
             'Was verdient ein zertifizierter Softwaretester 2023? – Einblick in Gehaltsstrukturen und Karriereaussichten.',
             'Vor welchen typischen Herausforderungen steht ein Tester? – Diskussion der gängigen Probleme und Hürden im Testmanagement.',
-            'Staatliches Förderprogramm: Bildungsgutschein – Teilnehmer können mit einem Bildungsgutschein vom Arbeitsamt kostenlos an unseren IT-Seminaren teilnehmen.',
+            'Bildungsgutschein: Eine Förderung kann im Einzelfall möglich sein. Die zuständige Agentur für Arbeit oder das Jobcenter entscheidet über Voraussetzungen, Umfang und Bewilligung.',
             'Was zeichnet einen erfolgreichen Softwaretester aus? – Wichtige Fähigkeiten und Eigenschaften eines erfolgreichen Testers.',
           ],
         },
@@ -262,7 +275,7 @@ export const pages = {
       title: 'Educational programs for software testers',
       eyebrow: 'Courses',
       lead:
-        'As an official partner of ISTQB®, the Academy offers certified courses that enable deep immersion in the theory and practice of software testing. With these courses, professionals prepare for ISTQB® certification - the gold standard in the industry.',
+        'WAMOCON Academy GmbH is listed in the official ISTQB® provider directory for German-language CTFL 4.0 and Agile Tester 1.0 training materials. The courses combine software-testing theory and practice.',
       sections: [
         {
           title: 'Advantages of our courses',
@@ -283,7 +296,7 @@ export const pages = {
             'Introduction to SOFTWARE TESTING - target group and benefits of the webinar.',
             'What does a certified software tester earn? - Insight into salary structures and career prospects.',
             'What typical challenges does a tester face? - Discussion of common problems and hurdles in test management.',
-            'State funding program: Bildungsgutschein - participants can attend our IT seminars free of charge with an education voucher from the employment agency.',
+            'Bildungsgutschein: funding may be possible in individual cases. The responsible employment agency or job centre decides eligibility, scope and approval.',
             'What distinguishes a successful software tester? - Important skills and characteristics of a successful tester.',
           ],
         },
@@ -291,7 +304,7 @@ export const pages = {
     },
   },
   about: {
-    image: assets.trainerGroup,
+    image: assets.aboutHero,
     de: {
       title: 'Der Weg zum Erfolg beginnt mit der WAMOCON Academy',
       eyebrow: 'Über die Academy',
@@ -378,7 +391,7 @@ export const pages = {
     },
   },
   booster: {
-    image: assets.laptopTrainer,
+    image: assets.boosterHero,
     de: {
       title: '360° Booster System für Deine IT-Karriere',
       eyebrow: '360° Booster System',
@@ -432,7 +445,7 @@ export const pages = {
     },
   },
   certification: {
-    image: assets.certificate,
+    image: assets.certificationHero,
     de: {
       title: 'ISTQB® Zertifizierung',
       eyebrow: 'ISTQB® Certified Tester',
@@ -489,7 +502,7 @@ export const pages = {
     },
   },
   ditele: {
-    image: assets.testerCloseup,
+    image: assets.diteleHero,
     de: {
       title: 'DiTeLe App',
       eyebrow: 'Digitale Lern- und Testumgebung',
@@ -551,19 +564,21 @@ export const legal = {
     de: {
       title: 'Impressum',
       blocks: [
-        'WAMOCON Academy GmbH\nMergenthaleralee 79 - 81\n65760 Eschborn\n+49 (0) 6196 5838312\ninfo@test-it-academy.de',
-        'Geschäftsführung\nDipl.- Ing. Waleri Moretz.\nSitz der Gesellschaft ist Eschborn\nHandelsregister: Eschborn HRB 123666\nUmsatzsteuer-Identifikationsnummer: DE344930486',
-        'Datenschutzerklärung\nDownload Datenschutzerklärung (2021, Deutsch, PDF)',
-        'Haftung für Links\nUnser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich.',
+        'Angaben gemäß § 5 DDG\nWAMOCON Academy GmbH\nMergenthalerallee 79–81\n65760 Eschborn\nDeutschland',
+        'Kontakt\nTelefon: +49 (0) 6196 5838312\nE-Mail: info@test-it-academy.de',
+        'Vertretung und Register\nGeschäftsführer: Dipl.-Ing. Waleri Moretz\nSitz der Gesellschaft: Eschborn\nHandelsregister: Eschborn, HRB 123666\nUmsatzsteuer-Identifikationsnummer gemäß § 27a UStG: DE344930486',
+        'Redaktionell verantwortlich\nDipl.-Ing. Waleri Moretz\nMergenthalerallee 79–81\n65760 Eschborn',
+        'Haftung für Links\nUnser Angebot enthält Links zu externen Websites Dritter. Auf deren Inhalte haben wir keinen Einfluss. Für die Inhalte der verlinkten Seiten ist der jeweilige Anbieter verantwortlich. Bei Bekanntwerden konkreter Rechtsverletzungen entfernen wir betroffene Links unverzüglich.',
       ],
     },
     en: {
       title: 'Imprint',
       blocks: [
-        'WAMOCON Academy GmbH\nMergenthaleralee 79 - 81\n65760 Eschborn\n+49 (0) 6196 5838312\ninfo@test-it-academy.de',
-        'Managing Director\nDipl.- Ing. Waleri Moretz.\nThe company is based in Eschborn\nCommercial register: Eschborn HRB 123666\nSales tax identification number: DE344930486',
-        'Privacy policy\nDownload privacy policy (2021, German, PDF)',
-        'Liability for links\nOur website contains links to external third-party websites over whose content we have no influence. Therefore, we cannot accept any liability for this third-party content. The respective provider or operator of the pages is always responsible for the content of the linked pages.',
+        'Information under Section 5 DDG\nWAMOCON Academy GmbH\nMergenthalerallee 79–81\n65760 Eschborn\nGermany',
+        'Contact\nTelephone: +49 (0) 6196 5838312\nE-mail: info@test-it-academy.de',
+        'Representation and register\nManaging Director: Dipl.-Ing. Waleri Moretz\nRegistered office: Eschborn\nCommercial register: Eschborn, HRB 123666\nVAT identification number under Section 27a UStG: DE344930486',
+        'Editorial responsibility\nDipl.-Ing. Waleri Moretz\nMergenthalerallee 79–81\n65760 Eschborn',
+        'Liability for links\nOur website contains links to external third-party websites over whose content we have no influence. The respective provider is responsible for linked content. We remove affected links promptly when we become aware of a specific infringement.',
       ],
     },
   },
@@ -571,25 +586,31 @@ export const legal = {
     de: {
       title: 'Datenschutz',
       blocks: [
-        'Der Datenschutz Ihrer Daten wird von uns sehr ernst genommen. Ihre personenbezogenen Daten werden vertraulich, entsprechend der gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung behandelt. Ein lückenloser Schutz der Daten vor dem Zugriff durch Dritte ist nicht möglich.',
-        'Server-Log-Files\nUnsere Seite speichert automatisch folgende Daten bei einem Besuch unserer Seite ab: Browsertyp und Browserversion, verwendetes Betriebssystem, Referrer URL, Hostname des zugreifenden Rechners und Uhrzeit der Serveranfrage.',
-        'Kontaktformular\nIn dem Kontaktformular werden Name und E-Mail Adresse abgefragt. Diese Daten werden für die Kontaktierung der Kunden, Nachfragen und mögliche Terminvereinbarung verwendet.',
-        'Google Analytics\nDer Internetauftritt von www.wamocon.com benutzt Google Analytics, einen Webanalysedienst der Google Inc. Google Analytics verwendet Cookies, die eine Analyse der Benutzung der Website ermöglichen.',
-        'Google Maps\nDiese Webseite verwendet Google Maps von Google Inc. Durch Nutzung dieser Webseite erklären Sie sich mit der Erfassung, Bearbeitung sowie Nutzung der automatisiert erhobenen Daten einverstanden.',
-        'reCAPTCHA\nZum Schutz Ihrer Anfragen per Internetformular verwenden wir den Dienst reCAPTCHA des Unternehmens Google Inc.',
-        'Recht auf Auskunft, Löschung, Widerruf\nIhnen steht ein Auskunftsrecht über alle personenbezogenen Daten zu, welche über Sie gespeichert wurden.',
+        'Stand: 17. Juli 2026\nDiese Datenschutzerklärung beschreibt die Verarbeitung personenbezogener Daten auf test-it-academy.com.',
+        '1. Verantwortlicher\nWAMOCON Academy GmbH\nMergenthalerallee 79–81\n65760 Eschborn\nTelefon: +49 (0) 6196 5838312\nE-Mail und Kontakt für Datenschutzanfragen: info@test-it-academy.de\nGeschäftsführer: Dipl.-Ing. Waleri Moretz\nEin Datenschutzbeauftragter ist nicht bestellt.',
+        '2. Hosting und Server-Protokolle\nDie Astro-Website wird über Vercel Inc. bereitgestellt. Beim Aufruf werden technisch erforderliche Verbindungsdaten verarbeitet, insbesondere IP-Adresse, Zeitpunkt, angeforderte URL, Referrer, Browser und Betriebssystem. Zweck ist die sichere und stabile Bereitstellung. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Protokolle werden nur so lange gespeichert, wie dies für Betrieb, Sicherheit und Fehleranalyse erforderlich ist. Informationen des Anbieters: vercel.com/legal/privacy-notice.',
+        '3. Kontakt- und Kursanfragen\nDie Formulare dienen ausschließlich unverbindlichen Anfragen und lösen keinen kostenpflichtigen Vertrag aus. Verarbeitet werden Name, E-Mail-Adresse, optional Telefonnummer sowie die freiwillig eingegebenen Inhalte. Rechtsgrundlagen sind Art. 6 Abs. 1 lit. b DSGVO für vorvertragliche Maßnahmen und Art. 6 Abs. 1 lit. f DSGVO für sonstige Anfragen. Die Übermittlung und interne E-Mail-Zustellung erfolgen über Vercel und Microsoft 365/Microsoft Graph. Die Daten werden gelöscht, sobald die Anfrage abschließend bearbeitet ist und keine gesetzlichen Aufbewahrungspflichten oder ein anschließendes Vertragsverhältnis entgegenstehen.',
+        '4. Schutz der Formulare mit Cloudflare Turnstile\nBei aktiver Nutzung eines Formulars wird Cloudflare Turnstile von Cloudflare, Inc. geladen. Turnstile verarbeitet technische Verbindungs-, Browser- und Interaktionsdaten, um automatisierte Eingaben und Missbrauch zu erkennen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO; technisch erforderliche Speicherzugriffe dienen der ausdrücklich angeforderten, geschützten Formularfunktion. Turnstile wird serverseitig verifiziert. Informationen: cloudflare.com/privacypolicy.',
+        '5. Einwilligungsverwaltung und externe Medien\nDie Website speichert Ihre Auswahl zu externen Medien lokal in Ihrem Browser unter „wamocon-academy-consent-v1“. Dies ist für die Verwaltung Ihrer Auswahl erforderlich. YouTube-Videos und Google Maps werden erst geladen, wenn Sie „Externe Medien“ erlauben. Dann können insbesondere IP-Adresse, Browserdaten, aufgerufene Seite und gegebenenfalls Kontodaten an Google Ireland Limited beziehungsweise verbundene Unternehmen übermittelt werden. Rechtsgrundlagen sind Art. 6 Abs. 1 lit. a DSGVO und § 25 Abs. 1 TDDDG. Sie können die Einwilligung jederzeit über „Datenschutzeinstellungen“ im Footer widerrufen. Informationen: policies.google.com/privacy.',
+        '6. Keine Reichweitenmessung und keine Werbung\nAuf dieser Astro-Website werden Yandex Metrica einschließlich Webvisor, Google Analytics, Google AdSense und reCAPTCHA nicht eingesetzt. Es findet keine Reichweitenmessung oder personalisierte Werbung durch diese Dienste statt. Google Fonts werden nicht von Google-Servern geladen.',
+        '7. Empfänger und Drittlandübermittlungen\nEmpfänger können Vercel, Microsoft und bei Formularnutzung Cloudflare sein. Google/YouTube erhält erst nach Ihrer Einwilligung Daten. Soweit Anbieter Daten außerhalb des Europäischen Wirtschaftsraums verarbeiten, stützen sie die Übermittlung nach eigener Angabe auf einen Angemessenheitsbeschluss, insbesondere das EU-US Data Privacy Framework, oder geeignete Garantien wie EU-Standardvertragsklauseln. Soweit ein Anbieter als Auftragsverarbeiter tätig wird, ist eine Vereinbarung nach Art. 28 DSGVO erforderlich.',
+        '8. Ihre Rechte\nSie haben nach Maßgabe der DSGVO Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch. Eine Einwilligung können Sie jederzeit mit Wirkung für die Zukunft widerrufen. Anfragen richten Sie an info@test-it-academy.de. Sie können sich außerdem bei einer Datenschutzaufsichtsbehörde beschweren; zuständig ist insbesondere der Hessische Beauftragte für Datenschutz und Informationsfreiheit, datenschutz.hessen.de.',
+        '9. Sicherheit und Aktualisierung\nWir schützen die Website durch TLS-Verschlüsselung, Sicherheits-Header, Zugriffsbeschränkungen und weitere angemessene technische und organisatorische Maßnahmen. Diese Erklärung wird aktualisiert, wenn sich Funktionen, Dienstleister oder die Rechtslage ändern.',
       ],
     },
     en: {
       title: 'Privacy policy',
       blocks: [
-        'We take the privacy of your data very seriously. Your personal data will be treated confidentially and in accordance with the statutory data protection regulations and this privacy policy. Complete protection of data against access by third parties is not possible.',
-        'Server log files\nOur website automatically saves the following data when you visit our website: browser type and browser version, operating system used, referrer URL, host name of the accessing computer and time of the server request.',
-        'Contact form\nName and e-mail address are requested in the contact form. This data is used for contacting customers, making inquiries and possibly arranging appointments.',
-        'Google Analytics\nThe website of www.wamocon.com uses Google Analytics, a web analysis service of Google Inc. Google Analytics uses cookies to help the website analyze how users use the site.',
-        'Google Maps\nThis website uses Google Maps from Google Inc. By using this website, you consent to the collection, processing and use of automatically collected data.',
-        'reCAPTCHA\nTo protect your requests via the Internet form, we use the reCAPTCHA service of Google Inc.',
-        'Right to information, deletion, revocation\nYou have a right of access to all personal data stored about you.',
+        'Last updated: 17 July 2026\nThis privacy policy describes personal-data processing on test-it-academy.com.',
+        '1. Controller\nWAMOCON Academy GmbH\nMergenthalerallee 79–81\n65760 Eschborn, Germany\nTelephone: +49 (0) 6196 5838312\nE-mail and privacy contact: info@test-it-academy.de\nManaging Director: Dipl.-Ing. Waleri Moretz\nNo data protection officer has been appointed.',
+        '2. Hosting and server logs\nThis Astro website is delivered through Vercel Inc. When it is accessed, technically necessary connection data is processed, including the IP address, time, requested URL, referrer, browser and operating system. The purpose is secure and stable delivery. The legal basis is Article 6(1)(f) GDPR. Logs are retained only for as long as required for operation, security and troubleshooting. Provider information: vercel.com/legal/privacy-notice.',
+        '3. Contact and course inquiries\nForms are solely for non-binding inquiries and do not create a paid contract. We process your name, e-mail address, optional telephone number and content you voluntarily enter. The legal bases are Article 6(1)(b) GDPR for pre-contractual steps and Article 6(1)(f) GDPR for other inquiries. Transmission and internal e-mail delivery use Vercel and Microsoft 365/Microsoft Graph. Data is deleted when the inquiry has been completed unless statutory retention duties or a subsequent contractual relationship require longer retention.',
+        '4. Form protection with Cloudflare Turnstile\nWhen you actively use a form, Cloudflare Turnstile from Cloudflare, Inc. is loaded. Turnstile processes technical connection, browser and interaction data to identify automated input and misuse. The legal basis is Article 6(1)(f) GDPR; technically necessary storage access supports the protected form function you requested. Tokens are verified server-side. Information: cloudflare.com/privacypolicy.',
+        '5. Consent management and external media\nYour external-media choice is stored locally in your browser under “wamocon-academy-consent-v1”. This is necessary to manage your choice. YouTube videos and Google Maps load only after you allow external media. Google Ireland Limited and affiliated companies may then receive your IP address, browser data, visited page and, where applicable, account data. The legal bases are Article 6(1)(a) GDPR and Section 25(1) TDDDG. You can withdraw consent at any time through “Privacy settings” in the footer. Information: policies.google.com/privacy.',
+        '6. No audience measurement or advertising\nThis Astro website does not use Yandex Metrica or Webvisor, Google Analytics, Google AdSense or reCAPTCHA. Those services do not perform audience measurement or personalised advertising here. Google Fonts are not loaded from Google servers.',
+        '7. Recipients and international transfers\nRecipients may include Vercel, Microsoft and, when a form is used, Cloudflare. Google/YouTube receives data only after consent. Where providers process data outside the European Economic Area, they state that they rely on an adequacy decision, especially the EU-US Data Privacy Framework, or safeguards such as EU Standard Contractual Clauses. An Article 28 GDPR agreement is required where a provider acts as a processor.',
+        '8. Your rights\nSubject to the GDPR, you have rights of access, rectification, erasure, restriction, data portability and objection. You may withdraw consent at any time for the future. Contact info@test-it-academy.de. You may also complain to a supervisory authority; in particular, the Hessian Commissioner for Data Protection and Freedom of Information, datenschutz.hessen.de.',
+        '9. Security and updates\nWe protect the website using TLS encryption, security headers, access controls and other appropriate technical and organisational measures. We update this policy when functions, providers or legal requirements change.',
       ],
     },
   },

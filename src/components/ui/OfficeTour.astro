@@ -1,0 +1,107 @@
+---
+import type { Lang } from '../../i18n/config';
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const heading = lang === 'de' ? '360° Büro Tour' : '360° Office tour';
+const text = lang === 'de'
+  ? 'Erkunden Sie unser Büro virtuell - öffnen Sie die interaktive 360°-Ansicht in Google Maps.'
+  : 'Explore our office virtually. Open the interactive 360° view in Google Maps.';
+const cta = lang === 'de' ? 'In Google Maps öffnen' : 'Open in Google Maps';
+const embedUrl = 'https://www.google.com/maps/embed?pb=!4v1782479371000!6m8!1m7!1sCAoSHENJQUJJaENVc3VTMzZndWlqazhoTlB1TmlkN1k.!2m2!1d50.1350963!2d8.5722177!3f0!4f-20!5f0.7820865974627469';
+const mapsUrl = 'https://www.google.com/maps/@?api=1&map_action=pano&pano=CAoSHENJQUJJaENVc3VTMzZndWlqazhoTlB1TmlkN1k.&heading=0&pitch=-20&fov=80';
+---
+
+<section class="office-tour section" aria-labelledby="office-tour-title">
+  <div class="container">
+    <div class="office-tour__header" data-reveal>
+      <div><span class="office-tour__badge">360°</span><h2 id="office-tour-title">{heading}</h2></div>
+      <p>{text}</p>
+    </div>
+    <div class="office-tour__frame" data-external-media data-reveal>
+      <iframe data-consent-src={embedUrl} title={heading} loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen hidden></iframe>
+      <div class="office-tour__notice" data-external-media-notice>
+        <p>{lang === 'de' ? 'Die 360°-Ansicht wird erst nach Ihrer Zustimmung von Google Maps geladen.' : 'The 360° view loads from Google Maps only after your consent.'}</p>
+        <button type="button" data-external-media-load>{lang === 'de' ? '360°-Ansicht laden' : 'Load 360° view'}</button>
+      </div>
+    </div>
+    <a class="office-tour__link" href={mapsUrl} target="_blank" rel="noopener noreferrer">{cta}</a>
+  </div>
+</section>
+
+<style>
+  .office-tour { background: var(--color-bg); }
+  .office-tour__header {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(280px, 1.15fr);
+    gap: clamp(1.5rem, 5vw, 4.5rem);
+    align-items: end;
+    margin-bottom: clamp(1.5rem, 4vw, 3rem);
+  }
+  .office-tour__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 40px;
+    margin-bottom: 1rem;
+    border: 1px solid var(--color-accent);
+    font-weight: var(--fw-bold);
+  }
+  .office-tour h2 { font-size: clamp(2.2rem, 5vw, 4rem); }
+  .office-tour p { color: var(--color-muted); font-size: clamp(1rem, 2vw, 1.3rem); }
+  .office-tour__frame {
+    position: relative;
+    width: 100%;
+    min-height: 360px;
+    aspect-ratio: 2 / 1;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    background: #171717;
+  }
+  .office-tour__frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .office-tour__frame iframe[hidden] { display: none; }
+  .office-tour__notice {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    gap: 16px;
+    padding: 28px;
+    color: #fff;
+    text-align: center;
+  }
+  .office-tour__notice p {
+    max-width: 440px;
+    font-size: 16px;
+    line-height: 1.45;
+  }
+  .office-tour__notice button {
+    justify-self: center;
+    min-height: 48px;
+    padding-inline: 24px;
+    border-radius: 5px;
+    background: var(--color-accent);
+    color: #fff;
+    font-weight: var(--fw-semibold);
+  }
+  .office-tour__link {
+    display: inline-flex;
+    min-height: 48px;
+    margin-top: 1.25rem;
+    padding-inline: 1.5rem;
+    align-items: center;
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius-sm);
+    font-weight: var(--fw-semibold);
+  }
+  .office-tour__link:hover { background: var(--color-accent); }
+  @media (max-width: 780px) {
+    .office-tour__header { grid-template-columns: 1fr; align-items: start; }
+    .office-tour__frame { min-height: 300px; aspect-ratio: 4 / 3; }
+  }
+  @media (max-width: 480px) {
+    .office-tour__frame { min-height: 390px; aspect-ratio: 3 / 4; }
+    .office-tour__link { width: 100%; justify-content: center; }
+  }
+</style>

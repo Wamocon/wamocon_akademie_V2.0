@@ -23,6 +23,7 @@ pnpm-debug.log*
 # os / editor
 .DS_Store
 Thumbs.db
+Microsoft/
 
 # local email design previews
 email-preview-*.html

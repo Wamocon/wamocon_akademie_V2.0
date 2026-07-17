@@ -3,8 +3,20 @@ const CLIENT_ID = process.env.GRAPH_CLIENT_ID;
 const CLIENT_SECRET = process.env.GRAPH_CLIENT_SECRET;
 const REFRESH_TOKEN = process.env.GRAPH_REFRESH_TOKEN;
 const PUBLIC_CLIENT = process.env.GRAPH_PUBLIC_CLIENT === 'true';
-const GRAPH_SENDER = process.env.GRAPH_SENDER || 'info@wamocon.com';
-const RECIPIENT = process.env.LEAD_RECIPIENT || 'info@wamocon.com';
+const GRAPH_SENDER = process.env.GRAPH_SENDER || 'info@test-it-academy.de';
+const RECIPIENT = process.env.LEAD_RECIPIENT || 'info@test-it-academy.de';
+const TURNSTILE_SECRET = process.env.TURNSTILE_SECRET_KEY;
+const SITE_ORIGINS = new Set(
+  (process.env.SITE_ORIGINS || 'https://test-it-academy.com,https://www.test-it-academy.com')
+    .split(',')
+    .map((origin) => origin.trim().replace(/\/$/, ''))
+    .filter(Boolean)
+);
+
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+const RATE_MAX = 8;
+const rateBuckets = globalThis.__academyLeadRateBuckets || new Map();
+globalThis.__academyLeadRateBuckets = rateBuckets;
 
 function readBody(req) {
   if (req.body && typeof req.body === 'object') return req.body;
@@ -31,49 +43,114 @@ function escapeHtml(value) {
     .replace(/'/g, '&#039;');
 }
 
+function header(req, name) {
+  const headers = req.headers || {};
+  const value = headers[name] ?? headers[name.toLowerCase()] ?? headers[name.toUpperCase()];
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function requestIp(req) {
+  const forwarded = cap(header(req, 'x-forwarded-for'), 500).split(',')[0].trim();
+  return forwarded || req.socket?.remoteAddress || 'unknown';
+}
+
+async function verifyTurnstile(token, ip) {
+  if (!TURNSTILE_SECRET) return false;
+  try {
+    const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ secret: TURNSTILE_SECRET, response: token, remoteip: ip }),
+      signal: AbortSignal.timeout(10_000),
+    });
+    const result = await response.json();
+    return response.ok && result.success === true;
+  } catch (error) {
+    console.error(
+      '[lead] Turnstile verification failed',
+      error instanceof Error ? error.message : 'unknown error',
+    );
+    return false;
+  }
+}
+
+function isDevelopmentOrigin(origin) {
+  if (process.env.NODE_ENV === 'production') return false;
+  return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin);
+}
+
+function hasValidOrigin(req) {
+  const origin = cap(header(req, 'origin'), 300).replace(/\/$/, '');
+  const host = cap(header(req, 'x-forwarded-host') || header(req, 'host'), 300);
+  const protocol = cap(header(req, 'x-forwarded-proto'), 20) || (isDevelopmentOrigin(origin) ? 'http' : 'https');
+  const sameOrigin = host ? `${protocol}://${host}`.replace(/\/$/, '') : '';
+  return Boolean(
+    origin && (origin === sameOrigin || SITE_ORIGINS.has(origin) || isDevelopmentOrigin(origin))
+  );
+}
+
+function isRateLimited(req) {
+  const now = Date.now();
+  const ip = requestIp(req);
+  const bucket = rateBuckets.get(ip);
+
+  if (!bucket || now - bucket.startedAt >= RATE_WINDOW_MS) {
+    rateBuckets.set(ip, { startedAt: now, count: 1 });
+    return false;
+  }
+
+  bucket.count += 1;
+  if (rateBuckets.size > 2_000) {
+    for (const [key, value] of rateBuckets) {
+      if (now - value.startedAt >= RATE_WINDOW_MS) rateBuckets.delete(key);
+    }
+  }
+  return bucket.count > RATE_MAX;
+}
+
+function graphConfigured() {
+  return Boolean(TENANT_ID && CLIENT_ID && (CLIENT_SECRET || REFRESH_TOKEN));
+}
+
 async function fetchToken(params) {
-  const res = await fetch(`https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token`, {
+  const response = await fetch(`https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token`, {
     method: 'POST',
     body: params,
+    signal: AbortSignal.timeout(15_000),
   });
-  const data = await res.json();
-  if (!res.ok || data.error) {
-    throw new Error(
-      `Graph token request failed: ${res.status} ${data.error_description || data.error || res.statusText}`
-    );
+  const data = await response.json();
+  if (!response.ok || data.error) {
+    throw new Error(`Graph token request failed with status ${response.status}`);
   }
   return data.access_token;
 }
 
 async function getAccessToken() {
-  if (!TENANT_ID || !CLIENT_ID) {
-    throw new Error('Missing Graph tenant/client environment variables.');
-  }
+  if (!graphConfigured()) throw new Error('Microsoft Graph mail delivery is not configured.');
 
   if (REFRESH_TOKEN) {
-    const params = new URLSearchParams();
-    params.append('grant_type', 'refresh_token');
-    params.append('client_id', CLIENT_ID);
+    const params = new URLSearchParams({
+      grant_type: 'refresh_token',
+      client_id: CLIENT_ID,
+      refresh_token: REFRESH_TOKEN,
+      scope: 'https://graph.microsoft.com/Mail.Send',
+    });
     if (!PUBLIC_CLIENT && CLIENT_SECRET) params.append('client_secret', CLIENT_SECRET);
-    params.append('refresh_token', REFRESH_TOKEN);
-    params.append('scope', 'https://graph.microsoft.com/Mail.Send');
     return fetchToken(params);
   }
 
-  if (!CLIENT_SECRET) {
-    throw new Error('Missing GRAPH_CLIENT_SECRET for client credentials.');
-  }
-
-  const params = new URLSearchParams();
-  params.append('grant_type', 'client_credentials');
-  params.append('client_id', CLIENT_ID);
-  params.append('client_secret', CLIENT_SECRET);
-  params.append('scope', 'https://graph.microsoft.com/.default');
-  return fetchToken(params);
+  return fetchToken(
+    new URLSearchParams({
+      grant_type: 'client_credentials',
+      client_id: CLIENT_ID,
+      client_secret: CLIENT_SECRET,
+      scope: 'https://graph.microsoft.com/.default',
+    })
+  );
 }
 
 async function graphSendMail(accessToken, message) {
-  const res = await fetch(
+  const response = await fetch(
     `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(GRAPH_SENDER)}/sendMail`,
     {
       method: 'POST',
@@ -82,36 +159,11 @@ async function graphSendMail(accessToken, message) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ message, saveToSentItems: false }),
+      signal: AbortSignal.timeout(15_000),
     }
   );
 
-  if (!res.ok) {
-    throw new Error(`Graph sendMail failed: ${res.status} ${await res.text()}`);
-  }
-}
-
-function label(type, lang) {
-  const labels = {
-    de: {
-      lead: 'Kontakt',
-      courses: 'Kurse',
-      about: 'Über die Academy',
-      booster: '360° Booster System',
-      reviews: 'Bewertungen',
-      certification: 'ISTQB®-Zertifizierung',
-      ditele: 'DiTeLe App',
-    },
-    en: {
-      lead: 'Contact',
-      courses: 'Courses',
-      about: 'About the Academy',
-      booster: '360° Booster System',
-      reviews: 'Reviews',
-      certification: 'ISTQB® certification',
-      ditele: 'DiTeLe App',
-    },
-  };
-  return (labels[lang] || labels.de)[type] || type;
+  if (!response.ok) throw new Error(`Graph sendMail failed with status ${response.status}`);
 }
 
 function emailLayout(title, body, lang) {
@@ -124,27 +176,19 @@ function emailLayout(title, body, lang) {
 <html lang="${escapeHtml(lang)}">
 <body style="margin:0;background:#0f1115;font-family:Arial,sans-serif;color:#111827;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0f1115;padding:32px 16px;">
-    <tr>
-      <td align="center">
-        <table role="presentation" width="620" cellpadding="0" cellspacing="0" style="max-width:620px;width:100%;background:#ffffff;border-radius:8px;overflow:hidden;">
-          <tr><td style="height:5px;background:#e31b23;"></td></tr>
-          <tr>
-            <td style="padding:30px 28px 10px;">
-              <p style="margin:0 0 8px;color:#e31b23;font-size:13px;font-weight:bold;letter-spacing:.08em;text-transform:uppercase;">WAMOCON Academy</p>
-              <h1 style="margin:0;color:#111827;font-size:24px;line-height:1.25;">${escapeHtml(title)}</h1>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:10px 28px 30px;color:#334155;font-size:15px;line-height:1.6;">${body}</td>
-          </tr>
-          <tr>
-            <td style="padding:18px 28px 28px;border-top:1px solid #e5e7eb;color:#64748b;font-size:12px;line-height:1.5;">
-              ${footer}<br><a href="https://test-it-academy.com" style="color:#e31b23;text-decoration:none;">test-it-academy.com</a>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
+    <tr><td align="center">
+      <table role="presentation" width="620" cellpadding="0" cellspacing="0" style="max-width:620px;width:100%;background:#fff;border-radius:8px;overflow:hidden;">
+        <tr><td style="height:5px;background:#e31b23;"></td></tr>
+        <tr><td style="padding:30px 28px 10px;">
+          <p style="margin:0 0 8px;color:#e31b23;font-size:13px;font-weight:bold;letter-spacing:.08em;text-transform:uppercase;">WAMOCON Academy</p>
+          <h1 style="margin:0;color:#111827;font-size:24px;line-height:1.25;">${escapeHtml(title)}</h1>
+        </td></tr>
+        <tr><td style="padding:10px 28px 30px;color:#334155;font-size:15px;line-height:1.6;">${body}</td></tr>
+        <tr><td style="padding:18px 28px 28px;border-top:1px solid #e5e7eb;color:#64748b;font-size:12px;line-height:1.5;">
+          ${footer}<br><a href="https://test-it-academy.com" style="color:#e31b23;text-decoration:none;">test-it-academy.com</a>
+        </td></tr>
+      </table>
+    </td></tr>
   </table>
 </body>
 </html>`;
@@ -152,19 +196,20 @@ function emailLayout(title, body, lang) {
 
 function details(submission, lang) {
   const rows = [
-    [lang === 'de' ? 'Typ' : 'Type', label(submission.type, lang)],
+    [lang === 'de' ? 'Formular' : 'Form', submission.type],
+    [lang === 'de' ? 'Seite' : 'Page', submission.source],
     ['Name', submission.name],
-    [lang === 'de' ? 'Telefon' : 'Phone', submission.phone],
+    [lang === 'de' ? 'Telefon' : 'Phone', submission.phone || '-'],
     ['E-Mail', submission.email],
     [lang === 'de' ? 'Nachricht' : 'Message', submission.comment || '-'],
+    ...(submission.type === 'review' ? [[lang === 'de' ? 'Veröffentlichung erlaubt' : 'Publication allowed', submission.publicationConsent ? (lang === 'de' ? 'Ja' : 'Yes') : (lang === 'de' ? 'Nein' : 'No')]] : []),
   ];
+
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e5e7eb;border-radius:8px;">
     ${rows
       .map(
         ([key, value]) =>
-          `<tr><td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;font-weight:bold;color:#111827;width:34%;">${escapeHtml(
-            key
-          )}</td><td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;">${escapeHtml(value)}</td></tr>`
+          `<tr><td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;font-weight:bold;color:#111827;width:34%;">${escapeHtml(key)}</td><td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;">${escapeHtml(value)}</td></tr>`
       )
       .join('')}
   </table>`;
@@ -172,15 +217,11 @@ function details(submission, lang) {
 
 function internalMessage(submission) {
   const isDe = submission.lang === 'de';
-  const type = label(submission.type, submission.lang);
-  const title = isDe ? `Neue Anfrage: ${type}` : `New inquiry: ${type}`;
-  const body = `<p>${isDe ? 'Eine neue Anfrage wurde über die Academy-Website übermittelt.' : 'A new inquiry was submitted via the Academy website.'}</p>${details(
-    submission,
-    submission.lang
-  )}`;
+  const title = isDe ? 'Neue Anfrage über die Academy-Website' : 'New inquiry via the Academy website';
+  const body = `<p>${isDe ? 'Eine neue Anfrage wurde übermittelt.' : 'A new inquiry was submitted.'}</p>${details(submission, submission.lang)}`;
 
   return {
-    subject: isDe ? `Neue ${type}-Anfrage von ${submission.name}` : `New ${type} inquiry from ${submission.name}`,
+    subject: isDe ? `Neue Academy-Anfrage von ${submission.name}` : `New Academy inquiry from ${submission.name}`,
     body: { contentType: 'HTML', content: emailLayout(title, body, submission.lang) },
     toRecipients: [{ emailAddress: { address: RECIPIENT } }],
     replyTo: [{ emailAddress: { address: submission.email } }],
@@ -205,19 +246,30 @@ function confirmationMessage(submission) {
 }
 
 async function sendEmails(submission) {
-  if (!TENANT_ID || !CLIENT_ID || !(CLIENT_SECRET || REFRESH_TOKEN)) {
-    console.log('[lead] Graph env vars missing; skipping email');
-    return;
-  }
   const accessToken = await getAccessToken();
-  await graphSendMail(accessToken, internalMessage(submission));
-  await graphSendMail(accessToken, confirmationMessage(submission));
+  await Promise.all([
+    graphSendMail(accessToken, internalMessage(submission)),
+    graphSendMail(accessToken, confirmationMessage(submission)),
+  ]);
 }
 
 export default async function handler(req, res) {
+  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ ok: false, error: 'Method not allowed' });
+  }
+
+  const contentLength = Number(header(req, 'content-length') || 0);
+  if (contentLength > 25_000) return res.status(413).json({ ok: false, error: 'Request too large' });
+  if (!hasValidOrigin(req) || header(req, 'x-wamocon-form') !== 'academy') {
+    return res.status(403).json({ ok: false, error: 'Request rejected' });
+  }
+  if (isRateLimited(req)) {
+    res.setHeader('Retry-After', String(Math.ceil(RATE_WINDOW_MS / 1000)));
+    return res.status(429).json({ ok: false, error: 'Too many requests' });
   }
 
   const body = readBody(req);
@@ -225,35 +277,52 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true });
   }
 
+  if (!TURNSTILE_SECRET) {
+    console.error('[lead] Turnstile is not configured');
+    return res.status(503).json({ ok: false, error: 'Security verification is unavailable' });
+  }
+  const turnstileToken = cap(body['cf-turnstile-response'] || body.turnstileToken, 2_048);
+  if (!turnstileToken) {
+    return res.status(400).json({ ok: false, error: 'Security verification is required' });
+  }
+  if (!(await verifyTurnstile(turnstileToken, requestIp(req)))) {
+    return res.status(403).json({ ok: false, error: 'Security verification failed' });
+  }
+
   const submission = {
-    type: cap(body.type || 'lead', 40),
+    type: cap(body.type || 'lead', 200),
+    source: cap(body.source || '/', 300),
+    formId: cap(body.formId, 200),
     lang: cap(body.lang || 'de', 5) === 'en' ? 'en' : 'de',
     name: cap(body.name, 200),
     phone: cap(body.phone, 60),
     email: cap(body.email, 320),
-    comment: cap(body.comment, 5000),
-    receivedAt: new Date().toISOString(),
+    comment: cap(body.comment, 5_000),
+    publicationConsent: body.publicationConsent === true || body.publicationConsent === 'true' || body.publicationConsent === 'on',
   };
-  const consent = body.consent === true || body.consent === 'true' || body.consent === 'on';
-
-  if (!consent) return res.status(400).json({ ok: false, error: 'Consent is required.' });
-  if (!submission.name || !submission.phone || !submission.email) {
-    return res.status(400).json({ ok: false, error: 'Missing required fields.' });
+  if (!submission.name || !submission.email) {
+    return res.status(400).json({ ok: false, error: 'Missing required fields' });
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(submission.email)) {
-    return res.status(400).json({ ok: false, error: 'Invalid email address.' });
+    return res.status(400).json({ ok: false, error: 'Invalid email address' });
   }
-  if (!/[\d]/.test(submission.phone) || !/[\d\s+\-()/]{6,}$/.test(submission.phone)) {
-    return res.status(400).json({ ok: false, error: 'Invalid phone number.' });
+  if (
+    submission.phone &&
+    (!/\d/.test(submission.phone) || !/^[\d\s+\-()/]{6,}$/.test(submission.phone))
+  ) {
+    return res.status(400).json({ ok: false, error: 'Invalid phone number' });
   }
-
-  console.log('[lead] new academy submission', JSON.stringify(submission));
+  if (!graphConfigured()) {
+    console.error('[lead] Microsoft Graph delivery is not configured');
+    return res.status(503).json({ ok: false, error: 'Form delivery is unavailable' });
+  }
 
   try {
     await sendEmails(submission);
-  } catch (err) {
-    console.error('[lead] email error', err.message || err);
+    console.info('[lead] academy submission delivered');
+    return res.status(200).json({ ok: true });
+  } catch (error) {
+    console.error('[lead] delivery failed', error instanceof Error ? error.message : 'unknown error');
+    return res.status(502).json({ ok: false, error: 'Form delivery failed' });
   }
-
-  return res.status(200).json({ ok: true });
 }

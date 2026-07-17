@@ -1,12 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import AcademyPage from '../components/sections/AcademyPage.astro';
+import AboutAcademyPage from '../components/sections/AboutAcademyPage.astro';
 import { pages } from '../data/academy';
 
 const lang = 'de';
 const page = pages.about[lang];
 ---
 
-<BaseLayout title={page.title} description={page.lead} lang={lang} image={pages.about.image}>
-  <AcademyPage lang={lang} pageKey="about" />
+<BaseLayout title="Über die Akademie" description={page.lead} lang={lang} image={pages.about.image}>
+  <AboutAcademyPage lang={lang} />
 </BaseLayout>

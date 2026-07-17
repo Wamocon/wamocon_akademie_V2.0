@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import AcademyPage from '../components/sections/AcademyPage.astro';
+import BoosterPage from '../components/sections/BoosterPage.astro';
 import { pages } from '../data/academy';
 
 const lang = 'de';
@@ -8,5 +8,5 @@ const page = pages.booster[lang];
 ---
 
 <BaseLayout title={page.title} description={page.lead} lang={lang} image={pages.booster.image}>
-  <AcademyPage lang={lang} pageKey="booster" />
+  <BoosterPage lang={lang} />
 </BaseLayout>

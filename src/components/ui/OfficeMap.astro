@@ -1,0 +1,67 @@
+---
+import type { Lang } from '../../i18n/config';
+
+interface Props {
+  lang: Lang;
+  compact?: boolean;
+}
+
+const { lang, compact = false } = Astro.props;
+const title = lang === 'de' ? 'Standort der WAMOCON Academy' : 'WAMOCON Academy location';
+const address = 'Mergenthalerallee 79–81, 65760 Eschborn';
+const src = 'https://www.google.com/maps?q=Mergenthalerallee+79-81%2C+65760+Eschborn&output=embed';
+---
+
+<section class:list={['office-map', { 'office-map--compact': compact }]} aria-label={title}>
+  {!compact && (
+    <div class="office-map__heading container">
+      <div>
+        <span>{lang === 'de' ? 'Standort' : 'Location'}</span>
+        <h2>{title}</h2>
+      </div>
+      <address>{address}</address>
+    </div>
+  )}
+  <div class="office-map__frame" data-external-media>
+    <iframe
+      data-consent-src={src}
+      title={`${title}: ${address}`}
+      loading="lazy"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen
+      hidden
+    ></iframe>
+    <div class="office-map__notice" data-external-media-notice>
+      <p>{lang === 'de' ? 'Google Maps wird erst nach Ihrer Einwilligung geladen.' : 'Google Maps loads only after your consent.'}</p>
+      <button type="button" data-open-consent-settings>{lang === 'de' ? 'Datenschutzeinstellungen öffnen' : 'Open privacy settings'}</button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .office-map { padding-top: clamp(3rem, 7vw, 6rem); background: #0b0d11; }
+  .office-map--compact { padding: clamp(2rem, 5vw, 5rem) clamp(14px, 2.5vw, 36px) 0; }
+  .office-map__heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+  .office-map__heading span { color: var(--color-accent); font-weight: var(--fw-semibold); }
+  .office-map__heading h2 { margin-top: 0.35rem; font-size: clamp(1.8rem, 4vw, 3.2rem); }
+  .office-map__heading address { color: var(--color-muted); font-style: normal; text-align: right; }
+  .office-map__frame { position: relative; display: grid; place-items: center; width: 100%; height: clamp(300px, 42vw, 520px); background: #171717; }
+  .office-map--compact .office-map__frame { max-width: 1368px; height: clamp(300px, 25vw, 360px); margin-inline: auto; }
+  .office-map__frame iframe { display: block; width: 100%; height: 100%; border: 0; }
+  .office-map__frame iframe[hidden] { display: none; }
+  .office-map__notice { max-width: 520px; padding: 1.5rem; color: #fff; text-align: center; }
+  .office-map__notice p { color: var(--color-muted); }
+  .office-map__notice button { min-height: 48px; margin-top: 1rem; padding-inline: 1.25rem; border: 1px solid var(--color-accent); border-radius: 5px; }
+  .office-map__notice button:hover { background: var(--color-accent); }
+  @media (max-width: 680px) {
+    .office-map__heading { align-items: start; flex-direction: column; }
+    .office-map__heading address { text-align: left; }
+    .office-map__frame { height: 390px; }
+  }
+</style>

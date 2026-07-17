@@ -4,10 +4,12 @@ import type { Lang } from '../../i18n/config';
 
 interface Props {
   lang: Lang;
+  showAllDateGroups?: boolean;
 }
 
-const { lang } = Astro.props;
+const { lang, showAllDateGroups = false } = Astro.props;
 const dateData = dates[lang];
+const visibleDateGroups = showAllDateGroups ? dateData.groups : dateData.groups.slice(-1);
 ---
 
 <div class="courses-grid">
@@ -35,11 +37,19 @@ const dateData = dates[lang];
   <div>
     <span class="eyebrow">{lang === 'de' ? 'Termine im Überblick' : 'Dates at a glance'}</span>
     <h3>{dateData.title}</h3>
-    <p>{dateData.month}</p>
   </div>
-  <ul>
-    {dateData.rows.map(([day, status]) => <li><span>{day}</span><strong>{status}</strong></li>)}
-  </ul>
+  <div class="dates-card__groups">
+    {
+      visibleDateGroups.map((group) => (
+        <section class="dates-card__group">
+          <h4>{group.month}</h4>
+          <ul>
+            {group.rows.map(([day, status]) => <li><span>{day}</span><strong>{status}</strong></li>)}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
 </aside>
 
 <style>
@@ -105,10 +115,20 @@ const dateData = dates[lang];
     margin-top: 0.7rem;
   }
 
-  .dates-card p {
+  .dates-card h4 {
     color: var(--color-accent);
     font-weight: var(--fw-semibold);
     margin-top: 0.45rem;
+  }
+
+  .dates-card__groups {
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .dates-card__group {
+    display: grid;
+    gap: 0.75rem;
   }
 
   .dates-card ul {

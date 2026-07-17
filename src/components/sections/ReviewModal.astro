@@ -1,0 +1,165 @@
+---
+import { legalNav, type Lang } from '../../i18n/config';
+
+interface Props { lang: Lang; }
+
+const { lang } = Astro.props;
+const copy = lang === 'de'
+  ? {
+      close: 'Schließen', title: 'Senden Sie Ihre Bewertung', name: 'Name', namePlaceholder: 'Ihr Name',
+      review: 'Bewertung', comments: 'Kommentare/Link zur Datei', submit: 'Anfrage senden',
+      privacyPre: 'Informationen zur Verarbeitung finden Sie in der ', privacyLink: 'Datenschutzerklärung',
+      publication: 'Optional: Ich willige ein, dass meine Bewertung zusammen mit meinem Namen als Teilnehmerstimme auf den Websites und in den Social-Media-Kanälen der WAMOCON Academy GmbH veröffentlicht werden darf. Die Einwilligung ist freiwillig und jederzeit mit Wirkung für die Zukunft widerrufbar.',
+      notice: 'Ohne diese freiwillige Einwilligung wird die Bewertung nicht veröffentlicht. Dies ist kein Kauf.',
+    }
+  : {
+      close: 'Close', title: 'Send your evaluation', name: 'Name', namePlaceholder: 'Name',
+      review: 'Evaluation', comments: 'Comments/link to the file', submit: 'Send request',
+      privacyPre: 'Information about processing is provided in the ', privacyLink: 'privacy policy',
+      publication: 'Optional: I consent to my review and name being published as a participant testimonial on WAMOCON Academy GmbH websites and social-media channels. This consent is voluntary and can be withdrawn at any time for the future.',
+      notice: 'Without this voluntary consent, the review will not be published. This is not a purchase.',
+    };
+---
+
+<dialog class="review-dialog" id="review-dialog" aria-labelledby="review-dialog-title">
+  <div class="review-dialog__panel">
+    <button class="review-dialog__close" type="button" data-review-close aria-label={copy.close}>
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 5l14 14M19 5 5 19" />
+      </svg>
+    </button>
+    <h2 id="review-dialog-title">{copy.title}</h2>
+    <form class="review-dialog__form js-lead-form" data-redirect={lang === 'de' ? '/danke/' : '/thanks/'}>
+      <input type="hidden" name="type" value="review" />
+      <input type="hidden" name="lang" value={lang} />
+      <input class="review-dialog__trap" type="text" name="company" tabindex="-1" autocomplete="off" />
+      <label>
+        <span>{copy.name}</span>
+        <input type="text" name="name" placeholder={copy.namePlaceholder} required />
+      </label>
+      <label>
+        <span>E-Mail</span>
+        <input type="email" name="email" placeholder="E-Mail" required />
+      </label>
+      <label>
+        <span>{copy.review}</span>
+        <textarea name="comment" rows="5" placeholder={copy.comments} required></textarea>
+      </label>
+      <label class="review-dialog__consent">
+        <input type="checkbox" name="publicationConsent" />
+        <span>{copy.publication}</span>
+      </label>
+      <p class="review-dialog__privacy">{copy.privacyPre}<a href={legalNav.privacy[lang].href}>{copy.privacyLink}</a>.</p>
+      <p class="review-dialog__notice">{copy.notice}</p>
+      <p class="lead-form__status" role="alert" aria-live="assertive" hidden></p>
+      <button class="review-dialog__submit" type="submit">{copy.submit}</button>
+    </form>
+  </div>
+</dialog>
+
+<style>
+  .review-dialog {
+    width: min(680px, calc(100% - 2rem));
+    max-height: calc(100dvh - 2rem);
+    margin: auto;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #fff;
+  }
+
+  .review-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.82);
+    backdrop-filter: blur(4px);
+  }
+
+  .review-dialog__panel {
+    position: relative;
+    overflow-y: auto;
+    padding: clamp(1.5rem, 5vw, 3rem);
+    background: #303030;
+  }
+
+  .review-dialog__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    color: var(--color-accent);
+  }
+
+  .review-dialog__close svg { width: 26px; }
+  .review-dialog__close path { fill: none; stroke: currentColor; stroke-linecap: round; stroke-width: 2; }
+
+  .review-dialog h2 {
+    padding-right: 3rem;
+    font-size: clamp(1.9rem, 5vw, 3rem);
+  }
+
+  .review-dialog__form {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.8rem;
+  }
+
+  .review-dialog__form > label:not(.review-dialog__consent) {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .review-dialog__form > label:not(.review-dialog__consent) > span {
+    color: #fff;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .review-dialog__form input:not([type='checkbox']),
+  .review-dialog__form textarea {
+    width: 100%;
+    border: 0;
+    border-radius: 0;
+    background: #fff;
+    color: #101010;
+    padding: 1rem 1.2rem;
+  }
+
+  .review-dialog__form textarea { resize: vertical; }
+  .review-dialog__trap { position: absolute; left: -9999px; }
+
+  .review-dialog__consent {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 0.75rem;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.82rem;
+    line-height: 1.55;
+  }
+
+  .review-dialog__consent input { width: 22px; height: 22px; accent-color: var(--color-accent); }
+  .review-dialog__consent a { text-decoration: underline; }
+  .review-dialog__privacy { color: rgba(255,255,255,.72); font-size: .82rem; }
+  .review-dialog__privacy a { text-decoration: underline; }
+  .review-dialog__notice { color: rgba(255, 255, 255, 0.72); font-size: 0.82rem; line-height: 1.5; }
+  .review-dialog__submit { min-height: 52px; padding-inline: 2rem; justify-self: start; border-radius: 5px; background: var(--color-accent); font-weight: 600; }
+  .lead-form__status { color: #ff9b96; font-size: 0.88rem; }
+</style>
+
+<script>
+  const reviewDialog = document.getElementById('review-dialog');
+  document.querySelectorAll('[data-review-open]').forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+      if (reviewDialog instanceof HTMLDialogElement) reviewDialog.showModal();
+    });
+  });
+  document.querySelectorAll('[data-review-close]').forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+      if (reviewDialog instanceof HTMLDialogElement) reviewDialog.close();
+    });
+  });
+  reviewDialog?.addEventListener('click', (event) => {
+    if (event.target === reviewDialog && reviewDialog instanceof HTMLDialogElement) reviewDialog.close();
+  });
+</script>

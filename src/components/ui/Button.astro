@@ -65,7 +65,7 @@ const Tag = href ? 'a' : 'button';
     color: var(--btn-fg);
     background: var(--btn-bg);
     border: 1.5px solid var(--btn-border);
-    border-radius: var(--radius-pill);
+    border-radius: 5px;
     cursor: pointer;
     transition:
       transform var(--dur-fast) var(--ease-out),
@@ -91,7 +91,7 @@ const Tag = href ? 'a' : 'button';
   .btn--primary {
     --btn-bg: var(--color-accent);
     --btn-fg: #ffffff;
-    box-shadow: var(--shadow-accent);
+    box-shadow: none;
   }
   .btn--primary:hover {
     --btn-bg: var(--color-accent-hover);

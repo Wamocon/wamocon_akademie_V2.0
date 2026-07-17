@@ -1,0 +1,681 @@
+---
+import type { Lang } from '../../i18n/config';
+import LeadForm from './LeadForm.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const isDe = lang === 'de';
+
+const image = (name: string) => `/images/academy/${name}`;
+const assets = {
+  disc: image('tild6130-3637-4836-a562-333834303031__jn.png'),
+  sphere: image('tild3463-3139-4333-b833-303632623566__vdva.png'),
+  curve: image('tild3730-6132-4863-b462-623032303533__group_11.png'),
+  classroom: image('tild3034-3664-4337-b734-326139353235__young-programmer-is-.jpg'),
+};
+
+const copy = isDe
+  ? {
+      hero: 'Die WAMOCON Academy bietet mit ihrer digitalen Lernplattform DiTeLe eine innovative Möglichkeit, umfassende Kurse bequem und effektiv zu absolvieren. Diese Plattform wurde speziell entwickelt, um das Lernen zu einem interaktiven und praxisorientierten Erlebnis zu machen.',
+      testTitle: 'Überprüfe dein Wissen mit uns!',
+      testText: 'Die Benutzerregistrierung im Online-Shop ist entscheidend für zukünftige Interaktionen. Sie umfasst mehr als nur das Ausfüllen eines Formulars – es geht um die Erstellung eines Kontos für personalisierte Nutzungserlebnisse. Bereiten wir uns gemeinsam auf die Testvorbereitung vor!',
+      testButton: 'Den Test fortsetzen',
+      platformTitle: 'Über unsere Academy-Lernplattform',
+      platformIntro: 'Unsere Kurse sind in übersichtliche Kapitel und Lernmodule unterteilt. Jedes Modul ist darauf ausgelegt, Ihnen praxisnahes Wissen zu vermitteln und Ihre Fähigkeiten kontinuierlich zu verbessern.',
+      platformItems: [
+        ['Erklärende Videos', 'Verständlich aufbereitete Videos führen Sie Schritt für Schritt durch die Lerninhalte.'],
+        ['Szenarien und Beispiele', 'Realitätsnahe Szenarien und anschauliche Beispiele helfen Ihnen, das Gelernte in die Praxis umzusetzen.'],
+        ['Übungen und praxisorientierte Fragen', 'Interaktive Übungen und Fragen ermöglichen es Ihnen, Ihr Wissen zu testen und zu festigen.'],
+      ],
+      platformOutro: 'Mit DiTeLe App lernen Sie nicht nur theoretisches Wissen, sondern auch dessen praktische Anwendung. Unsere Plattform ist darauf ausgelegt, Sie optimal auf Ihre beruflichen Herausforderungen vorzubereiten und Ihnen einen echten Mehrwert zu bieten.',
+      whyTitle: 'Warum DiTeLe App?',
+      whyItems: [
+        ['Flexibilität', 'Lernen Sie wann und wo Sie wollen, ganz nach Ihrem eigenen Tempo.'],
+        ['Praxisnähe', 'Unsere praxisorientierten Inhalte garantieren, dass Sie das Gelernte sofort anwenden können.'],
+        ['Interaktivität', 'Durch interaktive Module bleibt das Lernen spannend und abwechslungsreich.'],
+      ],
+      whyOutro: 'Nutzen Sie die Chance, Ihre beruflichen Fähigkeiten mit DiTeLe App auf das nächste Level zu heben. Melden Sie sich noch heute an und starten Sie Ihre Weiterbildung mit der WAMOCON Academy!',
+      togetherTitle: 'Gemeinsam mit der Academy können Sie',
+      togetherItems: [
+        'Erstklassige Vorlesungen von Praktikern der IT-Industrie studieren',
+        'Einzigartige Informationen über Softwaretests in der Praxis mit Hilfe des eigenen Systems DiTeLe App erlernen',
+        'Erfahrungen mit Gleichgesinnten austauschen',
+        'Direkte Antworten von Experten erhalten',
+      ],
+      togetherOutro: 'Sie können Kurse auf der Plattform in Kombination mit Live-Unterricht erhalten. Unsere Kurse, insbesondere die Präsenzkurse, bieten Ihnen eine einzigartige Gelegenheit, sich intensiv weiterzubilden und von der Interaktion mit anderen Teilnehmern zu profitieren.',
+      advantagesTitle: 'Vorteile der Präsenzkurse',
+      advantages: [
+        ['Austausch mit anderen Teilnehmern', 'Nutzen Sie die Möglichkeit, sich mit Gleichgesinnten auszutauschen und wertvolle Kontakte zu knüpfen.'],
+        ['Ideen teilen und Fragen stellen', 'Bringen Sie Ihre eigenen Ideen ein und stellen Sie Fragen, um ein tieferes Verständnis der Themen zu erlangen.'],
+        ['Praktische Ratschläge und Lösungen', 'Erhalten Sie praxisnahe Ratschläge und Lösungen, die genau auf Ihre Bedürfnisse zugeschnitten sind.'],
+        ['Qualifikation der Dozenten', 'Unsere Dozenten bringen tiefgehende praktische Projekterfahrungen mit, die sie in den Kursen anschaulich und verständlich vermitteln. So profitieren Sie von ihrem umfangreichen Wissen und ihrer Expertise.'],
+      ],
+      adviceTitle: 'Beratung erhalten',
+      adviceText: 'Rufen Sie uns an +49 6196 5838311, oder hinterlassen Sie unten Ihre Kontaktdaten, damit wir Sie erreichen und Ihre Fragen beantworten können.',
+      name: 'Ihr Name',
+      phone: 'Telefon',
+      email: 'E-Mail',
+      send: 'Anfrage senden',
+      consentPrefix: 'Optional: Hiermit bestätige ich, dass ich die ',
+      consentLink: 'Datenschutzerklärung',
+      consentSuffix: ' gelesen habe und damit einverstanden bin, dass die WAMOCON Academy GmbH meine Daten, einschließlich personenbezogener Daten, speichern und verarbeiten darf.',
+      videoTitle: 'Ein Softwaretester in der Praxis – WAMOCON Academy',
+      videoConsentTitle: 'YouTube-Video',
+      videoConsentText: 'Mit dem Laden des Videos stimmen Sie einer Verbindung zu YouTube und der Übertragung Ihrer IP-Adresse zu.',
+      videoConsentButton: 'YouTube-Video laden',
+    }
+  : {
+      hero: 'With its digital learning platform DiTeLe, the WAMOCON Academy offers an innovative way of completing comprehensive courses conveniently and effectively. This platform has been specially developed to make learning an interactive and practice-oriented experience.',
+      testTitle: 'Test your knowledge with us!',
+      testText: "User registration in the online store is crucial for future interactions. It involves more than just filling out a form - it's about creating an account for personalized user experiences. Let's prepare for the test together!",
+      testButton: 'Continue the test',
+      platformTitle: 'About our Academy learning platform',
+      platformIntro: 'Our courses are divided into clear chapters and learning modules. Each module is designed to provide you with practical knowledge and continuously improve your skills.',
+      platformItems: [
+        ['Explanatory videos', 'Clearly prepared videos guide you step by step through the learning content.'],
+        ['Scenarios and examples', 'Realistic scenarios and illustrative examples help you to put what you have learned into practice.'],
+        ['Exercises and practice-oriented questions', 'Interactive exercises and questions allow you to test and consolidate your knowledge.'],
+      ],
+      platformOutro: 'With DiTeLe App, you not only learn theoretical knowledge, but also its practical application. Our platform is designed to optimally prepare you for your professional challenges and offer you real added value.',
+      whyTitle: 'Why DiTeLe App?',
+      whyItems: [
+        ['Flexibility', 'Learn when and where you want, at your own pace.'],
+        ['Practical relevance', 'Our practice-oriented content guarantees that you can apply what you have learned immediately.'],
+        ['Interactivity', 'Interactive modules keep learning exciting and varied.'],
+      ],
+      whyOutro: 'Take the opportunity to take your professional skills with DiTeLe App to the next level. Sign up today and start your further education with the WAMOCON Academy!',
+      togetherTitle: 'Together with the Academy you can',
+      togetherItems: [
+        'First-class lectures from practitioners in the IT industry',
+        'Learn unique information about software testing in practice with the help of our own system DiTeLe App',
+        'Exchange experiences with like-minded people',
+        'Get direct answers from experts',
+      ],
+      togetherOutro: 'You can receive courses on the platform in combination with live lessons. Our courses, especially the face-to-face courses, offer you a unique opportunity for intensive further training and to benefit from interaction with other participants.',
+      advantagesTitle: 'Advantages of classroom courses',
+      advantages: [
+        ['Exchange with other participants', 'Take the opportunity to exchange ideas with like-minded people and make valuable contacts.'],
+        ['Share ideas and ask questions', 'Contribute your own ideas and ask questions to gain a deeper understanding of the topics.'],
+        ['Practical advice and solutions', 'Get practical advice and solutions tailored to your needs.'],
+        ['Qualifications of the lecturers', 'Our lecturers have in-depth practical project experience, which they convey clearly and comprehensibly in the courses. This allows you to benefit from their extensive knowledge and expertise.'],
+      ],
+      adviceTitle: 'Get advice',
+      adviceText: 'Give us a call +49 6196 5838311, or leave your contact details below so that we can reach you and answer your questions.',
+      name: 'Your name',
+      phone: 'Telephone',
+      email: 'E-Mail',
+      send: 'Send request',
+      consentPrefix: 'Optional: I hereby confirm that I have read the ',
+      consentLink: 'privacy policy',
+      consentSuffix: ' and agree that WAMOCON Academy GmbH may store and process my data, including personal data.',
+      videoTitle: 'A software tester in practice – WAMOCON Academy',
+      videoConsentTitle: 'YouTube video',
+      videoConsentText: 'By loading the video, you consent to a connection to YouTube and the transfer of your IP address.',
+      videoConsentButton: 'Load YouTube video',
+    };
+
+---
+
+<section class="page-hero ditele-hero" aria-labelledby="ditele-title">
+  <div class="ditele-hero__media" aria-hidden="true">
+    <img class="ditele-hero__disc" src={assets.disc} alt="" width="980" height="980" />
+    <img class="ditele-hero__sphere" src={assets.sphere} alt="" width="980" height="980" />
+  </div>
+  <div class="container ditele-hero__content" data-reveal>
+    <h1 id="ditele-title">DiTeLe App</h1>
+    <p>{copy.hero}</p>
+  </div>
+</section>
+
+<section class="ditele-section ditele-test" aria-labelledby="ditele-test-title">
+  <div class="container ditele-test__grid">
+    <div class="ditele-test__video" data-external-media data-reveal>
+      <div class="ditele-test__video-consent">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="29" />
+          <path d="m27 21 17 11-17 11z" />
+        </svg>
+        <strong>{copy.videoConsentTitle}</strong>
+        <p>{copy.videoConsentText}</p>
+        <button type="button" data-load-external-media>{copy.videoConsentButton}</button>
+      </div>
+      <iframe
+        data-consent-src="https://www.youtube-nocookie.com/embed/FQ8dXuBDzb0?rel=0&autoplay=1"
+        title={copy.videoTitle}
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+        hidden
+      ></iframe>
+    </div>
+    <div class="ditele-test__content" data-reveal>
+      <h2 id="ditele-test-title">{copy.testTitle}</h2>
+      <p>{copy.testText}</p>
+      <div class="ditele-form ditele-form--test">
+        <button type="button" id="ditele-check-button">{copy.testButton}</button>
+      </div>
+    </div>
+  </div>
+  <img class="ditele-curve ditele-curve--test-a" src={assets.curve} alt="" width="300" height="300" aria-hidden="true" />
+  <img class="ditele-curve ditele-curve--test-b" src={assets.curve} alt="" width="300" height="300" aria-hidden="true" />
+</section>
+
+<section class="ditele-section ditele-platform" id="lernplattform" aria-labelledby="ditele-platform-title">
+  <div class="container">
+    <h2 id="ditele-platform-title" data-reveal>{copy.platformTitle}</h2>
+    <p class="ditele-platform__intro" data-reveal>{copy.platformIntro}</p>
+    <div class="ditele-card-grid ditele-card-grid--three">
+      {copy.platformItems.map(([title, text]) => (
+        <article class="ditele-card" data-reveal>
+          <h3>{title}</h3>
+          <p>{text}</p>
+        </article>
+      ))}
+    </div>
+    <p class="ditele-platform__outro" data-reveal>{copy.platformOutro}</p>
+  </div>
+</section>
+
+<section class="ditele-section ditele-why" aria-labelledby="ditele-why-title">
+  <div class="container">
+    <h2 id="ditele-why-title" data-reveal><span>{copy.whyTitle.split(' ')[0]}</span> {copy.whyTitle.split(' ').slice(1).join(' ')}</h2>
+    <div class="ditele-why__grid">
+      {copy.whyItems.map(([title, text], index) => (
+        <article data-reveal>
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            {index === 0 ? (
+              <><rect x="5" y="8" width="19" height="16" rx="1" /><path d="M9 5v6M20 5v6M9 15h11M9 19h7" /></>
+            ) : index === 1 ? (
+              <><path d="M6 25V10h15v15M4 25h22M10 14h3M16 14h2M10 18h3M16 18h2" /><path d="M21 11l5-5M22 6h4v4" /></>
+            ) : (
+              <><path d="M16 4a5 5 0 015 5c0 2-1 3-2 4v3h-6v-3c-1-1-2-2-2-4a5 5 0 015-5zM13 21h6M14 25h4" /><path d="M5 11h3M24 11h3M8 5l2 2M24 5l-2 2" /></>
+            )}
+          </svg>
+          <h3>{title}</h3>
+          <p>{text}</p>
+        </article>
+      ))}
+    </div>
+    <p class="ditele-why__outro" data-reveal>{copy.whyOutro}</p>
+  </div>
+</section>
+
+<section class="ditele-section ditele-together" aria-labelledby="ditele-together-title">
+  <div class="container">
+    <h2 id="ditele-together-title" data-reveal>{copy.togetherTitle}</h2>
+    <div class="ditele-card-grid ditele-card-grid--four">
+      {copy.togetherItems.map((text) => <article class="ditele-card ditele-card--strong" data-reveal><p>{text}</p></article>)}
+    </div>
+    <p class="ditele-together__outro" data-reveal>{copy.togetherOutro}</p>
+  </div>
+</section>
+
+<section class="ditele-section ditele-advantages" aria-labelledby="ditele-advantages-title">
+  <div class="container ditele-advantages__grid">
+    <div data-reveal>
+      <h2 id="ditele-advantages-title"><span>{copy.advantagesTitle.split(' ')[0]}</span> {copy.advantagesTitle.split(' ').slice(1).join(' ')}</h2>
+      <div class="ditele-advantages__list">
+        {copy.advantages.map(([title, text]) => (
+          <article>
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+    <figure class="ditele-advantages__media" data-reveal>
+      <img src={assets.classroom} alt="" width="1680" height="1120" loading="lazy" />
+    </figure>
+  </div>
+</section>
+
+<LeadForm lang={lang} type="ditele" compact complianceMode />
+
+<style>
+  .ditele-hero,
+  .ditele-section {
+    background: #101010;
+    color: #fff;
+  }
+
+  .ditele-hero {
+    position: relative;
+    min-height: 800px;
+    overflow: hidden;
+  }
+
+  .ditele-hero__content {
+    position: relative;
+    z-index: 2;
+    padding-top: 470px;
+  }
+
+  .ditele-hero h1,
+  .ditele-section h2 {
+    overflow-wrap: normal;
+    font-size: clamp(2rem, 3.2vw, 2.75rem);
+    line-height: 1.08;
+  }
+
+  .ditele-hero h1 {
+    color: #ff0b00;
+  }
+
+  .ditele-hero p {
+    max-width: 720px;
+    margin-top: 18px;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 1rem;
+    line-height: 1.38;
+  }
+
+  .ditele-hero__media {
+    position: absolute;
+    top: 65px;
+    right: -55px;
+    width: min(54vw, 690px);
+    aspect-ratio: 1;
+  }
+
+  .ditele-hero__media img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .ditele-hero__disc { transform: rotate(-8deg); }
+  .ditele-hero__sphere { width: 64% !important; height: 64% !important; top: 4%; left: -2%; }
+
+  .ditele-section {
+    position: relative;
+    padding-block: clamp(4.5rem, 8vw, 7.5rem);
+    overflow: hidden;
+  }
+
+  .ditele-section p {
+    font-size: 0.96rem;
+    line-height: 1.48;
+  }
+
+  .ditele-test__grid,
+  .ditele-advantages__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+  }
+
+  .ditele-test__video {
+    position: relative;
+    z-index: 1;
+    aspect-ratio: 16 / 9;
+    min-width: 0;
+    overflow: hidden;
+    background: #080808;
+  }
+
+  .ditele-test__video iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .ditele-test__video-consent {
+    display: grid;
+    height: 100%;
+    padding: clamp(1.25rem, 4vw, 2.5rem);
+    place-content: center;
+    justify-items: center;
+    background:
+      radial-gradient(circle at 50% 35%, rgba(255, 11, 0, 0.2), transparent 34%),
+      linear-gradient(145deg, #252525, #090909);
+    text-align: center;
+  }
+
+  .ditele-test__video-consent svg {
+    width: 52px;
+    height: 52px;
+    margin-bottom: 12px;
+    fill: none;
+    stroke: #ff0b00;
+    stroke-width: 2;
+  }
+
+  .ditele-test__video-consent strong {
+    font-size: 1.05rem;
+  }
+
+  .ditele-test__video-consent p {
+    max-width: 470px;
+    margin: 8px 0 14px;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.76rem;
+  }
+
+  .ditele-test__video-consent button {
+    min-height: 42px;
+    padding: 0 18px;
+    background: #ff0b00;
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 600;
+    transition: background 180ms ease, transform 180ms ease;
+  }
+
+  .ditele-test__video-consent button:hover {
+    background: #e90a00;
+    transform: translateY(-1px);
+  }
+
+  .ditele-test__content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .ditele-test__content > p {
+    margin: 18px 0 24px;
+  }
+
+  .ditele-form {
+    display: grid;
+    gap: 11px;
+  }
+
+  .ditele-field-label {
+    margin-bottom: -5px;
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+
+  .ditele-form input:not([type='checkbox']) {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 15px;
+    border: 1px solid #d8d8d8;
+    border-radius: 0;
+    background: #fff;
+    color: #111;
+    font-family: inherit;
+    font-size: 0.9rem;
+  }
+
+  .ditele-consent {
+    display: grid;
+    grid-template-columns: 18px 1fr;
+    gap: 10px;
+    align-items: start;
+    color: rgba(255, 255, 255, 0.66);
+    font-size: 0.69rem;
+    line-height: 1.4;
+  }
+
+  .ditele-consent input {
+    width: 17px;
+    height: 17px;
+    margin-top: 1px;
+    accent-color: #ff0b00;
+  }
+
+  .ditele-consent a {
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .ditele-form button {
+    width: fit-content;
+    min-height: 46px;
+    margin-top: 4px;
+    padding: 0 22px;
+    background: #ff0b00;
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: background 180ms ease, transform 180ms ease;
+  }
+
+  .ditele-form button:hover { background: #e90a00; transform: translateY(-1px); }
+  .ditele-form button:disabled { cursor: wait; opacity: 0.7; }
+
+  .ditele-curve {
+    position: absolute;
+    z-index: 0;
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    opacity: 0.78;
+  }
+
+  .ditele-curve--test-a { right: -18px; top: 27%; transform: rotate(145deg); }
+  .ditele-curve--test-b { right: 3%; bottom: 3%; transform: rotate(-20deg); }
+
+  .ditele-platform h2,
+  .ditele-together h2 {
+    margin-bottom: 20px;
+  }
+
+  .ditele-platform__intro {
+    max-width: 1020px;
+  }
+
+  .ditele-card-grid {
+    display: grid;
+    gap: clamp(1rem, 2.4vw, 2.5rem);
+    margin-top: 48px;
+  }
+
+  .ditele-card-grid--three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ditele-card-grid--four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+  .ditele-card {
+    min-height: 190px;
+    padding: 30px;
+    background: #303030;
+  }
+
+  .ditele-card h3,
+  .ditele-why h3,
+  .ditele-advantages h3 {
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+
+  .ditele-card p {
+    margin-top: 14px;
+    color: rgba(255, 255, 255, 0.84);
+    font-size: 0.86rem;
+  }
+
+  .ditele-platform__outro,
+  .ditele-together__outro {
+    margin-top: 50px;
+    max-width: 1120px;
+  }
+
+  .ditele-why h2 span,
+  .ditele-advantages h2 span {
+    color: #ff0b00;
+  }
+
+  .ditele-why__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(2rem, 5vw, 5rem);
+    margin-top: 58px;
+  }
+
+  .ditele-why article svg {
+    width: 35px;
+    height: 35px;
+    margin-bottom: 22px;
+    fill: none;
+    stroke: #ff0b00;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .ditele-why article p {
+    margin-top: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.86rem;
+  }
+
+  .ditele-why__outro { margin-top: 50px; max-width: 1100px; }
+
+  .ditele-card--strong {
+    display: flex;
+    align-items: flex-start;
+    min-height: 225px;
+  }
+
+  .ditele-card--strong p {
+    margin: 0;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.24;
+  }
+
+  .ditele-advantages__grid { align-items: stretch; }
+  .ditele-advantages h2 { margin-bottom: 38px; }
+
+  .ditele-advantages__list article {
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(255, 11, 0, 0.34);
+  }
+
+  .ditele-advantages__list article:first-child { padding-top: 0; }
+  .ditele-advantages__list article:last-child { border-bottom: 0; }
+
+  .ditele-advantages__list p {
+    margin-top: 9px;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.86rem;
+  }
+
+  .ditele-advantages__media {
+    min-height: 560px;
+    overflow: hidden;
+  }
+
+  .ditele-advantages__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (max-width: 900px) {
+    .ditele-hero { min-height: 700px; }
+    .ditele-hero__content { padding-top: 410px; }
+    .ditele-hero__media { top: 55px; right: -70px; width: 650px; max-width: 88vw; }
+    .ditele-test__grid,
+    .ditele-advantages__grid { grid-template-columns: 1fr; }
+    .ditele-test__video { order: 2; }
+    .ditele-card-grid--four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .ditele-advantages__media { min-height: 460px; }
+  }
+
+  @media (max-width: 680px) {
+    .ditele-hero {
+      min-height: 620px;
+    }
+
+    .ditele-hero__content {
+      padding-top: 155px;
+    }
+
+    .ditele-hero h1,
+    .ditele-section h2 {
+      font-size: clamp(1.72rem, 8.4vw, 2.25rem);
+    }
+
+    .ditele-hero p {
+      max-width: 74%;
+      margin-top: 12px;
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+
+    .ditele-hero__media {
+      top: 62px;
+      right: -115px;
+      width: 365px;
+      max-width: none;
+    }
+
+    .ditele-section {
+      padding-block: 4.25rem;
+    }
+
+    .ditele-section p { font-size: 0.86rem; }
+
+    .ditele-test__grid { gap: 2rem; }
+    .ditele-test__video { order: initial; }
+
+    .ditele-card-grid--three,
+    .ditele-card-grid--four,
+    .ditele-why__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .ditele-card-grid,
+    .ditele-why__grid {
+      gap: 1rem;
+      margin-top: 30px;
+    }
+
+    .ditele-card {
+      min-height: 0;
+      padding: 24px;
+    }
+
+    .ditele-card--strong { min-height: 130px; }
+    .ditele-platform__outro,
+    .ditele-together__outro,
+    .ditele-why__outro { margin-top: 32px; }
+
+    .ditele-why article {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      column-gap: 16px;
+    }
+
+    .ditele-why article svg { grid-row: 1 / span 2; margin: 0; }
+    .ditele-why article p { margin-top: 7px; }
+
+    .ditele-advantages__media { display: none; }
+
+  }
+
+  @media (max-width: 410px) {
+    .ditele-hero p { max-width: 82%; }
+    .ditele-consent { font-size: 0.62rem; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-external-media]').forEach((container) => {
+    const button = container.querySelector<HTMLButtonElement>('[data-load-external-media]');
+    const iframe = container.querySelector<HTMLIFrameElement>('iframe[data-consent-src]');
+    const placeholder = container.querySelector<HTMLElement>('.ditele-test__video-consent');
+
+    button?.addEventListener('click', () => {
+      const src = iframe?.dataset.consentSrc;
+      if (!iframe || !src) return;
+
+      iframe.src = src;
+      iframe.hidden = false;
+      placeholder?.setAttribute('hidden', '');
+    });
+  });
+
+  const checkButton = document.getElementById('ditele-check-button');
+  checkButton?.addEventListener('click', () => {
+    document.getElementById('lernplattform')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>

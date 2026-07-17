@@ -1,0 +1,515 @@
+---
+import type { Lang } from '../../i18n/config';
+import LeadForm from './LeadForm.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const copy = {
+  de: {
+    heroLead: 'Der Weg zum Erfolg',
+    heroRest: 'beginnt mit der WAMOCON Academy',
+    heroText: 'Unser Bildungszentrum bietet mehr als nur Kurse - es ist Ihre Startrampe für eine erfolgreiche IT-Karriere. Hier verwandeln wir Lernende in IT-Profis, die bereit sind, die Herausforderungen der heutigen digitalen Welt zu meistern.',
+    supportLead: 'Unterstützung',
+    supportRest: 'durch erfahrene Dozenten',
+    supportParagraphs: [
+      'Der theoretische Unterricht wird in verständlicher Form vermittelt, und die angebotenen Übungen und Beispiele aus der Praxis von Branchenexperten helfen dabei, ein tiefes Verständnis für die tatsächlichen Aufgaben eines Testers schnell und einfach zu erlangen.',
+      'Auf diese Weise erwerben die Teilnehmer fundiertes Wissen und praktische Fähigkeiten in Kombination mit einem wertvollen Zertifikat. Dies eröffnet zahlreiche Möglichkeiten für Wachstum in der IT-Branche.',
+    ],
+    advantagesLead: 'Die wichtigsten Vorteile,',
+    advantagesRest: 'die die Academy bietet',
+    advantages: [
+      ['Ausbildung nach internationalen Qualitätsstandards', 'Deine IT-Karriere erreicht mit der WAMOCON Academy neue Höhen! Unsere Einrichtung ist nach internationalen Vorschriften Akkreditiert und zusätzlich durch Regierungspräsidium Hessen als Bildungszentrum anerkannt. Diese Anerkennung garantiert die Zuverlässigkeit und höchste Effektivität in Deiner perönlichen Weiterbildung.'],
+      ['Breites Spektrum an Ausbildungsprogrammen', 'Diese sind darauf ausgelegt, ein tiefes Verständnis aller Aspekte des Softwaretestens zu vermitteln. Erstklassige IT-Experten bereiten unsere Teilnehmer strukturiert auf die Prüfung und die Arbeit in renommierten Unternehmen vor.'],
+      ['Moderne Bildungstechnologien und Bildungsmethoden', 'Jeder Teilnehmer kann seine beruflichen Ziele in einer komfortablen und unterstützenden Lernumgebung erreichen.'],
+      ['Individueller Lernansatz', 'Die Anpassung an die individuellen Bedürfnisse der Studierenden ermöglicht es, das Wissensniveau und die beruflichen Ambitionen jedes Einzelnen bestmöglich zu berücksichtigen.'],
+      ['Praxisorientierung', 'Die Teilnehmer arbeiten an realen Projekten und Fällen, was zu einem besseren Verständnis des Materials und dem Erwerb der notwendigen Fähigkeiten für die Arbeit in modernen Unternehmen beiträgt.'],
+      ['Unterstützung und Mentoring', 'Unsere Dozenten sind erfahrene Fachleute und Praktiker, die nicht nur Wissen vermitteln, sondern die Teilnehmer auf jedem Schritt ihrer Ausbildung unterstützen, indem sie Feedback und Mentoring anbieten.'],
+    ],
+    advantagesSummary: 'Dank dieser Vorteile bietet die WAMOCON Academy eine umfassende und qualitativ hochwertige Ausbildung für Fachleute, damit sie in der Lage sind, persönliche und berufliche Ziele in der sich schnell verändernden Technologiewelt zu erreichen.',
+    coursesCta: 'Sehen Sie sich unsere Kurse an',
+    wmcTitle: 'WMC-Methode +',
+    wmcParagraphs: [
+      'Die IT-Welt war noch nie so komplex wie heute, besonders durch den rasanten Fortschritt der künstlichen Intelligenz. Hier kommt die WMC-Methode ins Spiel, die seit zwanzig Jahren zuverlässig und ohne Ausfälle funktioniert, weil sie zeitunabhängig ist.',
+      'Diese bewährte Methode sorgt dafür, dass auch zukünftige IT-Projekte erfolgreich umgesetzt werden. Vertrauen Sie auf die WMC-Methode - Ihr stabiler Anker in der sich ständig wandelnden IT-Welt.',
+    ],
+    methodIntro: 'IT-Projekte können manchmal kompliziert sein, aber die WMC-Methode hilft, alles einfacher zu machen. Hier sind die drei wichtigsten Dinge, die du wissen musst:',
+    methodColumns: [
+      [
+        ['Priorisierung', 'Erledige zuerst die wichtigsten Aufgaben. Konzentriere dich auf das Wesentliche und arbeite Schritt für Schritt.'],
+        ['Strategische Ausrichtung', 'Achte darauf, dass das Projekt zum übergeordneten Ziel beiträgt. Jedes Detail muss an seinem Platz sein.'],
+        ['Stakeholder-Management', 'Sorge dafür, dass alle wichtigen Personen informiert und zufrieden sind.'],
+      ],
+      [
+        ['Zeitmanagement', 'Achte darauf, dass du deine Aufgaben rechtzeitig erledigst. Halte dich an die vorgegebenen Fristen.'],
+        ['Ressourcenallokation', 'Verteile deine Ressourcen klug. Nutze deine Mittel effizient und sparsam.'],
+        ['Reaktionsfähigkeit', 'Sei bereit, auf Veränderungen schnell zu reagieren. Passe dich an neue Umstände flexibel an.'],
+      ],
+      [
+        ['Risikobewertung', 'Finde heraus, welche Risiken bestehen. Analysiere mögliche Gefahrenquellen.'],
+        ['Risikominderung', 'Entwickle Pläne, um Risiken zu verringern. Triff Maßnahmen, um Probleme zu vermeiden.'],
+        ['Kontinuierliches Monitoring', 'Überwache die Risiken regelmäßig. Achte ständig auf mögliche Veränderungen.'],
+      ],
+    ],
+    boosterLead: '360°-Karriere-Booster-System',
+    boosterRest: 'für IT',
+    boosterParagraphs: [
+      'WAMOCON hat einen umfassenden Ansatz entwickelt, der alle Aspekte der Arbeit im IT-Testing abdeckt. Dieses 360-Grad-System zur erfolgreichen Karriereentwicklung umfasst eine Reihe von Schritten und ermöglicht es, Herausforderungen zu meistern und den Weg zum Erfolg auf die effektivste Weise zu bewältigen.',
+      'Das WAMOCON-Team nutzt dieses System, um die Qualität der Arbeit jedes einzelnen Mitarbeiters zu verbessern, erfolgreiche Tests durchzuführen und IT-Projekte erfolgreich abzuschließen.',
+    ],
+    graduatesTitle: 'Das sagen erfolgreiche Absolventen',
+    graduatesText: 'Wir begleiten dich Schritt für Schritt bei deinem Einstieg in der IT-Branche.',
+    participant: 'Teilnehmerin WAMOCON Academy',
+    magazineTitle: 'Erfahren Sie mehr über uns',
+    magazineText: 'Entdecken Sie unser Magazin mit spannenden Projekten, Schulungen und unserer Unternehmenskultur.',
+    magazineCta: 'Magazin herunterladen',
+    adviceTitle: 'Beratung erhalten',
+    adviceText: 'Rufen Sie uns an +49 6196 5838311, oder hinterlassen Sie unten Ihre Kontaktdaten, damit wir Sie erreichen und Ihre Fragen beantworten können.',
+    loadVideo: 'YouTube-Video laden',
+    videoConsent: 'Erst nach Ihrer Auswahl wird eine Verbindung zu YouTube hergestellt.',
+    contactTitle: 'Kontakt',
+    location: 'Standort',
+    phone: 'Telefon',
+    hours: 'Öffnungszeiten',
+    follow: 'Folgen Sie uns auf sozialen Medien',
+    imageAlt: 'WAMOCON Academy Team',
+  },
+  en: {
+    heroLead: 'The road to success',
+    heroRest: 'begins with the WAMOCON Academy',
+    heroText: "Our education center offers more than just courses - it's your launch pad for a successful IT career. Here we transform learners into IT professionals who are ready to master the challenges of today's digital world.",
+    supportLead: 'Support',
+    supportRest: 'from experienced lecturers',
+    supportParagraphs: [
+      'The theoretical lessons are taught in an understandable way, and the exercises and practical examples provided by industry experts help to quickly and easily gain a deep understanding of the actual tasks of a tester.',
+      'In this way, participants acquire in-depth knowledge and practical skills in combination with a valuable certificate. This opens up numerous opportunities for growth in the IT industry.',
+    ],
+    advantagesLead: 'The most important advantages',
+    advantagesRest: 'offered by the Academy',
+    advantages: [
+      ['Training according to international quality standards', 'Your IT career will reach new heights with the WAMOCON Academy! Our institution is accredited according to international regulations and is also recognized as an educational center by the Hesse Regional Council. This recognition guarantees the reliability and maximum effectiveness of your personal training.'],
+      ['Broad spectrum of training programs', 'These are designed to provide an in-depth understanding of all aspects of software testing. First-class IT experts prepare our participants in a structured way for the exam and for working in renowned companies.'],
+      ['Modern educational technologies and methods', 'Every participant can achieve their professional goals in a comfortable and supportive learning environment.'],
+      ['Individual learning approach', 'The adaptation to the individual needs of the students makes it possible to take the level of knowledge and the professional ambitions of each individual into account in the best possible way.'],
+      ['Practical orientation', 'Participants work on real projects and cases, which contributes to a better understanding of the material and the acquisition of the necessary skills for working in modern companies.'],
+      ['Support and mentoring', 'Our lecturers are experienced professionals and practitioners who not only impart knowledge, but also support participants at every step of their training by providing feedback and mentoring.'],
+    ],
+    advantagesSummary: 'Thanks to these advantages, the WAMOCON Academy offers comprehensive and high-quality training for professionals to enable them to achieve personal and professional goals in the rapidly changing world of technology.',
+    coursesCta: 'Take a look at our courses',
+    wmcTitle: 'WMC method +',
+    wmcParagraphs: [
+      'The IT world has never been as complex as it is today, especially with the rapid advances in artificial intelligence. This is where the WMC method comes into play, which has been working reliably and without failures for twenty years because it is time-independent.',
+      'This proven method ensures that future IT projects are also implemented successfully. Put your trust in the WMC method - your stable anchor in the constantly changing IT world.',
+    ],
+    methodIntro: 'IT projects can sometimes be complicated, but the WMC method helps to make everything simpler. Here are the three most important things you need to know:',
+    methodColumns: [
+      [
+        ['Prioritization', 'Complete the most important tasks first. Concentrate on the essentials and work step by step.'],
+        ['Strategic orientation', 'Make sure that the project contributes to the overall goal. Every detail must be in its place.'],
+        ['Stakeholder management', 'Make sure that all important people are informed and satisfied.'],
+      ],
+      [
+        ['Time management', 'Make sure that you complete your tasks on time. Stick to the given deadlines.'],
+        ['Resource allocation', 'Allocate your resources wisely. Use your resources efficiently and sparingly.'],
+        ['Responsiveness', 'Be ready to react quickly to changes. Adapt flexibly to new circumstances.'],
+      ],
+      [
+        ['Risk assessment', 'Find out what risks exist. Analyze possible sources of danger.'],
+        ['Risk reduction', 'Develop plans to reduce risks. Take measures to avoid problems.'],
+        ['Continuous monitoring', 'Monitor the risks regularly. Pay constant attention to possible changes.'],
+      ],
+    ],
+    boosterLead: '360° career booster system',
+    boosterRest: 'for IT',
+    boosterParagraphs: [
+      'WAMOCON has developed a comprehensive approach that covers all aspects of working in IT testing. This 360-degree system for successful career development comprises a series of steps and enables challenges to be overcome and the path to success to be managed in the most effective way.',
+      "The WAMOCON team uses this system to improve the quality of each individual employee's work, carry out successful tests and successfully complete IT projects.",
+    ],
+    graduatesTitle: 'What successful graduates say',
+    graduatesText: 'We accompany you step by step on your entry into the IT industry.',
+    participant: 'Participant WAMOCON Academy',
+    magazineTitle: 'Find out more about us',
+    magazineText: 'Discover our magazine with exciting projects, training courses and our corporate culture.',
+    magazineCta: 'Download magazine',
+    adviceTitle: 'Get advice',
+    adviceText: 'Give us a call +49 6196 5838311, or leave your contact details below so that we can reach you and answer your questions.',
+    loadVideo: 'Load YouTube video',
+    videoConsent: 'A connection to YouTube is established only after you choose to load it.',
+    contactTitle: 'Contact us',
+    location: 'Location',
+    phone: 'Phone',
+    hours: 'Opening hours',
+    follow: 'Follow us on social media',
+    imageAlt: 'WAMOCON Academy team',
+  },
+} as const;
+
+const c = copy[lang];
+const courseHref = lang === 'de' ? '/bildungsprogramme-fr-softwaretester/' : '/en/educational-programs/';
+const boosterImage = lang === 'de'
+  ? '/images/academy/tild6230-6463-4530-a631-353632323538__-3_deu-1.svg'
+  : '/images/academy/tild6331-6362-4837-b333-343461653664__-3_eng_1.svg';
+const videos = [
+  ['Natalie', 'Y530fsyTCe4'],
+  ['Artur', 'GIzxhk4tzmM'],
+  ['Alexander', 'Nun-eNkeeY0'],
+  ['Olga', 'YI6Jf9-T3_c'],
+  ['Jonathan', 'C6jFQwt6E0o'],
+] as const;
+---
+
+<div class="academy-about">
+  <section class="academy-about-hero page-hero">
+    <div class="about-container academy-about-hero__inner">
+      <div class="academy-about-hero__copy" data-reveal>
+        <h1><span>{c.heroLead}</span> {c.heroRest}</h1>
+        <p>{c.heroText}</p>
+      </div>
+      <div class="academy-about-hero__art" aria-hidden="true">
+        <img class="academy-about-hero__disc" src="/images/academy/tild6130-3637-4836-a562-333834303031__jn.png" alt="" width="1200" height="1200" />
+        <img class="academy-about-hero__ring" src="/images/academy/tild3838-3030-4564-a133-303164373338__hh.png" alt="" width="1200" height="1200" />
+      </div>
+    </div>
+  </section>
+
+  <section class="about-support">
+    <img class="about-support__accent" src="/images/academy/tild3730-6132-4863-b462-623032303533__group_11.png" alt="" aria-hidden="true" />
+    <div class="about-container about-support__grid">
+      <img class="about-support__photo" src="/images/academy/tild3733-3633-4134-b562-656332386666__photo_2021-09-11_23-.png" alt={c.imageAlt} width="1920" height="1280" loading="eager" />
+      <div class="about-support__copy" data-reveal>
+        <h2><span>{c.supportLead}</span> {c.supportRest}</h2>
+        {c.supportParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="about-advantages">
+    <div class="about-container">
+      <h2 data-reveal><span>{c.advantagesLead}</span> {c.advantagesRest}</h2>
+      <div class="about-advantages__grid">
+        {c.advantages.map(([title, text]) => (
+          <article data-reveal>
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </article>
+        ))}
+      </div>
+      <p class="about-advantages__summary">{c.advantagesSummary}</p>
+      <a class="about-button about-button--courses" href={courseHref}>{c.coursesCta}</a>
+    </div>
+  </section>
+
+  <section class="about-wmc">
+    <div class="about-container about-wmc__intro">
+      <div data-reveal>
+        <h2>{c.wmcTitle}</h2>
+        {c.wmcParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+      <img src="/images/academy/tild3865-3537-4134-a135-643966323539__close-up-programmer-.jpg" alt="" width="1680" height="1120" loading="lazy" />
+    </div>
+    <div class="about-container about-wmc__method">
+      <h3>{c.methodIntro}</h3>
+      <div class="about-wmc__columns">
+        {c.methodColumns.map((items, index) => (
+          <article>
+            <span class="about-wmc__number">{String(index + 1).padStart(2, '0')}</span>
+            <div class="about-wmc__items">
+              {items.map(([title, text]) => <div><h4>{title}</h4><p>{text}</p></div>)}
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="about-booster">
+    <img class="about-booster__accent" src="/images/academy/tild3730-6132-4863-b462-623032303533__group_11.png" alt="" aria-hidden="true" />
+    <div class="about-container about-booster__grid">
+      <img class="about-booster__image" src={boosterImage} alt="360° Booster System" width="900" height="900" loading="lazy" />
+      <div class="about-booster__copy" data-reveal>
+        <h2><span>{c.boosterLead}</span> {c.boosterRest}</h2>
+        {c.boosterParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="about-graduates">
+    <div class="about-container">
+      <h2>{c.graduatesTitle}</h2>
+      <p class="about-graduates__lead">{c.graduatesText}</p>
+      <div class="about-graduates__grid">
+        {videos.map(([name, id]) => (
+          <article>
+            <div class="about-video">
+              <img src="/images/academy/tild3864-3733-4965-b336-663539653137__wma_trainer_gruppenf.jpg" alt="" width="480" height="360" loading="lazy" />
+              <button
+                class="about-video__consent"
+                type="button"
+                data-consent-src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`}
+                data-video-title={`${name}: YouTube video`}
+                aria-label={`${c.loadVideo}: ${name}`}
+              >
+                <span class="about-video__play" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M18 13 36 24 18 35Z" fill="currentColor" /></svg></span>
+                <strong>{c.loadVideo}</strong>
+                <small>{c.videoConsent}</small>
+              </button>
+            </div>
+            <h3>{name}</h3>
+            <p>{c.participant}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="about-magazine">
+    <div class="about-container about-magazine__panel">
+      <img class="about-magazine__cover" src="/images/academy/tild6438-6631-4663-a338-633332663664____2024-12-05__163323.png" alt="WAMOCON Academy Magazin" width="1200" height="1600" loading="lazy" />
+      <div class="about-magazine__copy">
+        <h2>{c.magazineTitle}</h2>
+        <p>{c.magazineText}</p>
+        <a class="about-button about-button--magazine" href="https://wamocon-my.sharepoint.com/:b:/p/waleri_moretz/EZUMpxrfjYdPt7g1H7xkQhkBnuG6v-tWKLCPNZIN6Wejlw?e=bQVx7k&download=1" target="_blank" rel="noopener">{c.magazineCta}</a>
+      </div>
+      <img class="about-magazine__badge" src="/images/academy/tild6537-6332-4238-b763-616438653639__ki-siegel_wamocon.png" alt="KI Innovator WAMOCON" width="500" height="620" loading="lazy" />
+    </div>
+  </section>
+
+  <LeadForm
+    lang={lang}
+    type="about"
+    compact
+    complianceMode
+    title={c.adviceTitle}
+    intro={c.adviceText}
+    image="/images/academy/tild6537-3034-4532-a562-323161646230__04_.png"
+  />
+
+</div>
+
+<style>
+  .academy-about { --about-gutter: clamp(10px, 1.7vw, 20px); background: #101010; color: #fff; overflow: hidden; }
+  .about-container { width: 100%; max-width: 1200px; margin-inline: auto; padding-inline: var(--about-gutter); }
+  .academy-about h1, .academy-about h2, .academy-about h3, .academy-about h4 { overflow-wrap: normal; }
+  .academy-about p { font-weight: 300; line-height: 1.42; }
+  .academy-about h2 { font-size: 40px; line-height: 1.2; }
+  .academy-about h2 span, .academy-about-hero h1 span { color: var(--color-accent); }
+
+  .academy-about-hero { min-height: 600px; position: relative; overflow: hidden; }
+  .academy-about-hero__inner { position: relative; min-height: 600px; }
+  .academy-about-hero__copy { position: absolute; z-index: 2; left: var(--about-gutter); top: 361px; width: 769px; max-width: calc(100% - 2 * var(--about-gutter)); }
+  .academy-about-hero h1 { width: 641px; max-width: 100%; margin-bottom: 18px; font-size: 40px; line-height: 1.2; }
+  .academy-about-hero p { max-width: 769px; font-size: 16px; line-height: 1.3; }
+  .academy-about-hero__art { position: absolute; inset: 0; }
+  .academy-about-hero__disc { position: absolute; top: 74px; left: 751px; width: 502px; max-width: none; transform: rotate(273deg); }
+  .academy-about-hero__ring { position: absolute; top: 126px; left: 693px; width: 343px; max-width: none; transform: rotate(73deg); }
+
+  .about-support { position: relative; padding-block: 120px 0; }
+  .about-support__grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 5vw, 70px); align-items: center; }
+  .about-support__photo { width: 100%; height: 401px; object-fit: cover; }
+  .about-support__copy h2 { max-width: 620px; margin-bottom: 34px; }
+  .about-support__copy p { max-width: 650px; margin-bottom: 18px; font-size: 16px; line-height: 1.3; }
+  .about-support__accent { position: absolute; right: -72px; top: -55px; width: 190px; transform: rotate(-22deg); }
+
+  .about-advantages { padding-block: 120px; }
+  .about-advantages h2 { margin-bottom: 45px; }
+  .about-advantages__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; }
+  .about-advantages__grid article { min-height: 255px; padding: 38px 34px; background: #303030; }
+  .about-advantages__grid h3 { margin-bottom: 14px; font-size: 18px; line-height: 1.3; }
+  .about-advantages__grid p { font-size: 14px; line-height: 1.3; }
+  .about-advantages__summary { margin: 45px 0 28px; max-width: 883px; font-size: 14px; line-height: 1.3; }
+  .about-button { display: inline-flex; align-items: center; justify-content: center; min-height: 50px; padding: 12px 28px; border-radius: 5px; background: var(--color-accent); color: #fff; font-size: 12px; font-weight: 600; transition: background .18s, transform .18s; }
+  .about-button--courses { width: 260px; }
+  .about-button--magazine { width: 200px; min-height: 55px; border-radius: 0; font-size: 14px; }
+  .about-button:hover { background: var(--color-accent-hover); transform: translateY(-2px); }
+
+  .about-wmc { padding-block: 0; }
+  .about-wmc__intro { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: center; }
+  .about-wmc__intro h2 { margin-bottom: 32px; }
+  .about-wmc__intro p { max-width: 640px; margin-bottom: 20px; font-size: 16px; line-height: 1.3; }
+  .about-wmc__intro img { width: 100%; height: 360px; object-fit: cover; }
+  .about-wmc__method { margin-top: 45px; }
+  .about-wmc__method > h3 { max-width: 1080px; margin-bottom: 30px; font-size: 22px; line-height: 1.3; }
+  .about-wmc__columns { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .about-wmc__columns > article { border-left: 1px solid rgba(255,255,255,.65); }
+  .about-wmc__columns > article:last-child { border-right: 1px solid rgba(255,255,255,.65); }
+  .about-wmc__number { display: block; padding: 20px 20px 16px; border-bottom: 1px solid rgba(255,255,255,.65); color: var(--color-accent); font-size: 40px; font-weight: 700; line-height: 1; }
+  .about-wmc__items { display: grid; gap: 25px; padding: 28px 24px; }
+  .about-wmc__items h4 { margin-bottom: 8px; font-size: 18px; line-height: 1.3; }
+  .about-wmc__items p { font-size: 14px; line-height: 1.3; }
+
+  .about-booster { position: relative; padding-block: 120px 0; }
+  .about-booster__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: center; min-height: 595px; }
+  .about-booster__image { width: 100%; max-height: 720px; object-fit: contain; }
+  .about-booster__copy h2 { max-width: 640px; margin-bottom: 38px; font-size: 40px; }
+  .about-booster__copy p { max-width: 630px; margin-bottom: 22px; font-size: 16px; line-height: 1.3; }
+  .about-booster__accent { position: absolute; right: -80px; bottom: 50px; width: 300px; transform: rotate(20deg); }
+
+  .about-graduates { padding-block: 120px 45px; }
+  .about-graduates h2 { margin-bottom: 12px; }
+  .about-graduates__lead { margin-bottom: 50px; }
+  .about-graduates__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 52px 40px; }
+  .about-graduates__grid article { min-width: 0; }
+  .about-graduates__grid h3 { margin: 22px 0 6px; font-size: 16px; line-height: 1.3; }
+  .about-graduates__grid p { font-size: 14px; line-height: 1.3; }
+  .about-video { position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; background: #171717; }
+  .about-video > img, .about-video > iframe { width: 100%; height: 100%; object-fit: cover; border: 0; }
+  .about-video > img { filter: saturate(.55) brightness(.55); }
+  .about-video__consent { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 24px; background: rgba(0,0,0,.42); text-align: center; }
+  .about-video__consent strong { margin-top: 56px; font-size: 14px; font-weight: 600; }
+  .about-video__consent small { max-width: 290px; font-size: 11px; font-weight: 300; line-height: 1.35; }
+  .about-video__consent:hover { background: rgba(0,0,0,.28); }
+  .about-video__play { position: absolute; inset: 50% auto auto 50%; display: grid; place-items: center; width: 64px; height: 48px; border-radius: 14px; background: rgba(0,0,0,.65); color: #fff; transform: translate(-50%,-50%); }
+  .about-video__play svg { width: 34px; height: 34px; }
+
+  .about-magazine { padding-block: 0 135px; }
+  .about-magazine__panel { position: relative; display: grid; grid-template-columns: 343px 1fr 165px; gap: 57px; align-items: center; height: 313px; margin-top: 88px; padding: 0 28px 0 100px; background: #303030; }
+  .about-magazine__cover { position: absolute; top: -88px; left: 100px; width: 343px; height: 487px; object-fit: cover; object-position: center 60%; }
+  .about-magazine__copy { grid-column: 2; }
+  .about-magazine__badge { grid-column: 3; }
+  .about-magazine__copy h2 { max-width: 420px; margin-bottom: 22px; }
+  .about-magazine__copy p { max-width: 467px; margin-bottom: 28px; font-size: 16px; line-height: 1.3; }
+  .about-magazine__badge { width: 165px; max-height: 250px; object-fit: contain; }
+
+
+  @media (max-width: 1050px) {
+    .academy-about h2 { font-size: 35px; }
+    .academy-about-hero__copy { left: calc(50% - 480px + 10px); }
+    .academy-about-hero h1 { font-size: 35px; }
+    .academy-about-hero__disc { top: 84px; left: calc(50% - 480px + 542px); }
+    .academy-about-hero__ring { top: 93px; left: calc(50% - 480px + 443px); }
+    .about-advantages__grid { gap: 24px; }
+    .about-magazine__panel { grid-template-columns: 360px 1fr 90px; gap: 30px; padding-left: 30px; }
+    .about-magazine__cover { left: 30px; width: 360px; }
+  }
+
+  @media (max-width: 820px) {
+    .academy-about-hero, .academy-about-hero__inner { min-height: 438px; }
+    .academy-about-hero__copy { top: 250px; width: 560px; }
+    .academy-about-hero__copy { left: calc(50% - 320px + 10px); }
+    .academy-about-hero__disc { top: 118px; left: calc(50% - 320px + 338px); width: 353px; }
+    .academy-about-hero__ring { top: 125px; left: calc(50% - 320px + 269px); width: 199px; }
+    .about-support__grid, .about-wmc__intro, .about-booster__grid { grid-template-columns: 1fr; }
+    .about-support__copy { order: -1; }
+    .about-support__photo { height: auto; }
+    .about-advantages__grid { grid-template-columns: 1fr 1fr; }
+    .about-wmc__columns { grid-template-columns: 1fr; gap: 28px; }
+    .about-wmc__columns > article, .about-wmc__columns > article:last-child { border-right: 1px solid rgba(255,255,255,.65); }
+    .about-booster__image { order: 2; }
+    .about-booster__grid { min-height: 914px; }
+    .about-graduates__grid { grid-template-columns: 1fr 1fr; }
+    .about-magazine__panel { grid-template-columns: 283px 1fr; height: 313px; margin-top: 35px; padding: 0 10px 0 16px; }
+    .about-magazine__cover { top: -35px; left: 16px; width: 283px; height: 384px; }
+    .about-magazine__badge { display: none; }
+  }
+
+  @media (max-width: 560px) {
+    .academy-about { --about-gutter: 10px; }
+    .academy-about h2 { font-size: 30px; }
+    .academy-about p { font-size: 15px; }
+    .academy-about-hero, .academy-about-hero__inner { min-height: 438px; }
+    .academy-about-hero__copy { top: 241px; left: calc(50% - 240px + 10px); }
+    .academy-about-hero h1 { font-size: 30px; }
+    .academy-about-hero p { font-size: 14px; }
+    .academy-about-hero__disc { top: 68px; left: calc(50% - 240px + 178px); width: 353px; }
+    .academy-about-hero__ring { top: 75px; left: calc(50% - 240px + 109px); width: 199px; }
+    .about-support { padding-block: 90px 0; }
+    .about-support__copy h2, .about-advantages h2 { margin-bottom: 28px; }
+    .about-support__copy p { font-size: 14px; }
+    .about-support__accent { width: 115px; right: -48px; }
+    .about-advantages { padding-block: 90px; }
+    .about-advantages__grid { grid-template-columns: 1fr; gap: 18px; }
+    .about-advantages__grid article { min-height: 0; padding: 28px 24px; }
+    .about-advantages__grid h3 { font-size: 18px; }
+    .about-advantages__grid p { font-size: 14px; }
+    .about-advantages__summary { font-size: 14px; }
+    .about-button { padding-inline: 18px; }
+    .about-button--courses { width: 220px; min-height: 45px; }
+    .about-wmc { padding-bottom: 0; }
+    .about-wmc__intro { gap: 30px; }
+    .about-wmc__intro p { font-size: 14px; }
+    .about-wmc__intro img { height: 210px; }
+    .about-wmc__method { margin-top: 62px; }
+    .about-wmc__method > h3 { margin-bottom: 30px; font-size: 18px; }
+    .about-wmc__number { font-size: 38px; }
+    .about-wmc__items { gap: 22px; }
+    .about-wmc__items h4 { font-size: 18px; }
+    .about-wmc__items p { font-size: 14px; }
+    .about-booster { padding-block: 90px 0; }
+    .about-booster__grid { gap: 28px; min-height: 868px; }
+    .about-booster__copy h2 { font-size: 30px; }
+    .about-booster__copy p { font-size: 14px; }
+    .about-booster__accent { width: 150px; right: -60px; }
+    .about-graduates { padding-block: 90px 45px; }
+    .about-graduates__lead { margin-bottom: 30px; }
+    .about-graduates__grid { grid-template-columns: 1fr; gap: 34px; }
+    .about-graduates__grid h3 { margin-top: 14px; }
+    .about-magazine { padding-bottom: 100px; }
+    .about-magazine__panel { grid-template-columns: 1fr; gap: 20px; height: 460px; margin-top: 0; padding: 20px; }
+    .about-magazine__cover { position: static; grid-column: 1; width: 142px; height: 201px; object-fit: cover; object-position: center 60%; }
+    .about-magazine__copy { grid-column: 1; }
+  }
+
+  @media (max-width: 479px) {
+    .academy-about { --about-gutter: 20px; }
+    .academy-about h2 { font-size: 25px; }
+    .academy-about-hero, .academy-about-hero__inner { min-height: 449px; }
+    .academy-about-hero__copy { top: 241px; left: calc(50% - 160px + 20px); width: 310px; max-width: calc(100% - 30px); }
+    .academy-about-hero h1 { width: 317px; font-size: 25px; }
+    .academy-about-hero p { max-width: 310px; }
+    .academy-about-hero__disc { top: 112px; left: calc(50% - 160px + 98px); width: 259px; }
+    .academy-about-hero__ring { top: 116px; left: calc(50% - 160px + 48px); width: 146px; }
+    .about-wmc__number { font-size: 35px; }
+    .about-booster__grid { min-height: 743px; }
+    .about-booster__image { width: calc(100% + 40px); max-width: none; height: 380px; margin-left: -20px; }
+    .about-booster__copy h2 { font-size: 25px; }
+    .about-magazine__panel { display: grid; grid-template-columns: 1fr; gap: 24px; height: 658px; padding: 30px 20px 28px; }
+    .about-magazine__copy { grid-column: 1; order: -1; }
+    .about-magazine__copy p { font-size: 14px; }
+    .about-magazine__cover { grid-column: 1; width: 100%; height: 359px; max-height: none; }
+    .about-magazine__badge { position: absolute; top: 11px; right: 9px; display: block; width: 40px; }
+  }
+</style>
+
+<script>
+  type ConsentWindow = Window & {
+    wamoconConsent?: {
+      hasExternalMedia?: () => boolean;
+      open?: () => void;
+    };
+  };
+
+  let pendingVideoButton: HTMLButtonElement | null = null;
+
+  const loadConsentedVideo = (button: HTMLButtonElement) => {
+    const src = button.dataset.consentSrc;
+    const frame = button.closest<HTMLElement>('.about-video');
+    if (!src || !frame) return;
+    const iframe = document.createElement('iframe');
+    iframe.src = src;
+    iframe.title = button.dataset.videoTitle || 'YouTube video';
+    iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
+    iframe.allowFullscreen = true;
+    frame.replaceChildren(iframe);
+  };
+
+  document.querySelectorAll<HTMLButtonElement>('.about-video__consent[data-consent-src]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const consent = (window as ConsentWindow).wamoconConsent;
+      if (consent?.hasExternalMedia?.()) {
+        loadConsentedVideo(button);
+        return;
+      }
+      pendingVideoButton = button;
+      consent?.open?.();
+    });
+  });
+
+  window.addEventListener('wamocon:consent', (event) => {
+    const detail = (event as CustomEvent<{ externalMedia?: boolean }>).detail;
+    if (detail?.externalMedia && pendingVideoButton) loadConsentedVideo(pendingVideoButton);
+    pendingVideoButton = null;
+  });
+</script>

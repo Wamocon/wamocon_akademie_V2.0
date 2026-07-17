@@ -1,0 +1,1313 @@
+---
+import coursePopupCopy from '../../../audit/course-popup-copy.json';
+import type { Lang } from '../../i18n/config';
+import { programAssets, programContent, programCourses } from '../../data/programs';
+
+interface Props {
+  lang: Lang;
+}
+
+type PopupRecord = {
+  hook: string;
+  title: string;
+  description: string;
+  links: Array<{ text: string; href: string }>;
+};
+
+type PopupBlock =
+  | { type: 'heading'; text: string }
+  | { type: 'paragraph'; text: string }
+  | { type: 'list'; items: string[] };
+
+const { lang } = Astro.props;
+const content = programContent[lang];
+const courses = programCourses[lang];
+const coursePopups = (coursePopupCopy as PopupRecord[]).filter((popup) => popup.hook.endsWith(`-${lang}`));
+const popupId = (hook: string) => `course-${hook.replace('#popup:', '').replace(/[^a-z0-9-]+/gi, '-').toLowerCase()}`;
+const cleanPopupDescription = (description: string) => {
+  const fundingCopy = /Bildungsgutschein gefördert|education voucher funded/i.test(description);
+  if (fundingCopy) {
+    return lang === 'de'
+      ? 'Dieses Kursangebot verbindet Grundlagen des Softwaretestens mit praxisnaher Prüfungsvorbereitung. Aktuelle Termine und Preise: In Planung. Eine Förderung durch Bildungsgutschein kann im Einzelfall möglich sein. Über Voraussetzungen, förderfähige Kosten und Bewilligung entscheiden die zuständige Agentur für Arbeit oder das Jobcenter. Bitte lassen Sie die Förderung vor einer Anmeldung schriftlich bestätigen. Eine Anfrage über diese Website ist unverbindlich und stellt keinen Kauf dar.'
+      : 'This course combines software-testing fundamentals with practical examination preparation. Current dates and prices: Planned. Funding through a Bildungsgutschein may be available in individual cases. The responsible employment agency or job centre decides eligibility, covered costs and approval. Please obtain written confirmation before registering. An inquiry through this website is non-binding and does not constitute a purchase.';
+  }
+  return description
+    .replace(/\s*(Eine Frage stellen|Ask a question)\s*$/, '')
+    .replace(/Sich anmelden/g, 'Unverbindlich anfragen')
+    .replace(/Register now/gi, 'Request information');
+};
+const popupLinkText = (text: string) => {
+  if (/Sich anmelden/i.test(text)) return 'Unverbindlich anfragen';
+  if (/Register now/i.test(text)) return 'Request information';
+  return text;
+};
+const popupBlocks = (description: string): PopupBlock[] => {
+  const blocks: PopupBlock[] = [];
+  let paragraph: string[] = [];
+  let list: string[] = [];
+
+  const flushParagraph = () => {
+    if (paragraph.length) blocks.push({ type: 'paragraph', text: paragraph.join(' ') });
+    paragraph = [];
+  };
+  const flushList = () => {
+    if (list.length) blocks.push({ type: 'list', items: list });
+    list = [];
+  };
+
+  cleanPopupDescription(description)
+    .replace(/\r\n?/g, '\n')
+    .split('\n')
+    .forEach((rawLine) => {
+      const line = rawLine.trim();
+      if (!line) {
+        flushParagraph();
+        flushList();
+        return;
+      }
+
+      const isHeading =
+        line.endsWith(':') ||
+        /^(?:Tag|Day)\s+\d+\s*:/i.test(line) ||
+        /^\d+\.\s*(?:Etappe|Stage|Phase)\b/i.test(line);
+      if (isHeading) {
+        flushParagraph();
+        flushList();
+        blocks.push({ type: 'heading', text: line.replace(/:$/, '') });
+        return;
+      }
+
+      const bullet = line.match(/^(?:[-–—•]|\d+[.)])\s+(.+)$/);
+      if (bullet) {
+        flushParagraph();
+        list.push(bullet[1]);
+        return;
+      }
+
+      flushList();
+      paragraph.push(line);
+    });
+
+  flushParagraph();
+  flushList();
+  return blocks;
+};
+const redirect = lang === 'de' ? '/danke/' : '/thanks/';
+const questionHook = lang === 'de' ? '#popup:eine-Frage-stellen' : '#popup:eine-Frage-stellen-en';
+const registrationHook = lang === 'de' ? '#popup:myform' : '#popup:myform-en';
+const scheduleHook = lang === 'de' ? '#popup:Termine' : '#popup:Termine-en';
+const normalizePopupHref = (href: string) => {
+  if (href === '#order') return registrationHook;
+  if (lang === 'en' && href === '#popup:eine-Frage-stellen') return questionHook;
+  return href;
+};
+const certificationHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certification/';
+const privacyHref = lang === 'de' ? '/datenschutz/' : '/privacy-policy/';
+const privacyLabel = lang === 'de' ? 'Datenschutzerklärung' : 'privacy policy';
+const formNoticeStart = lang === 'de'
+  ? 'Ihre Anfrage an die WAMOCON Academy GmbH ist unverbindlich und stellt keinen Kauf dar. Informationen zur Verarbeitung Ihrer Daten finden Sie in der '
+  : 'Your inquiry to WAMOCON Academy GmbH is non-binding and does not constitute a purchase. Information about the processing of your data can be found in the ';
+const scheduleMonths: Array<[string, string[]]> = lang === 'de'
+  ? [['In Planung', ['Neue Kurstermine werden bekannt gegeben.']]]
+  : [['Planned', ['New course dates will be announced.']]];
+---
+
+<section class="page-hero program-hero">
+  <div class="program-shell program-hero__layout">
+    <div class="program-hero__copy" data-reveal>
+      <h1><span>{content.heroAccent}</span><br />{content.heroRest}</h1>
+      <p>{content.lead}</p>
+      <img
+        class="program-hero__accreditation"
+        src={programAssets.accreditation}
+        alt="Hessen, ISTQB Accredited Training Provider und International Software Testing Qualifications Board"
+        width="1400"
+        height="450"
+      />
+    </div>
+    <img class="program-hero__art" src={programAssets.hero} alt="" width="1680" height="1670" loading="eager" />
+  </div>
+</section>
+
+<section class="program-section program-benefits">
+  <div class="program-shell">
+    <h2><span>{content.benefitsTitle.split(' ')[0]}</span> {content.benefitsTitle.split(' ').slice(1).join(' ')}</h2>
+    <div class="program-benefits__grid">
+      {content.benefits.map(([title, text]) => (
+        <article data-reveal>
+          <h3>{title}</h3>
+          <p>{text}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="program-section program-catalog">
+  <div class="program-shell">
+    <div class="course-group course-group--individual">
+      <h2>{content.individualTitle}</h2>
+      <div class="course-grid course-grid--individual">
+        {courses.individual.map((course) => (
+          <a class="course-card" href={course.hook} data-course-popup={popupId(course.hook)} data-reveal>
+            <strong>{course.title}</strong>
+            <span class="course-card__duration">{course.duration}</span>
+          </a>
+        ))}
+      </div>
+      <img class="course-group__curve" src={programAssets.accentCurve} alt="" width="2228" height="1724" loading="lazy" />
+    </div>
+
+    <div class="course-group course-group--team">
+      <h2>{content.teamTitle}</h2>
+      <div class="course-grid">
+        {courses.team.map((course) => (
+          <a class="course-card" href={course.hook} data-course-popup={popupId(course.hook)} data-reveal>
+            <span class="course-card__format">{course.format}</span>
+            <strong>{course.title}</strong>
+            <span class="course-card__duration">{course.duration}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <figure class="program-network" data-reveal>
+      <img src={programAssets.network} alt="ISTQB Lern- und Teamkurse im Überblick" width="1440" height="715" loading="lazy" />
+      <figcaption>{content.networkText}</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="program-section program-dates">
+  <div class="program-shell">
+    <h2>{content.datesTitle}</h2>
+    <div class:list={['program-dates__grid', { 'program-dates__grid--single': content.dates.length === 1 }]}>
+      {content.dates.map((date) => (
+        <article class="date-column" data-reveal>
+          <h3>{date.month}</h3>
+          <ul>
+            {date.rows.map(([day, status]) => <li><span>{day}</span><strong>{status}</strong></li>)}
+          </ul>
+        </article>
+      ))}
+    </div>
+    <a class="program-button" href={scheduleHook} data-dialog-hook={popupId(scheduleHook)}>{content.moreDetails}</a>
+  </div>
+</section>
+
+<section class="program-section program-advice" id="beratung">
+  <div class="program-shell">
+    <div class="program-advice__panel">
+      <div class="program-advice__image-wrap" data-reveal>
+        <img src={programAssets.consultation} alt={lang === 'de' ? 'Persönliche Beratung bei der WAMOCON Academy' : 'Personal consultation at WAMOCON Academy'} width="1600" height="900" loading="lazy" />
+        <img class="program-advice__curve" src={programAssets.accentCurve} alt="" width="2228" height="1724" loading="lazy" aria-hidden="true" />
+      </div>
+      <div class="program-advice__content" data-reveal>
+        <h2>{content.adviceTitle}</h2>
+        <p>{content.adviceText}</p>
+        <form class="program-form js-lead-form" data-redirect={redirect}>
+          <input type="hidden" name="type" value="courses" />
+          <input type="hidden" name="lang" value={lang} />
+          <input class="program-form__trap" type="text" name="company" tabindex="-1" autocomplete="off" />
+          <label><span>{content.form.name}</span><input type="text" name="name" placeholder={content.form.name} autocomplete="name" required /></label>
+          <label><span>{content.form.phone}</span><input type="tel" name="phone" placeholder={content.form.phone} autocomplete="tel" /></label>
+          <label><span>{content.form.email}</span><input type="email" name="email" placeholder={content.form.email} autocomplete="email" required /></label>
+          <p class="program-form__notice">{formNoticeStart}<a href={privacyHref}>{privacyLabel}</a>.</p>
+          <p class="lead-form__status" role="alert" aria-live="assertive" hidden></p>
+          <button class="program-button" type="submit">{content.form.submit}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="program-section program-future">
+  <div class="program-shell program-future__grid">
+    <div class="program-future__copy" data-reveal>
+      <h2><a href={certificationHref}><span>{content.futureTitleAccent}</span><br />{content.futureTitleRest}</a></h2>
+      <p>{content.futureIntro}</p>
+      <p>{content.futureText}</p>
+    </div>
+    <div class="program-future__media" data-reveal>
+      <img class="program-future__diploma" src={programAssets.diploma} alt="Abschlusskappe und Zertifikat" width="1280" height="1280" loading="lazy" />
+      <img class="program-future__certification" src={programAssets.certification} alt="ISTQB Accredited Training Provider" width="726" height="450" loading="lazy" />
+    </div>
+  </div>
+</section>
+
+<section class="program-section program-steps">
+  <div class="program-shell">
+    <h2><span>{content.stepsTitle.split(' ').slice(0, 3).join(' ')}</span> {content.stepsTitle.split(' ').slice(3).join(' ')}</h2>
+    <ol class="program-steps__grid">
+      {content.steps.map((step, index) => (
+        <li data-reveal>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <p>{step}</p>
+        </li>
+      ))}
+    </ol>
+    <div class="program-prep">
+      {content.prep.map(([title, text]) => (
+        <article data-reveal>
+          <h3>{title}</h3>
+          <p>{text}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="program-section program-webinar">
+  <div class="program-shell program-webinar__grid">
+    <div class="program-webinar__copy" data-reveal>
+      <h2>{content.webinarTitle}</h2>
+      <h3>{content.webinarIntroTitle}</h3>
+      <p>{content.webinarIntro}</p>
+      <ul>
+        {content.webinarItems.map(([title, text]) => (
+          <li>
+            <strong>{title}</strong>
+            <span>{text}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="program-webinar__closing">{content.webinarClosing}</p>
+    </div>
+    <div class="program-webinar__media" data-reveal>
+      <img src={programAssets.webinar} alt="Softwaretester bei der Arbeit" width="1680" height="1118" loading="lazy" />
+      <div class="program-webinar__actions">
+        <a class="program-button" href={certificationHref}>{content.moreDetails}</a>
+        <a class="program-button program-button--outline" href="#zeropopup" data-dialog-hook="program-video-popup">{content.video}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{coursePopups.map((popup) => (
+  <dialog class="course-dialog" id={popupId(popup.hook)} aria-labelledby={`${popupId(popup.hook)}-title`}>
+    <article class="course-dialog__panel">
+      <button class="course-dialog__close" type="button" data-dialog-close aria-label={content.close}>
+        <span aria-hidden="true">×</span>
+      </button>
+      <h2 id={`${popupId(popup.hook)}-title`}>{popup.title}</h2>
+      <div class="course-dialog__content">
+        {popupBlocks(popup.description).map((block) => (
+          block.type === 'heading'
+            ? <h3>{block.text}</h3>
+            : block.type === 'list'
+              ? <ul>{block.items.map((item) => <li>{item}</li>)}</ul>
+              : <p>{block.text}</p>
+        ))}
+      </div>
+      <div class="course-dialog__actions">
+        {popup.links.map((link, index) => (
+          <a
+            class:list={['program-button', { 'program-button--outline': index > 0 }]}
+            href={normalizePopupHref(link.href)}
+            data-dialog-hook={normalizePopupHref(link.href).startsWith('#popup:') ? popupId(normalizePopupHref(link.href)) : undefined}
+          >{popupLinkText(link.text)}</a>
+        ))}
+      </div>
+    </article>
+  </dialog>
+))}
+
+<dialog class="course-dialog form-dialog" id={popupId(questionHook)} aria-labelledby="question-dialog-title">
+  <article class="course-dialog__panel">
+    <button class="course-dialog__close" type="button" data-dialog-close aria-label={content.close}><span aria-hidden="true">×</span></button>
+    <h2 id="question-dialog-title">{lang === 'de' ? 'Eine Frage stellen' : 'Ask a question'}</h2>
+    <form class="program-form js-lead-form" data-redirect={redirect}>
+      <input type="hidden" name="type" value="question" /><input type="hidden" name="lang" value={lang} />
+      <input class="program-form__trap" type="text" name="company" tabindex="-1" autocomplete="off" />
+      <label><span>{content.form.name}</span><input type="text" name="name" placeholder={content.form.name} autocomplete="name" required /></label>
+      <label><span>{content.form.email}</span><input type="email" name="email" placeholder={content.form.email} autocomplete="email" required /></label>
+      <label><span>{lang === 'de' ? 'Ihre Frage' : 'Your question'}</span><textarea name="message" placeholder={lang === 'de' ? 'Ihre Frage' : 'Your question'} rows="5" required></textarea></label>
+      <p class="program-form__notice">{formNoticeStart}<a href={privacyHref}>{privacyLabel}</a>.</p>
+      <p class="lead-form__status" role="alert" aria-live="assertive" hidden></p>
+      <button class="program-button" type="submit">{content.form.submit}</button>
+    </form>
+  </article>
+</dialog>
+
+<dialog class="course-dialog form-dialog" id={popupId(registrationHook)} aria-labelledby="registration-dialog-title">
+  <article class="course-dialog__panel">
+    <button class="course-dialog__close" type="button" data-dialog-close aria-label={content.close}><span aria-hidden="true">×</span></button>
+    <h2 id="registration-dialog-title">{content.adviceTitle}</h2>
+    <p>{content.adviceText}</p>
+    <form class="program-form js-lead-form" data-redirect={redirect}>
+      <input type="hidden" name="type" value="courses" /><input type="hidden" name="lang" value={lang} />
+      <input class="program-form__trap" type="text" name="company" tabindex="-1" autocomplete="off" />
+      <label><span>{content.form.name}</span><input type="text" name="name" placeholder={content.form.name} autocomplete="name" required /></label>
+      <label><span>{content.form.phone}</span><input type="tel" name="phone" placeholder={content.form.phone} autocomplete="tel" /></label>
+      <label><span>{content.form.email}</span><input type="email" name="email" placeholder={content.form.email} autocomplete="email" required /></label>
+      <p class="program-form__notice">{formNoticeStart}<a href={privacyHref}>{privacyLabel}</a>.</p>
+      <p class="lead-form__status" role="alert" aria-live="assertive" hidden></p>
+      <button class="program-button" type="submit">{content.form.submit}</button>
+    </form>
+  </article>
+</dialog>
+
+<dialog class="course-dialog schedule-dialog" id={popupId(scheduleHook)} aria-labelledby="schedule-dialog-title">
+  <article class="course-dialog__panel">
+    <button class="course-dialog__close" type="button" data-dialog-close aria-label={content.close}><span aria-hidden="true">×</span></button>
+    <h2 id="schedule-dialog-title">{content.datesTitle}</h2>
+    <div class="schedule-dialog__grid">
+      {scheduleMonths.map(([month, days]) => <section><h3>{month}</h3><ul>{days.map((day) => <li>{day}</li>)}</ul></section>)}
+    </div>
+  </article>
+</dialog>
+
+<dialog class="course-dialog video-dialog" id="program-video-popup" aria-label={content.video}>
+  <article class="course-dialog__panel">
+    <button class="course-dialog__close" type="button" data-dialog-close aria-label={content.close}><span aria-hidden="true">×</span></button>
+    <div class="external-media" data-external-media>
+      <iframe data-consent-src="https://www.youtube-nocookie.com/embed/8t24ww8EVbk" title={content.video} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen hidden></iframe>
+      <div class="external-media__notice" data-external-media-notice>
+        <p>{lang === 'de' ? 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.' : 'This video loads from YouTube only after your consent.'}</p>
+        <button class="program-button" type="button" data-external-media-load>{lang === 'de' ? 'Video laden' : 'Load video'}</button>
+      </div>
+    </div>
+  </article>
+</dialog>
+
+<style>
+  .program-shell {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: clamp(18px, 2.2vw, 32px);
+  }
+
+  .program-section {
+    position: relative;
+    padding-block: clamp(4.5rem, 8vw, 8rem);
+    background: #0d0d0d;
+  }
+
+  .program-section h2 {
+    font-size: clamp(2rem, 4.25vw, 4.4rem);
+  }
+
+  .program-section h2 span,
+  .program-prep h3 {
+    color: var(--color-accent);
+  }
+
+  .program-hero {
+    min-height: 720px;
+    overflow: hidden;
+    background: #0d0d0d;
+  }
+
+  .program-hero__layout {
+    position: relative;
+    display: grid;
+    min-height: 720px;
+    grid-template-columns: minmax(0, 1fr) minmax(480px, 0.9fr);
+    align-items: center;
+    padding-top: 155px;
+    padding-bottom: 52px;
+  }
+
+  .program-hero__copy {
+    position: relative;
+    z-index: 2;
+    max-width: 760px;
+  }
+
+  .program-hero h1 {
+    margin: 0 0 1.45rem;
+    font-size: clamp(3rem, 5.4vw, 5.4rem);
+    line-height: 1.03;
+  }
+
+  .program-hero h1 span {
+    color: var(--color-accent);
+  }
+
+  .program-hero p {
+    max-width: 800px;
+    color: rgba(255, 255, 255, 0.84);
+    font-size: clamp(1.02rem, 1.35vw, 1.2rem);
+    line-height: 1.45;
+  }
+
+  .program-hero__accreditation {
+    width: clamp(220px, 21vw, 340px);
+    height: auto;
+    margin-top: 1.85rem;
+  }
+
+  .program-hero__art {
+    position: absolute;
+    z-index: 0;
+    top: 28px;
+    right: -30px;
+    width: min(59vw, 720px);
+    height: auto;
+  }
+
+  .program-benefits {
+    padding-top: clamp(3rem, 5vw, 5rem);
+    padding-bottom: clamp(4rem, 7vw, 6.5rem);
+  }
+
+  .program-benefits h2 {
+    margin-bottom: 2.25rem;
+  }
+
+  .program-benefits__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2.2vw, 2rem);
+  }
+
+  .program-benefits article {
+    min-height: 145px;
+    padding: clamp(1.35rem, 2.6vw, 2.2rem);
+    background: #303030;
+  }
+
+  .program-benefits h3 {
+    margin-bottom: 0.55rem;
+    font-size: clamp(1.08rem, 1.6vw, 1.45rem);
+  }
+
+  .program-benefits p,
+  .program-network figcaption,
+  .program-advice p,
+  .program-future p,
+  .program-prep p,
+  .program-webinar p,
+  .program-webinar li span {
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  .program-catalog {
+    padding-top: 0;
+  }
+
+  .course-group {
+    position: relative;
+    margin-top: clamp(4rem, 8vw, 7rem);
+  }
+
+  .course-group:first-child {
+    margin-top: 0;
+  }
+
+  .course-group h2 {
+    margin-bottom: 2rem;
+    font-size: clamp(2.15rem, 4vw, 4rem);
+  }
+
+  .course-grid {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2.2vw, 2rem);
+  }
+
+  .course-grid--individual {
+    padding-right: 0;
+  }
+
+  .course-card {
+    position: relative;
+    display: flex;
+    min-height: 138px;
+    overflow: hidden;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2.3rem 1.45rem 1.3rem;
+    border: 1px solid rgba(255, 255, 255, 0.44);
+    background: #101010;
+    transition: border-color var(--dur-fast), background var(--dur-fast), transform var(--dur-fast);
+  }
+
+  .course-card:hover,
+  .course-card:focus-visible {
+    border-color: var(--color-accent);
+    background: #181818;
+    transform: translateY(-3px);
+  }
+
+  .course-card strong {
+    max-width: 84%;
+    font-size: clamp(1rem, 1.3vw, 1.2rem);
+    line-height: 1.28;
+  }
+
+  .course-card__format {
+    position: absolute;
+    top: 0.7rem;
+    left: 1.45rem;
+    color: rgba(255, 255, 255, 0.66);
+    font-size: 0.66rem;
+  }
+
+  .course-card__duration {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 86px;
+    padding: 0.42rem 0.7rem;
+    background: #fff;
+    color: var(--color-accent);
+    font-size: 0.78rem;
+    font-weight: var(--fw-semibold);
+    text-align: center;
+  }
+
+  .course-group__curve {
+    position: absolute;
+    z-index: 0;
+    right: -2%;
+    bottom: -110px;
+    width: min(32vw, 400px);
+    height: auto;
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
+  .program-network {
+    margin-top: clamp(4rem, 8vw, 7.5rem);
+  }
+
+  .program-network img {
+    width: 100%;
+    max-height: 670px;
+    object-fit: contain;
+  }
+
+  .program-network figcaption {
+    max-width: 1120px;
+    margin-top: 1.4rem;
+    font-size: 0.95rem;
+  }
+
+  .program-dates {
+    padding-top: clamp(3rem, 6vw, 5rem);
+  }
+
+  .program-dates h2 {
+    margin-bottom: 2rem;
+  }
+
+  .program-dates__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2rem, 6vw, 6rem);
+  }
+
+  .program-dates__grid--single {
+    max-width: 720px;
+    grid-template-columns: 1fr;
+  }
+
+  .date-column h3 {
+    margin-bottom: 1rem;
+    font-size: 1.15rem;
+  }
+
+  .date-column ul {
+    display: grid;
+  }
+
+  .date-column li {
+    display: flex;
+    min-height: 54px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.2rem;
+    border-bottom: 1px solid rgba(255, 11, 0, 0.58);
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.9rem;
+  }
+
+  .date-column strong {
+    color: #fff;
+    font-size: 0.76rem;
+    font-weight: var(--fw-regular);
+  }
+
+  .program-button {
+    display: inline-flex;
+    min-width: 150px;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2rem;
+    padding: 0.75rem 1.35rem;
+    border: 1px solid var(--color-accent);
+    border-radius: 4px;
+    background: var(--color-accent);
+    color: #fff;
+    font-size: 0.86rem;
+    font-weight: var(--fw-semibold);
+    transition: background var(--dur-fast), color var(--dur-fast), transform var(--dur-fast);
+  }
+
+  .program-button:hover,
+  .program-button:focus-visible {
+    background: #fff;
+    color: #111;
+    transform: translateY(-2px);
+  }
+
+  .program-button--outline {
+    background: transparent;
+  }
+
+  .program-advice {
+    padding-top: 0;
+  }
+
+  .program-advice__panel {
+    display: grid;
+    min-height: 520px;
+    grid-template-columns: 1fr 1.05fr;
+    overflow: hidden;
+    background: #303030;
+  }
+
+  .program-advice__image-wrap {
+    position: relative;
+    min-height: 420px;
+  }
+
+  .program-advice__image-wrap > img:first-child {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .program-advice__curve {
+    position: absolute;
+    top: -45px;
+    left: -60px;
+    width: 230px;
+    opacity: 0.6;
+  }
+
+  .program-advice__content {
+    padding: clamp(2rem, 4vw, 4rem);
+  }
+
+  .program-advice h2 {
+    margin-bottom: 0.9rem;
+    font-size: clamp(2.1rem, 3.8vw, 3.8rem);
+  }
+
+  .program-form {
+    display: grid;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+  }
+
+  .program-form label:not(.program-form__consent) {
+    display: grid;
+    gap: 0.35rem;
+    color: #fff;
+    font-size: 0.78rem;
+    line-height: 1.3;
+  }
+
+  .program-form label:not(.program-form__consent) > span {
+    font-weight: var(--fw-semibold);
+  }
+
+  .program-form input[type='text'],
+  .program-form input[type='tel'],
+  .program-form input[type='email'] {
+    width: 100%;
+    height: 48px;
+    border: 1px solid rgba(0, 0, 0, 0.35);
+    border-radius: 2px;
+    background: #fff;
+    color: #111;
+    padding-inline: 1rem;
+  }
+
+  .program-form textarea {
+    width: 100%;
+    min-height: 130px;
+    resize: vertical;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: #151515;
+    color: #fff;
+    font: inherit;
+    padding: 1rem;
+  }
+
+  .program-form__trap {
+    position: absolute;
+    left: -9999px;
+  }
+
+  .program-form__notice {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.58);
+    font-size: 0.7rem;
+    line-height: 1.45;
+  }
+
+  .program-form__notice a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .program-form .program-button {
+    width: max-content;
+    margin-top: 0.4rem;
+  }
+
+  .lead-form__status {
+    color: #ff9b96;
+    font-size: 0.82rem;
+  }
+
+  .program-future__grid {
+    display: grid;
+    min-height: 630px;
+    grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
+    gap: clamp(2rem, 6vw, 6rem);
+    align-items: center;
+  }
+
+  .program-future h2 {
+    margin-bottom: 1.4rem;
+    font-size: clamp(2.2rem, 4.6vw, 4.5rem);
+  }
+
+  .program-future p + p {
+    margin-top: 1.1rem;
+  }
+
+  .program-future__media {
+    position: relative;
+    min-height: 520px;
+  }
+
+  .program-future__diploma {
+    width: min(100%, 620px);
+    height: auto;
+    margin-inline: auto;
+  }
+
+  .program-future__certification {
+    position: absolute;
+    right: 0;
+    bottom: 30px;
+    width: min(28vw, 175px);
+    height: auto;
+  }
+
+  .program-steps {
+    padding-top: clamp(2rem, 4vw, 4rem);
+  }
+
+  .program-steps > .program-shell > h2 {
+    margin-bottom: 2.3rem;
+  }
+
+  .program-steps__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2.2vw, 2rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .program-steps__grid li {
+    position: relative;
+    min-height: 145px;
+    padding: 2.45rem 1.4rem 1.3rem;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+  }
+
+  .program-steps__grid li > span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-width: 44px;
+    padding: 0.35rem 0.55rem;
+    background: #fff;
+    color: var(--color-accent);
+    font-size: 0.8rem;
+    font-weight: var(--fw-bold);
+  }
+
+  .program-steps__grid p {
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 0.96rem;
+    line-height: 1.4;
+  }
+
+  .program-prep {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2rem, 5vw, 5rem);
+    margin-top: 2.2rem;
+  }
+
+  .program-prep h3 {
+    margin-bottom: 0.65rem;
+    font-size: 1.18rem;
+  }
+
+  .program-webinar__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(420px, 1fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: start;
+  }
+
+  .program-webinar h2 {
+    margin-bottom: 1.5rem;
+    font-size: clamp(2.4rem, 4.8vw, 4.8rem);
+  }
+
+  .program-webinar h3 {
+    margin-bottom: 0.4rem;
+    color: var(--color-accent);
+    font-size: 1.18rem;
+  }
+
+  .program-webinar ul {
+    margin-top: 1.25rem;
+  }
+
+  .program-webinar li {
+    display: grid;
+    gap: 0.25rem;
+    padding-block: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .program-webinar li strong {
+    font-size: 1.05rem;
+  }
+
+  .program-webinar__closing {
+    margin-top: 1.4rem;
+  }
+
+  .program-webinar__media img {
+    width: 100%;
+    aspect-ratio: 1.15 / 1;
+    object-fit: cover;
+  }
+
+  .program-webinar__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+  }
+
+  .program-webinar__actions .program-button {
+    width: 100%;
+    margin-top: 0.85rem;
+  }
+
+  .course-dialog {
+    width: min(920px, calc(100vw - 28px));
+    max-height: min(88vh, 900px);
+    margin: auto;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    background: #171717;
+    color: #fff;
+  }
+
+  .course-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.82);
+    backdrop-filter: blur(5px);
+  }
+
+  .course-dialog__panel {
+    position: relative;
+    max-height: min(88vh, 900px);
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: clamp(1.6rem, 5vw, 4rem);
+  }
+
+  .course-dialog__panel::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+
+  .course-dialog h2 {
+    max-width: 16ch;
+    margin-bottom: 1.5rem;
+    color: #fff;
+    font-size: clamp(2rem, 5vw, 4rem);
+  }
+
+  .course-dialog__content {
+    color: rgba(255, 255, 255, 0.78);
+    line-height: 1.65;
+  }
+
+  .course-dialog__content > * {
+    margin: 0;
+  }
+
+  .course-dialog__content > * + * {
+    margin-top: 1.15rem;
+  }
+
+  .course-dialog__content h3 {
+    padding-top: 0.65rem;
+    color: #fff;
+    font-size: clamp(1.2rem, 2.2vw, 1.55rem);
+    line-height: 1.3;
+  }
+
+  .course-dialog__content ul {
+    display: grid;
+    gap: 0.7rem;
+    padding-left: 1.35rem;
+  }
+
+  .course-dialog__content li {
+    padding-left: 0.25rem;
+  }
+
+  .course-dialog__content li::marker {
+    color: var(--color-accent);
+  }
+
+  .course-dialog__close {
+    position: sticky;
+    z-index: 2;
+    top: 0;
+    float: right;
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: #0d0d0d;
+    color: var(--color-accent);
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .course-dialog__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 2rem;
+  }
+
+  .form-dialog .course-dialog__panel,
+  .schedule-dialog .course-dialog__panel {
+    width: min(760px, calc(100vw - 32px));
+  }
+
+  .form-dialog .program-form {
+    margin-top: 1.5rem;
+  }
+
+  .schedule-dialog__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .schedule-dialog h3 {
+    margin-bottom: 0.8rem;
+    color: var(--color-accent);
+  }
+
+  .schedule-dialog li {
+    margin-top: 0.55rem;
+    color: #fff;
+  }
+
+  .video-dialog .course-dialog__panel {
+    width: min(1040px, calc(100vw - 32px));
+    padding: 3.5rem 1rem 1rem;
+  }
+
+  .video-dialog iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 0;
+  }
+
+  .external-media {
+    display: grid;
+    min-height: min(68vh, 680px);
+    place-items: center;
+    background: #090909;
+  }
+
+  .external-media iframe {
+    grid-area: 1 / 1;
+  }
+
+  .external-media__notice {
+    display: grid;
+    grid-area: 1 / 1;
+    max-width: 520px;
+    gap: 1.2rem;
+    justify-items: center;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .external-media__notice p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.78);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 980px) {
+    .program-hero__layout {
+      grid-template-columns: minmax(0, 1fr) minmax(360px, 0.8fr);
+    }
+
+    .course-card strong {
+      max-width: 100%;
+    }
+
+    .program-advice__panel,
+    .program-future__grid,
+    .program-webinar__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .schedule-dialog__grid { grid-template-columns: 1fr; }
+    .program-section {
+      padding-block: 3.75rem;
+    }
+
+    .program-hero {
+      min-height: auto;
+    }
+
+    .program-hero__layout {
+      display: flex;
+      min-height: auto;
+      flex-direction: column-reverse;
+      align-items: stretch;
+      padding-top: 74px;
+      padding-bottom: 3rem;
+    }
+
+    .program-hero__art {
+      position: relative;
+      top: auto;
+      right: auto;
+      align-self: flex-end;
+      width: min(86vw, 430px);
+      height: 145px;
+      margin-right: -90px;
+      object-fit: contain;
+      object-position: center;
+    }
+
+    .program-hero h1 {
+      margin-top: 1rem;
+      font-size: clamp(2.25rem, 9.5vw, 3.35rem);
+    }
+
+    .program-hero__accreditation {
+      width: 170px;
+    }
+
+    .program-benefits__grid,
+    .course-grid,
+    .program-steps__grid,
+    .program-prep,
+    .program-advice__panel,
+    .program-future__grid,
+    .program-webinar__grid,
+    .program-dates__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .program-benefits article {
+      min-height: 115px;
+    }
+
+    .course-group {
+      margin-top: 4.5rem;
+    }
+
+    .course-card {
+      min-height: 112px;
+    }
+
+    .course-group__curve {
+      right: -72px;
+      bottom: -90px;
+      width: 230px;
+    }
+
+    .program-network {
+      margin-top: 4.5rem;
+    }
+
+    .program-network figcaption {
+      font-size: 0.86rem;
+    }
+
+    .program-dates__grid {
+      gap: 2.5rem;
+    }
+
+    .program-advice__image-wrap {
+      min-height: 250px;
+    }
+
+    .program-advice__content {
+      padding: 1.5rem;
+    }
+
+    .program-future__grid {
+      gap: 0;
+    }
+
+    .program-future__media {
+      min-height: 300px;
+    }
+
+    .program-future__diploma {
+      width: 360px;
+      max-width: 100%;
+    }
+
+    .program-future__certification {
+      bottom: 10px;
+      width: 110px;
+    }
+
+    .program-webinar__media {
+      margin-top: 0.5rem;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .program-shell {
+      padding-inline: 14px;
+    }
+
+    .program-hero__art {
+      height: 112px;
+      margin-right: -110px;
+    }
+
+    .program-hero h1 {
+      font-size: 2.15rem;
+    }
+
+    .program-hero p {
+      font-size: 0.95rem;
+    }
+
+    .program-benefits__grid,
+    .course-grid,
+    .program-steps__grid {
+      gap: 0.85rem;
+    }
+
+    .course-card__format {
+      max-width: calc(100% - 100px);
+      line-height: 1.25;
+    }
+
+    .date-column li {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 0.15rem;
+      padding-block: 0.8rem;
+    }
+
+    .program-webinar__actions {
+      grid-template-columns: 1fr;
+    }
+
+    .program-webinar__actions .program-button + .program-button {
+      margin-top: 0;
+    }
+  }
+</style>
+
+<script>
+  function initProgramExternalMediaConsent() {
+    document.querySelectorAll<HTMLElement>('[data-external-media]').forEach((media) => {
+      if (media.dataset.externalMediaReady === 'true') return;
+      media.dataset.externalMediaReady = 'true';
+
+      const iframe = media.querySelector<HTMLIFrameElement>('iframe[data-consent-src]');
+      const notice = media.querySelector<HTMLElement>('[data-external-media-notice]');
+      const loadButton = media.querySelector<HTMLButtonElement>('[data-external-media-load]');
+
+      loadButton?.addEventListener('click', () => {
+        const source = iframe?.dataset.consentSrc;
+        if (!iframe || !source) return;
+        iframe.src = source;
+        iframe.hidden = false;
+        if (notice) notice.hidden = true;
+        media.classList.add('is-loaded');
+      });
+    });
+  }
+
+  initProgramExternalMediaConsent();
+  document.addEventListener('astro:after-swap', initProgramExternalMediaConsent);
+
+  const popupLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-course-popup], [data-dialog-hook]'));
+  const dialogs = Array.from(document.querySelectorAll<HTMLDialogElement>('.course-dialog'));
+
+  const openPopup = (link: HTMLAnchorElement) => {
+    const dialogId = link.dataset.coursePopup ?? link.dataset.dialogHook;
+    const dialog = dialogId ? document.getElementById(dialogId) : null;
+    if (!(dialog instanceof HTMLDialogElement)) return;
+    const parentDialog = link.closest('dialog');
+    if (parentDialog instanceof HTMLDialogElement && parentDialog !== dialog && parentDialog.open) {
+      parentDialog.close();
+    }
+    if (!dialog.open) dialog.showModal();
+    const hook = link.getAttribute('href');
+    if (hook) history.replaceState(null, '', hook);
+  };
+
+  popupLinks.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      openPopup(link);
+    });
+  });
+
+  dialogs.forEach((dialog) => {
+    dialog.querySelector('[data-dialog-close]')?.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+    dialog.addEventListener('close', () => {
+      if (location.hash.startsWith('#popup:') || location.hash === '#zeropopup') {
+        history.replaceState(null, '', `${location.pathname}${location.search}`);
+      }
+    });
+  });
+
+  const matchingLink = popupLinks.find((link) => link.getAttribute('href') === location.hash);
+  if (matchingLink) openPopup(matchingLink);
+</script>
