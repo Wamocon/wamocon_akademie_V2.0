@@ -91,25 +91,34 @@ const socialLinks = [
       </figcaption>
     </figure>
   </div>
+  <img class="contact-page__shape" src={assets.accentCurve} alt="" width="300" height="300" aria-hidden="true" />
 </section>
 
 <style>
   .contact-page {
+    position: relative;
+    overflow: hidden;
     background: #101010;
     padding-top: 180px;
   }
 
   .contact-page__inner {
+    position: relative;
+    z-index: 2;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(560px, 1.03fr);
-    gap: 70px;
-    align-items: start;
-    max-width: none;
-    padding-inline: 24px;
+    grid-template-columns: minmax(360px, 0.72fr) minmax(0, 1.28fr);
+    gap: clamp(3rem, 6vw, 7rem);
+    align-items: center;
+    width: 100%;
+    max-width: var(--container-max);
+    min-height: 690px;
+    margin-inline: auto;
+    padding-inline: var(--container-pad);
   }
 
   .contact-page__copy {
     min-width: 0;
+    max-width: 620px;
     padding-top: 2px;
   }
 
@@ -187,7 +196,8 @@ const socialLinks = [
   .contact-page__media {
     position: relative;
     min-width: 0;
-    aspect-ratio: 1.25 / 1;
+    min-height: 610px;
+    aspect-ratio: 1.55 / 1;
     overflow: hidden;
   }
 
@@ -228,6 +238,25 @@ const socialLinks = [
     letter-spacing: 1px;
   }
 
+  .contact-page__shape {
+    position: absolute;
+    z-index: 1;
+    right: clamp(38%, 42vw, 47%);
+    bottom: -70px;
+    width: clamp(170px, 14vw, 270px);
+    height: auto;
+    opacity: 0.84;
+    pointer-events: none;
+    transform: rotate(132deg);
+    filter: drop-shadow(0 22px 28px rgba(0, 0, 0, 0.52));
+    animation: contact-shape-drift 9s ease-in-out infinite;
+  }
+
+  @keyframes contact-shape-drift {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(132deg); }
+    50% { transform: translate3d(14px, -16px, 0) rotate(140deg); }
+  }
+
   @media (max-width: 900px) {
     .contact-page {
       padding-top: 120px;
@@ -236,7 +265,22 @@ const socialLinks = [
     .contact-page__inner {
       grid-template-columns: 1fr;
       gap: 34px;
+      width: 100%;
+      min-height: 0;
+      padding-inline: var(--container-pad);
     }
+
+    .contact-page__shape { display: none; }
+  }
+
+  @media (min-width: 2200px) {
+    .contact-page__inner {
+      grid-template-columns: minmax(420px, 0.55fr) minmax(0, 1.45fr);
+      min-height: 850px;
+    }
+
+    .contact-page__media { min-height: 760px; }
+    .contact-page__shape { right: 31%; width: min(13vw, 390px); }
   }
 
   @media (max-width: 620px) {
@@ -278,6 +322,7 @@ const socialLinks = [
     }
 
     .contact-page__media {
+      min-height: 0;
       aspect-ratio: 2 / 1;
       margin-inline: -12px;
     }
@@ -286,5 +331,9 @@ const socialLinks = [
       left: 24px;
       bottom: 12px;
     }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact-page__shape { animation: none; }
   }
 </style>

@@ -149,7 +149,15 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
       <h2>{content.individualTitle}</h2>
       <div class="course-grid course-grid--individual">
         {courses.individual.map((course) => (
-          <a class="course-card" href={course.hook} data-course-popup={popupId(course.hook)} data-reveal>
+          <a
+            class="course-card"
+            href={course.hook}
+            data-course-popup={popupId(course.hook)}
+            aria-haspopup="dialog"
+            aria-controls={popupId(course.hook)}
+            data-reveal
+          >
+            <span class="course-card__format">{course.format}</span>
             <strong>{course.title}</strong>
             <span class="course-card__duration">{course.duration}</span>
           </a>
@@ -162,7 +170,14 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
       <h2>{content.teamTitle}</h2>
       <div class="course-grid">
         {courses.team.map((course) => (
-          <a class="course-card" href={course.hook} data-course-popup={popupId(course.hook)} data-reveal>
+          <a
+            class="course-card"
+            href={course.hook}
+            data-course-popup={popupId(course.hook)}
+            aria-haspopup="dialog"
+            aria-controls={popupId(course.hook)}
+            data-reveal
+          >
             <span class="course-card__format">{course.format}</span>
             <strong>{course.title}</strong>
             <span class="course-card__duration">{course.duration}</span>
@@ -373,15 +388,20 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
 <style>
   .program-shell {
     width: 100%;
-    max-width: 1440px;
+    max-width: var(--container-max);
     margin-inline: auto;
-    padding-inline: clamp(18px, 2.2vw, 32px);
+    padding-inline: var(--container-pad);
   }
 
   .program-section {
     position: relative;
     padding-block: clamp(4.5rem, 8vw, 8rem);
+    overflow: hidden;
     background: #0d0d0d;
+  }
+
+  .program-section:nth-of-type(even) {
+    background: #101010;
   }
 
   .program-section h2 {
@@ -403,7 +423,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     position: relative;
     display: grid;
     min-height: 720px;
-    grid-template-columns: minmax(0, 1fr) minmax(480px, 0.9fr);
+    grid-template-columns: minmax(0, 0.98fr) minmax(520px, 1.02fr);
     align-items: center;
     padding-top: 155px;
     padding-bottom: 52px;
@@ -412,13 +432,16 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   .program-hero__copy {
     position: relative;
     z-index: 2;
-    max-width: 760px;
+    max-width: 850px;
   }
 
   .program-hero h1 {
     margin: 0 0 1.45rem;
-    font-size: clamp(3rem, 5.4vw, 5.4rem);
+    font-size: clamp(3rem, 4.8vw, 5.2rem);
     line-height: 1.03;
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
   }
 
   .program-hero h1 span {
@@ -441,10 +464,12 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   .program-hero__art {
     position: absolute;
     z-index: 0;
-    top: 28px;
-    right: -30px;
-    width: min(59vw, 720px);
+    top: -2%;
+    right: -4%;
+    width: min(58vw, 880px);
     height: auto;
+    transform-origin: 56% 48%;
+    animation: program-art-drift 11s ease-in-out infinite;
   }
 
   .program-benefits {
@@ -459,13 +484,14 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   .program-benefits__grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(1rem, 2.2vw, 2rem);
+    gap: clamp(1rem, 2.5vw, 2.5rem);
   }
 
   .program-benefits article {
     min-height: 145px;
     padding: clamp(1.35rem, 2.6vw, 2.2rem);
-    background: #303030;
+    border-top: 2px solid rgba(255, 11, 0, 0.72);
+    background: #292929;
   }
 
   .program-benefits h3 {
@@ -485,6 +511,8 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
 
   .program-catalog {
     padding-top: 0;
+    padding-bottom: clamp(5rem, 9vw, 9rem);
+    background: #0d0d0d;
   }
 
   .course-group {
@@ -506,7 +534,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     z-index: 2;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(1rem, 2.2vw, 2rem);
+    gap: clamp(1.25rem, 2.4vw, 2.5rem);
   }
 
   .course-grid--individual {
@@ -516,11 +544,11 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   .course-card {
     position: relative;
     display: flex;
-    min-height: 138px;
+    min-height: clamp(168px, 12vw, 196px);
     overflow: hidden;
     flex-direction: column;
-    justify-content: center;
-    padding: 2.3rem 1.45rem 1.3rem;
+    justify-content: flex-end;
+    padding: 4.15rem clamp(1.3rem, 2vw, 2rem) clamp(1.35rem, 2vw, 1.9rem);
     border: 1px solid rgba(255, 255, 255, 0.44);
     background: #101010;
     transition: border-color var(--dur-fast), background var(--dur-fast), transform var(--dur-fast);
@@ -534,25 +562,27 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   }
 
   .course-card strong {
-    max-width: 84%;
-    font-size: clamp(1rem, 1.3vw, 1.2rem);
-    line-height: 1.28;
+    max-width: 92%;
+    font-size: clamp(1.05rem, 1.25vw, 1.28rem);
+    line-height: 1.22;
   }
 
   .course-card__format {
     position: absolute;
-    top: 0.7rem;
-    left: 1.45rem;
-    color: rgba(255, 255, 255, 0.66);
-    font-size: 0.66rem;
+    top: 0.75rem;
+    left: clamp(1.3rem, 2vw, 2rem);
+    max-width: calc(100% - 135px);
+    color: rgba(255, 255, 255, 0.72);
+    font-size: clamp(0.66rem, 0.7vw, 0.76rem);
+    line-height: 1.3;
   }
 
   .course-card__duration {
     position: absolute;
     top: 0;
     right: 0;
-    min-width: 86px;
-    padding: 0.42rem 0.7rem;
+    min-width: 96px;
+    padding: 0.5rem 0.8rem;
     background: #fff;
     color: var(--color-accent);
     font-size: 0.78rem;
@@ -569,6 +599,8 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     height: auto;
     opacity: 0.55;
     pointer-events: none;
+    transform-origin: center;
+    animation: program-curve-drift 9s ease-in-out infinite;
   }
 
   .program-network {
@@ -602,7 +634,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   }
 
   .program-dates__grid--single {
-    max-width: 720px;
+    max-width: 1040px;
     grid-template-columns: 1fr;
   }
 
@@ -667,7 +699,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   .program-advice__panel {
     display: grid;
     min-height: 520px;
-    grid-template-columns: 1fr 1.05fr;
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
     overflow: hidden;
     background: #303030;
   }
@@ -689,6 +721,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     left: -60px;
     width: 230px;
     opacity: 0.6;
+    animation: program-curve-drift 8s ease-in-out infinite reverse;
   }
 
   .program-advice__content {
@@ -772,7 +805,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   .program-future__grid {
     display: grid;
     min-height: 630px;
-    grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
+    grid-template-columns: minmax(0, 0.82fr) minmax(500px, 1.18fr);
     gap: clamp(2rem, 6vw, 6rem);
     align-items: center;
   }
@@ -795,6 +828,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     width: min(100%, 620px);
     height: auto;
     margin-inline: auto;
+    animation: program-art-drift 10s ease-in-out infinite reverse;
   }
 
   .program-future__certification {
@@ -803,6 +837,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     bottom: 30px;
     width: min(28vw, 175px);
     height: auto;
+    animation: program-badge-float 7s ease-in-out infinite;
   }
 
   .program-steps {
@@ -861,7 +896,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
 
   .program-webinar__grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(420px, 1fr);
+    grid-template-columns: minmax(0, 0.88fr) minmax(500px, 1.12fr);
     gap: clamp(2rem, 5vw, 5rem);
     align-items: start;
   }
@@ -1075,6 +1110,39 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     white-space: nowrap;
   }
 
+  @keyframes program-art-drift {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(-1deg); }
+    50% { transform: translate3d(-1.1%, -2.2%, 0) rotate(1.4deg); }
+  }
+
+  @keyframes program-curve-drift {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(-3deg); }
+    50% { transform: translate3d(12px, -16px, 0) rotate(3deg); }
+  }
+
+  @keyframes program-badge-float {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+    50% { transform: translate3d(-8px, -13px, 0) rotate(-2deg); }
+  }
+
+  @media (min-width: 1440px) {
+    .program-benefits article,
+    .course-card,
+    .program-steps__grid li {
+      padding-inline: clamp(1.5rem, 2vw, 2.4rem);
+    }
+
+    .program-network img {
+      max-height: 740px;
+    }
+  }
+
+  @media (max-width: 1100px) and (min-width: 761px) {
+    .course-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
   @media (max-width: 980px) {
     .program-hero__layout {
       grid-template-columns: minmax(0, 1fr) minmax(360px, 0.8fr);
@@ -1203,18 +1271,29 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     }
   }
 
-  @media (max-width: 420px) {
-    .program-shell {
-      padding-inline: 14px;
+  @media (prefers-reduced-motion: reduce) {
+    .program-hero__art,
+    .course-group__curve,
+    .program-advice__curve,
+    .program-future__diploma,
+    .program-future__certification {
+      animation: none;
     }
 
+    .course-card,
+    .program-button {
+      transition-duration: 0.01ms;
+    }
+  }
+
+  @media (max-width: 420px) {
     .program-hero__art {
       height: 112px;
       margin-right: -110px;
     }
 
     .program-hero h1 {
-      font-size: 2.15rem;
+      font-size: clamp(1.95rem, 9.5vw, 2.15rem);
     }
 
     .program-hero p {

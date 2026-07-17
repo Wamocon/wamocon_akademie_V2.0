@@ -11,7 +11,16 @@
 html {
   scroll-behavior: smooth;
   overflow-x: clip;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   -webkit-text-size-adjust: 100%;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 body {
@@ -162,14 +171,28 @@ p {
 }
 
 [data-reveal] {
-  opacity: 1;
-  transform: none;
-  transition: opacity 0.55s var(--ease-out), transform 0.55s var(--ease-out);
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition: opacity 0.72s var(--ease-out), transform 0.72s var(--ease-out);
+  will-change: opacity, transform;
+}
+
+[data-reveal='left'] {
+  transform: translate3d(-32px, 0, 0);
+}
+
+[data-reveal='right'] {
+  transform: translate3d(32px, 0, 0);
+}
+
+[data-reveal='zoom'] {
+  transform: scale(0.965);
 }
 
 [data-reveal].is-visible {
   opacity: 1;
   transform: none;
+  will-change: auto;
 }
 
 .btn {

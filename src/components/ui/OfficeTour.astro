@@ -30,10 +30,24 @@ const mapsUrl = 'https://www.google.com/maps/@?api=1&map_action=pano&pano=CAoSHE
 </section>
 
 <style>
-  .office-tour { background: var(--color-bg); }
+  .office-tour { position: relative; overflow: hidden; background: var(--color-bg); }
+  .office-tour::after {
+    content: '';
+    position: absolute;
+    top: 4%;
+    right: -80px;
+    width: clamp(190px, 14vw, 300px);
+    aspect-ratio: 1;
+    background: url('/images/academy/tild3730-6132-4863-b462-623032303533__group_11.png') center / contain no-repeat;
+    opacity: 0.5;
+    pointer-events: none;
+    transform: rotate(232deg);
+    animation: tour-object-drift 9s ease-in-out infinite;
+  }
+  .office-tour > .container { position: relative; z-index: 1; }
   .office-tour__header {
     display: grid;
-    grid-template-columns: minmax(0, 0.85fr) minmax(280px, 1.15fr);
+    grid-template-columns: minmax(0, 0.65fr) minmax(360px, 1.35fr);
     gap: clamp(1.5rem, 5vw, 4.5rem);
     align-items: end;
     margin-bottom: clamp(1.5rem, 4vw, 3rem);
@@ -49,12 +63,11 @@ const mapsUrl = 'https://www.google.com/maps/@?api=1&map_action=pano&pano=CAoSHE
     font-weight: var(--fw-bold);
   }
   .office-tour h2 { font-size: clamp(2.2rem, 5vw, 4rem); }
-  .office-tour p { color: var(--color-muted); font-size: clamp(1rem, 2vw, 1.3rem); }
+  .office-tour p { max-width: 760px; color: var(--color-muted); font-size: clamp(1rem, 1.5vw, 1.3rem); }
   .office-tour__frame {
     position: relative;
     width: 100%;
-    min-height: 360px;
-    aspect-ratio: 2 / 1;
+    height: clamp(440px, 45vw, 720px);
     overflow: hidden;
     border: 1px solid var(--color-line);
     background: #171717;
@@ -96,12 +109,22 @@ const mapsUrl = 'https://www.google.com/maps/@?api=1&map_action=pano&pano=CAoSHE
     font-weight: var(--fw-semibold);
   }
   .office-tour__link:hover { background: var(--color-accent); }
+  @keyframes tour-object-drift { 0%, 100% { transform: translate3d(0, 0, 0) rotate(232deg); } 50% { transform: translate3d(-14px, 16px, 0) rotate(240deg); } }
   @media (max-width: 780px) {
     .office-tour__header { grid-template-columns: 1fr; align-items: start; }
-    .office-tour__frame { min-height: 300px; aspect-ratio: 4 / 3; }
+    .office-tour__frame { height: auto; min-height: 300px; aspect-ratio: 4 / 3; }
+    .office-tour::after { display: none; }
+  }
+  @media (min-width: 2200px) {
+    .office-tour__header { grid-template-columns: minmax(520px, 0.55fr) minmax(0, 1.45fr); }
+    .office-tour__frame { height: min(34vw, 900px); }
+    .office-tour::after { width: min(13vw, 420px); }
   }
   @media (max-width: 480px) {
     .office-tour__frame { min-height: 390px; aspect-ratio: 3 / 4; }
     .office-tour__link { width: 100%; justify-content: center; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .office-tour::after { animation: none; }
   }
 </style>

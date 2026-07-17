@@ -140,7 +140,7 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
 <style>
   .academy-hero {
     position: relative;
-    min-height: min(904px, 100svh);
+    min-height: 100svh;
     display: grid;
     align-items: end;
     overflow: hidden;
@@ -169,17 +169,16 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
     position: relative;
     z-index: 1;
     display: flex;
-    min-height: min(904px, 100svh);
+    min-height: 100svh;
     max-width: none;
     flex-direction: column;
     justify-content: flex-end;
-    padding-block: 220px 186px;
+    padding-block: 220px 170px;
   }
 
   .academy-hero__copy {
     min-width: 0;
-    width: 100%;
-    max-width: 100%;
+    width: min(100%, 1040px);
   }
 
   .academy-hero__copy h1 {
@@ -191,7 +190,7 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
   }
 
   .academy-hero__copy p {
-    max-width: 900px;
+    max-width: 920px;
     margin-bottom: 28px;
     color: #fff;
     font-size: 20px;
@@ -202,13 +201,15 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
 
   .academy-hero__stats {
     position: absolute;
-    left: 300px;
-    bottom: 182px;
+    right: var(--container-pad);
+    bottom: 166px;
+    left: auto;
     display: flex;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    justify-content: flex-end;
+    gap: clamp(26px, 3vw, 62px);
     min-width: 0;
     width: 100%;
-    max-width: 620px;
+    max-width: 660px;
   }
 
   .academy-hero__stats li {
@@ -267,20 +268,20 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
     color: var(--color-muted-dark);
   }
 
-  .experience { padding: 120px 0; overflow: hidden; background: #101010; }
-  .experience__top { display: grid; grid-template-columns: 1.7fr 0.9fr; gap: 72px; align-items: start; }
+  .experience { padding: clamp(110px, 9vw, 172px) 0; overflow: hidden; background: #101010; }
+  .experience__top { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(360px, .72fr); gap: clamp(56px, 7vw, 130px); align-items: start; }
   .experience__copy h2,
   .success-story__copy h2 { margin: 0 0 34px; font-size: clamp(34px, 3.25vw, 48px); line-height: 1.08; }
   .experience__copy h2 span,
   .success-story__copy h2 span { color: #ff0b00; }
-  .experience__copy p { max-width: 720px; margin-bottom: 14px; color: #f2f2f2; font-size: 16px; line-height: 1.42; }
-  .mission { position: relative; min-height: 380px; padding: 72px 30px 30px; background: #303030; }
+  .experience__copy p { max-width: 870px; margin-bottom: 14px; color: #f2f2f2; font-size: 16px; line-height: 1.52; }
+  .mission { position: relative; min-height: clamp(400px, 31vw, 520px); padding: clamp(76px, 6vw, 104px) clamp(30px, 3vw, 50px) 38px; background: #303030; }
   .mission strong { position: absolute; top: 0; left: 30px; padding: 15px 17px; background: #101010; color: #ff0b00; font-size: 12px; }
-  .mission p { position: relative; z-index: 2; max-width: 315px; color: #fff; font-size: 22px; line-height: 1.35; }
-  .mission img { position: absolute; right: -140px; bottom: -150px; z-index: 1; width: 390px; height: 390px; object-fit: contain; }
-  .success-story { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 50px; margin-top: 96px; }
-  .success-story__video { min-height: 400px; background: #202020; }
-  .success-story__video iframe { display: block; width: 100%; height: 100%; min-height: 400px; border: 0; }
+  .mission p { position: relative; z-index: 2; max-width: 400px; color: #fff; font-size: clamp(21px, 1.65vw, 27px); line-height: 1.35; }
+  .mission img { position: absolute; right: clamp(-190px, -9vw, -110px); bottom: clamp(-185px, -9vw, -115px); z-index: 1; width: clamp(410px, 31vw, 540px); height: auto; object-fit: contain; animation: mission-ring-drift 10s ease-in-out infinite alternate; will-change: transform; }
+  .success-story { display: grid; grid-template-columns: minmax(0, .94fr) minmax(0, 1.06fr); gap: clamp(40px, 4.5vw, 82px); margin-top: clamp(110px, 10vw, 180px); }
+  .success-story__video { min-height: clamp(430px, 34vw, 560px); background: #202020; }
+  .success-story__video iframe { display: block; width: 100%; height: 100%; min-height: clamp(430px, 34vw, 560px); border: 0; }
   .external-media {
     position: relative;
     display: grid;
@@ -313,16 +314,16 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
   }
   .success-story__copy { position: relative; padding-top: 25px; }
   .success-story__copy h2 { margin-bottom: 26px; }
-  .success-story__copy p { position: relative; z-index: 2; max-width: 540px; color: #f2f2f2; font-size: 16px; line-height: 1.42; }
-  .success-story__copy > img { position: absolute; right: -170px; bottom: -80px; width: 270px; height: 270px; object-fit: contain; }
-  .compare-panel { min-height: 165px; padding: 26px 30px; background: #303030; }
+  .success-story__copy p { position: relative; z-index: 2; max-width: 680px; color: #f2f2f2; font-size: 16px; line-height: 1.52; }
+  .success-story__copy > img { position: absolute; right: clamp(-160px, -7vw, -86px); bottom: clamp(-105px, -5vw, -58px); width: clamp(260px, 21vw, 370px); height: auto; object-fit: contain; animation: success-curve-drift 8s ease-in-out infinite alternate; will-change: transform; }
+  .compare-panel { min-height: 178px; padding: clamp(28px, 2.3vw, 38px) clamp(30px, 2.8vw, 48px); background: #303030; }
   .compare-panel h3 { margin-bottom: 14px; color: #fff; font-size: 21px; }
   .compare-panel li { position: relative; padding-left: 18px; margin-bottom: 7px; color: #fff; font-size: 14px; }
   .compare-panel li::before { content: '+'; position: absolute; left: 0; color: #ff0b00; font-weight: 700; }
   .compare-panel--without li::before { content: '–'; color: #fff; }
 
   .section-head {
-    max-width: 820px;
+    max-width: 980px;
     margin-bottom: 2rem;
   }
 
@@ -332,7 +333,7 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
   }
 
   .istqb__certificate {
-    max-height: 680px;
+    max-height: 760px;
     background: #e7f6ff;
   }
 
@@ -345,13 +346,13 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
   .steps__list {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 34px 32px;
+    gap: clamp(28px, 2.7vw, 46px);
   }
 
   .steps__list li {
     position: relative;
     display: flex;
-    min-height: 128px;
+    min-height: 148px;
     align-items: flex-end;
     padding: 54px 18px 18px;
     border: 1px solid rgba(255, 255, 255, 0.62);
@@ -386,7 +387,7 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
   }
 
   .steps .section-head h2 {
-    max-width: 920px;
+    max-width: 1100px;
     margin: 0;
     font-size: clamp(2rem, 3.3vw, 3rem);
     line-height: 1.08;
@@ -398,7 +399,7 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
   }
 
   .steps__closing {
-    max-width: 720px;
+    max-width: 860px;
     margin: 38px 0 14px;
     color: rgba(255, 255, 255, 0.84);
     font-size: 0.9rem;
@@ -409,6 +410,16 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
   .steps :global(.steps__cta) {
     min-width: 178px;
     min-height: 46px;
+  }
+
+  @keyframes mission-ring-drift {
+    from { transform: translate3d(-10px, 8px, 0) rotate(-4deg); }
+    to { transform: translate3d(16px, -18px, 0) rotate(7deg); }
+  }
+
+  @keyframes success-curve-drift {
+    from { transform: translate3d(-8px, 12px, 0) rotate(-7deg); }
+    to { transform: translate3d(18px, -10px, 0) rotate(6deg); }
   }
 
   @media (max-width: 900px) {
@@ -474,7 +485,9 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
       display: grid;
       width: auto;
       max-width: none;
-      grid-template-columns: repeat(3, 144px);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: clamp(12px, 4vw, 24px);
+      justify-content: stretch;
     }
 
     .academy-hero__stats li {
@@ -497,6 +510,101 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
     .steps .section-head h2 { font-size: clamp(2rem, 10vw, 2.7rem); }
     .steps__list { grid-template-columns: 1fr; gap: 18px; }
     .steps__closing { margin-top: 28px; }
+  }
+
+  @media (min-width: 1200px) {
+    .academy-hero__inner,
+    .experience__top,
+    .success-story,
+    .courses-home > .container,
+    .istqb__grid,
+    .steps > .container {
+      width: 100%;
+      max-width: none;
+      padding-inline: var(--container-pad);
+    }
+
+    .experience__top {
+      grid-template-columns: minmax(0, 1.45fr) minmax(420px, 1fr);
+      gap: clamp(50px, 4.2vw, 150px);
+    }
+
+    .experience__copy h2,
+    .success-story__copy h2 {
+      max-width: 1100px;
+      font-size: clamp(54px, 3.9vw, 88px);
+      line-height: 1.04;
+    }
+
+    .experience__copy p {
+      max-width: min(58vw, 1120px);
+      font-size: clamp(18px, 1.3vw, 28px);
+      line-height: 1.45;
+    }
+
+    .mission {
+      min-height: clamp(470px, 29vw, 660px);
+      padding: clamp(92px, 6vw, 150px) clamp(38px, 3.2vw, 76px) 50px;
+    }
+
+    .mission p {
+      max-width: 560px;
+      font-size: clamp(27px, 2vw, 42px);
+      line-height: 1.28;
+    }
+
+    .mission img {
+      right: clamp(-280px, -8vw, -120px);
+      bottom: clamp(-260px, -10vw, -150px);
+      width: clamp(520px, 36vw, 860px);
+    }
+
+    .success-story {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr);
+      gap: clamp(54px, 3.4vw, 126px);
+    }
+
+    .success-story__video,
+    .success-story__video iframe {
+      min-height: 0;
+      aspect-ratio: 16 / 9;
+    }
+
+    .success-story__copy {
+      padding-top: clamp(28px, 3vw, 72px);
+    }
+
+    .success-story__copy p {
+      max-width: min(48vw, 980px);
+      font-size: clamp(18px, 1.3vw, 28px);
+      line-height: 1.45;
+    }
+
+    .success-story__copy > img {
+      right: clamp(-170px, -4vw, -74px);
+      bottom: clamp(-155px, -6vw, -75px);
+      width: clamp(330px, 23vw, 610px);
+    }
+
+    .compare-panel {
+      min-height: clamp(190px, 14vw, 290px);
+      padding: clamp(34px, 2.6vw, 68px);
+    }
+
+    .compare-panel h3 { font-size: clamp(22px, 1.55vw, 31px); }
+    .compare-panel li { margin-bottom: 10px; font-size: clamp(15px, 1.05vw, 21px); }
+
+    .section-head,
+    .steps .section-head h2 {
+      max-width: 1240px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mission img,
+    .success-story__copy > img {
+      animation: none;
+    }
   }
 </style>
 

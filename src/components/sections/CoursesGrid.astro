@@ -55,23 +55,50 @@ const visibleDateGroups = showAllDateGroups ? dateData.groups : dateData.groups.
 <style>
   .courses-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: clamp(1rem, 2vw, 2rem);
   }
 
   .course-card,
   .dates-card {
-    border: 1px solid var(--color-line-dark);
-    border-radius: var(--radius-md);
-    background: #fff;
-    color: var(--color-text-dark);
-    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    background: #171717;
+    color: #fff;
   }
 
   .course-card {
+    position: relative;
     display: grid;
-    gap: 1rem;
-    padding: 1.25rem;
+    min-height: 220px;
+    gap: 1.25rem;
+    align-content: space-between;
+    overflow: hidden;
+    padding: clamp(1.4rem, 2.3vw, 2.25rem);
+    transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+  }
+
+  .course-card::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: var(--color-accent);
+    transform: scaleX(0.18);
+    transform-origin: left;
+    transition: transform 240ms ease;
+  }
+
+  .course-card:hover,
+  .course-card:focus-within {
+    border-color: rgba(255, 11, 0, 0.72);
+    background: #1d1d1d;
+    transform: translateY(-4px);
+  }
+
+  .course-card:hover::before,
+  .course-card:focus-within::before {
+    transform: scaleX(1);
   }
 
   .course-card > span {
@@ -82,20 +109,22 @@ const visibleDateGroups = showAllDateGroups ? dateData.groups : dateData.groups.
   }
 
   .course-card h3 {
-    font-size: 1.15rem;
+    max-width: 18ch;
+    font-size: clamp(1.2rem, 1.5vw, 1.55rem);
+    line-height: 1.15;
   }
 
   .course-card dl {
     display: grid;
     gap: 0.55rem;
-    color: var(--color-muted-dark);
+    color: rgba(255, 255, 255, 0.7);
   }
 
   .course-card div {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    border-top: 1px solid var(--color-line-dark);
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
     padding-top: 0.55rem;
   }
 
@@ -105,10 +134,10 @@ const visibleDateGroups = showAllDateGroups ? dateData.groups : dateData.groups.
 
   .dates-card {
     display: grid;
-    grid-template-columns: 0.85fr 1.15fr;
-    gap: 1rem;
-    margin-top: 1.25rem;
-    padding: clamp(1.25rem, 3vw, 2rem);
+    grid-template-columns: minmax(260px, 0.68fr) minmax(0, 1.32fr);
+    gap: clamp(2rem, 5vw, 6rem);
+    margin-top: clamp(1.5rem, 3vw, 3rem);
+    padding: clamp(1.5rem, 3.5vw, 3.5rem);
   }
 
   .dates-card h3 {
@@ -140,7 +169,7 @@ const visibleDateGroups = showAllDateGroups ? dateData.groups : dateData.groups.
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    border-bottom: 1px solid var(--color-line-dark);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
     padding-bottom: 0.75rem;
   }
 
@@ -149,8 +178,19 @@ const visibleDateGroups = showAllDateGroups ? dateData.groups : dateData.groups.
   }
 
   @media (max-width: 760px) {
+    .course-card {
+      min-height: 180px;
+    }
+
     .dates-card {
       grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .course-card,
+    .course-card::before {
+      transition-duration: 0.01ms;
     }
   }
 </style>

@@ -59,7 +59,7 @@ const copy = lang === 'de'
 
 <style>
   .review-dialog {
-    width: min(680px, calc(100% - 2rem));
+    width: min(880px, calc(100% - 2rem));
     max-height: calc(100dvh - 2rem);
     margin: auto;
     border: 0;
@@ -77,7 +77,8 @@ const copy = lang === 'de'
     position: relative;
     overflow-y: auto;
     padding: clamp(1.5rem, 5vw, 3rem);
-    background: #303030;
+    border-left: 3px solid var(--color-accent);
+    background: #262626;
   }
 
   .review-dialog__close {
@@ -101,6 +102,7 @@ const copy = lang === 'de'
 
   .review-dialog__form {
     display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
     margin-top: 1.8rem;
   }
@@ -108,6 +110,14 @@ const copy = lang === 'de'
   .review-dialog__form > label:not(.review-dialog__consent) {
     display: grid;
     gap: 0.4rem;
+  }
+
+  .review-dialog__form > label:nth-of-type(3),
+  .review-dialog__consent,
+  .review-dialog__privacy,
+  .review-dialog__notice,
+  .lead-form__status {
+    grid-column: 1 / -1;
   }
 
   .review-dialog__form > label:not(.review-dialog__consent) > span {
@@ -145,6 +155,15 @@ const copy = lang === 'de'
   .review-dialog__notice { color: rgba(255, 255, 255, 0.72); font-size: 0.82rem; line-height: 1.5; }
   .review-dialog__submit { min-height: 52px; padding-inline: 2rem; justify-self: start; border-radius: 5px; background: var(--color-accent); font-weight: 600; }
   .lead-form__status { color: #ff9b96; font-size: 0.88rem; }
+
+  @media (max-width: 640px) {
+    .review-dialog__form { grid-template-columns: 1fr; }
+    .review-dialog__form > label:nth-of-type(3),
+    .review-dialog__consent,
+    .review-dialog__privacy,
+    .review-dialog__notice,
+    .lead-form__status { grid-column: auto; }
+  }
 </style>
 
 <script>

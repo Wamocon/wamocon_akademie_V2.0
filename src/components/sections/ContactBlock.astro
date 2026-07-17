@@ -97,10 +97,29 @@ const labels = {
 </section>
 
 <style>
+  .contact {
+    position: relative;
+    overflow: hidden;
+  }
+  .contact::before {
+    content: '';
+    position: absolute;
+    right: -70px;
+    bottom: 5%;
+    width: clamp(180px, 14vw, 280px);
+    aspect-ratio: 1;
+    background: url('/images/academy/tild3730-6132-4863-b462-623032303533__group_11.png') center / contain no-repeat;
+    opacity: 0.66;
+    pointer-events: none;
+    transform: rotate(142deg);
+    animation: contact-block-drift 10s ease-in-out infinite;
+  }
   .contact__grid {
+    position: relative;
+    z-index: 1;
     display: grid;
-    grid-template-columns: 1fr 1.1fr;
-    gap: clamp(2rem, 5vw, 4.5rem);
+    grid-template-columns: minmax(330px, 0.72fr) minmax(0, 1.28fr);
+    gap: clamp(3rem, 7vw, 8rem);
     align-items: center;
   }
   .contact__name {
@@ -154,7 +173,8 @@ const labels = {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    aspect-ratio: 5 / 4;
+    min-height: 570px;
+    aspect-ratio: 1.55 / 1;
   }
   .contact__rating {
     position: absolute;
@@ -177,6 +197,12 @@ const labels = {
     letter-spacing: 1px;
     font-size: 0.95rem;
   }
+  .contact__info { max-width: 620px; }
+
+  @keyframes contact-block-drift {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(142deg); }
+    50% { transform: translate3d(-16px, -14px, 0) rotate(150deg); }
+  }
 
   @media (max-width: 860px) {
     .contact__grid {
@@ -185,5 +211,17 @@ const labels = {
     .contact__media {
       order: -1;
     }
+    .contact__media img { min-height: 0; }
+    .contact::before { display: none; }
+  }
+
+  @media (min-width: 2200px) {
+    .contact__grid { grid-template-columns: minmax(420px, 0.55fr) minmax(0, 1.45fr); }
+    .contact__media img { min-height: 760px; }
+    .contact::before { width: min(13vw, 420px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact::before { animation: none; }
   }
 </style>

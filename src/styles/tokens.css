@@ -26,8 +26,9 @@
   --lh-tight: 1.05;
   --lh-body: 1.65;
 
-  --container-max: 1200px;
-  --container-pad: clamp(12px, 1.7vw, 24px);
+  /* Keep the live site's broad canvas on desktop while retaining safe edge gutters. */
+  --container-max: 3200px;
+  --container-pad: clamp(20px, 1.6vw, 64px);
   --section-gap: clamp(4rem, 8vw, 7rem);
   --radius-sm: 6px;
   --radius-md: 0;
