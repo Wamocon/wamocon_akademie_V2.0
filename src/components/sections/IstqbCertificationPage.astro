@@ -214,11 +214,11 @@ const participationSteps = isEn ? [
 ] as const;
 
 const testimonials = [
-  ['Natalie', 'Y530fsyTCe4'],
-  ['Artur', 'GIzxhk4tzmM'],
-  ['Alexander', 'Nun-eNkeeY0'],
-  ['Olga', 'YI6Jf9-T3_c'],
-  ['Jonathan', 'C6jFQwt6E0o'],
+  ['Natalie', 'Y530fsyTCe4', 'natalie'],
+  ['Artur', 'GIzxhk4tzmM', 'artur'],
+  ['Alexander', 'Nun-eNkeeY0', 'alexander'],
+  ['Olga', 'YI6Jf9-T3_c', 'olga'],
+  ['Jonathan', 'C6jFQwt6E0o', 'jonathan'],
 ] as const;
 
 const successStories = isEn ? [
@@ -443,7 +443,7 @@ const registrationCopy = isEn
       <span>{copy.heroKicker}</span>
       <h1>{copy.heroTitle}</h1>
       <p>{copy.heroLead}</p>
-      <a class="istqb-button" href="#zeropopup" data-open-modal="istqb-video-modal">{copy.video}</a>
+      <a class="istqb-button" href="#zeropopup" data-open-modal="istqb-video-modal" data-youtube-id="8t24ww8EVbk">{copy.video}</a>
     </div>
     <div class="istqb-hero__art" aria-hidden="true">
       <img class="istqb-hero__cone istqb-hero__cone--back" src={asset('tild6533-3036-4233-a262-396264383730__cone.svg')} alt="" />
@@ -569,13 +569,15 @@ const registrationCopy = isEn
     <div class="istqb-webinar istqb-split istqb-split--media">
       <div data-reveal>
         <h2>{copy.expect}</h2>
+        <p class="istqb-webinar__kicker">{webinarTopics[0][0]}</p>
         <h3>{copy.expectSub}</h3>
+        <p class="istqb-webinar__intro">– {webinarTopics[0][1]}</p>
         <ul>
-          {webinarTopics.map(([title, text]) => <li><strong>{title}</strong><span>– {text}</span></li>)}
+          {webinarTopics.slice(1).map(([title, text]) => <li><strong>{title}</strong><span>– {text}</span></li>)}
         </ul>
         <p class="istqb-webinar__final">{copy.expectFinal}</p>
       </div>
-      <a class="istqb-webinar__media" href="#zeropopup" data-open-modal="istqb-video-modal" data-reveal>
+      <a class="istqb-webinar__media" href="#zeropopup" data-open-modal="istqb-video-modal" data-youtube-id="8t24ww8EVbk" data-reveal>
         <img src={asset('tild6633-6566-4234-a339-386662643565__site-expert-coding-r.jpg')} alt="Softwaretester am Arbeitsplatz" />
         <span>{copy.video}</span>
       </a>
@@ -608,12 +610,11 @@ const registrationCopy = isEn
       <p>{copy.testimonialsLead}</p>
     </header>
     <div class="istqb-testimonials__grid">
-      {testimonials.map(([name, video]) => (
+      {testimonials.map(([name, video, image]) => (
         <article data-reveal>
           <button class="istqb-testimonial-video" type="button" data-youtube-id={video} aria-label={`${name}: ${copy.video}`}>
             <img
-              src={asset('tild6633-6566-4234-a339-386662643565__site-expert-coding-r.jpg')}
-              data-consent-src={`https://img.youtube.com/vi/${video}/sddefault.jpg`}
+              src={`/images/academy/testimonial-${image}.jpg`}
               alt={`${name}, ${copy.participant}`}
               loading="lazy"
             />
@@ -693,7 +694,8 @@ const registrationCopy = isEn
   <div class="istqb-modal__video">
     <iframe
       title={copy.video}
-      data-consent-src="https://www.youtube-nocookie.com/embed/8t24ww8EVbk?autoplay=1&rel=0"
+      data-video-frame
+      data-default-youtube-id="8t24ww8EVbk"
       allow="autoplay; encrypted-media; picture-in-picture"
       allowfullscreen
     ></iframe>
@@ -917,15 +919,17 @@ const registrationCopy = isEn
   .istqb-hurdles__list article > span { color: var(--color-accent); font-size: 1.6rem; font-weight: 700; }
   .istqb-hurdles__list h3 { margin-bottom: 0.8rem; }
   .istqb-hurdles__list p + p { margin-top: 0.9rem; }
-  .istqb-webinar { margin-top: clamp(72px, 10vw, 140px); }
-  .istqb-webinar h3 { margin: 1.4rem 0 1.2rem; }
-  .istqb-webinar ul { display: grid; gap: 1.1rem; }
-  .istqb-webinar li { display: grid; gap: 0.28rem; color: var(--color-muted); }
+  .istqb-webinar { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 36px; align-items: start; margin-top: clamp(72px, 10vw, 140px); }
+  .istqb-webinar__kicker { margin-top: 1.5rem; color: var(--color-accent) !important; font-weight: 700; }
+  .istqb-webinar h3 { margin: 1.2rem 0 0.25rem; }
+  .istqb-webinar__intro { padding-bottom: 1.25rem; }
+  .istqb-webinar ul { display: grid; gap: 0; }
+  .istqb-webinar li { display: grid; gap: 0.28rem; padding: 1.15rem 0; border-top: 1px solid rgba(255,255,255,.25); color: var(--color-muted); }
   .istqb-webinar li strong { color: #fff; }
   .istqb-webinar__final { margin-top: 1.8rem; color: #fff !important; font-weight: 600; }
-  .istqb-webinar__media { position: relative; display: block; min-height: 570px; overflow: hidden; }
-  .istqb-webinar__media img { width: 100%; height: 100%; min-height: 570px; object-fit: cover; }
-  .istqb-webinar__media span { position: absolute; inset: auto 0 0; display: flex; justify-content: center; padding: 1rem; border: 1px solid var(--color-accent); background: rgba(13,13,13,.86); color: #fff; font-size: .78rem; font-weight: 700; }
+  .istqb-webinar__media { display: grid; gap: 22px; overflow: hidden; }
+  .istqb-webinar__media img { width: 100%; aspect-ratio: 1.06 / 1; object-fit: cover; }
+  .istqb-webinar__media span { display: flex; min-height: 46px; align-items: center; justify-content: center; padding: .75rem 1rem; border: 1px solid var(--color-accent); border-radius: 5px; background: transparent; color: #fff; font-size: .78rem; font-weight: 700; }
 
   .istqb-participation__steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 42px; margin: 0; padding: 0; list-style: none; }
   .istqb-participation__steps li { position: relative; padding-top: 58px; }
@@ -934,16 +938,16 @@ const registrationCopy = isEn
 
   .istqb-testimonials { background: #101010; }
   .istqb-testimonials__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; margin-bottom: 38px; }
-  .istqb-testimonials__grid article { display: grid; align-content: start; background: #fff; color: #111; }
+  .istqb-testimonials__grid article { display: grid; align-content: start; background: transparent; color: #fff; }
   .istqb-testimonial-video { position: relative; width: 100%; overflow: hidden; background: #050505; }
   .istqb-testimonial-video span {
     position: absolute;
     inset: 50% auto auto 50%;
-    width: 54px;
-    height: 54px;
+    width: 48px;
+    height: 48px;
     padding: 0;
     border-radius: 50%;
-    background: rgba(255, 11, 0, 0.92);
+    background: rgba(20, 12, 9, 0.82);
     transform: translate(-50%, -50%);
   }
   .istqb-testimonial-video span::after {
@@ -957,8 +961,9 @@ const registrationCopy = isEn
   }
   .istqb-testimonials__grid img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
   .istqb-testimonials__grid iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; }
-  .istqb-testimonials__grid strong { padding: 14px 16px 0; font-size: 0.95rem; }
-  .istqb-testimonials__grid article > span { padding: 3px 16px 16px; color: #555; font-size: 0.72rem; }
+  .istqb-testimonials__grid strong { padding: 14px 0 0; font-size: 0.95rem; }
+  .istqb-testimonials__grid article > span { padding: 3px 0 0; color: var(--color-muted); font-size: 0.72rem; }
+  .istqb-testimonials > .istqb-shell > .istqb-button { min-width: 244px; }
 
   .istqb-success__grid { display: grid; gap: clamp(48px, 7vw, 96px); }
   .istqb-success__grid article { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(32px, 6vw, 82px); align-items: stretch; }
@@ -1049,8 +1054,7 @@ const registrationCopy = isEn
     .istqb-intro__art { min-height: 360px; }
     .istqb-certificate__media { order: -1; }
     .istqb-career__grid, .istqb-benefits__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .istqb-webinar__media { min-height: 430px; }
-    .istqb-webinar__media img { min-height: 430px; }
+    .istqb-webinar { grid-template-columns: 1fr; gap: 42px; }
     .istqb-success__grid article { grid-template-columns: 1fr; }
     .istqb-success__grid article:nth-child(even) .istqb-success__media { order: 0; }
   }
@@ -1082,7 +1086,7 @@ const registrationCopy = isEn
     .istqb-benefits__grid article { grid-template-columns: 36px 1fr; gap: 12px; }
     .istqb-benefits__grid img { width: 34px; height: 34px; }
     .istqb-hurdles__list article { grid-template-columns: 1fr; }
-    .istqb-webinar__media, .istqb-webinar__media img { min-height: 340px; }
+    .istqb-webinar__media img { aspect-ratio: 4 / 3; }
     .istqb-success__media { min-height: 260px; }
     .istqb-modal { width: calc(100vw - 16px); }
     .istqb-modal__content,
@@ -1094,16 +1098,27 @@ const registrationCopy = isEn
 <script>
   const modalLinks = document.querySelectorAll<HTMLAnchorElement>('[data-open-modal]');
   const modalDialogs = document.querySelectorAll<HTMLDialogElement>('.istqb-modal');
+  const videoDialog = document.getElementById('istqb-video-modal') as HTMLDialogElement | null;
+
+  const stopDialogVideo = (dialog: HTMLDialogElement) => {
+    dialog.querySelector<HTMLIFrameElement>('[data-video-frame]')?.removeAttribute('src');
+  };
 
   const clearModalState = (dialog: HTMLDialogElement) => {
-    const frame = dialog.querySelector<HTMLIFrameElement>('[data-consent-src]');
-    if (frame) frame.removeAttribute('src');
+    stopDialogVideo(dialog);
     if (window.location.hash.startsWith('#popup:') || window.location.hash === '#zeropopup') {
       history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
     }
   };
 
-  const openModal = (dialog: HTMLDialogElement, hash?: string) => {
+  const openModal = (dialog: HTMLDialogElement, hash?: string, youtubeId?: string) => {
+    const frame = dialog.querySelector<HTMLIFrameElement>('[data-video-frame]');
+    if (frame) {
+      const consent = (window as Window & { wamoconConsent?: { grantExternalMedia?: () => void } }).wamoconConsent;
+      consent?.grantExternalMedia?.();
+      const videoId = youtubeId || frame.dataset.defaultYoutubeId;
+      if (videoId) frame.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
+    }
     if (!dialog.open) dialog.showModal();
     if (hash) history.replaceState(null, '', hash);
   };
@@ -1113,7 +1128,7 @@ const registrationCopy = isEn
       const dialog = document.getElementById(link.dataset.openModal || '') as HTMLDialogElement | null;
       if (!dialog) return;
       event.preventDefault();
-      openModal(dialog, link.getAttribute('href') || undefined);
+      openModal(dialog, link.getAttribute('href') || undefined, link.dataset.youtubeId);
     });
   });
 
@@ -1127,27 +1142,28 @@ const registrationCopy = isEn
     dialog.addEventListener('close', () => clearModalState(dialog));
   });
 
-  document.querySelectorAll<HTMLButtonElement>('[data-youtube-id]').forEach((button) => {
+  document.querySelectorAll<HTMLButtonElement>('.istqb-testimonial-video[data-youtube-id]').forEach((button) => {
     button.addEventListener('click', () => {
-      const consent = (window as Window & { wamoconConsent?: { grantExternalMedia?: () => void } }).wamoconConsent;
-      consent?.grantExternalMedia?.();
-      const iframe = document.createElement('iframe');
-      iframe.src = `https://www.youtube-nocookie.com/embed/${button.dataset.youtubeId}?autoplay=1&rel=0`;
-      iframe.dataset.consentSrc = iframe.src;
-      iframe.title = button.getAttribute('aria-label') || 'YouTube video';
-      iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
-      iframe.setAttribute('allowfullscreen', '');
-      button.replaceWith(iframe);
+      if (videoDialog) openModal(videoDialog, undefined, button.dataset.youtubeId);
     });
   });
 
   const hashTargets: Record<string, string> = {
-    '#zeropopup': 'istqb-video-modal',
     '#popup:Gutscheinbeschreibung': 'istqb-voucher-modal',
     '#popup:Vergleich-mit-anderen-IT-Zertifizierungen': 'istqb-comparison-modal',
     '#popup:Webinar-Anmeldung': 'istqb-webinar-modal',
     '#popup:Webinar-Anmeldung-en': 'istqb-webinar-modal',
   };
+  if (window.location.hash === '#zeropopup') {
+    history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+  }
   const initialDialog = document.getElementById(hashTargets[window.location.hash] || '') as HTMLDialogElement | null;
   if (initialDialog) openModal(initialDialog);
+
+  window.addEventListener('pagehide', () => modalDialogs.forEach(stopDialogVideo));
+  window.addEventListener('pageshow', () => {
+    modalDialogs.forEach((dialog) => {
+      if (!dialog.open) stopDialogVideo(dialog);
+    });
+  });
 </script>
