@@ -21,6 +21,11 @@ export const nav: NavLink[] = [
     en: { label: 'Start page', href: '/en/' },
   },
   {
+    key: 'courses',
+    de: { label: 'Kurse', href: '/bildungsprogramme-fr-softwaretester/' },
+    en: { label: 'Courses', href: '/en/educational-programs/' },
+  },
+  {
     key: 'about-group',
     de: { label: 'Über uns', href: '/ber-die-akademie/' },
     en: { label: 'About us', href: '/en/about-us/' },
