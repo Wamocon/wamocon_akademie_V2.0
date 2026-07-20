@@ -34,7 +34,7 @@ const page = legal[kind][lang];
   }
 
   .legal-page__inner {
-    max-width: 920px;
+    max-width: var(--container-max);
   }
 
   .legal-page h1 {
@@ -45,6 +45,7 @@ const page = legal[kind][lang];
   .legal-page__blocks {
     display: grid;
     gap: 1.25rem;
+    max-width: 1100px;
   }
 
   .legal-page article {

@@ -8,19 +8,26 @@
   padding: 0;
 }
 
-html {
-  scroll-behavior: smooth;
-  overflow-x: clip;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  -webkit-text-size-adjust: 100%;
+[hidden] {
+  display: none !important;
 }
 
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
   display: none;
   width: 0;
   height: 0;
+}
+
+html {
+  font-size: clamp(18px, calc(17px + 0.16vw), 20px);
+  scroll-behavior: smooth;
+  overflow-x: clip;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -30,13 +37,13 @@ body {
   color: var(--color-text);
   font-family: var(--font-sans);
   font-size: var(--fs-body);
-  font-weight: var(--fw-light);
+  font-weight: var(--fw-regular);
   line-height: var(--lh-body);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-main > :first-child:not(.academy-hero):not(.page-hero) {
+main > :first-child:not(.academy-hero):not(.page-hero):not(.academy-about):not(.reviews-page):not(.contact-page) {
   padding-top: calc(var(--section-gap) + 60px);
 }
 

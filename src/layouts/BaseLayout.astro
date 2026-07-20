@@ -13,9 +13,10 @@ interface Props {
   lang: Lang;
   image?: string;
   showFooterContact?: boolean;
+  noindex?: boolean;
 }
 
-const { title, description, lang, image = assets.hero, showFooterContact = true } = Astro.props;
+const { title, description, lang, image = assets.hero, showFooterContact = true, noindex = false } = Astro.props;
 const site = Astro.site ?? new URL('https://test-it-academy.com');
 const canonical = new URL(Astro.url.pathname, site).href;
 const altPath = getAlternateLangUrl(Astro.url.pathname, lang);
@@ -31,6 +32,7 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <link rel="canonical" href={canonical} />
     <link rel="alternate" hreflang={lang} href={canonical} />
     <link rel="alternate" hreflang={altLang} href={new URL(altPath, site).href} />

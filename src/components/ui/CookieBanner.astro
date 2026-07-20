@@ -97,6 +97,12 @@ const privacyHref = lang === 'de' ? '/datenschutz/' : '/privacy-policy/';
     document.querySelectorAll<HTMLElement>('iframe[data-consent-src], img[data-consent-src]').forEach((element) => {
       const src = element.dataset.consentSrc;
       if (!src) return;
+      const requiresPlay = element.dataset.consentMode === 'manual';
+
+      // Consent permits an external provider to load. It must never be treated as
+      // a request to play every video on the current page.
+      if (allowed && requiresPlay) return;
+
       if (allowed) {
         if (!element.getAttribute('src')) element.setAttribute('src', src);
         element.hidden = false;
@@ -110,11 +116,24 @@ const privacyHref = lang === 'de' ? '/datenschutz/' : '/privacy-policy/';
       }
       const container = element.closest<HTMLElement>('[data-external-media]');
       const notice = container?.querySelector<HTMLElement>('[data-external-media-notice], .ditele-test__video-consent');
-      if (notice) notice.hidden = allowed;
-      container?.classList.toggle('is-loaded', allowed);
+      if (notice) notice.hidden = allowed && !requiresPlay;
+      container?.classList.toggle('is-loaded', allowed && !requiresPlay);
     });
     document.documentElement.dataset.externalMediaConsent = allowed ? 'granted' : 'denied';
     window.dispatchEvent(new CustomEvent('wamocon:consent', { detail: { externalMedia: allowed } }));
+  };
+
+  const stopManualPlayback = () => {
+    document.querySelectorAll<HTMLIFrameElement>('iframe[data-consent-mode="manual"]').forEach((iframe) => {
+      iframe.removeAttribute('src');
+      iframe.hidden = true;
+      const container = iframe.closest<HTMLElement>('[data-external-media]');
+      const notice = container?.querySelector<HTMLElement>('[data-external-media-notice], .ditele-test__video-consent');
+      const stopButton = container?.querySelector<HTMLButtonElement>('[data-external-media-stop], [data-stop-external-media]');
+      if (notice) notice.hidden = false;
+      if (stopButton) stopButton.hidden = true;
+      container?.classList.remove('is-loaded');
+    });
   };
 
   const close = () => { if (root) root.hidden = true; };
@@ -142,6 +161,10 @@ const privacyHref = lang === 'de' ? '/datenschutz/' : '/privacy-policy/';
     if (!(target instanceof Element)) return;
     if (target.closest('[data-external-media-load], [data-load-external-media]')) save(true);
   });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopManualPlayback();
+  });
+  window.addEventListener('pagehide', stopManualPlayback);
 
   Object.assign(window, {
     wamoconConsent: {

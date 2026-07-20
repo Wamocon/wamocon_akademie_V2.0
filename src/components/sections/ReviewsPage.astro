@@ -14,6 +14,7 @@ const copy = lang === 'de'
       storiesLabel: 'Erfolgsgeschichten',
       testimonialsLabel: 'Teilnehmerstimmen',
       challenge: 'Herausforderung', goal: 'Ziel', result: 'Ergebnis', onYouTube: 'auf YouTube ansehen', interview: 'im Interview',
+      playVideo: 'Video abspielen', closeVideo: 'Video schließen',
       stories: [
         {
           name: 'Leon Christen', title: 'Leon Christen und sein Hindernis', videoId: '1u100i0b9LM',
@@ -38,7 +39,7 @@ const copy = lang === 'de'
         { name: 'Jonathan', role: 'Teilnehmer WAMOCON Academy', videoId: 'C6jFQwt6E0o' },
       ],
       adviceTitle: 'Beratung erhalten',
-      adviceText: 'Rufen Sie uns an +49 6196 5838311, oder hinterlassen Sie unten Ihre Kontaktdaten, damit wir Sie erreichen und Ihre Fragen beantworten können.',
+      adviceText: 'Rufen Sie uns an +49 (0) 6196 5838312, oder hinterlassen Sie unten Ihre Kontaktdaten, damit wir Sie erreichen und Ihre Fragen beantworten können.',
       name: 'Ihr Name', phone: 'Telefon', email: 'E-Mail', submit: 'Anfrage senden',
       consentPre: 'Hiermit bestätige ich, dass ich die ', consentLink: 'Datenschutzerklärung',
       consentPost: ' gelesen habe und damit einverstanden bin, dass die WAMOCON Academy GmbH meine Daten, einschließlich personenbezogener Daten, speichern und verarbeiten darf.',
@@ -50,6 +51,7 @@ const copy = lang === 'de'
       storiesLabel: 'Success stories',
       testimonialsLabel: 'Participant testimonials',
       challenge: 'The challenge', goal: 'Goal', result: 'Result', onYouTube: 'watch on YouTube', interview: 'in an interview',
+      playVideo: 'Play video', closeVideo: 'Close video',
       stories: [
         {
           name: 'Leon Christen', title: 'Leon Christen and his obstacle', videoId: '1u100i0b9LM',
@@ -74,7 +76,7 @@ const copy = lang === 'de'
         { name: 'Jonathan', role: 'Participant WAMOCON Academy', videoId: 'C6jFQwt6E0o' },
       ],
       adviceTitle: 'Get advice',
-      adviceText: 'Give us a call +49 6196 5838311, or leave your contact details below so that we can reach you and answer your questions.',
+      adviceText: 'Give us a call +49 (0) 6196 5838312, or leave your contact details below so that we can reach you and answer your questions.',
       name: 'Name', phone: 'Phone', email: 'E-Mail', submit: 'Send request',
       consentPre: 'I hereby confirm that I have read the ', consentLink: 'privacy policy',
       consentPost: ' and agree that WAMOCON Academy GmbH may store and process my data, including personal data.',
@@ -83,16 +85,21 @@ const copy = lang === 'de'
 const stories = copy.stories;
 const graduates = copy.graduates;
 
-const thumbnail = (id: string) => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
-const watch = (id: string) => `https://www.youtube.com/watch?v=${id}`;
+const storyPosters = [
+  '/images/academy/story-leon.jpg',
+  '/images/academy/story-christian.jpg',
+];
+const graduatePoster = (name: string) => `/images/academy/testimonial-${name.toLowerCase()}.jpg`;
 ---
 
 <div class="reviews-page">
   <section class="reviews-hero">
     <div class="reviews-hero__inner container">
-      <h1>{copy.title}</h1>
-      <p>{copy.intro}</p>
-      <button class="reviews-button" type="button" data-review-open>{copy.sendEvaluation}</button>
+      <div class="reviews-hero__copy">
+        <h1>{copy.title}</h1>
+        <p>{copy.intro}</p>
+        <button class="reviews-button" type="button" data-review-open>{copy.sendEvaluation}</button>
+      </div>
     </div>
     <img class="reviews-hero__shape reviews-hero__shape--small" src="/images/academy/tild3730-6132-4863-b462-623032303533__group_11.png" alt="" />
     <img class="reviews-hero__shape reviews-hero__shape--large" src="/images/academy/tild3730-6132-4863-b462-623032303533__group_11.png" alt="" />
@@ -100,7 +107,7 @@ const watch = (id: string) => `https://www.youtube.com/watch?v=${id}`;
 
   <section class="stories" aria-label={copy.storiesLabel}>
     <div class="container stories__list">
-      {stories.map((story) => (
+      {stories.map((story, index) => (
         <article class="story">
           <div class="story__copy">
             <h2>{story.title}</h2>
@@ -119,14 +126,14 @@ const watch = (id: string) => `https://www.youtube.com/watch?v=${id}`;
               </div>
             </dl>
           </div>
-          <a class="video-preview video-preview--story" href={watch(story.videoId)} target="_blank" rel="noopener noreferrer" aria-label={`${story.videoTitle} ${copy.onYouTube}`}>
-            <img data-consent-src={thumbnail(story.videoId)} alt={`${story.name} ${copy.interview}`} width="480" height="270" loading="lazy" />
+          <button class="video-preview video-preview--story" type="button" data-review-video-id={story.videoId} data-review-video-title={story.videoTitle} aria-label={`${copy.playVideo}: ${story.videoTitle}`}>
+            <img src={storyPosters[index]} alt={`${story.name} ${copy.interview}`} width="1920" height="1080" loading="lazy" />
             <span class="video-preview__headline">{story.videoTitle}</span>
             <span class="video-preview__brand">WAMOCON ACADEMY</span>
             <span class="video-preview__play" aria-hidden="true">
               <svg viewBox="0 0 68 48"><path d="M66.5 7.7C65.7 4.8 64 2.3 61.1 1.5 55.8.1 34 0 34 0S12.2.1 6.9 1.5C4 2.3 2.3 4.8 1.5 7.7.1 13.1 0 24 0 24s.1 11 1.5 16.3c.8 2.9 2.5 5.4 5.4 6.2C12.2 47.9 34 48 34 48s21.8-.1 27.1-1.5c2.9-.8 4.6-3.3 5.4-6.2C67.9 35 68 24 68 24s-.1-11-1.5-16.3Z"/><path class="video-preview__triangle" d="m27 14 18 10-18 10Z"/></svg>
             </span>
-          </a>
+          </button>
         </article>
       ))}
     </div>
@@ -136,13 +143,13 @@ const watch = (id: string) => `https://www.youtube.com/watch?v=${id}`;
     <div class="container graduates__grid">
       {graduates.map((graduate) => (
         <article class="graduate">
-          <a class="video-preview video-preview--graduate" href={watch(graduate.videoId)} target="_blank" rel="noopener noreferrer" aria-label={`${graduate.name} ${copy.onYouTube}`}>
-            <img data-consent-src={thumbnail(graduate.videoId)} alt={`${graduate.name}, ${graduate.role}`} width="480" height="270" loading="lazy" />
+          <button class="video-preview video-preview--graduate" type="button" data-review-video-id={graduate.videoId} data-review-video-title={`${graduate.name}: ${copy.testimonialsLabel}`} aria-label={`${copy.playVideo}: ${graduate.name}`}>
+            <img src={graduatePoster(graduate.name)} alt={`${graduate.name}, ${graduate.role}`} width="1280" height="720" loading="lazy" />
             <span class="video-preview__play" aria-hidden="true">
               <svg viewBox="0 0 68 48"><path d="M66.5 7.7C65.7 4.8 64 2.3 61.1 1.5 55.8.1 34 0 34 0S12.2.1 6.9 1.5C4 2.3 2.3 4.8 1.5 7.7.1 13.1 0 24 0 24s.1 11 1.5 16.3c.8 2.9 2.5 5.4 5.4 6.2C12.2 47.9 34 48 34 48s21.8-.1 27.1-1.5c2.9-.8 4.6-3.3 5.4-6.2C67.9 35 68 24 68 24s-.1-11-1.5-16.3Z"/><path class="video-preview__triangle" d="m27 14 18 10-18 10Z"/></svg>
             </span>
             <span class="graduate__caption"><strong>{graduate.name}</strong><small>{graduate.role}</small></span>
-          </a>
+          </button>
           <h2>{graduate.name}</h2>
           <p>{graduate.role}</p>
         </article>
@@ -156,37 +163,42 @@ const watch = (id: string) => `https://www.youtube.com/watch?v=${id}`;
   <LeadForm lang={lang} type="reviews" compact complianceMode />
 
   <ReviewModal lang={lang} />
+
+  <dialog class="reviews-video-dialog" data-reviews-video-dialog aria-label={copy.playVideo}>
+    <button class="reviews-video-dialog__close" type="button" data-reviews-video-close aria-label={copy.closeVideo}>×</button>
+    <iframe data-reviews-video-frame title={copy.playVideo} allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+  </dialog>
 </div>
 
 <style>
   .reviews-page { background: #101010; color: #fff; }
-  .reviews-hero { position: relative; overflow: hidden; padding-top: 180px; }
-  .reviews-hero__inner { position: relative; z-index: 1; min-height: 470px; }
-  .reviews-hero h1 { max-width: 900px; font-size: clamp(2.25rem, 3vw, 3.4rem); line-height: 1.14; }
-  .reviews-hero p { max-width: 680px; margin-top: 1.4rem; font-size: clamp(1rem, 1.2vw, 1.15rem); line-height: 1.45; }
-  .reviews-button { min-height: 60px; margin-top: 1.5rem; padding: 0 1.45rem; border-radius: 5px; background: var(--color-accent); color: #fff; font-size: 0.8rem; font-weight: 600; transition: background 180ms, transform 180ms; }
+  .reviews-hero { position: relative; overflow: hidden; padding-top: clamp(205px, 11vw, 225px); }
+  .reviews-hero__inner { position: relative; z-index: 1; min-height: 520px; }
+  .reviews-hero h1 { max-width: 980px; font-size: clamp(2.75rem, 3.5vw, 4.25rem); line-height: 1.12; }
+  .reviews-hero p { max-width: 760px; margin-top: 1.5rem; font-size: clamp(1.05rem, 1.3vw, 1.25rem); line-height: 1.5; }
+  .reviews-button { min-height: 64px; margin-top: 1.65rem; padding: 0 1.65rem; border-radius: 5px; background: var(--color-accent); color: #fff; font-size: 1rem; font-weight: 600; transition: background 180ms, transform 180ms; }
   .reviews-button:hover { background: #df1911; transform: translateY(-2px); }
   .reviews-hero__shape { position: absolute; height: auto; pointer-events: none; filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.45)); }
-  .reviews-hero__shape--small { top: 86px; right: clamp(-44px, 2vw, 36px); width: clamp(190px, 14vw, 270px); transform: rotate(250deg); animation: review-shape-small 8s ease-in-out infinite; }
-  .reviews-hero__shape--large { top: 245px; right: clamp(100px, 14vw, 270px); width: clamp(280px, 20vw, 390px); transform: rotate(151deg); animation: review-shape-large 10s ease-in-out infinite; }
+  .reviews-hero__shape--small { top: 105px; right: clamp(-50px, 1.5vw, 30px); width: clamp(230px, 18vw, 360px); transform: rotate(250deg); animation: review-shape-small 8s ease-in-out infinite; }
+  .reviews-hero__shape--large { top: 285px; right: clamp(110px, 12vw, 245px); width: clamp(340px, 25vw, 500px); transform: rotate(151deg); animation: review-shape-large 10s ease-in-out infinite; }
 
   .stories { padding-bottom: 5rem; }
   .stories__list { display: grid; gap: clamp(4rem, 7vw, 8rem); }
   .story { display: grid; grid-template-columns: minmax(320px, 0.72fr) minmax(0, 1.28fr); gap: clamp(3rem, 7vw, 8rem); align-items: center; }
   .story__copy { max-width: 720px; }
   .story h2 { margin-bottom: 1.75rem; font-size: clamp(1.2rem, 1.6vw, 1.55rem); line-height: 1.3; }
-  .story dl { display: grid; gap: 1.35rem; font-size: clamp(0.9rem, 1vw, 1rem); line-height: 1.45; }
+  .story dl { display: grid; gap: 1.35rem; font-size: clamp(1rem, 0.9vw, 1.125rem); line-height: 1.55; }
   .story dt { color: var(--color-accent); font-weight: 400; }
   .story dd { margin: 0; }
 
-  .video-preview { position: relative; display: block; overflow: hidden; background: #000; }
+  .video-preview { position: relative; display: block; width: 100%; overflow: hidden; border: 0; background: #000; color: inherit; text-align: left; cursor: pointer; }
   .video-preview img { width: 100%; height: 100%; object-fit: cover; transition: transform 400ms var(--ease-out), opacity 200ms; }
   .video-preview img:not([src]) { opacity: 0; }
   .video-preview:hover img { transform: scale(1.025); opacity: 0.88; }
   .video-preview--story { aspect-ratio: 16 / 9; }
-  .video-preview--graduate { aspect-ratio: 1.62 / 1; background: #191919; }
+  .video-preview--graduate { aspect-ratio: 16 / 9; background: #191919; }
   .video-preview__headline { position: absolute; top: 0.8rem; left: 5.8rem; right: 1rem; z-index: 1; overflow: hidden; color: #fff; font-size: clamp(0.8rem, 1.65vw, 1.25rem); font-weight: 700; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; text-shadow: 0 2px 8px #000; }
-  .video-preview__brand { position: absolute; top: 2.45rem; left: 5.8rem; z-index: 1; font-size: 0.72rem; font-weight: 600; text-shadow: 0 2px 8px #000; }
+  .video-preview__brand { position: absolute; top: 2.45rem; left: 5.8rem; z-index: 1; font-size: 0.82rem; font-weight: 600; text-shadow: 0 2px 8px #000; }
   .video-preview__play { position: absolute; top: 50%; left: 50%; width: 68px; color: #f03; transform: translate(-50%, -50%); transition: transform 180ms; }
   .video-preview:hover .video-preview__play { transform: translate(-50%, -50%) scale(1.08); }
   .video-preview__play svg { width: 100%; fill: currentColor; }
@@ -195,11 +207,16 @@ const watch = (id: string) => `https://www.youtube.com/watch?v=${id}`;
   .graduates { padding: 2.5rem 0 clamp(6rem, 12vw, 10rem); }
   .graduates__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: clamp(2.5rem, 4vw, 4.5rem) clamp(1.5rem, 2.5vw, 2.75rem); }
   .graduate__caption { position: absolute; inset: auto 0 0; display: grid; min-height: 58px; align-content: center; padding: 0.5rem 1.25rem; background: #fff; color: #5b1717; text-transform: uppercase; }
-  .graduate__caption strong { font-size: 1rem; line-height: 1; }
-  .graduate__caption small { color: #8a8a8a; font-size: 0.62rem; font-weight: 300; text-transform: none; }
-  .graduate h2 { margin-top: 1.25rem; font-size: 1rem; }
-  .graduate p { margin-top: 0.5rem; font-size: 0.9rem; }
+  .graduate__caption strong { font-size: 1.0625rem; line-height: 1; }
+  .graduate__caption small { color: #666; font-size: 0.875rem; font-weight: 400; text-transform: none; }
+  .graduate h2 { margin-top: 1.25rem; font-size: 1.125rem; }
+  .graduate p { margin-top: 0.5rem; font-size: 1.0625rem; }
   .graduates__action { margin-top: 2.4rem; }
+
+  .reviews-video-dialog { width: min(1120px, calc(100vw - 32px)); margin: auto; padding: 48px 12px 12px; border: 1px solid rgba(255,255,255,.3); border-radius: 6px; background: #090909; color: #fff; box-shadow: 0 34px 100px rgba(0,0,0,.65); }
+  .reviews-video-dialog::backdrop { background: rgba(0,0,0,.84); backdrop-filter: blur(5px); }
+  .reviews-video-dialog iframe { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; }
+  .reviews-video-dialog__close { position: absolute; top: 6px; right: 10px; width: 40px; height: 40px; color: #fff; font-size: 28px; line-height: 1; }
 
   @keyframes review-shape-small {
     0%, 100% { transform: translate3d(0, 0, 0) rotate(250deg); }
@@ -220,11 +237,59 @@ const watch = (id: string) => `https://www.youtube.com/watch?v=${id}`;
   }
 
   @media (min-width: 2200px) {
-    .reviews-hero__inner { min-height: 560px; }
-    .reviews-hero__shape--small { right: 2vw; width: min(13vw, 360px); }
-    .reviews-hero__shape--large { right: 13vw; width: min(19vw, 540px); }
     .story { grid-template-columns: minmax(420px, 0.62fr) minmax(0, 1.38fr); gap: clamp(100px, 9vw, 280px); }
     .graduates__grid { gap: clamp(56px, 3vw, 96px); }
+  }
+
+  /* Match the full-width 1200 × 600 hero artboard used by the reference page. */
+  @media (min-width: 1200px) {
+    .reviews-hero {
+      width: 100%;
+      min-height: 50vw;
+      height: 50vw;
+      padding-top: 0;
+    }
+    .reviews-hero__inner {
+      width: 100%;
+      max-width: none;
+      min-height: 50vw;
+      height: 50vw;
+      padding: 0;
+    }
+    .reviews-hero__copy {
+      position: absolute;
+      top: 29vw;
+      left: 1.6667vw;
+      width: 48vw;
+    }
+    .reviews-hero h1 {
+      max-width: 46vw;
+      font-size: 3.5vw;
+      line-height: 1.08;
+    }
+    .reviews-hero p {
+      max-width: 44vw;
+      margin-top: 1.3333vw;
+      font-size: 1.4vw;
+      line-height: 1.35;
+    }
+    .reviews-hero .reviews-button {
+      min-width: 16.75vw;
+      min-height: 4.25vw;
+      margin-top: 2vw;
+      padding-inline: 1.5vw;
+      font-size: 1.15vw;
+    }
+    .reviews-hero__shape--small {
+      top: 7.5vw;
+      right: -1.5vw;
+      width: 22vw;
+    }
+    .reviews-hero__shape--large {
+      top: 16vw;
+      right: 11vw;
+      width: 32vw;
+    }
   }
 
   @media (max-width: 520px) {
@@ -234,9 +299,9 @@ const watch = (id: string) => `https://www.youtube.com/watch?v=${id}`;
     .reviews-button { min-height: 55px; margin-top: 1rem; padding-inline: 1.5rem; }
     .stories__list { gap: 4rem; }
     .story h2 { margin-bottom: 1.4rem; font-size: 1rem; }
-    .story dl { font-size: 0.88rem; line-height: 1.35; }
+    .story dl { font-size: 0.95rem; line-height: 1.45; }
     .video-preview__headline { left: 4.25rem; font-size: 0.82rem; }
-    .video-preview__brand { top: 2.2rem; left: 4.25rem; font-size: 0.62rem; }
+    .video-preview__brand { top: 2.2rem; left: 4.25rem; font-size: 0.75rem; }
     .graduates { padding-top: 4rem; }
     .graduates__grid { grid-template-columns: 1fr; gap: 1.5rem; }
     .graduate h2 { margin-top: 0.85rem; }
@@ -250,3 +315,63 @@ const watch = (id: string) => `https://www.youtube.com/watch?v=${id}`;
     }
   }
 </style>
+
+<script>
+  type ReviewsConsentWindow = Window & {
+    wamoconConsent?: {
+      hasExternalMedia?: () => boolean;
+      open?: () => void;
+      grantExternalMedia?: () => void;
+    };
+  };
+
+  const videoDialog = document.querySelector<HTMLDialogElement>('[data-reviews-video-dialog]');
+  const videoFrame = videoDialog?.querySelector<HTMLIFrameElement>('[data-reviews-video-frame]');
+  let pendingReviewVideo: { id: string; title: string } | null = null;
+
+  const stopReviewVideo = () => videoFrame?.removeAttribute('src');
+  const playReviewVideo = (id: string, title: string) => {
+    if (!videoDialog || !videoFrame) return;
+    videoFrame.title = title;
+    videoFrame.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&controls=1&playsinline=1&rel=0`;
+    if (!videoDialog.open) videoDialog.showModal();
+  };
+
+  document.querySelectorAll<HTMLButtonElement>('[data-review-video-id]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const id = button.dataset.reviewVideoId;
+      if (!id) return;
+      const title = button.dataset.reviewVideoTitle || 'YouTube video';
+      const consent = (window as ReviewsConsentWindow).wamoconConsent;
+      if (consent?.hasExternalMedia?.()) {
+        playReviewVideo(id, title);
+        return;
+      }
+      if (consent?.grantExternalMedia) {
+        consent.grantExternalMedia();
+        playReviewVideo(id, title);
+        return;
+      }
+      pendingReviewVideo = { id, title };
+      consent?.open?.();
+    });
+  });
+
+  videoDialog?.querySelector('[data-reviews-video-close]')?.addEventListener('click', () => videoDialog.close());
+  videoDialog?.addEventListener('click', (event) => {
+    if (event.target === videoDialog) videoDialog.close();
+  });
+  videoDialog?.addEventListener('close', stopReviewVideo);
+  window.addEventListener('pagehide', stopReviewVideo);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && videoDialog?.open) videoDialog.close();
+  });
+  window.addEventListener('wamocon:consent', (event) => {
+    const detail = (event as CustomEvent<{ externalMedia?: boolean }>).detail;
+    if (detail?.externalMedia && pendingReviewVideo) {
+      playReviewVideo(pendingReviewVideo.id, pendingReviewVideo.title);
+    }
+    if (!detail?.externalMedia && videoDialog?.open) videoDialog.close();
+    pendingReviewVideo = null;
+  });
+</script>

@@ -3,8 +3,8 @@ const CLIENT_ID = process.env.GRAPH_CLIENT_ID;
 const CLIENT_SECRET = process.env.GRAPH_CLIENT_SECRET;
 const REFRESH_TOKEN = process.env.GRAPH_REFRESH_TOKEN;
 const PUBLIC_CLIENT = process.env.GRAPH_PUBLIC_CLIENT === 'true';
-const GRAPH_SENDER = process.env.GRAPH_SENDER || 'info@test-it-academy.de';
-const RECIPIENT = process.env.LEAD_RECIPIENT || 'info@test-it-academy.de';
+const GRAPH_SENDER = process.env.GRAPH_SENDER || 'info@test-it-academy.com';
+const RECIPIENT = process.env.LEAD_RECIPIENT || 'info@test-it-academy.com';
 const TURNSTILE_SECRET = process.env.TURNSTILE_SECRET_KEY;
 const SITE_ORIGINS = new Set(
   (process.env.SITE_ORIGINS || 'https://test-it-academy.com,https://www.test-it-academy.com')

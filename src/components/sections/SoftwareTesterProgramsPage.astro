@@ -1,6 +1,7 @@
 ---
 import coursePopupCopy from '../../../audit/course-popup-copy.json';
 import type { Lang } from '../../i18n/config';
+import { coursePopupBlocks, coursePopupCategory } from '../../data/coursePopup';
 import { programAssets, programContent, programCourses } from '../../data/programs';
 
 interface Props {
@@ -14,84 +15,14 @@ type PopupRecord = {
   links: Array<{ text: string; href: string }>;
 };
 
-type PopupBlock =
-  | { type: 'heading'; text: string }
-  | { type: 'paragraph'; text: string }
-  | { type: 'list'; items: string[] };
-
 const { lang } = Astro.props;
 const content = programContent[lang];
 const courses = programCourses[lang];
+const heroAccentLines = lang === 'de'
+  ? ['Bildungsprogramme', 'für Softwaretester:']
+  : ['Educational programs', 'for software testers:'];
 const coursePopups = (coursePopupCopy as PopupRecord[]).filter((popup) => popup.hook.endsWith(`-${lang}`));
 const popupId = (hook: string) => `course-${hook.replace('#popup:', '').replace(/[^a-z0-9-]+/gi, '-').toLowerCase()}`;
-const cleanPopupDescription = (description: string) => {
-  const fundingCopy = /Bildungsgutschein gefördert|education voucher funded/i.test(description);
-  if (fundingCopy) {
-    return lang === 'de'
-      ? 'Dieses Kursangebot verbindet Grundlagen des Softwaretestens mit praxisnaher Prüfungsvorbereitung. Aktuelle Termine und Preise: In Planung. Eine Förderung durch Bildungsgutschein kann im Einzelfall möglich sein. Über Voraussetzungen, förderfähige Kosten und Bewilligung entscheiden die zuständige Agentur für Arbeit oder das Jobcenter. Bitte lassen Sie die Förderung vor einer Anmeldung schriftlich bestätigen. Eine Anfrage über diese Website ist unverbindlich und stellt keinen Kauf dar.'
-      : 'This course combines software-testing fundamentals with practical examination preparation. Current dates and prices: Planned. Funding through a Bildungsgutschein may be available in individual cases. The responsible employment agency or job centre decides eligibility, covered costs and approval. Please obtain written confirmation before registering. An inquiry through this website is non-binding and does not constitute a purchase.';
-  }
-  return description
-    .replace(/\s*(Eine Frage stellen|Ask a question)\s*$/, '')
-    .replace(/Sich anmelden/g, 'Unverbindlich anfragen')
-    .replace(/Register now/gi, 'Request information');
-};
-const popupLinkText = (text: string) => {
-  if (/Sich anmelden/i.test(text)) return 'Unverbindlich anfragen';
-  if (/Register now/i.test(text)) return 'Request information';
-  return text;
-};
-const popupBlocks = (description: string): PopupBlock[] => {
-  const blocks: PopupBlock[] = [];
-  let paragraph: string[] = [];
-  let list: string[] = [];
-
-  const flushParagraph = () => {
-    if (paragraph.length) blocks.push({ type: 'paragraph', text: paragraph.join(' ') });
-    paragraph = [];
-  };
-  const flushList = () => {
-    if (list.length) blocks.push({ type: 'list', items: list });
-    list = [];
-  };
-
-  cleanPopupDescription(description)
-    .replace(/\r\n?/g, '\n')
-    .split('\n')
-    .forEach((rawLine) => {
-      const line = rawLine.trim();
-      if (!line) {
-        flushParagraph();
-        flushList();
-        return;
-      }
-
-      const isHeading =
-        line.endsWith(':') ||
-        /^(?:Tag|Day)\s+\d+\s*:/i.test(line) ||
-        /^\d+\.\s*(?:Etappe|Stage|Phase)\b/i.test(line);
-      if (isHeading) {
-        flushParagraph();
-        flushList();
-        blocks.push({ type: 'heading', text: line.replace(/:$/, '') });
-        return;
-      }
-
-      const bullet = line.match(/^(?:[-–—•]|\d+[.)])\s+(.+)$/);
-      if (bullet) {
-        flushParagraph();
-        list.push(bullet[1]);
-        return;
-      }
-
-      flushList();
-      paragraph.push(line);
-    });
-
-  flushParagraph();
-  flushList();
-  return blocks;
-};
 const redirect = lang === 'de' ? '/danke/' : '/thanks/';
 const questionHook = lang === 'de' ? '#popup:eine-Frage-stellen' : '#popup:eine-Frage-stellen-en';
 const registrationHook = lang === 'de' ? '#popup:myform' : '#popup:myform-en';
@@ -115,8 +46,15 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
 <section class="page-hero program-hero">
   <div class="program-shell program-hero__layout">
     <div class="program-hero__copy" data-reveal>
-      <h1><span>{content.heroAccent}</span><br />{content.heroRest}</h1>
+      <h1>
+        <span class="program-hero__headline-accent">
+          {heroAccentLines.map((line) => <span class="program-hero__headline-line">{line}</span>)}
+        </span>
+        <span class="program-hero__headline-rest">{content.heroRest}</span>
+      </h1>
       <p>{content.lead}</p>
+    </div>
+    <div class="program-hero__media">
       <img
         class="program-hero__accreditation"
         src={programAssets.accreditation}
@@ -124,8 +62,9 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
         width="1400"
         height="450"
       />
+      <img class="program-hero__art program-hero__art--small" src={programAssets.hero} alt="" width="1680" height="1670" loading="eager" aria-hidden="true" />
+      <img class="program-hero__art program-hero__art--large" src={programAssets.hero} alt="" width="1680" height="1670" loading="eager" aria-hidden="true" />
     </div>
-    <img class="program-hero__art" src={programAssets.hero} alt="" width="1680" height="1670" loading="eager" />
   </div>
 </section>
 
@@ -305,8 +244,9 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
         <span aria-hidden="true">×</span>
       </button>
       <h2 id={`${popupId(popup.hook)}-title`}>{popup.title}</h2>
+      <p class="course-dialog__eyebrow">{coursePopupCategory(popup.hook, lang)}</p>
       <div class="course-dialog__content">
-        {popupBlocks(popup.description).map((block) => (
+        {coursePopupBlocks(popup.description, lang).map((block) => (
           block.type === 'heading'
             ? <h3>{block.text}</h3>
             : block.type === 'list'
@@ -320,7 +260,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
             class:list={['program-button', { 'program-button--outline': index > 0 }]}
             href={normalizePopupHref(link.href)}
             data-dialog-hook={normalizePopupHref(link.href).startsWith('#popup:') ? popupId(normalizePopupHref(link.href)) : undefined}
-          >{popupLinkText(link.text)}</a>
+          >{link.text}</a>
         ))}
       </div>
     </article>
@@ -344,21 +284,30 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   </article>
 </dialog>
 
-<dialog class="course-dialog form-dialog" id={popupId(registrationHook)} aria-labelledby="registration-dialog-title">
+<dialog class="course-dialog form-dialog advice-dialog" id={popupId(registrationHook)} aria-labelledby="registration-dialog-title">
   <article class="course-dialog__panel">
     <button class="course-dialog__close" type="button" data-dialog-close aria-label={content.close}><span aria-hidden="true">×</span></button>
-    <h2 id="registration-dialog-title">{content.adviceTitle}</h2>
-    <p>{content.adviceText}</p>
-    <form class="program-form js-lead-form" data-redirect={redirect}>
-      <input type="hidden" name="type" value="courses" /><input type="hidden" name="lang" value={lang} />
-      <input class="program-form__trap" type="text" name="company" tabindex="-1" autocomplete="off" />
-      <label><span>{content.form.name}</span><input type="text" name="name" placeholder={content.form.name} autocomplete="name" required /></label>
-      <label><span>{content.form.phone}</span><input type="tel" name="phone" placeholder={content.form.phone} autocomplete="tel" /></label>
-      <label><span>{content.form.email}</span><input type="email" name="email" placeholder={content.form.email} autocomplete="email" required /></label>
-      <p class="program-form__notice">{formNoticeStart}<a href={privacyHref}>{privacyLabel}</a>.</p>
-      <p class="lead-form__status" role="alert" aria-live="assertive" hidden></p>
-      <button class="program-button" type="submit">{content.form.submit}</button>
-    </form>
+    <div class="advice-dialog__grid">
+      <div class="advice-dialog__content">
+        <h2 id="registration-dialog-title">{content.adviceTitle}</h2>
+        <p>{content.adviceText}</p>
+        <form class="program-form js-lead-form" data-redirect={redirect}>
+          <input type="hidden" name="type" value="courses" /><input type="hidden" name="lang" value={lang} />
+          <input class="program-form__trap" type="text" name="company" tabindex="-1" autocomplete="off" />
+          <label><span>{content.form.name}</span><input type="text" name="name" placeholder={content.form.name} autocomplete="name" required /></label>
+          <label><span>{content.form.phone}</span><input type="tel" name="phone" placeholder={content.form.phone} autocomplete="tel" /></label>
+          <label><span>{content.form.email}</span><input type="email" name="email" placeholder={content.form.email} autocomplete="email" required /></label>
+          <p class="program-form__notice">{formNoticeStart}<a href={privacyHref}>{privacyLabel}</a>.</p>
+          <p class="lead-form__status" role="alert" aria-live="assertive" hidden></p>
+          <button class="program-button" type="submit">{content.form.submit}</button>
+        </form>
+      </div>
+      <figure class="advice-dialog__media">
+        <img class="advice-dialog__photo" src={programAssets.consultation} alt={lang === 'de' ? 'Persönliche Beratung bei der WAMOCON Academy' : 'Personal consultation at WAMOCON Academy'} />
+        <img class="advice-dialog__curve advice-dialog__curve--top" src={programAssets.accentCurve} alt="" aria-hidden="true" />
+        <img class="advice-dialog__curve advice-dialog__curve--bottom" src={programAssets.accentCurve} alt="" aria-hidden="true" />
+      </figure>
+    </div>
   </article>
 </dialog>
 
@@ -376,7 +325,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   <article class="course-dialog__panel">
     <button class="course-dialog__close" type="button" data-dialog-close aria-label={content.close}><span aria-hidden="true">×</span></button>
     <div class="external-media" data-external-media>
-      <iframe data-consent-src="https://www.youtube-nocookie.com/embed/8t24ww8EVbk" title={content.video} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen hidden></iframe>
+      <iframe data-consent-src="https://www.youtube-nocookie.com/embed/8t24ww8EVbk?autoplay=1&controls=1&playsinline=1&rel=0" data-consent-mode="manual" title={content.video} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen hidden></iframe>
       <div class="external-media__notice" data-external-media-notice>
         <p>{lang === 'de' ? 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.' : 'This video loads from YouTube only after your consent.'}</p>
         <button class="program-button" type="button" data-external-media-load>{lang === 'de' ? 'Video laden' : 'Load video'}</button>
@@ -414,7 +363,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   }
 
   .program-hero {
-    min-height: 720px;
+    min-height: max(900px, 100svh);
     overflow: hidden;
     background: #0d0d0d;
   }
@@ -422,54 +371,88 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   .program-hero__layout {
     position: relative;
     display: grid;
-    min-height: 720px;
-    grid-template-columns: minmax(0, 0.98fr) minmax(520px, 1.02fr);
-    align-items: center;
-    padding-top: 155px;
-    padding-bottom: 52px;
+    min-height: max(900px, 100svh);
+    grid-template-columns: minmax(0, 1.5fr) minmax(360px, 0.5fr);
+    align-items: start;
+    padding-top: clamp(420px, 46vh, 600px);
+    padding-bottom: clamp(3rem, 6vh, 5rem);
   }
 
   .program-hero__copy {
     position: relative;
     z-index: 2;
-    max-width: 850px;
+    width: min(100%, 1560px);
   }
 
   .program-hero h1 {
     margin: 0 0 1.45rem;
-    font-size: clamp(3rem, 4.8vw, 5.2rem);
+    font-size: clamp(3.35rem, 5.1vw, 5.6rem);
     line-height: 1.03;
     overflow-wrap: normal;
     word-break: normal;
     hyphens: none;
   }
 
-  .program-hero h1 span {
+  .program-hero__headline-accent {
+    display: block;
     color: var(--color-accent);
   }
 
+  .program-hero__headline-line,
+  .program-hero__headline-rest {
+    display: block;
+  }
+
+  .program-hero__headline-rest {
+    color: #fff;
+    white-space: nowrap;
+  }
+
   .program-hero p {
-    max-width: 800px;
+    max-width: 1500px;
     color: rgba(255, 255, 255, 0.84);
-    font-size: clamp(1.02rem, 1.35vw, 1.2rem);
-    line-height: 1.45;
+    font-size: clamp(1.1rem, 1.55vw, 1.7rem);
+    line-height: 1.4;
   }
 
   .program-hero__accreditation {
-    width: clamp(220px, 21vw, 340px);
+    position: absolute;
+    z-index: 3;
+    right: clamp(28px, 4vw, 72px);
+    bottom: clamp(72px, 13vh, 150px);
+    width: clamp(285px, 20vw, 390px);
     height: auto;
-    margin-top: 1.85rem;
+    margin: 0;
+  }
+
+  .program-hero__media {
+    position: absolute;
+    z-index: 1;
+    inset: clamp(120px, 7vw, 150px) calc(var(--container-pad) * -1) 0 47%;
+    pointer-events: none;
   }
 
   .program-hero__art {
     position: absolute;
-    z-index: 0;
-    top: -2%;
-    right: -4%;
-    width: min(58vw, 880px);
     height: auto;
     transform-origin: 56% 48%;
     animation: program-art-drift 11s ease-in-out infinite;
+  }
+
+  .program-hero__art--large {
+    right: -4%;
+    bottom: 0;
+    width: min(47vw, 810px);
+  }
+
+  .program-hero__art--small {
+    top: 0;
+    right: min(32vw, 520px);
+    width: min(25vw, 420px);
+    opacity: 0.72;
+    filter: brightness(0.82);
+    animation-delay: -4s;
+    animation-direction: reverse;
   }
 
   .program-benefits {
@@ -517,7 +500,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
 
   .course-group {
     position: relative;
-    margin-top: clamp(4rem, 8vw, 7rem);
+    margin-top: clamp(5rem, 8vw, 8.5rem);
   }
 
   .course-group:first-child {
@@ -525,7 +508,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   }
 
   .course-group h2 {
-    margin-bottom: 2rem;
+    margin-bottom: clamp(2rem, 3vw, 3rem);
     font-size: clamp(2.15rem, 4vw, 4rem);
   }
 
@@ -534,7 +517,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     z-index: 2;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(1.25rem, 2.4vw, 2.5rem);
+    gap: clamp(1.5rem, 2vw, 2.75rem);
   }
 
   .course-grid--individual {
@@ -544,36 +527,87 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   .course-card {
     position: relative;
     display: flex;
-    min-height: clamp(168px, 12vw, 196px);
+    min-height: clamp(210px, 13vw, 260px);
     overflow: hidden;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 4.15rem clamp(1.3rem, 2vw, 2rem) clamp(1.35rem, 2vw, 1.9rem);
-    border: 1px solid rgba(255, 255, 255, 0.44);
-    background: #101010;
-    transition: border-color var(--dur-fast), background var(--dur-fast), transform var(--dur-fast);
+    isolation: isolate;
+    padding: 5rem clamp(1.5rem, 2vw, 2.4rem) clamp(1.65rem, 2vw, 2.2rem);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: #111;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.18);
+    transition: border-color 220ms ease, background 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+  }
+
+  .course-card::before {
+    content: '';
+    position: absolute;
+    z-index: 2;
+    top: -1px;
+    left: -1px;
+    width: clamp(72px, 7vw, 128px);
+    height: 4px;
+    background: var(--color-accent);
+    transition: width 260ms ease;
+  }
+
+  .course-card::after {
+    content: '';
+    position: absolute;
+    right: clamp(1.5rem, 2vw, 2.4rem);
+    bottom: clamp(1.75rem, 2vw, 2.3rem);
+    width: 14px;
+    height: 14px;
+    border-top: 2px solid currentColor;
+    border-right: 2px solid currentColor;
+    opacity: 0.42;
+    transform: rotate(45deg);
+    transition: opacity 220ms ease, transform 220ms ease;
   }
 
   .course-card:hover,
   .course-card:focus-visible {
     border-color: var(--color-accent);
-    background: #181818;
-    transform: translateY(-3px);
+    outline: none;
+    background: #1a1a1a;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.34);
+    transform: translateY(-5px);
+  }
+
+  .course-card:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 4px;
+  }
+
+  .course-card:hover::before,
+  .course-card:focus-visible::before {
+    width: calc(100% + 2px);
+  }
+
+  .course-card:hover::after,
+  .course-card:focus-visible::after {
+    opacity: 1;
+    transform: translateX(5px) rotate(45deg);
   }
 
   .course-card strong {
-    max-width: 92%;
-    font-size: clamp(1.05rem, 1.25vw, 1.28rem);
-    line-height: 1.22;
+    max-width: calc(100% - 48px);
+    font-size: clamp(1.25rem, 1.45vw, 1.65rem);
+    line-height: 1.18;
+    text-wrap: balance;
   }
 
   .course-card__format {
     position: absolute;
-    top: 0.75rem;
-    left: clamp(1.3rem, 2vw, 2rem);
-    max-width: calc(100% - 135px);
-    color: rgba(255, 255, 255, 0.72);
-    font-size: clamp(0.66rem, 0.7vw, 0.76rem);
+    top: 1.05rem;
+    left: clamp(1.5rem, 2vw, 2.4rem);
+    max-width: calc(100% - 165px);
+    color: rgba(255, 255, 255, 0.82);
+    font-size: clamp(0.78rem, 0.85vw, 0.95rem);
+    font-weight: var(--fw-medium);
     line-height: 1.3;
   }
 
@@ -581,11 +615,11 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     position: absolute;
     top: 0;
     right: 0;
-    min-width: 96px;
-    padding: 0.5rem 0.8rem;
+    min-width: 120px;
+    padding: 0.62rem 1rem;
     background: #fff;
     color: var(--color-accent);
-    font-size: 0.78rem;
+    font-size: clamp(0.86rem, 0.85vw, 1rem);
     font-weight: var(--fw-semibold);
     text-align: center;
   }
@@ -634,7 +668,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   }
 
   .program-dates__grid--single {
-    max-width: 1040px;
+    max-width: none;
     grid-template-columns: 1fr;
   }
 
@@ -655,7 +689,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     gap: 1.2rem;
     border-bottom: 1px solid rgba(255, 11, 0, 0.58);
     color: rgba(255, 255, 255, 0.78);
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
 
   .date-column strong {
@@ -872,14 +906,15 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     padding: 0.35rem 0.55rem;
     background: #fff;
     color: var(--color-accent);
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     font-weight: var(--fw-bold);
   }
 
   .program-steps__grid p {
     color: rgba(255, 255, 255, 0.86);
-    font-size: 0.96rem;
-    line-height: 1.4;
+    font-size: clamp(1.45rem, 1.65vw, 1.8rem);
+    font-weight: var(--fw-medium);
+    line-height: 1.3;
   }
 
   .program-prep {
@@ -949,13 +984,16 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   }
 
   .course-dialog {
-    width: min(920px, calc(100vw - 28px));
+    width: min(1180px, calc(100vw - 48px));
     max-height: min(88vh, 900px);
     margin: auto;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.24);
-    background: #171717;
+    border: 1px solid rgba(255, 255, 255, 0.32);
+    border-top: 4px solid var(--color-accent);
+    border-radius: 4px;
+    background: #131313;
     color: #fff;
+    box-shadow: 0 34px 100px rgba(0, 0, 0, 0.62);
   }
 
   .course-dialog::backdrop {
@@ -969,7 +1007,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     overflow-y: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    padding: clamp(1.6rem, 5vw, 4rem);
+    padding: clamp(2rem, 4.5vw, 5.5rem);
   }
 
   .course-dialog__panel::-webkit-scrollbar {
@@ -978,15 +1016,23 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   }
 
   .course-dialog h2 {
-    max-width: 16ch;
-    margin-bottom: 1.5rem;
+    max-width: 20ch;
+    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
     color: #fff;
     font-size: clamp(2rem, 5vw, 4rem);
   }
 
+  .course-dialog__eyebrow {
+    margin: -1.25rem 0 1.75rem;
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+
   .course-dialog__content {
+    max-width: 82ch;
     color: rgba(255, 255, 255, 0.78);
-    line-height: 1.65;
+    font-size: clamp(1rem, 1vw, 1.12rem);
+    line-height: 1.72;
   }
 
   .course-dialog__content > * {
@@ -998,15 +1044,15 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   }
 
   .course-dialog__content h3 {
-    padding-top: 0.65rem;
+    padding-top: 1rem;
     color: #fff;
-    font-size: clamp(1.2rem, 2.2vw, 1.55rem);
+    font-size: clamp(1.25rem, 1.6vw, 1.65rem);
     line-height: 1.3;
   }
 
   .course-dialog__content ul {
     display: grid;
-    gap: 0.7rem;
+    gap: 0.85rem;
     padding-left: 1.35rem;
   }
 
@@ -1023,8 +1069,8 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     z-index: 2;
     top: 0;
     float: right;
-    width: 42px;
-    height: 42px;
+    width: 48px;
+    height: 48px;
     border: 1px solid rgba(255, 255, 255, 0.35);
     background: #0d0d0d;
     color: var(--color-accent);
@@ -1036,13 +1082,57 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     display: flex;
     flex-wrap: wrap;
     gap: 0.8rem;
-    margin-top: 2rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
   }
 
+  .form-dialog,
+  .schedule-dialog { width: min(760px, calc(100vw - 32px)); }
+
   .form-dialog .course-dialog__panel,
-  .schedule-dialog .course-dialog__panel {
-    width: min(760px, calc(100vw - 32px));
+  .schedule-dialog .course-dialog__panel { width: 100%; }
+
+  .advice-dialog { width: min(1180px, calc(100vw - 48px)); }
+
+  .advice-dialog .course-dialog__panel { width: 100%; padding: clamp(2rem, 4vw, 4rem); }
+
+  .advice-dialog .course-dialog__close {
+    position: absolute;
+    top: clamp(1.25rem, 2.5vw, 2rem);
+    right: clamp(1.25rem, 2.5vw, 2rem);
+    float: none;
   }
+
+  .advice-dialog__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.02fr) minmax(320px, .98fr);
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: stretch;
+  }
+
+  .advice-dialog__content { align-self: center; min-width: 0; }
+  .advice-dialog__content h2 { padding-right: 3.5rem; margin-bottom: 1rem; }
+
+  .advice-dialog__media {
+    position: relative;
+    min-height: 520px;
+    overflow: hidden;
+    background: #282828;
+  }
+
+  .advice-dialog__photo { width: 100%; height: 100%; object-fit: cover; object-position: 54% center; }
+
+  .advice-dialog__curve {
+    position: absolute;
+    width: 112px;
+    height: auto;
+    pointer-events: none;
+    filter: drop-shadow(0 16px 22px rgba(0, 0, 0, .45));
+  }
+
+  .advice-dialog__curve--top { top: -16px; left: -22px; transform: rotate(274deg); }
+  .advice-dialog__curve--bottom { right: -28px; bottom: -20px; transform: rotate(150deg); }
 
   .form-dialog .program-form {
     margin-top: 1.5rem;
@@ -1064,20 +1154,32 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     color: #fff;
   }
 
-  .video-dialog .course-dialog__panel {
-    width: min(1040px, calc(100vw - 32px));
-    padding: 3.5rem 1rem 1rem;
+  .video-dialog { width: min(1180px, calc(100vw - 24px)); }
+
+  .video-dialog .course-dialog__panel { width: 100%; max-height: none; padding: 0; overflow: hidden; }
+
+  .video-dialog .course-dialog__close {
+    position: absolute;
+    z-index: 5;
+    top: 12px;
+    right: 12px;
+    float: none;
+    background: rgba(13, 13, 13, .88);
   }
 
   .video-dialog iframe {
+    display: block;
     width: 100%;
-    aspect-ratio: 16 / 9;
+    height: 100%;
     border: 0;
   }
 
   .external-media {
+    position: relative;
     display: grid;
-    min-height: min(68vh, 680px);
+    width: 100%;
+    min-height: 0;
+    aspect-ratio: 16 / 9;
     place-items: center;
     background: #090909;
   }
@@ -1085,6 +1187,9 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   .external-media iframe {
     grid-area: 1 / 1;
   }
+
+  .external-media iframe[hidden],
+  .external-media__notice[hidden] { display: none !important; }
 
   .external-media__notice {
     display: grid;
@@ -1145,7 +1250,32 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
 
   @media (max-width: 980px) {
     .program-hero__layout {
-      grid-template-columns: minmax(0, 1fr) minmax(360px, 0.8fr);
+      grid-template-columns: 1fr;
+      padding-top: 150px;
+    }
+
+    .program-hero__copy {
+      width: min(78%, 720px);
+    }
+
+    .program-hero__media {
+      inset: 104px calc(var(--container-pad) * -1) 0 46%;
+    }
+
+    .program-hero__art--large {
+      right: -7%;
+      width: min(55vw, 570px);
+    }
+
+    .program-hero__art--small {
+      right: min(37vw, 360px);
+      width: min(29vw, 300px);
+    }
+
+    .program-hero__accreditation {
+      right: 24px;
+      bottom: 32px;
+      width: min(29vw, 260px);
     }
 
     .course-card strong {
@@ -1174,29 +1304,47 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
       min-height: auto;
       flex-direction: column-reverse;
       align-items: stretch;
-      padding-top: 74px;
+      gap: 1.25rem;
+      padding-top: 88px;
       padding-bottom: 3rem;
     }
 
-    .program-hero__art {
+    .program-hero__copy {
+      width: 100%;
+    }
+
+    .program-hero__media {
       position: relative;
-      top: auto;
-      right: auto;
-      align-self: flex-end;
-      width: min(86vw, 430px);
-      height: 145px;
-      margin-right: -90px;
-      object-fit: contain;
-      object-position: center;
+      inset: auto;
+      min-height: clamp(220px, 62vw, 330px);
+      margin-inline: calc(var(--container-pad) * -0.45);
+    }
+
+    .program-hero__art--large {
+      right: -12%;
+      bottom: 24px;
+      width: min(78vw, 430px);
+    }
+
+    .program-hero__art--small {
+      top: 0;
+      right: 46%;
+      width: min(39vw, 220px);
     }
 
     .program-hero h1 {
-      margin-top: 1rem;
+      margin-top: 0;
       font-size: clamp(2.25rem, 9.5vw, 3.35rem);
     }
 
+    .program-hero__headline-rest {
+      white-space: normal;
+    }
+
     .program-hero__accreditation {
-      width: 170px;
+      right: clamp(12px, 4vw, 24px);
+      bottom: clamp(12px, 4vw, 24px);
+      width: clamp(150px, 43vw, 205px);
     }
 
     .program-benefits__grid,
@@ -1219,7 +1367,8 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     }
 
     .course-card {
-      min-height: 112px;
+      min-height: 180px;
+      padding-top: 4.5rem;
     }
 
     .course-group__curve {
@@ -1269,6 +1418,27 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     .program-webinar__media {
       margin-top: 0.5rem;
     }
+
+    .course-dialog {
+      width: calc(100vw - 20px);
+    }
+
+    .course-dialog__panel {
+      padding: 3.75rem 1.25rem 1.75rem;
+    }
+
+    .course-dialog h2 {
+      padding-right: 1.5rem;
+      font-size: clamp(1.8rem, 9vw, 2.65rem);
+    }
+
+    .advice-dialog .course-dialog__panel { padding: 3.75rem 1.25rem 1.25rem; }
+    .advice-dialog .course-dialog__close { top: .75rem; right: .75rem; }
+    .advice-dialog__grid { grid-template-columns: 1fr; gap: 1.75rem; }
+    .advice-dialog__content h2 { padding-right: 1.5rem; }
+    .advice-dialog__media { min-height: 240px; }
+    .advice-dialog__photo { aspect-ratio: 16 / 10; object-position: 52% center; }
+    .advice-dialog__curve { width: 78px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1281,15 +1451,26 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     }
 
     .course-card,
+    .course-card::before,
+    .course-card::after,
     .program-button {
       transition-duration: 0.01ms;
     }
   }
 
   @media (max-width: 420px) {
-    .program-hero__art {
-      height: 112px;
-      margin-right: -110px;
+    .program-hero__media {
+      min-height: 205px;
+    }
+
+    .program-hero__art--large {
+      right: -18%;
+      width: 82vw;
+    }
+
+    .program-hero__art--small {
+      right: 45%;
+      width: 42vw;
     }
 
     .program-hero h1 {
@@ -1338,6 +1519,14 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
       const notice = media.querySelector<HTMLElement>('[data-external-media-notice]');
       const loadButton = media.querySelector<HTMLButtonElement>('[data-external-media-load]');
 
+      const stop = () => {
+        if (!iframe) return;
+        iframe.removeAttribute('src');
+        iframe.hidden = true;
+        if (notice) notice.hidden = false;
+        media.classList.remove('is-loaded');
+      };
+
       loadButton?.addEventListener('click', () => {
         const source = iframe?.dataset.consentSrc;
         if (!iframe || !source) return;
@@ -1345,6 +1534,11 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
         iframe.hidden = false;
         if (notice) notice.hidden = true;
         media.classList.add('is-loaded');
+      });
+      window.addEventListener('pagehide', stop);
+      window.addEventListener('wamocon:consent', (event) => {
+        const detail = (event as CustomEvent<{ externalMedia?: boolean }>).detail;
+        if (!detail?.externalMedia) stop();
       });
     });
   }
@@ -1381,6 +1575,14 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
       if (event.target === dialog) dialog.close();
     });
     dialog.addEventListener('close', () => {
+      dialog.querySelectorAll<HTMLElement>('[data-external-media]').forEach((media) => {
+        const iframe = media.querySelector<HTMLIFrameElement>('iframe[data-consent-src]');
+        const notice = media.querySelector<HTMLElement>('[data-external-media-notice]');
+        iframe?.removeAttribute('src');
+        if (iframe) iframe.hidden = true;
+        if (notice) notice.hidden = false;
+        media.classList.remove('is-loaded');
+      });
       if (location.hash.startsWith('#popup:') || location.hash === '#zeropopup') {
         history.replaceState(null, '', `${location.pathname}${location.search}`);
       }

@@ -1,5 +1,8 @@
 ---
-import { courses, dates } from '../../data/academy';
+import coursePopupCopy from '../../../audit/course-popup-copy.json';
+import { dates } from '../../data/academy';
+import { coursePopupBlocks, coursePopupCategory } from '../../data/coursePopup';
+import { programCourses } from '../../data/programs';
 import type { Lang } from '../../i18n/config';
 
 interface Props {
@@ -7,190 +10,286 @@ interface Props {
   showAllDateGroups?: boolean;
 }
 
+type PopupRecord = {
+  hook: string;
+  title: string;
+  description: string;
+};
+
 const { lang, showAllDateGroups = false } = Astro.props;
+const courseGroups = programCourses[lang];
 const dateData = dates[lang];
 const visibleDateGroups = showAllDateGroups ? dateData.groups : dateData.groups.slice(-1);
+const detailsHref = lang === 'de' ? '/bildungsprogramme-fr-softwaretester/' : '/en/educational-programs/';
+const popups = (coursePopupCopy as PopupRecord[]).filter((popup) => popup.hook.endsWith(`-${lang}`));
+const popupId = (hook: string) => `home-course-${hook.replace('#popup:', '').replace(/[^a-z0-9-]+/gi, '-').toLowerCase()}`;
+
 ---
 
-<div class="courses-grid">
-  {
-    courses.map((course) => (
-      <article class="course-card" data-reveal>
-        <span>{course.type[lang]}</span>
-        <h3>{course.title[lang]}</h3>
-        <dl>
-          <div>
-            <dt>{lang === 'de' ? 'Dauer' : 'Duration'}</dt>
-            <dd>{course.duration[lang]}</dd>
-          </div>
-          <div>
-            <dt>{lang === 'de' ? 'Format' : 'Format'}</dt>
-            <dd>{course.format[lang]}</dd>
-          </div>
-        </dl>
-      </article>
-    ))
-  }
+<div class="course-groups">
+  <section class="course-group" aria-labelledby="home-individual-courses">
+    <h3 id="home-individual-courses">{lang === 'de' ? 'Einzelkurse' : 'Individual courses'}</h3>
+    <div class="courses-grid">
+      {courseGroups.individual.map((course) => (
+        <a
+          class="course-card"
+          href={course.hook}
+          data-home-course-popup={popupId(course.hook)}
+          aria-haspopup="dialog"
+          aria-controls={popupId(course.hook)}
+          data-reveal
+        >
+          <span class="course-card__format">{course.format}</span>
+          <strong>{course.title}</strong>
+          <span class="course-card__duration">{course.duration}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="course-group" aria-labelledby="home-team-courses">
+    <h3 id="home-team-courses">{lang === 'de' ? 'Teamkurse' : 'Team courses'}</h3>
+    <div class="courses-grid">
+      {courseGroups.team.map((course) => (
+        <a
+          class="course-card"
+          href={course.hook}
+          data-home-course-popup={popupId(course.hook)}
+          aria-haspopup="dialog"
+          aria-controls={popupId(course.hook)}
+          data-reveal
+        >
+          <span class="course-card__format">{course.format}</span>
+          <strong>{course.title}</strong>
+          <span class="course-card__duration">{course.duration}</span>
+        </a>
+      ))}
+    </div>
+  </section>
 </div>
 
-<aside class="dates-card" data-reveal>
+<section class="dates-card" data-reveal aria-labelledby="home-course-dates">
   <div>
     <span class="eyebrow">{lang === 'de' ? 'Termine im Überblick' : 'Dates at a glance'}</span>
-    <h3>{dateData.title}</h3>
+    <h3 id="home-course-dates">{dateData.title}</h3>
   </div>
   <div class="dates-card__groups">
-    {
-      visibleDateGroups.map((group) => (
-        <section class="dates-card__group">
-          <h4>{group.month}</h4>
-          <ul>
-            {group.rows.map(([day, status]) => <li><span>{day}</span><strong>{status}</strong></li>)}
-          </ul>
-        </section>
-      ))
-    }
+    {visibleDateGroups.map((group) => (
+      <section class="dates-card__group">
+        <h4>{group.month}</h4>
+        <ul>{group.rows.map(([day, status]) => <li><span>{day}</span><strong>{status}</strong></li>)}</ul>
+      </section>
+    ))}
   </div>
-</aside>
+</section>
+
+<a
+  class="dates-details-button"
+  href="#popup:Termine"
+  data-home-course-popup="home-course-schedule"
+  aria-haspopup="dialog"
+  aria-controls="home-course-schedule"
+  data-reveal
+>
+  {lang === 'de' ? 'Mehr Details' : 'More details'}
+</a>
+
+<dialog class="course-dialog course-dialog--schedule" id="home-course-schedule" aria-labelledby="home-course-schedule-title">
+  <article class="course-dialog__panel">
+    <button class="course-dialog__close" type="button" data-home-course-close aria-label={lang === 'de' ? 'Schließen' : 'Close'}>
+      <span aria-hidden="true">×</span>
+    </button>
+    <h2 id="home-course-schedule-title">{lang === 'de' ? 'Termine im Überblick' : 'Dates at a glance'}</h2>
+    <p class="course-dialog__schedule-title">{dateData.title}</p>
+    <div class="course-dialog__dates">
+      {visibleDateGroups.map((group) => (
+        <section>
+          <h3>{group.month}</h3>
+          <ul>{group.rows.map(([day, status]) => <li><span>{day}</span><strong>{status}</strong></li>)}</ul>
+        </section>
+      ))}
+    </div>
+    <div class="course-dialog__actions">
+      <a class="course-action" href="#beratung" data-home-course-action>
+        {lang === 'de' ? 'Unverbindlich anfragen' : 'Send a non-binding inquiry'}
+      </a>
+    </div>
+  </article>
+</dialog>
+
+{popups.map((popup) => (
+  <dialog class="course-dialog" id={popupId(popup.hook)} aria-labelledby={`${popupId(popup.hook)}-title`}>
+    <article class="course-dialog__panel">
+      <button class="course-dialog__close" type="button" data-home-course-close aria-label={lang === 'de' ? 'Schließen' : 'Close'}>
+        <span aria-hidden="true">×</span>
+      </button>
+      <h2 id={`${popupId(popup.hook)}-title`}>{popup.title}</h2>
+      <p class="course-dialog__eyebrow">{coursePopupCategory(popup.hook, lang)}</p>
+      <div class="course-dialog__content">
+        {coursePopupBlocks(popup.description, lang).map((block) => (
+          block.type === 'heading'
+            ? <h3>{block.text}</h3>
+            : block.type === 'list'
+              ? <ul>{block.items.map((item) => <li>{item}</li>)}</ul>
+              : <p>{block.text}</p>
+        ))}
+      </div>
+      <div class="course-dialog__actions">
+        <a class="course-action" href="#beratung" data-home-course-action>
+          {lang === 'de' ? 'Unverbindlich anfragen' : 'Send a non-binding inquiry'}
+        </a>
+        <a class="course-action course-action--outline" href={`${detailsHref}${popup.hook}`}>
+          {lang === 'de' ? 'Alle Kursdetails' : 'All course details'}
+        </a>
+      </div>
+    </article>
+  </dialog>
+))}
 
 <style>
-  .courses-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
-    gap: clamp(1rem, 2vw, 2rem);
-  }
-
-  .course-card,
-  .dates-card {
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 3px;
-    background: #171717;
-    color: #fff;
-  }
+  .course-groups { display: grid; gap: clamp(2.75rem, 5vw, 5rem); }
+  .course-group h3 { margin-bottom: 1.25rem; color: #fff; font-size: clamp(1.25rem, 1.7vw, 1.65rem); }
+  .courses-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2.2vw, 2rem); }
 
   .course-card {
     position: relative;
-    display: grid;
-    min-height: 220px;
-    gap: 1.25rem;
-    align-content: space-between;
-    overflow: hidden;
-    padding: clamp(1.4rem, 2.3vw, 2.25rem);
-    transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
-  }
-
-  .course-card::before {
-    content: '';
-    position: absolute;
-    inset: 0 0 auto;
-    height: 3px;
-    background: var(--color-accent);
-    transform: scaleX(0.18);
-    transform-origin: left;
-    transition: transform 240ms ease;
-  }
-
-  .course-card:hover,
-  .course-card:focus-within {
-    border-color: rgba(255, 11, 0, 0.72);
-    background: #1d1d1d;
-    transform: translateY(-4px);
-  }
-
-  .course-card:hover::before,
-  .course-card:focus-within::before {
-    transform: scaleX(1);
-  }
-
-  .course-card > span {
-    color: var(--color-accent);
-    font-size: 0.82rem;
-    font-weight: var(--fw-semibold);
-    text-transform: uppercase;
-  }
-
-  .course-card h3 {
-    max-width: 18ch;
-    font-size: clamp(1.2rem, 1.5vw, 1.55rem);
-    line-height: 1.15;
-  }
-
-  .course-card dl {
-    display: grid;
-    gap: 0.55rem;
-    color: rgba(255, 255, 255, 0.7);
-  }
-
-  .course-card div {
     display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.16);
-    padding-top: 0.55rem;
+    min-height: 145px;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    padding: 2.45rem 1.45rem 1.3rem;
+    border: 1px solid rgba(255,255,255,.45);
+    background: #101010;
+    transition: border-color var(--dur-fast), background var(--dur-fast), transform var(--dur-fast);
   }
-
-  .course-card dt {
-    font-weight: var(--fw-semibold);
-  }
+  .course-card:hover,
+  .course-card:focus-visible { border-color: var(--color-accent); background: #181818; transform: translateY(-3px); }
+  .course-card__format { position: absolute; top: .7rem; left: 1.45rem; color: rgba(255,255,255,.72); font-size: .68rem; line-height: 1.3; }
+  .course-card strong { max-width: 84%; color: #fff; font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.28; }
+  .course-card__duration { position: absolute; top: 0; right: 0; min-width: 86px; padding: .42rem .7rem; background: #fff; color: var(--color-accent); font-size: .78rem; font-weight: var(--fw-semibold); text-align: center; }
 
   .dates-card {
     display: grid;
-    grid-template-columns: minmax(260px, 0.68fr) minmax(0, 1.32fr);
-    gap: clamp(2rem, 5vw, 6rem);
-    margin-top: clamp(1.5rem, 3vw, 3rem);
-    padding: clamp(1.5rem, 3.5vw, 3.5rem);
+    grid-template-columns: minmax(300px, 1fr) minmax(280px, .85fr);
+    align-items: center;
+    gap: clamp(2rem, 6vw, 7rem);
+    margin-top: clamp(4rem, 7vw, 7rem);
+    padding: clamp(2rem, 4vw, 4.5rem);
+    border: 1px solid rgba(255,255,255,.18);
+    border-left: 3px solid var(--color-accent);
+    background: #151515;
   }
-
-  .dates-card h3 {
-    margin-top: 0.7rem;
-  }
-
-  .dates-card h4 {
-    color: var(--color-accent);
+  .dates-card h3 { max-width: 24ch; margin-top: 1rem; font-size: clamp(1.65rem, 2.2vw, 2.75rem); }
+  .dates-card__groups { display: grid; gap: 1rem; }
+  .dates-card__group { display: grid; gap: 1rem; padding: 1.4rem; border: 1px solid rgba(255,255,255,.14); }
+  .dates-card h4 { color: var(--color-accent); font-size: .9rem; text-transform: uppercase; }
+  .dates-card li { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,.14); }
+  .dates-card strong { color: var(--color-accent); white-space: nowrap; }
+  .dates-details-button {
+    display: inline-flex;
+    min-width: 212px;
+    min-height: 54px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2rem;
+    padding: .8rem 1.5rem;
+    border: 1px solid var(--color-accent);
+    border-radius: 5px;
+    background: var(--color-accent);
+    color: #fff;
+    font-size: .9rem;
     font-weight: var(--fw-semibold);
-    margin-top: 0.45rem;
+    transition: background var(--dur-fast), transform var(--dur-fast);
   }
+  .dates-details-button:hover,
+  .dates-details-button:focus-visible { background: var(--color-accent-hover); transform: translateY(-2px); }
 
-  .dates-card__groups {
-    display: grid;
-    gap: 1.1rem;
+  .course-dialog {
+    width: min(920px, calc(100vw - 28px));
+    max-width: none;
+    max-height: min(88vh, 900px);
+    margin: auto;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.24);
+    background: #171717;
+    color: #fff;
   }
+  .course-dialog::backdrop { background: rgba(0,0,0,.82); backdrop-filter: blur(5px); }
+  .course-dialog__panel { position: relative; max-height: min(88vh, 900px); overflow-y: auto; padding: clamp(1.6rem, 5vw, 4rem); scrollbar-width: none; }
+  .course-dialog__panel::-webkit-scrollbar { display: none; width: 0; height: 0; }
+  .course-dialog__close { position: sticky; top: 0; z-index: 2; float: right; width: 42px; height: 42px; border: 1px solid rgba(255,255,255,.35); background: #0d0d0d; color: var(--color-accent); font-size: 2rem; line-height: 1; }
+  .course-dialog h2 { max-width: 18ch; margin-bottom: 1.5rem; font-size: clamp(2rem, 5vw, 4rem); }
+  .course-dialog__eyebrow { margin: -0.75rem 0 1.5rem; color: var(--color-accent); font-weight: var(--fw-semibold); }
+  .course-dialog__content { color: rgba(255,255,255,.78); line-height: 1.65; }
+  .course-dialog__content > * + * { margin-top: 1.15rem; }
+  .course-dialog__content h3 { padding-top: .65rem; color: #fff; font-size: clamp(1.2rem, 2.2vw, 1.55rem); }
+  .course-dialog__content ul { display: grid; gap: .7rem; padding-left: 1.35rem; list-style: disc; }
+  .course-dialog__content li::marker { color: var(--color-accent); }
+  .course-dialog__actions { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 2rem; }
+  .course-dialog__schedule-title { margin-bottom: 1.5rem; color: rgba(255,255,255,.78); font-size: 1.1rem; }
+  .course-dialog__dates { display: grid; gap: 2rem; }
+  .course-dialog__dates section { display: grid; gap: 1rem; }
+  .course-dialog__dates h3 { color: var(--color-accent); }
+  .course-dialog__dates ul { display: grid; }
+  .course-dialog__dates li { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 1rem; padding: 1rem 0; border-top: 1px solid rgba(255,255,255,.18); }
+  .course-dialog__dates strong { color: var(--color-accent); }
+  .course-action { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; padding: .75rem 1.35rem; border: 1px solid var(--color-accent); border-radius: 4px; background: var(--color-accent); color: #fff; font-weight: var(--fw-semibold); }
+  .course-action--outline { background: transparent; }
 
-  .dates-card__group {
-    display: grid;
-    gap: 0.75rem;
+  @media (max-width: 980px) {
+    .courses-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .dates-card { grid-template-columns: 1fr; }
   }
-
-  .dates-card ul {
-    display: grid;
-    gap: 0.75rem;
-  }
-
-  .dates-card li {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-    padding-bottom: 0.75rem;
-  }
-
-  .dates-card strong {
-    color: var(--color-accent);
-  }
-
-  @media (max-width: 760px) {
-    .course-card {
-      min-height: 180px;
-    }
-
-    .dates-card {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .course-card,
-    .course-card::before {
-      transition-duration: 0.01ms;
-    }
+  @media (max-width: 620px) {
+    .courses-grid { grid-template-columns: 1fr; }
+    .course-card { min-height: 118px; }
+    .course-card strong { max-width: 100%; }
+    .dates-card { padding: 1.5rem; }
+    .course-dialog__panel { padding: 52px 20px 28px; }
+    .course-dialog h2 { font-size: 2rem; }
   }
 </style>
+
+<script>
+  function initHomeCourseDialogs() {
+    const triggers = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-home-course-popup]'));
+    const dialogs = Array.from(document.querySelectorAll<HTMLDialogElement>('.course-dialog[id^="home-course-"]'));
+
+    const openDialog = (trigger: HTMLAnchorElement) => {
+      const dialog = document.getElementById(trigger.dataset.homeCoursePopup || '');
+      if (!(dialog instanceof HTMLDialogElement)) return;
+      if (!dialog.open) dialog.showModal();
+      const hook = trigger.getAttribute('href');
+      if (hook) history.replaceState(null, '', hook);
+    };
+
+    triggers.forEach((trigger) => {
+      if (trigger.dataset.homeCourseReady === 'true') return;
+      trigger.dataset.homeCourseReady = 'true';
+      trigger.addEventListener('click', (event) => {
+        event.preventDefault();
+        openDialog(trigger);
+      });
+    });
+
+    dialogs.forEach((dialog) => {
+      if (dialog.dataset.homeCourseReady === 'true') return;
+      dialog.dataset.homeCourseReady = 'true';
+      dialog.querySelector('[data-home-course-close]')?.addEventListener('click', () => dialog.close());
+      dialog.querySelectorAll('[data-home-course-action]').forEach((action) => action.addEventListener('click', () => dialog.close()));
+      dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) dialog.close();
+      });
+      dialog.addEventListener('close', () => {
+        if (location.hash.startsWith('#popup:')) history.replaceState(null, '', `${location.pathname}${location.search}`);
+      });
+    });
+
+    const matchingTrigger = triggers.find((trigger) => trigger.getAttribute('href') === location.hash);
+    if (matchingTrigger) openDialog(matchingTrigger);
+  }
+
+  initHomeCourseDialogs();
+  document.addEventListener('astro:after-swap', initHomeCourseDialogs);
+</script>

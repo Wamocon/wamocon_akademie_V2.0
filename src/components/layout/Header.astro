@@ -67,11 +67,13 @@ const isActive = (item: NavLink) => {
         aria-controls="primary-nav"
         aria-expanded="false"
         aria-label={t('nav.menu')}
+        data-label-open={t('nav.menu')}
+        data-label-close={t('nav.close')}
       >
         <span></span><span></span><span></span>
       </button>
-      <a class="site-header__lang" href={altHref} aria-label={t('lang.label')}>
-        {lang.toUpperCase()}
+      <a class="site-header__lang" href={altHref} aria-label={`${t('lang.label')}: ${t('lang.switch')}`}>
+        {t('lang.switch')}
       </a>
     </div>
   </div>
@@ -99,16 +101,15 @@ const isActive = (item: NavLink) => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 220px;
+    min-height: 180px;
     gap: 1.25rem;
-    max-width: none;
-    padding-inline: 40px;
+    max-width: var(--container-max);
   }
 
   .site-header__logo {
     display: inline-flex;
     align-items: center;
-    width: 220px;
+    width: 180px;
     flex: 0 0 auto;
   }
 
@@ -129,7 +130,7 @@ const isActive = (item: NavLink) => {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 30px;
+    gap: clamp(18px, 1.5vw, 26px);
   }
 
   .site-header__item {
@@ -144,7 +145,7 @@ const isActive = (item: NavLink) => {
     min-height: 40px;
     padding: 0.2rem 0;
     color: var(--color-muted);
-    font-size: 1rem;
+    font-size: clamp(0.95rem, 0.85vw, 1.05rem);
     font-weight: var(--fw-regular);
     white-space: nowrap;
     transition: color var(--dur-fast) var(--ease-out);
@@ -220,6 +221,7 @@ const isActive = (item: NavLink) => {
     border-radius: 0;
     background: #0d0d0d;
     color: #fff;
+    font-size: clamp(1rem, 0.8vw, 1.12rem);
     font-weight: var(--fw-semibold);
   }
 
@@ -239,15 +241,13 @@ const isActive = (item: NavLink) => {
     transition: transform var(--dur-fast), opacity var(--dur-fast);
   }
 
-  @media (max-width: 980px) {
+  @media (max-width: 1279px) {
     .site-header__inner {
-      min-height: 60px;
-      padding-inline: 20px;
+      min-height: 84px;
     }
 
     .site-header__logo {
-      width: 40px;
-      max-width: none;
+      width: 120px;
     }
 
     .site-header__toggle {
@@ -256,8 +256,8 @@ const isActive = (item: NavLink) => {
 
     .site-header__nav {
       position: fixed;
-      inset: 60px 0 auto 0;
-      max-height: calc(100vh - 60px);
+      inset: 84px 0 auto 0;
+      max-height: calc(100vh - 84px);
       overflow-y: auto;
       padding: 1rem var(--container-pad) 1.5rem;
       border-bottom: 1px solid var(--color-line);
@@ -315,9 +315,7 @@ const isActive = (item: NavLink) => {
       overflow: hidden;
     }
 
-    .site-header__lang {
-      display: none;
-    }
+    .site-header__lang { min-width: 54px; height: 36px; font-size: 0.8rem; }
   }
 
   @media (max-width: 460px) {
@@ -325,7 +323,7 @@ const isActive = (item: NavLink) => {
       gap: 0.65rem;
     }
 
-    .site-header__logo { width: 40px; }
+    .site-header__logo { width: 104px; }
 
     .site-header__actions {
       gap: 0.45rem;
@@ -344,21 +342,30 @@ const isActive = (item: NavLink) => {
   const toggle = document.getElementById('nav-toggle');
   const nav = document.getElementById('primary-nav');
   const syncHeader = () => header?.classList.toggle('is-scrolled', window.scrollY > 24);
+  const setMenuState = (open: boolean) => {
+    nav?.classList.toggle('is-open', open);
+    toggle?.setAttribute('aria-expanded', String(open));
+    toggle?.setAttribute('aria-label', open ? toggle.dataset.labelClose || '' : toggle.dataset.labelOpen || '');
+    document.body.classList.toggle('nav-open', open);
+    header?.classList.toggle('is-menu-open', open);
+  };
+  const closeMenu = () => setMenuState(false);
   window.addEventListener('scroll', syncHeader, { passive: true });
   syncHeader();
   toggle?.addEventListener('click', () => {
-    const open = nav?.classList.toggle('is-open') ?? false;
-    toggle.setAttribute('aria-expanded', String(open));
-    document.body.classList.toggle('nav-open', open);
-    header?.classList.toggle('is-menu-open', open);
+    setMenuState(!nav?.classList.contains('is-open'));
   });
 
   nav?.querySelectorAll('a').forEach((link) => {
-    link.addEventListener('click', () => {
-      nav.classList.remove('is-open');
-      toggle?.setAttribute('aria-expanded', 'false');
-      document.body.classList.remove('nav-open');
-      header?.classList.remove('is-menu-open');
-    });
+    link.addEventListener('click', closeMenu);
   });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && nav?.classList.contains('is-open')) {
+      closeMenu();
+      toggle?.focus();
+    }
+  });
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 1280) closeMenu();
+  }, { passive: true });
 </script>

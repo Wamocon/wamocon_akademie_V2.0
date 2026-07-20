@@ -737,9 +737,10 @@ const videos = [
     color: var(--color-text);
   }
   .wrap {
-    max-width: 1200px;
+    width: 100%;
+    max-width: var(--container-max);
     margin: 0 auto;
-    padding: clamp(2.5rem, 6vw, 5rem) 1.25rem;
+    padding: clamp(2.5rem, 6vw, 5rem) var(--container-pad);
   }
   .wrap.hero {
     padding-top: clamp(1.5rem, 3vw, 2.5rem);

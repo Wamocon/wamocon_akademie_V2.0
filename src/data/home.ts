@@ -195,8 +195,8 @@ export const home: HomeContent = {
   why: {
     heading: { de: 'Warum WAMOCON?', en: 'Why WAMOCON?' },
     intro: {
-      de: '40 Jahre Erfahrung. Leidenschaft für IT-Qualität. Maßgeschneiderte Lösungen und Experten, die Ihre Projekte sicher und erfolgreich machen.',
-      en: '40 years of experience. A passion for IT quality. Tailored solutions and experts who make your projects safe and successful.',
+      de: '40 Jahre gebündelte Praxiserfahrung unseres Teams. Leidenschaft für IT-Qualität. Maßgeschneiderte Lösungen und Experten, die Ihre Projekte sicher und erfolgreich machen.',
+      en: '40 years of combined practical experience within our team. A passion for IT quality. Tailored solutions and experts who make your projects safe and successful.',
     },
     points: [
       {

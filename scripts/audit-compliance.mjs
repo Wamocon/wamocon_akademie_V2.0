@@ -29,6 +29,12 @@ for (const { file, html } of pages) {
   assert(/data-open-consent-settings/.test(html), `${file}: consent withdrawal/settings control missing`);
   assert(/data-consent-accept/.test(html) && /data-consent-reject/.test(html) && /data-consent-settings/.test(html), `${file}: equal consent choices missing`);
   assert(!/<input[^>]+name="consent"[^>]+required/i.test(html), `${file}: mandatory consent checkbox remains`);
+
+  for (const match of html.matchAll(/<iframe\b[^>]*data-consent-src="[^"]*youtube-nocookie\.com[^"]*"[^>]*>/gi)) {
+    const iframe = match[0];
+    assert(/data-consent-mode="manual"/i.test(iframe), `${file}: consented YouTube video can load without an explicit play action`);
+    assert(!/\ssrc="/i.test(iframe), `${file}: consented YouTube video has a live src before an explicit play action`);
+  }
 }
 
 assert(!/99131843|mc\.yandex|metrika\.yandex|\bym\s*\(/i.test(combined), 'Yandex Metrica/Webvisor code remains in the Astro output');
@@ -36,13 +42,27 @@ assert(!/fonts\.googleapis\.com|fonts\.gstatic\.com/i.test(combined), 'Remote Go
 assert(!/Mergenthaleralee/i.test(combined), 'Misspelled Mergenthaleralee remains');
 assert(!/November 2024|Dezember 2024|December 2024|Januar 2025|January 2025/i.test(combined), 'Expired course dates remain');
 assert(!/<iframe\b(?=[^>]*\ssrc=)[^>]*\ssrc="https:\/\/(?:www\.google\.com|www\.youtube|youtube)/i.test(combined), 'Third-party iframe loads before consent');
-assert(!/vollständig finanziert|alle Kosten (?:werden )?übernommen|free of charge with an education voucher/i.test(combined), 'Unverified blanket funding promise remains');
+assert(
+  !/vollständig finanziert|alle Kosten (?:werden )?übernommen|free of charge with an education voucher/i.test(combined),
+  'Blanket funding promise remains in the rendered website',
+);
 assert(!/Als offizieller Partner (?:von|des)|As an official partner of ISTQB/i.test(combined), 'Unverified ISTQB partner wording remains');
+assert(!/5838311|info@wamocon\.com/i.test(combined), 'Conflicting legacy Academy contact details remain in rendered pages');
+assert(combined.includes('+49 (0) 6196 5838312') && combined.includes('info@test-it-academy.com'), 'Canonical Academy phone or e-mail is missing');
+assert(combined.includes('DE344930486'), 'Confirmed Academy VAT ID is missing');
+assert(combined.includes('40 Jahre gebündelte Praxiserfahrung unseres Teams'), 'Confirmed combined team-experience wording is missing');
+assert(combined.includes('Die WAMOCON Academy GmbH ist nicht bereit und nicht verpflichtet'), 'Confirmed Academy consumer-dispute statement is missing');
+assert(!combined.includes('info@test-it-academy.de'), 'Obsolete .de Academy e-mail remains');
+assert(!/Regierungspräsidium Hessen|Hesse Regional Council/i.test(combined), 'Unverified authority recognition claim remains');
+assert(!/von der Bundesrepublik Deutschland ausgewählt|selected as a training provider by the Federal Republic of Germany/i.test(combined), 'Unverified federal-authority selection claim remains');
+assert(!/seit zwanzig Jahren|for twenty years/i.test(combined), 'Outdated WMC-method experience claim remains');
+assert(!/Schulung komplett kostenfrei durch das Arbeitsamt|training completely free of charge through the employment office/i.test(combined), 'Unqualified employment-office funding promise remains');
 assert(combined.includes('Texte, Bilder, Videos, Audios und Grafiken, die hier bereitgestellt werden'), 'German AI transparency notice missing');
 assert(combined.includes('Texts, images, videos, audio and graphics provided here may have been created'), 'English AI transparency notice missing');
 assert(sourceHtml.length === 0, `Standalone HTML source files remain: ${sourceHtml.join(', ')}`);
 assert(!/\.lead-form label\s*\{[^}]*font-size:\s*0[;\s}]/s.test(leadFormSource), 'Shared lead-form labels are visually hidden');
 assert(/data-external-media-load.*data-load-external-media|data-load-external-media.*data-external-media-load/s.test(consentSource), 'Contextual external-media buttons are not connected to consent storage');
+assert(/allowed && requiresPlay/.test(consentSource), 'External-media consent still loads manual videos automatically');
 
 const privacy = await readFile(new URL('./datenschutz/index.html', rootUrl), 'utf8');
 for (const term of ['Vercel', 'Microsoft 365', 'Cloudflare Turnstile', 'YouTube', 'Google Maps', 'Yandex Metrica']) {

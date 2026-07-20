@@ -224,12 +224,16 @@ const testimonials = [
 const successStories = isEn ? [
   {
     name: 'Leon Christen and his obstacle',
+    video: '1u100i0b9LM',
+    image: 'story-leon.jpg',
     challenge: 'Despite countless applications, Leon was unable to find a job. Companies turned him down, even though he had completed a highly regarded degree course.',
     goal: 'The goal was clear: Leon wanted to get his IT career off to a flying start.',
     results: ['Qualified ISTQB® Certified Tester', 'Better understanding of his project', 'Gained more responsibility within the company'],
   },
   {
     name: 'Christian-Oliver Friedrich and his obstacle',
+    video: '-M1JD6mZVvY',
+    image: 'story-christian.jpg',
     challenge: 'Christian-Oliver wanted to gain practical experience in real IT projects. However, without practical experience and an ISTQB® tester certificate, this is not possible for him.',
     goal: 'His goal is to be able to carry out IT projects as a test automation engineer. However, Christian-Oliver must first successfully complete the ISTQB® Tester certificate.',
     results: ['Passed the ISTQB® certificate on his first attempt', 'Found his way into IT projects as a tester', 'Developed further with ISTQB® Test Automation Engineer'],
@@ -237,12 +241,16 @@ const successStories = isEn ? [
 ] : [
   {
     name: 'Leon Christen und sein Hindernis',
+    video: '1u100i0b9LM',
+    image: 'story-leon.jpg',
     challenge: 'Leon konnte trotz unzähliger Bewerbungen keinen Arbeitsplatz finden. Unternehmen lehnten ihn ab, obwohl er einen hoch angesehenen Studiengang absolviert hatte.',
     goal: 'Das Ziel war ganz klar, Leon wollte in seiner IT-Karriere durchstarten.',
     results: ['Qualifizierter ISTQB® Certified Tester', 'Besseres Verständnis in seinem Projekt', 'Mehr Verantwortung im Unternehmen erhalten'],
   },
   {
     name: 'Christian-Oliver Friedrich und sein Hindernis',
+    video: '-M1JD6mZVvY',
+    image: 'story-christian.jpg',
     challenge: 'Christian-Oliver wollte Praxiserfahrung über echte IT-Projekte sammeln. Jedoch ohne Praxiserfahrung und ISTQB® Tester Zertifikat ist es ihm nicht möglich.',
     goal: 'Sein Ziel ist es, als Testautomatisierer IT-Projekte durchführen zu können. Dafür muss Christian-Oliver jedoch zuerst das ISTQB® Tester Zertifikat erfolgreich abschließen.',
     results: ['Mit dem ersten Versuch das ISTQB® Zertifikat bestanden', 'Sein Einstieg ins IT-Projekt als Tester sicher gefunden', 'Sich weiterentwickelt mit ISTQB® Test Automation Engineer'],
@@ -298,12 +306,12 @@ const copy = isEn ? {
   quote: '“A career as a software tester offers a stable, sought-after perspective with many opportunities for further development and specialization”',
   benefitsAccent: 'Your benefits at a glance',
   benefitsTitle: 'if you hold the ISTQB® certificate as a software tester',
-  benefitsLead: 'As a training provider, we have the opportunity to offer you the training completely free of charge through the employment office.',
+  benefitsLead: 'Funding may be available in individual cases. The responsible employment agency or job centre decides eligibility, covered costs and approval.',
   voucher: 'Voucher description',
   comparison: 'Comparison with other IT certifications',
-  experienceAccent: 'More than 40 years of testing experience',
+  experienceAccent: '40 years of combined practical experience within our team',
   experienceTitle: 'and ready to train the testing elite of tomorrow',
-  experienceText: 'The vision of the WAMOCON Academy is to make it easier for people like you to enter professional life step by step and to train you with sound specialist knowledge and sufficient practical experience. For this reason, we have been selected as a training provider by the Federal Republic of Germany.',
+  experienceText: 'The vision of the WAMOCON Academy is to make it easier for people like you to enter professional life step by step and to train you with sound specialist knowledge and practical experience. We therefore combine structured exam preparation with examples and exercises from professional practice.',
   webinarCta: 'Register for the webinar',
   hurdlesAccent: 'Software tester career and ISTQB® certification:',
   hurdlesTitle: 'The biggest hurdles for IT newcomers',
@@ -347,12 +355,12 @@ const copy = isEn ? {
   quote: '“Eine Karriere als Softwaretester bietet eine stabile, gefragte Perspektive mit vielen Möglichkeiten zur Weiterentwicklung und Spezialisierung”',
   benefitsAccent: 'Deine Vorteile auf einen Blick,',
   benefitsTitle: 'wenn du als Softwaretester das ISTQB® Zertifikat besitzt',
-  benefitsLead: 'Als Bildungsträger haben wir die Möglichkeit, dir die Schulung komplett kostenfrei durch das Arbeitsamt anzubieten.',
+  benefitsLead: 'Eine Förderung kann im Einzelfall möglich sein. Über Voraussetzungen, förderfähige Kosten und Bewilligung entscheiden die zuständige Agentur für Arbeit oder das Jobcenter.',
   voucher: 'Gutscheinbeschreibung',
   comparison: 'Vergleich mit anderen IT-Zertifizierungen',
-  experienceAccent: 'Mehr als 40 Jahre Testerfahrung',
+  experienceAccent: '40 Jahre gebündelte Praxiserfahrung unseres Teams',
   experienceTitle: 'und bereit, die Testelite von morgen auszubilden',
-  experienceText: 'Die Vision der WAMOCON Academy ist es, Menschen wie dir Schritt für Schritt den Einstieg in das Berufsleben zu erleichtern und dich mit fundiertem Fachwissen und ausreichend Praxiserfahrung auszubilden. Aus diesem Grund wurden wir als Bildungsträger von der Bundesrepublik Deutschland ausgewählt.',
+  experienceText: 'Die Vision der WAMOCON Academy ist es, Menschen wie dir Schritt für Schritt den Einstieg in das Berufsleben zu erleichtern und dich mit fundiertem Fachwissen und Praxiserfahrung auszubilden. Deshalb verbinden wir eine strukturierte Prüfungsvorbereitung mit Beispielen und Übungen aus der Berufspraxis.',
   webinarCta: 'ZUM webinar',
   hurdlesAccent: 'Softwaretester-Karriere und ISTQB® Zertifizierung:',
   hurdlesTitle: 'Die größten Hürden für IT-Neulinge',
@@ -638,7 +646,27 @@ const registrationCopy = isEn
     <div class="istqb-success__grid">
       {successStories.map((story) => (
         <article data-reveal>
-          <div class="istqb-success__media" aria-hidden="true"></div>
+          <div class="istqb-success__media" data-success-video>
+            <img src={`/images/academy/${story.image}`} alt="" width="1280" height="720" loading="lazy" aria-hidden="true" />
+            <button
+              class="istqb-success__play"
+              type="button"
+              data-success-video-load
+              aria-label={`${story.name}: ${isEn ? 'Load video' : 'Video laden'}`}
+            >
+              <span aria-hidden="true"></span>
+            </button>
+            <iframe
+              data-consent-src={`https://www.youtube-nocookie.com/embed/${story.video}?autoplay=1&controls=1&playsinline=1&rel=0`}
+              data-consent-mode="manual"
+              title={story.name}
+              loading="lazy"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allow="autoplay; encrypted-media; picture-in-picture"
+              allowfullscreen
+              hidden
+            ></iframe>
+          </div>
           <div>
             <h3>{story.name}</h3>
             <h4>{copy.challenge}</h4>
@@ -696,6 +724,8 @@ const registrationCopy = isEn
       title={copy.video}
       data-video-frame
       data-default-youtube-id="8t24ww8EVbk"
+      loading="lazy"
+      referrerpolicy="strict-origin-when-cross-origin"
       allow="autoplay; encrypted-media; picture-in-picture"
       allowfullscreen
     ></iframe>
@@ -780,7 +810,7 @@ const registrationCopy = isEn
 
   .istqb-section p {
     color: var(--color-muted);
-    font-size: clamp(0.98rem, 1.1vw, 1.08rem);
+    font-size: clamp(1rem, 1vw, 1.125rem);
     line-height: 1.7;
   }
 
@@ -794,7 +824,7 @@ const registrationCopy = isEn
     border-radius: 5px;
     background: var(--color-accent);
     color: #fff;
-    font-size: 0.82rem;
+    font-size: 0.9rem;
     font-weight: 700;
     letter-spacing: 0.045em;
     text-transform: uppercase;
@@ -847,7 +877,7 @@ const registrationCopy = isEn
 
   .istqb-hero__copy { position: relative; z-index: 2; max-width: 690px; }
   .istqb-hero__copy p { max-width: 680px; margin-bottom: 1.8rem; color: var(--color-muted); font-size: clamp(1rem, 1.4vw, 1.2rem); }
-  .istqb-hero__copy > span { display: block; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; }
+  .istqb-hero__copy > span { display: block; font-size: 0.9rem; font-weight: 700; text-transform: uppercase; }
   .istqb-hero h1 { max-width: 760px; margin: 0.6rem 0 1.2rem; font-size: clamp(2.75rem, 4.8vw, 5rem); line-height: 1.02; }
 
   .istqb-hero__art { position: absolute; inset: 0 0 0 43%; pointer-events: none; }
@@ -898,7 +928,7 @@ const registrationCopy = isEn
   }
   .istqb-career__grid article { min-height: 310px; padding: clamp(24px, 3vw, 38px); background: #303030; }
   .istqb-career__grid h3 { margin-bottom: 1.1rem; }
-  .istqb-career__grid p { white-space: pre-line; font-size: 0.94rem; }
+  .istqb-career__grid p { white-space: pre-line; font-size: 1.0625rem; line-height: 1.58; }
   .istqb-career blockquote { max-width: 1120px; margin: 66px auto 0; color: #fff; font-size: clamp(1.35rem, 2.6vw, 2.7rem); font-weight: 600; line-height: 1.35; text-align: center; }
 
   .istqb-benefits { background: #101010; }
@@ -906,7 +936,7 @@ const registrationCopy = isEn
   .istqb-benefits__grid article { display: grid; grid-template-columns: 44px 1fr; gap: 18px; align-items: start; }
   .istqb-benefits__grid img { width: 42px; height: 42px; object-fit: contain; }
   .istqb-benefits__grid h3 { margin-bottom: 0.55rem; }
-  .istqb-benefits__grid p { font-size: 0.92rem; }
+  .istqb-benefits__grid p { font-size: 1.0625rem; line-height: 1.58; }
   .istqb-benefits__actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 56px; }
 
   .istqb-experience__media { position: relative; }
@@ -930,7 +960,7 @@ const registrationCopy = isEn
   .istqb-webinar__final { margin-top: 1.8rem; color: #fff !important; font-weight: 600; }
   .istqb-webinar__media { display: grid; gap: 22px; overflow: hidden; }
   .istqb-webinar__media img { width: 100%; aspect-ratio: 1.06 / 1; object-fit: cover; }
-  .istqb-webinar__media span { display: flex; min-height: 46px; align-items: center; justify-content: center; padding: .75rem 1rem; border: 1px solid var(--color-accent); border-radius: 5px; background: transparent; color: #fff; font-size: .78rem; font-weight: 700; }
+  .istqb-webinar__media span { display: flex; min-height: 46px; align-items: center; justify-content: center; padding: .75rem 1rem; border: 1px solid var(--color-accent); border-radius: 5px; background: transparent; color: #fff; font-size: .9rem; font-weight: 700; }
 
   .istqb-participation__steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 42px; margin: 0; padding: 0; list-style: none; }
   .istqb-participation__steps li { position: relative; padding-top: 58px; }
@@ -970,16 +1000,25 @@ const registrationCopy = isEn
   }
   .istqb-testimonials__grid img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
   .istqb-testimonials__grid iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; }
-  .istqb-testimonials__grid strong { padding: 14px 0 0; font-size: 0.95rem; }
-  .istqb-testimonials__grid article > span { padding: 3px 0 0; color: var(--color-muted); font-size: 0.72rem; }
+  .istqb-testimonials__grid strong { padding: 14px 0 0; font-size: 1.0625rem; }
+  .istqb-testimonials__grid article > span { padding: 3px 0 0; color: var(--color-muted); font-size: 0.875rem; }
   .istqb-testimonials > .istqb-shell > .istqb-button { min-width: 244px; }
 
   .istqb-success__grid { display: grid; gap: clamp(48px, 7vw, 96px); }
   .istqb-success__grid article { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(32px, 6vw, 82px); align-items: stretch; }
   .istqb-success__grid article:nth-child(even) .istqb-success__media { order: 2; }
-  .istqb-success__media { min-height: 360px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.08); background: #030303; }
+  .istqb-success__media { position: relative; min-height: 360px; overflow: hidden; border: 1px solid rgba(255,255,255,.08); background: #030303; }
+  .istqb-success__media img,
+  .istqb-success__media iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: cover; }
+  .istqb-success__play { position: absolute; inset: 0; z-index: 1; display: grid; width: 100%; place-items: center; background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,.3)); }
+  .istqb-success__play span { position: relative; width: 84px; height: 58px; border-radius: 18px; background: #f03; box-shadow: 0 12px 32px rgba(0,0,0,.34); transition: transform var(--dur-fast), background var(--dur-fast); }
+  .istqb-success__play span::after { content: ''; position: absolute; top: 50%; left: 52%; border-top: 12px solid transparent; border-bottom: 12px solid transparent; border-left: 20px solid #fff; transform: translate(-40%, -50%); }
+  .istqb-success__play:hover span,
+  .istqb-success__play:focus-visible span { background: var(--color-accent); transform: scale(1.06); }
+  .istqb-success__media.is-loaded img,
+  .istqb-success__media.is-loaded .istqb-success__play { display: none; }
   .istqb-success h3 { margin-bottom: 1.3rem; }
-  .istqb-success h4 { margin-top: 1rem; color: var(--color-accent); font-size: 0.82rem; text-transform: uppercase; }
+  .istqb-success h4 { margin-top: 1rem; color: var(--color-accent); font-size: 0.9rem; text-transform: uppercase; }
   .istqb-success p { margin-top: 0.35rem; }
   .istqb-success ul { display: grid; gap: 0.35rem; margin-top: 0.45rem; color: var(--color-muted); }
   .istqb-success li { position: relative; padding-left: 1.1rem; }
@@ -990,13 +1029,21 @@ const registrationCopy = isEn
   .istqb-trainers__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
   .istqb-trainers figure { margin: 0; }
   .istqb-trainers img { width: 100%; aspect-ratio: 1.2 / 1; object-fit: cover; filter: grayscale(.1); }
-  .istqb-trainers figcaption { padding-top: 14px; color: #fff; font-size: 0.86rem; }
+  .istqb-trainers figcaption { padding-top: 14px; color: #fff; font-size: 1rem; }
 
-  .istqb-faq__intro { display: flex; justify-content: space-between; gap: 40px; align-items: flex-end; margin-bottom: 46px; }
-  .istqb-faq__intro > div { max-width: 980px; }
-  .istqb-faq__intro p { margin-top: 1rem; }
-  .istqb-faq__items details { border-bottom: 1px solid rgba(255, 11, 0, .45); }
-  .istqb-faq__items summary { display: flex; justify-content: space-between; gap: 24px; padding: 22px 0; color: #fff; font-weight: 600; cursor: pointer; list-style: none; }
+  .istqb-faq__intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: clamp(48px, 8vw, 180px);
+    align-items: end;
+    margin-bottom: clamp(46px, 4vw, 72px);
+  }
+  .istqb-faq__intro > div { max-width: 1200px; }
+  .istqb-faq__intro p { max-width: 1100px; margin-top: 1rem; font-size: clamp(1.05rem, 1.15vw, 1.3rem); }
+  .istqb-faq__intro > .istqb-button { min-width: clamp(190px, 13vw, 250px); justify-self: end; margin-bottom: 4px; }
+  .istqb-faq__items details { border-top: 1px solid rgba(255, 11, 0, .72); }
+  .istqb-faq__items details:last-child { border-bottom: 1px solid rgba(255, 11, 0, .72); }
+  .istqb-faq__items summary { display: flex; justify-content: space-between; gap: 24px; padding: clamp(22px, 1.8vw, 30px) 0; color: #fff; font-size: clamp(1.125rem, 1.2vw, 1.35rem); font-weight: 600; cursor: pointer; list-style: none; }
   .istqb-faq__items summary::-webkit-details-marker { display: none; }
   .istqb-faq__items summary span { color: var(--color-accent); font-size: 1.35rem; transition: transform .18s ease; }
   .istqb-faq__items details[open] summary span { transform: rotate(45deg); }
@@ -1057,21 +1104,21 @@ const registrationCopy = isEn
   .istqb-modal__content h2,
   .istqb-registration-form h2 { padding-right: 46px; font-size: clamp(1.8rem, 4vw, 3.4rem); }
   .istqb-modal__content h3 { margin: 1.5rem 0 .8rem; font-size: 1.35rem; }
-  .istqb-modal__content p { margin-top: 1rem; color: var(--color-muted); }
-  .istqb-modal__content ul { display: grid; gap: .8rem; margin: 1rem 0 2rem; color: var(--color-muted); }
+  .istqb-modal__content p { margin-top: 1rem; color: var(--color-muted); font-size: 1rem; line-height: 1.6; }
+  .istqb-modal__content ul { display: grid; gap: .8rem; margin: 1rem 0 2rem; color: var(--color-muted); font-size: 1rem; line-height: 1.55; }
   .istqb-modal__content li { position: relative; padding-left: 1.2rem; }
   .istqb-modal__content li::before { content: '—'; position: absolute; left: 0; color: var(--color-accent); }
   .istqb-modal--comparison { width: min(1120px, calc(100vw - 32px)); padding: clamp(36px, 5vw, 64px); }
   .istqb-modal--comparison > img { width: 100%; max-height: 76vh; object-fit: contain; }
   .istqb-modal--form { width: min(680px, calc(100vw - 32px)); }
   .istqb-registration-form { display: grid; gap: 1rem; padding: clamp(36px, 6vw, 64px); }
-  .istqb-registration-form label { display: grid; gap: .45rem; color: var(--color-muted); font-size: .88rem; }
+  .istqb-registration-form label { display: grid; gap: .45rem; color: var(--color-muted); font-size: 1rem; }
   .istqb-registration-form input[type='text'],
-  .istqb-registration-form input[type='email'] { width: 100%; min-height: 52px; padding: .8rem 1rem; border: 1px solid rgba(255,255,255,.22); background: #fff; color: #101010; }
-  .istqb-registration-form__consent { grid-template-columns: auto 1fr; align-items: start; }
+  .istqb-registration-form input[type='email'] { width: 100%; min-height: 52px; padding: .8rem 1rem; border: 1px solid rgba(255,255,255,.22); background: #fff; color: #101010; font-size: 1rem; }
+  .istqb-registration-form__consent { grid-template-columns: auto 1fr; align-items: start; font-size: .95rem; line-height: 1.5; }
   .istqb-registration-form__consent input { margin-top: .25rem; accent-color: var(--color-accent); }
   .istqb-registration-form__consent a { text-decoration: underline; }
-  .istqb-registration-form__inquiry { color: #fff; font-size: .9rem; font-weight: 600; }
+  .istqb-registration-form__inquiry { color: #fff; font-size: 1rem; font-weight: 600; }
   .istqb-registration-form .lead-form__trap { position: absolute; left: -9999px; }
   .istqb-registration-form .lead-form__status { color: #ff9b96; }
 
@@ -1134,7 +1181,8 @@ const registrationCopy = isEn
     .istqb-benefits__grid { gap: 30px; }
     .istqb-experience__media > img:first-child { min-height: 360px; }
     .istqb-hurdles__list article { grid-template-columns: 48px 1fr; gap: 10px; }
-    .istqb-faq__intro { align-items: flex-start; flex-direction: column; }
+    .istqb-faq__intro { grid-template-columns: 1fr; gap: 28px; align-items: start; }
+    .istqb-faq__intro > .istqb-button { justify-self: start; margin-bottom: 0; }
   }
 
   @media (max-width: 430px) {
@@ -1168,6 +1216,20 @@ const registrationCopy = isEn
 </style>
 
 <script>
+  document.querySelectorAll<HTMLElement>('[data-success-video]').forEach((media) => {
+    const loadButton = media.querySelector<HTMLButtonElement>('[data-success-video-load]');
+    const frame = media.querySelector<HTMLIFrameElement>('iframe[data-consent-src]');
+    loadButton?.addEventListener('click', () => {
+      const source = frame?.dataset.consentSrc;
+      if (!frame || !source) return;
+      const consent = (window as Window & { wamoconConsent?: { grantExternalMedia?: () => void } }).wamoconConsent;
+      consent?.grantExternalMedia?.();
+      frame.src = source;
+      frame.hidden = false;
+      media.classList.add('is-loaded');
+    });
+  });
+
   const modalLinks = document.querySelectorAll<HTMLAnchorElement>('[data-open-modal]');
   const modalDialogs = document.querySelectorAll<HTMLDialogElement>('.istqb-modal');
   const videoDialog = document.getElementById('istqb-video-modal') as HTMLDialogElement | null;
@@ -1189,7 +1251,7 @@ const registrationCopy = isEn
       const consent = (window as Window & { wamoconConsent?: { grantExternalMedia?: () => void } }).wamoconConsent;
       consent?.grantExternalMedia?.();
       const videoId = youtubeId || frame.dataset.defaultYoutubeId;
-      if (videoId) frame.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
+      if (videoId) frame.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&controls=1&playsinline=1&rel=0`;
     }
     if (!dialog.open) dialog.showModal();
     if (hash) history.replaceState(null, '', hash);
@@ -1232,7 +1294,15 @@ const registrationCopy = isEn
   const initialDialog = document.getElementById(hashTargets[window.location.hash] || '') as HTMLDialogElement | null;
   if (initialDialog) openModal(initialDialog);
 
-  window.addEventListener('pagehide', () => modalDialogs.forEach(stopDialogVideo));
+  window.addEventListener('pagehide', () => {
+    modalDialogs.forEach((dialog) => {
+      stopDialogVideo(dialog);
+      if (dialog === videoDialog && dialog.open) dialog.close();
+    });
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && videoDialog?.open) videoDialog.close();
+  });
   window.addEventListener('pageshow', () => {
     modalDialogs.forEach((dialog) => {
       if (!dialog.open) stopDialogVideo(dialog);

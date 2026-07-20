@@ -282,9 +282,10 @@ const c = de
     color: var(--color-text);
   }
   .wrap {
-    max-width: 1200px;
+    width: 100%;
+    max-width: var(--container-max);
     margin: 0 auto;
-    padding: clamp(2.5rem, 6vw, 5rem) 1.25rem;
+    padding: clamp(2.5rem, 6vw, 5rem) var(--container-pad);
   }
   .t-red {
     color: var(--color-accent);

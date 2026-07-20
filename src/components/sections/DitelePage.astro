@@ -54,7 +54,7 @@ const copy = isDe
         ['Qualifikation der Dozenten', 'Unsere Dozenten bringen tiefgehende praktische Projekterfahrungen mit, die sie in den Kursen anschaulich und verständlich vermitteln. So profitieren Sie von ihrem umfangreichen Wissen und ihrer Expertise.'],
       ],
       adviceTitle: 'Beratung erhalten',
-      adviceText: 'Rufen Sie uns an +49 6196 5838311, oder hinterlassen Sie unten Ihre Kontaktdaten, damit wir Sie erreichen und Ihre Fragen beantworten können.',
+      adviceText: 'Rufen Sie uns an +49 (0) 6196 5838312, oder hinterlassen Sie unten Ihre Kontaktdaten, damit wir Sie erreichen und Ihre Fragen beantworten können.',
       name: 'Ihr Name',
       phone: 'Telefon',
       email: 'E-Mail',
@@ -103,7 +103,7 @@ const copy = isDe
         ['Qualifications of the lecturers', 'Our lecturers have in-depth practical project experience, which they convey clearly and comprehensibly in the courses. This allows you to benefit from their extensive knowledge and expertise.'],
       ],
       adviceTitle: 'Get advice',
-      adviceText: 'Give us a call +49 6196 5838311, or leave your contact details below so that we can reach you and answer your questions.',
+      adviceText: 'Give us a call +49 (0) 6196 5838312, or leave your contact details below so that we can reach you and answer your questions.',
       name: 'Your name',
       phone: 'Telephone',
       email: 'E-Mail',
@@ -143,12 +143,14 @@ const copy = isDe
         <button type="button" data-load-external-media>{copy.videoConsentButton}</button>
       </div>
       <iframe
-        data-consent-src="https://www.youtube-nocookie.com/embed/FQ8dXuBDzb0?rel=0&autoplay=1"
+        data-consent-src="https://www.youtube-nocookie.com/embed/FQ8dXuBDzb0?autoplay=1&controls=1&playsinline=1&rel=0"
+        data-consent-mode="manual"
         title={copy.videoTitle}
         loading="lazy"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
         hidden
       ></iframe>
+      <button class="ditele-test__video-stop" type="button" data-stop-external-media hidden>{lang === 'de' ? 'Video schließen' : 'Close video'}</button>
     </div>
     <div class="ditele-test__content" data-reveal>
       <h2 id="ditele-test-title">{copy.testTitle}</h2>
@@ -226,7 +228,13 @@ const copy = isDe
       </div>
     </div>
     <figure class="ditele-advantages__media" data-reveal>
-      <img src={assets.classroom} alt="" width="1680" height="1120" loading="lazy" />
+      <img
+        src={assets.classroom}
+        alt={isDe ? 'Softwareentwickler bei der Arbeit am Computer' : 'Software developer working at a computer'}
+        width="1680"
+        height="1120"
+        loading="eager"
+      />
     </figure>
   </div>
 </section>
@@ -267,7 +275,7 @@ const copy = isDe
     max-width: 720px;
     margin-top: 18px;
     color: rgba(255, 255, 255, 0.92);
-    font-size: 1rem;
+    font-size: 1.125rem;
     line-height: 1.38;
   }
 
@@ -286,8 +294,8 @@ const copy = isDe
     object-fit: contain;
   }
 
-  .ditele-hero__disc { transform: rotate(-8deg); animation: ditele-disc-drift 10s ease-in-out infinite; }
-  .ditele-hero__sphere { width: 64% !important; height: 64% !important; top: 4%; left: -2%; animation: ditele-sphere-drift 8s ease-in-out infinite; }
+  .ditele-hero__disc { transform: rotate(-87deg); animation: ditele-disc-drift 4s ease-in infinite; }
+  .ditele-hero__sphere { width: 64% !important; height: 64% !important; top: 4%; left: -2%; transform: rotate(29deg); animation: ditele-sphere-drift 4s ease-in infinite; }
 
   .ditele-section {
     position: relative;
@@ -296,7 +304,7 @@ const copy = isDe
   }
 
   .ditele-section p {
-    font-size: 0.96rem;
+    font-size: 1.125rem;
     line-height: 1.48;
   }
 
@@ -324,15 +332,30 @@ const copy = isDe
   }
 
   .ditele-test__video-consent {
+    position: relative;
     display: grid;
     height: 100%;
     padding: clamp(1.25rem, 4vw, 2.5rem);
     place-content: center;
     justify-items: center;
-    background:
-      radial-gradient(circle at 50% 35%, rgba(255, 11, 0, 0.2), transparent 34%),
-      linear-gradient(145deg, #252525, #090909);
+    overflow: hidden;
+    background: #090909;
     text-align: center;
+  }
+
+  .ditele-test__video-consent::before {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(rgba(5, 5, 5, 0.62), rgba(5, 5, 5, 0.82)),
+      url('/images/academy/tild6466-6536-4065-b832-356661343462__wma_imagevideo_bild1.jpg') center / cover no-repeat;
+    content: '';
+    transform: scale(1.01);
+  }
+
+  .ditele-test__video-consent > * {
+    position: relative;
+    z-index: 1;
   }
 
   .ditele-test__video-consent svg {
@@ -345,14 +368,14 @@ const copy = isDe
   }
 
   .ditele-test__video-consent strong {
-    font-size: 1.05rem;
+    font-size: 1.125rem;
   }
 
   .ditele-test__video-consent p {
     max-width: 470px;
     margin: 8px 0 14px;
     color: rgba(255, 255, 255, 0.78);
-    font-size: 0.76rem;
+    font-size: 0.95rem;
   }
 
   .ditele-test__video-consent button {
@@ -360,7 +383,7 @@ const copy = isDe
     padding: 0 18px;
     background: #ff0b00;
     color: #fff;
-    font-size: 0.78rem;
+    font-size: 0.9rem;
     font-weight: 600;
     transition: background 180ms ease, transform 180ms ease;
   }
@@ -368,6 +391,20 @@ const copy = isDe
   .ditele-test__video-consent button:hover {
     background: #e90a00;
     transform: translateY(-1px);
+  }
+
+  .ditele-test__video-stop {
+    position: absolute;
+    z-index: 2;
+    top: 12px;
+    right: 12px;
+    min-height: 38px;
+    padding-inline: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.82);
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.82);
+    color: #fff;
+    font-size: 13px;
   }
 
   .ditele-test__content {
@@ -388,7 +425,7 @@ const copy = isDe
   .ditele-field-label {
     margin-bottom: -5px;
     color: #fff;
-    font-size: 0.78rem;
+    font-size: 0.9rem;
     font-weight: 600;
   }
 
@@ -401,7 +438,7 @@ const copy = isDe
     background: #fff;
     color: #111;
     font-family: inherit;
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
 
   .ditele-consent {
@@ -410,7 +447,7 @@ const copy = isDe
     gap: 10px;
     align-items: start;
     color: rgba(255, 255, 255, 0.66);
-    font-size: 0.69rem;
+    font-size: 0.95rem;
     line-height: 1.4;
   }
 
@@ -434,7 +471,7 @@ const copy = isDe
     padding: 0 22px;
     background: #ff0b00;
     color: #fff;
-    font-size: 0.82rem;
+    font-size: 0.95rem;
     font-weight: 600;
     transition: background 180ms ease, transform 180ms ease;
   }
@@ -481,7 +518,7 @@ const copy = isDe
   .ditele-card h3,
   .ditele-why h3,
   .ditele-advantages h3 {
-    font-size: 1rem;
+    font-size: 1.125rem;
     line-height: 1.25;
   }
 
@@ -489,7 +526,7 @@ const copy = isDe
     max-width: 54ch;
     margin-top: 14px;
     color: rgba(255, 255, 255, 0.84);
-    font-size: 0.86rem;
+    font-size: 1.0625rem;
   }
 
   .ditele-platform__outro,
@@ -501,6 +538,10 @@ const copy = isDe
   .ditele-why h2 span,
   .ditele-advantages h2 span {
     color: #ff0b00;
+  }
+
+  .ditele-why h2 {
+    font-size: clamp(2.5rem, 3.6vw, 4rem);
   }
 
   .ditele-why__grid {
@@ -525,10 +566,21 @@ const copy = isDe
     max-width: 54ch;
     margin-top: 12px;
     color: rgba(255, 255, 255, 0.8);
-    font-size: 0.86rem;
+    font-size: 1.1875rem;
+    line-height: 1.55;
   }
 
-  .ditele-why__outro { margin-top: 50px; max-width: 1100px; }
+  .ditele-why h3 {
+    font-size: 1.375rem;
+    line-height: 1.3;
+  }
+
+  .ditele-why__outro {
+    max-width: 1180px;
+    margin-top: 54px;
+    font-size: 1.25rem;
+    line-height: 1.55;
+  }
 
   .ditele-card--strong {
     display: flex;
@@ -539,7 +591,7 @@ const copy = isDe
   .ditele-card--strong p {
     margin: 0;
     color: #fff;
-    font-size: 1rem;
+    font-size: 1.125rem;
     font-weight: 700;
     line-height: 1.24;
   }
@@ -559,7 +611,7 @@ const copy = isDe
     max-width: 66ch;
     margin-top: 9px;
     color: rgba(255, 255, 255, 0.78);
-    font-size: 0.86rem;
+    font-size: 1.0625rem;
   }
 
   .ditele-advantages__media {
@@ -574,13 +626,13 @@ const copy = isDe
   }
 
   @keyframes ditele-disc-drift {
-    0%, 100% { transform: translate3d(0, 0, 0) rotate(-8deg); }
-    50% { transform: translate3d(-14px, 10px, 0) rotate(-4deg); }
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(-87deg); }
+    50% { transform: translate3d(6px, 0, 0) rotate(-82deg); }
   }
 
   @keyframes ditele-sphere-drift {
-    0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
-    50% { transform: translate3d(14px, -10px, 0) rotate(5deg); }
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(29deg); }
+    50% { transform: translate3d(0, 6px, 0) rotate(33deg); }
   }
 
   @keyframes ditele-curve-drift-a {
@@ -621,7 +673,7 @@ const copy = isDe
     .ditele-hero p {
       max-width: 74%;
       margin-top: 12px;
-      font-size: 0.82rem;
+      font-size: 0.95rem;
       line-height: 1.35;
     }
 
@@ -636,7 +688,7 @@ const copy = isDe
       padding-block: 4.25rem;
     }
 
-    .ditele-section p { font-size: 0.86rem; }
+    .ditele-section p { font-size: 1rem; }
 
     .ditele-test__grid { gap: 2rem; }
     .ditele-test__video { order: initial; }
@@ -672,7 +724,10 @@ const copy = isDe
     .ditele-why article svg { grid-row: 1 / span 2; margin: 0; }
     .ditele-why article p { margin-top: 7px; }
 
-    .ditele-advantages__media { display: none; }
+    .ditele-advantages__media {
+      min-height: 0;
+      aspect-ratio: 16 / 9;
+    }
 
     .ditele-curve {
       width: 112px;
@@ -682,11 +737,6 @@ const copy = isDe
   }
 
   @media (min-width: 2200px) {
-    .ditele-hero__media {
-      right: 2vw;
-      width: min(44vw, 1200px);
-    }
-
     .ditele-test__grid,
     .ditele-advantages__grid {
       gap: clamp(96px, 8vw, 260px);
@@ -695,9 +745,74 @@ const copy = isDe
     .ditele-card { min-height: 240px; }
   }
 
+  /* Reproduce the live 1200 × 600 hero artboard at wide viewport sizes. */
+  @media (min-width: 1200px) {
+    .ditele-hero {
+      width: 100%;
+      min-height: 50vw;
+      height: 50vw;
+    }
+    .ditele-hero__content {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      max-width: none;
+      height: 50vw;
+      padding: 0;
+    }
+    .ditele-hero h1 {
+      position: absolute;
+      top: 32.3333vw;
+      left: 1.6667vw;
+      width: 53.4167vw;
+      font-size: 3.3333vw;
+      line-height: 1.2;
+    }
+    .ditele-hero p {
+      position: absolute;
+      top: 37.1667vw;
+      left: 1.6667vw;
+      width: 57.8333vw;
+      max-width: none;
+      margin: 0;
+      font-size: 1.3333vw;
+      line-height: 1.3;
+    }
+    .ditele-hero__media {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 50vw;
+      aspect-ratio: auto;
+    }
+    .ditele-hero__media img {
+      height: auto;
+      max-width: none;
+    }
+    .ditele-hero__media .ditele-hero__disc {
+      top: 6.1667vw;
+      left: 62.5833vw;
+      width: 41.8333vw;
+    }
+    .ditele-hero__media .ditele-hero__sphere {
+      top: 12.6667vw;
+      left: 65vw;
+      width: 21.5833vw !important;
+      height: auto !important;
+    }
+    @keyframes ditele-disc-drift {
+      0%, 100% { transform: translate3d(0, 0, 0) rotate(-87deg); }
+      50% { transform: translate3d(0.5vw, 0, 0) rotate(-82deg); }
+    }
+    @keyframes ditele-sphere-drift {
+      0%, 100% { transform: translate3d(0, 0, 0) rotate(29deg); }
+      50% { transform: translate3d(0, 0.5vw, 0) rotate(33deg); }
+    }
+  }
+
   @media (max-width: 410px) {
     .ditele-hero p { max-width: 82%; }
-    .ditele-consent { font-size: 0.62rem; }
+    .ditele-consent { font-size: 0.875rem; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -714,6 +829,16 @@ const copy = isDe
     const button = container.querySelector<HTMLButtonElement>('[data-load-external-media]');
     const iframe = container.querySelector<HTMLIFrameElement>('iframe[data-consent-src]');
     const placeholder = container.querySelector<HTMLElement>('.ditele-test__video-consent');
+    const stopButton = container.querySelector<HTMLButtonElement>('[data-stop-external-media]');
+
+    const stop = () => {
+      if (!iframe) return;
+      iframe.removeAttribute('src');
+      iframe.hidden = true;
+      if (placeholder) placeholder.hidden = false;
+      if (stopButton) stopButton.hidden = true;
+      container.classList.remove('is-loaded');
+    };
 
     button?.addEventListener('click', () => {
       const src = iframe?.dataset.consentSrc;
@@ -722,6 +847,14 @@ const copy = isDe
       iframe.src = src;
       iframe.hidden = false;
       placeholder?.setAttribute('hidden', '');
+      if (stopButton) stopButton.hidden = false;
+      container.classList.add('is-loaded');
+    });
+    stopButton?.addEventListener('click', stop);
+    window.addEventListener('pagehide', stop);
+    window.addEventListener('wamocon:consent', (event) => {
+      const detail = (event as CustomEvent<{ externalMedia?: boolean }>).detail;
+      if (!detail?.externalMedia) stop();
     });
   });
 

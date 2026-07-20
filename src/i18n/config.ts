@@ -21,11 +21,6 @@ export const nav: NavLink[] = [
     en: { label: 'Start page', href: '/en/' },
   },
   {
-    key: 'courses',
-    de: { label: 'Kurse', href: '/bildungsprogramme-fr-softwaretester/' },
-    en: { label: 'Courses', href: '/en/educational-programs/' },
-  },
-  {
     key: 'about-group',
     de: { label: 'Über uns', href: '/ber-die-akademie/' },
     en: { label: 'About us', href: '/en/about-us/' },
@@ -88,7 +83,7 @@ export const ui = {
     'footer.follow': 'Folgen Sie uns auf sozialen Medien',
     'form.title': 'Beratung erhalten',
     'form.text':
-      'Rufen Sie uns an +49 6196 5838311, oder hinterlassen Sie unten Ihre Kontaktdaten, damit wir Sie erreichen und Ihre Fragen beantworten können.',
+      'Rufen Sie uns an +49 (0) 6196 5838312, oder hinterlassen Sie unten Ihre Kontaktdaten, damit wir Sie erreichen und Ihre Fragen beantworten können.',
     'form.name': 'Ihr Name',
     'form.phone': 'Telefon',
     'form.email': 'E-Mail',
@@ -110,7 +105,7 @@ export const ui = {
     'footer.follow': 'Follow us on social media',
     'form.title': 'Receive advice',
     'form.text':
-      'Give us a call +49 6196 5838311, or leave your contact details below so that we can reach you and answer your questions.',
+      'Give us a call +49 (0) 6196 5838312, or leave your contact details below so that we can reach you and answer your questions.',
     'form.name': 'Your name',
     'form.phone': 'Telephone',
     'form.email': 'E-Mail',
@@ -126,18 +121,18 @@ export const company = {
   name: 'WAMOCON Academy GmbH',
   street: 'Mergenthalerallee 79–81',
   city: '65760 Eschborn',
-  phone: '+49 6196 5838311',
-  phoneHref: 'tel:+4961965838311',
-  email: 'info@wamocon.com',
-  emailHref: 'mailto:info@wamocon.com',
+  phone: '+49 (0) 6196 5838312',
+  phoneHref: 'tel:+4961965838312',
+  email: 'info@test-it-academy.com',
+  emailHref: 'mailto:info@test-it-academy.com',
   hours: {
-    de: ['Mo - Fr: 9:00 - 18:00', 'Sa: 10:00 - 14:00'],
-    en: ['Mon - Fri: 9:00 - 18:00', 'Sat: 10:00 - 14:00'],
+    de: ['Montag - Freitag: 9:00 - 18:00 Uhr', 'Samstag: 10:00 - 14:00 Uhr'],
+    en: ['Monday - Friday: 9:00 am - 6:00 pm', 'Saturday: 10:00 am - 2:00 pm'],
   },
   social: {
-    youtube: 'https://www.youtube.com/@wamocon.testing',
-    facebook: 'https://www.facebook.com/WAMOCON/',
+    youtube: 'https://www.youtube.com/@WAMOCONACADEMY',
+    facebook: 'https://tr-tr.facebook.com/WAMOCONACADEMY/',
     linkedin: 'https://de.linkedin.com/company/wamocon-gmbh',
-    instagram: 'https://www.instagram.com/wmc_testmanagement/profilecard/?igsh=dWQ1azhlcDZnNmxs',
+    instagram: 'https://www.instagram.com/bildungszentrum_wma/',
   },
 } as const;
