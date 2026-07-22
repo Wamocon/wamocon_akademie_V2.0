@@ -10,6 +10,8 @@ const { lang } = Astro.props;
 const copy = lang === 'de'
   ? {
       title: 'Kontakt',
+      contactPerson: 'Ansprechpartner',
+      contactPersonName: 'Dipl.-Ing. Waleri Moretz, Geschäftsführer der WAMOCON Academy GmbH',
       location: 'Standort:',
       phone: 'Telefon:',
       email: 'E-Mail:',
@@ -20,6 +22,8 @@ const copy = lang === 'de'
     }
   : {
       title: 'Contact us',
+      contactPerson: 'Contact person',
+      contactPersonName: 'Dipl.-Ing. Waleri Moretz, Managing Director of WAMOCON Academy GmbH',
       location: 'Location:',
       phone: 'Phone:',
       email: 'E-Mail:',
@@ -44,6 +48,10 @@ const socialLinks = [
       <p class="contact-page__company">{company.name}</p>
 
       <address class="contact-page__details">
+        <div>
+          <strong>{copy.contactPerson}</strong>
+          <span>{copy.contactPersonName}</span>
+        </div>
         <div>
           <strong>{copy.location}</strong>
           <span>{company.street}<br />{company.city}</span>

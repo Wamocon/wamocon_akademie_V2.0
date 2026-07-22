@@ -20,6 +20,11 @@ const displayTitle = title ?? t('form.title');
 const privacyNotice = lang === 'de'
   ? 'Mit dem Absenden senden Sie eine unverbindliche Anfrage an die WAMOCON Academy GmbH. Wir verwenden Ihre Angaben nur zur Beantwortung Ihrer Anfrage. Weitere Informationen finden Sie in der '
   : 'By submitting, you send a non-binding inquiry to WAMOCON Academy GmbH. We use your details only to answer your inquiry. More information is available in the ';
+
+// Named person accountable for enquiries submitted through this form.
+const responsiblePerson = lang === 'de'
+  ? 'Ihre Anfrage wird bearbeitet von Dipl.-Ing. Waleri Moretz, Geschäftsführer der WAMOCON Academy GmbH.'
+  : 'Your enquiry is handled by Dipl.-Ing. Waleri Moretz, Managing Director of WAMOCON Academy GmbH.';
 ---
 
 <section class:list={['lead-section', { 'lead-section--compact': compact }]} id="beratung">
@@ -56,6 +61,7 @@ const privacyNotice = lang === 'de'
           {complianceMode ? '.' : t('form.consent.post')}
         </span>
       </p>
+      <p class="lead-form__responsible">{responsiblePerson}</p>
       <p class="lead-form__status" role="alert" aria-live="assertive" hidden></p>
       <button type="submit" class="lead-form__submit">{t('form.submit')}</button>
     </form>
@@ -208,6 +214,13 @@ const privacyNotice = lang === 'de'
     font-weight: var(--fw-semibold);
     box-shadow: none;
     transition: background var(--dur-fast), transform var(--dur-fast);
+  }
+
+  .lead-form__responsible {
+    margin: 0;
+    color: #a3a3a3;
+    font-size: 14px;
+    line-height: 1.5;
   }
 
   .lead-form__status {
