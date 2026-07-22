@@ -1,0 +1,21 @@
+---
+import type { CoursePopupInline } from '../../data/coursePopup';
+
+interface Props {
+  parts: CoursePopupInline[];
+}
+
+const { parts } = Astro.props;
+const isExternal = (href: string) => /^https?:\/\//i.test(href);
+---
+{parts.map((part) => (
+  part.href
+    ? <a
+        href={part.href}
+        rel={isExternal(part.href) ? 'noopener noreferrer' : undefined}
+        target={isExternal(part.href) ? '_blank' : undefined}
+      >{part.text}</a>
+    : part.strong
+      ? <strong>{part.text}</strong>
+      : <Fragment>{part.text}</Fragment>
+))}

@@ -21,8 +21,8 @@ const socialLinks = [
   { label: 'Facebook', href: company.social.facebook, icon: '/images/icon-facebook.svg' },
 ];
 const aiNotice = lang === 'de'
-  ? 'Texte, Bilder, Videos, Audios und Grafiken, die hier bereitgestellt werden, können teilweise mit Künstlicher Intelligenz (KI) erstellt worden sein. Jeder generierte Inhalt wurde sorgfältig überprüft, um Qualität und Genauigkeit sicherzustellen. Mit diesem Hinweis erfüllen wir unsere Transparenzpflicht.'
-  : 'Texts, images, videos, audio and graphics provided here may have been created in part using artificial intelligence (AI). Every generated item has been carefully reviewed to ensure quality and accuracy. This notice fulfils our transparency obligation.';
+  ? 'Einzelne grafische Elemente dieser Website (abstrakte Illustrationen und 3D-Renderings) wurden mit Hilfe Künstlicher Intelligenz erstellt. Alle Fotografien von Personen, Räumen und Veranstaltungen sind echte Aufnahmen und nicht KI-generiert. Sämtliche Texte werden redaktionell von einem Menschen geprüft und verantwortet.'
+  : 'Some graphical elements on this website (abstract illustrations and 3D renderings) were created with the help of artificial intelligence. All photographs of people, places and events are genuine and not AI-generated. All texts are editorially reviewed and approved by a human.';
 ---
 
 {showContact && (
@@ -88,6 +88,7 @@ const aiNotice = lang === 'de'
     <nav aria-label={lang === 'de' ? 'Rechtliches' : 'Legal'}>
       <a href={legalNav.privacy[lang].href}>{legalNav.privacy[lang].label}</a>
       <a href={legalNav.imprint[lang].href}>{legalNav.imprint[lang].label}</a>
+      <a href={legalNav.accessibility[lang].href}>{legalNav.accessibility[lang].label}</a>
       <button class="footer__privacy" type="button" data-open-consent-settings>{privacySettings}</button>
     </nav>
   </div>

@@ -1,29 +1,66 @@
 import type { Lang } from '../i18n/config';
 
+export type CoursePopupLink = { text: string; href: string };
+
+export type CoursePopupInline = { text: string; href?: string; strong?: boolean };
+
 export type CoursePopupBlock =
-  | { type: 'heading'; text: string }
-  | { type: 'paragraph'; text: string }
-  | { type: 'list'; items: string[] };
+  | { type: 'heading'; parts: CoursePopupInline[] }
+  | { type: 'paragraph'; parts: CoursePopupInline[] }
+  | { type: 'list'; items: CoursePopupInline[][] };
 
-export const cleanCoursePopupDescription = (description: string, lang: Lang) => {
-  if (/Bildungsgutschein gefördert|education voucher funded|supported (?:with|by) (?:a |the )?(?:training|education) voucher/i.test(description)) {
-    return lang === 'de'
-      ? 'Dieses Kursangebot verbindet Grundlagen des Softwaretestens mit praxisnaher Prüfungsvorbereitung. Aktuelle Termine und Preise: In Planung. Eine Förderung durch Bildungsgutschein kann im Einzelfall möglich sein. Über Voraussetzungen, förderfähige Kosten und Bewilligung entscheiden die zuständige Agentur für Arbeit oder das Jobcenter. Bitte lassen Sie die Förderung vor einer Anmeldung schriftlich bestätigen. Eine Anfrage über diese Website ist unverbindlich und stellt keinen Kauf dar.'
-      : 'This course combines software-testing fundamentals with practical examination preparation. Current dates and prices: Planned. Funding through a Bildungsgutschein may be available in individual cases. The responsible employment agency or job centre decides eligibility, covered costs and approval. Please obtain written confirmation before registering. An inquiry through this website is non-binding and does not constitute a purchase.';
-  }
+/** Links rendered as buttons under the popup body — the real CTAs, not the inline source links. */
+export const coursePopupActions = (links: CoursePopupLink[]) =>
+  links.filter((link) => link.href.startsWith('#'));
 
-  return description
+/** Links that appear inside the description text and stay inline where they were written. */
+const inlineLinks = (links: CoursePopupLink[]) => links.filter((link) => !link.href.startsWith('#'));
+
+export const cleanCoursePopupDescription = (description: string) =>
+  description
     .replace(/\r\n?/g, '\n')
+    .replace(/[​‌‍﻿]/g, '')
+    .replace(/\(\s+/g, '(')
+    .replace(/\s+\)/g, ')')
     .replace(/\s*(Eine Frage stellen|Ask a question)\s*$/, '');
+
+const linkify = (text: string, links: CoursePopupLink[]): CoursePopupInline[] => {
+  const parts: CoursePopupInline[] = [];
+  let rest = text;
+
+  links.forEach((link) => {
+    const index = rest.indexOf(link.text);
+    if (index === -1) return;
+    if (index > 0) parts.push({ text: rest.slice(0, index) });
+    parts.push({ text: link.text, href: link.href });
+    rest = rest.slice(index + link.text.length);
+  });
+
+  if (rest) parts.push({ text: rest });
+  return parts.length ? parts : [{ text }];
 };
 
-export const coursePopupBlocks = (description: string, lang: Lang): CoursePopupBlock[] => {
+/** Bullets like "Theorie: …" lead with a bold label, as on the live site. */
+const withLabel = (parts: CoursePopupInline[]): CoursePopupInline[] => {
+  const [first, ...tail] = parts;
+  if (!first || first.href) return parts;
+  const label = first.text.match(/^([^:]{1,30}:)(\s+)(.*)$/s);
+  if (!label) return parts;
+  return [{ text: label[1], strong: true }, { text: label[2] + label[3] }, ...tail];
+};
+
+export const coursePopupBlocks = (
+  description: string,
+  _lang: Lang,
+  links: CoursePopupLink[] = [],
+): CoursePopupBlock[] => {
   const blocks: CoursePopupBlock[] = [];
+  const sourceLinks = inlineLinks(links);
   let paragraph: string[] = [];
-  let list: string[] = [];
+  let list: CoursePopupInline[][] = [];
 
   const flushParagraph = () => {
-    if (paragraph.length) blocks.push({ type: 'paragraph', text: paragraph.join(' ') });
+    if (paragraph.length) blocks.push({ type: 'paragraph', parts: linkify(paragraph.join(' '), sourceLinks) });
     paragraph = [];
   };
   const flushList = () => {
@@ -31,7 +68,7 @@ export const coursePopupBlocks = (description: string, lang: Lang): CoursePopupB
     list = [];
   };
 
-  cleanCoursePopupDescription(description, lang)
+  cleanCoursePopupDescription(description)
     .split('\n')
     .forEach((rawLine) => {
       const line = rawLine.trim();
@@ -43,6 +80,7 @@ export const coursePopupBlocks = (description: string, lang: Lang): CoursePopupB
 
       const isHeading =
         line.endsWith(':') ||
+        (line.endsWith('!') && line.length <= 60) ||
         /^ISTQB® Certified Tester Foundation Level\b/i.test(line) ||
         /^\d+\.\s*Etappe\b/i.test(line) ||
         /^(?:Stage\s+\d+|\d+(?:st|nd|rd|th)\s+stage)\s*:/i.test(line) ||
@@ -50,14 +88,14 @@ export const coursePopupBlocks = (description: string, lang: Lang): CoursePopupB
       if (isHeading) {
         flushParagraph();
         flushList();
-        blocks.push({ type: 'heading', text: line.replace(/:$/, '') });
+        blocks.push({ type: 'heading', parts: linkify(line.replace(/:$/, ''), sourceLinks) });
         return;
       }
 
       const bullet = line.match(/^(?:[-–—•]|\d+[.)])\s+(.+)$/);
       if (bullet) {
         flushParagraph();
-        list.push(bullet[1]);
+        list.push(withLabel(linkify(bullet[1], sourceLinks)));
         return;
       }
 

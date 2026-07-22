@@ -171,14 +171,19 @@ const modal = {
       <Button variant="primary" data-modal-open="it-tester">{home.qa.cta[lang]}</Button>
     </div>
     <div class="qa__video" data-reveal="right">
-      <div class="video-frame">
+      <div class="video-frame" data-external-media>
         <iframe
-          src={`https://www.youtube-nocookie.com/embed/${home.qa.youtubeId}`}
+          data-consent-src={`https://www.youtube-nocookie.com/embed/${home.qa.youtubeId}`}
           title="WAMOCON"
           loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
+          allowfullscreen hidden
         ></iframe>
+        <div class="external-media__notice" data-external-media-notice>
+          <p>{lang === 'de' ? 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.' : 'This video loads from YouTube only after your consent.'}</p>
+          <button type="button" data-external-media-load>{lang === 'de' ? 'Video laden' : 'Load video'}</button>
+        </div>
       </div>
     </div>
   </div>
@@ -343,14 +348,19 @@ const modal = {
       {home.education.paragraphs[lang].map((p) => <p class="text-muted">{p}</p>)}
     </div>
     <div class="education__video" data-reveal="right">
-      <div class="video-frame">
+      <div class="video-frame" data-external-media>
         <iframe
-          src={`https://www.youtube-nocookie.com/embed/${home.education.youtubeId}`}
+          data-consent-src={`https://www.youtube-nocookie.com/embed/${home.education.youtubeId}`}
           title={home.education.heading[lang]}
           loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
+          allowfullscreen hidden
         ></iframe>
+        <div class="external-media__notice" data-external-media-notice>
+          <p>{lang === 'de' ? 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.' : 'This video loads from YouTube only after your consent.'}</p>
+          <button type="button" data-external-media-load>{lang === 'de' ? 'Video laden' : 'Load video'}</button>
+        </div>
       </div>
     </div>
   </div>
@@ -384,14 +394,18 @@ const modal = {
       <h2>{home.tour.heading[lang]}</h2>
       <p class="text-muted">{home.tour.text[lang]}</p>
     </div>
-    <div class="tour__view" data-reveal="zoom">
+    <div class="tour__view" data-reveal="zoom" data-external-media>
       <iframe
-        src={home.tour.embedUrl}
+        data-consent-src={home.tour.embedUrl}
         title={home.tour.heading[lang]}
         loading="lazy"
-        allowfullscreen
-        referrerpolicy="no-referrer-when-downgrade"
+        allowfullscreen hidden
+        referrerpolicy="strict-origin-when-cross-origin"
       ></iframe>
+        <div class="external-media__notice" data-external-media-notice>
+          <p>{lang === 'de' ? 'Diese Karte wird erst nach Ihrer Zustimmung von Google Maps geladen.' : 'This map loads from Google Maps only after your consent.'}</p>
+          <button type="button" data-external-media-load>{lang === 'de' ? 'Karte laden' : 'Load map'}</button>
+        </div>
     </div>
     <div class="tour__cta" data-reveal="up">
       <Button href={home.tour.mapsUrl} target="_blank" variant="outline" size="lg">
@@ -678,7 +692,7 @@ const modal = {
     width: 8px;
     height: 8px;
     border-radius: 2px;
-    background: var(--color-accent);
+    background: var(--color-accent-surface);
   }
   .qa__text p { margin-bottom: 1rem; }
   .education__text h2 { margin-bottom: 1.5rem; }
@@ -781,7 +795,7 @@ const modal = {
     font: inherit;
     font-weight: var(--fw-semibold);
     color: #fff;
-    background: var(--color-accent);
+    background: var(--color-accent-surface);
     border: none;
     border-radius: var(--radius-pill);
     cursor: pointer;
@@ -810,7 +824,7 @@ const modal = {
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: var(--color-accent);
+    background: var(--color-accent-surface);
   }
 
   /* ---------- academy ---------- */
@@ -1009,7 +1023,7 @@ const modal = {
     transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast);
   }
   .lead-modal__close:hover {
-    background: var(--color-accent);
+    background: var(--color-accent-surface);
     color: #fff;
   }
   .lead-modal__title {
@@ -1071,7 +1085,7 @@ const modal = {
     font-weight: var(--fw-semibold);
     letter-spacing: 0.02em;
     color: #fff;
-    background: var(--color-accent);
+    background: var(--color-accent-surface);
     border: none;
     border-radius: var(--radius-pill);
     cursor: pointer;

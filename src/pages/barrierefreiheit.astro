@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LegalPage from '../components/sections/LegalPage.astro';
+import { legal } from '../data/academy';
+
+const lang = 'de';
+---
+
+<BaseLayout title={legal.accessibility[lang].title} description="Erklärung zur Barrierefreiheit der WAMOCON Academy GmbH nach dem Barrierefreiheitsstärkungsgesetz (BFSG)." lang={lang}>
+  <LegalPage lang={lang} kind="accessibility" />
+</BaseLayout>

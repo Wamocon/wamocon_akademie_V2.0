@@ -1,7 +1,8 @@
 ---
 import coursePopupCopy from '../../../audit/course-popup-copy.json';
 import type { Lang } from '../../i18n/config';
-import { coursePopupBlocks, coursePopupCategory } from '../../data/coursePopup';
+import { coursePopupActions, coursePopupBlocks, coursePopupCategory } from '../../data/coursePopup';
+import RichText from '../ui/RichText.astro';
 import { programAssets, programContent, programCourses } from '../../data/programs';
 
 interface Props {
@@ -246,16 +247,16 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
       <h2 id={`${popupId(popup.hook)}-title`}>{popup.title}</h2>
       <p class="course-dialog__eyebrow">{coursePopupCategory(popup.hook, lang)}</p>
       <div class="course-dialog__content">
-        {coursePopupBlocks(popup.description, lang).map((block) => (
+        {coursePopupBlocks(popup.description, lang, popup.links).map((block) => (
           block.type === 'heading'
-            ? <h3>{block.text}</h3>
+            ? <h3><RichText parts={block.parts} /></h3>
             : block.type === 'list'
-              ? <ul>{block.items.map((item) => <li>{item}</li>)}</ul>
-              : <p>{block.text}</p>
+              ? <ul>{block.items.map((item) => <li><RichText parts={item} /></li>)}</ul>
+              : <p><RichText parts={block.parts} /></p>
         ))}
       </div>
       <div class="course-dialog__actions">
-        {popup.links.map((link, index) => (
+        {coursePopupActions(popup.links).map((link, index) => (
           <a
             class:list={['program-button', { 'program-button--outline': index > 0 }]}
             href={normalizePopupHref(link.href)}
@@ -550,7 +551,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     left: -1px;
     width: clamp(72px, 7vw, 128px);
     height: 4px;
-    background: var(--color-accent);
+    background: var(--color-accent-surface);
     transition: width 260ms ease;
   }
 
@@ -708,7 +709,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     padding: 0.75rem 1.35rem;
     border: 1px solid var(--color-accent);
     border-radius: 4px;
-    background: var(--color-accent);
+    background: var(--color-accent-surface);
     color: #fff;
     font-size: 0.86rem;
     font-weight: var(--fw-semibold);
@@ -754,6 +755,8 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     top: -45px;
     left: -60px;
     width: 230px;
+    /* Without this the height="1724" attribute wins and stretches the curve. */
+    height: auto;
     opacity: 0.6;
     animation: program-curve-drift 8s ease-in-out infinite reverse;
   }
@@ -1191,10 +1194,11 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   .external-media iframe[hidden],
   .external-media__notice[hidden] { display: none !important; }
 
+  /* The global rule pins this to inset: 0 — it must stay full-bleed inside the
+     frame, so cap the copy width rather than the box itself. */
   .external-media__notice {
     display: grid;
     grid-area: 1 / 1;
-    max-width: 520px;
     gap: 1.2rem;
     justify-items: center;
     padding: 2rem;
@@ -1202,6 +1206,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   }
 
   .external-media__notice p {
+    max-width: 520px;
     margin: 0;
     color: rgba(255, 255, 255, 0.78);
   }

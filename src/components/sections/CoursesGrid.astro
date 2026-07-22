@@ -2,6 +2,7 @@
 import coursePopupCopy from '../../../audit/course-popup-copy.json';
 import { dates } from '../../data/academy';
 import { coursePopupBlocks, coursePopupCategory } from '../../data/coursePopup';
+import RichText from '../ui/RichText.astro';
 import { programCourses } from '../../data/programs';
 import type { Lang } from '../../i18n/config';
 
@@ -126,12 +127,12 @@ const popupId = (hook: string) => `home-course-${hook.replace('#popup:', '').rep
       <h2 id={`${popupId(popup.hook)}-title`}>{popup.title}</h2>
       <p class="course-dialog__eyebrow">{coursePopupCategory(popup.hook, lang)}</p>
       <div class="course-dialog__content">
-        {coursePopupBlocks(popup.description, lang).map((block) => (
+        {coursePopupBlocks(popup.description, lang, popup.links).map((block) => (
           block.type === 'heading'
-            ? <h3>{block.text}</h3>
+            ? <h3><RichText parts={block.parts} /></h3>
             : block.type === 'list'
-              ? <ul>{block.items.map((item) => <li>{item}</li>)}</ul>
-              : <p>{block.text}</p>
+              ? <ul>{block.items.map((item) => <li><RichText parts={item} /></li>)}</ul>
+              : <p><RichText parts={block.parts} /></p>
         ))}
       </div>
       <div class="course-dialog__actions">
@@ -196,7 +197,7 @@ const popupId = (hook: string) => `home-course-${hook.replace('#popup:', '').rep
     padding: .8rem 1.5rem;
     border: 1px solid var(--color-accent);
     border-radius: 5px;
-    background: var(--color-accent);
+    background: var(--color-accent-surface);
     color: #fff;
     font-size: .9rem;
     font-weight: var(--fw-semibold);
@@ -234,7 +235,7 @@ const popupId = (hook: string) => `home-course-${hook.replace('#popup:', '').rep
   .course-dialog__dates ul { display: grid; }
   .course-dialog__dates li { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 1rem; padding: 1rem 0; border-top: 1px solid rgba(255,255,255,.18); }
   .course-dialog__dates strong { color: var(--color-accent); }
-  .course-action { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; padding: .75rem 1.35rem; border: 1px solid var(--color-accent); border-radius: 4px; background: var(--color-accent); color: #fff; font-weight: var(--fw-semibold); }
+  .course-action { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; padding: .75rem 1.35rem; border: 1px solid var(--color-accent); border-radius: 4px; background: var(--color-accent-surface); color: #fff; font-weight: var(--fw-semibold); }
   .course-action--outline { background: transparent; }
 
   @media (max-width: 980px) {

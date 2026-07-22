@@ -30,12 +30,12 @@ export const assets = {
 
 export const pageMeta = {
   de: {
-    title: 'WAMOCON Academy',
+    title: 'ISTQB®-Schulungen & Softwaretester-Ausbildung | WAMOCON Academy',
     description:
       'IT-Bildungszentrum für Softwaretesting, ISTQB®-Zertifizierung und praxisnahe Weiterbildung in Eschborn.',
   },
   en: {
-    title: 'WAMOCON Academy',
+    title: 'ISTQB® Training & Software Tester Courses | WAMOCON Academy',
     description:
       'IT training center for software testing, ISTQB® certification and practical education in Eschborn.',
   },
@@ -560,6 +560,32 @@ export const testimonials = [
 }));
 
 export const legal = {
+  accessibility: {
+    de: {
+      title: 'Erklärung zur Barrierefreiheit',
+      blocks: [
+        'Stand: 21. Juli 2026\nDie WAMOCON Academy GmbH ist bemüht, ihre Website im Einklang mit dem Barrierefreiheitsstärkungsgesetz (BFSG) barrierefrei zugänglich zu machen.',
+        'Stand der Vereinbarkeit mit den Anforderungen\nAls Maßstab wenden wir die Norm EN 301 549 an, die auf die Web Content Accessibility Guidelines (WCAG) 2.1 Konformitätsstufe AA verweist. Diese Website ist mit den genannten Anforderungen teilweise vereinbar. Die nachstehend aufgeführten Punkte sind uns bekannt und werden derzeit überarbeitet.',
+        'Nicht barrierefreie Inhalte\nFür einzelne Videoinhalte liegen noch keine vollständigen Untertitel oder Transkripte vor (WCAG 1.2.2, 1.2.3).\nEingebettete Inhalte von Drittanbietern, insbesondere YouTube und Google Maps, unterliegen nicht unserer Kontrolle. Für die Barrierefreiheit dieser Inhalte ist der jeweilige Anbieter verantwortlich.\nEinzelne dekorative Animationen und Bewegungseffekte werden derzeit überprüft. Nutzerinnen und Nutzer, die in ihrem Betriebssystem reduzierte Bewegung aktiviert haben, erhalten bereits eine reduzierte Darstellung (WCAG 2.3.3).',
+        'Alternativen und Kontakt\nSind einzelne Inhalte für Sie nicht zugänglich, wenden Sie sich bitte an uns. Wir stellen Ihnen die benötigten Informationen auf einem anderen Weg zur Verfügung, zum Beispiel telefonisch oder per E-Mail.',
+        'Feedback und Kontaktangaben\nSie können uns Barrieren auf dieser Website jederzeit melden und barrierefreie Alternativen anfordern:\nWAMOCON Academy GmbH, Mergenthalerallee 79–81, 65760 Eschborn\nTelefon: +49 (0) 6196 5838312\nE-Mail: info@test-it-academy.com\nWir bestätigen den Eingang Ihrer Rückmeldung zeitnah und antworten inhaltlich innerhalb von sechs Wochen.',
+        'Durchsetzungsverfahren\nWenn Sie mit unserer Antwort nicht zufrieden sind oder keine Antwort erhalten, können Sie sich an die Marktüberwachungsstelle der Länder für die Barrierefreiheit von Produkten und Dienstleistungen (MLBF) wenden.\nMLBF, Ludwig-Erhard-Straße 2, 39112 Magdeburg, marktueberwachung-barrierefreiheit.de',
+        'Erstellung dieser Erklärung\nDiese Erklärung wurde am 21. Juli 2026 erstellt. Grundlage war eine interne Prüfung der Website anhand der WCAG 2.1 Stufe AA. Wir überprüfen die Erklärung regelmäßig und aktualisieren sie, sobald sich Funktionen oder der Stand der Barrierefreiheit ändern.',
+      ],
+    },
+    en: {
+      title: 'Accessibility Statement',
+      blocks: [
+        'Last updated: 21 July 2026\nWAMOCON Academy GmbH is committed to making its website accessible in accordance with the German Accessibility Strengthening Act (Barrierefreiheitsstärkungsgesetz, BFSG).',
+        'Compliance status\nWe apply the EN 301 549 standard, which refers to the Web Content Accessibility Guidelines (WCAG) 2.1 at conformance level AA. This website is partially compliant with those requirements. The items listed below are known to us and are currently being addressed.',
+        'Non-accessible content\nSome video content does not yet have complete captions or transcripts (WCAG 1.2.2, 1.2.3).\nEmbedded third-party content, in particular YouTube and Google Maps, is outside our control. The respective provider is responsible for the accessibility of that content.\nSome decorative animations and motion effects are currently under review. Visitors who have enabled reduced motion in their operating system already receive a reduced presentation (WCAG 2.3.3).',
+        'Alternatives and contact\nIf any content is not accessible to you, please contact us. We will provide the information you need by another route, for example by telephone or e-mail.',
+        'Feedback and contact details\nYou can report accessibility barriers on this website and request accessible alternatives at any time:\nWAMOCON Academy GmbH, Mergenthalerallee 79–81, 65760 Eschborn, Germany\nTelephone: +49 (0) 6196 5838312\nE-mail: info@test-it-academy.com\nWe acknowledge receipt of your feedback promptly and provide a substantive reply within six weeks.',
+        'Enforcement procedure\nIf you are not satisfied with our response, or receive no response, you can contact the German market surveillance authority for the accessibility of products and services (MLBF).\nMLBF, Ludwig-Erhard-Straße 2, 39112 Magdeburg, Germany, marktueberwachung-barrierefreiheit.de',
+        'Preparation of this statement\nThis statement was prepared on 21 July 2026 following an internal review of the website against WCAG 2.1 level AA. We review it regularly and update it whenever functions or the state of accessibility change.',
+      ],
+    },
+  },
   imprint: {
     de: {
       title: 'Impressum',
@@ -568,7 +594,7 @@ export const legal = {
         'Kontakt\nTelefon: +49 (0) 6196 5838312\nE-Mail: info@test-it-academy.com',
         'Vertretung und Register\nGeschäftsführer: Dipl.-Ing. Waleri Moretz\nSitz der Gesellschaft: Eschborn\nRegistergericht: Amtsgericht Frankfurt am Main\nHandelsregisternummer: HRB 123666\nUmsatzsteuer-Identifikationsnummer gemäß § 27a UStG: DE344930486',
         'Verbraucherstreitbeilegung\nDie WAMOCON Academy GmbH ist nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.',
-        'Redaktionell verantwortlich\nDipl.-Ing. Waleri Moretz\nMergenthalerallee 79–81\n65760 Eschborn',
+        'Redaktionell verantwortlich gemäß § 18 Abs. 2 MStV\nDipl.-Ing. Waleri Moretz\nMergenthalerallee 79–81\n65760 Eschborn',
         'Haftung für Links\nUnser Angebot enthält Links zu externen Websites Dritter. Auf deren Inhalte haben wir keinen Einfluss. Für die Inhalte der verlinkten Seiten ist der jeweilige Anbieter verantwortlich. Bei Bekanntwerden konkreter Rechtsverletzungen entfernen wir betroffene Links unverzüglich.',
       ],
     },
@@ -579,7 +605,7 @@ export const legal = {
         'Contact\nTelephone: +49 (0) 6196 5838312\nE-mail: info@test-it-academy.com',
         'Representation and register\nManaging Director: Dipl.-Ing. Waleri Moretz\nRegistered office: Eschborn\nRegister court: Local Court Frankfurt am Main\nCommercial register number: HRB 123666\nVAT identification number under Section 27a UStG: DE344930486',
         'Consumer dispute resolution\nWAMOCON Academy GmbH is neither willing nor obliged to participate in dispute resolution proceedings before a consumer arbitration board.',
-        'Editorial responsibility\nDipl.-Ing. Waleri Moretz\nMergenthalerallee 79–81\n65760 Eschborn',
+        'Editorial responsibility pursuant to section 18(2) MStV\nDipl.-Ing. Waleri Moretz\nMergenthalerallee 79–81\n65760 Eschborn',
         'Liability for links\nOur website contains links to external third-party websites over whose content we have no influence. The respective provider is responsible for linked content. We remove affected links promptly when we become aware of a specific infringement.',
       ],
     },
@@ -588,31 +614,33 @@ export const legal = {
     de: {
       title: 'Datenschutz',
       blocks: [
-        'Stand: 17. Juli 2026\nDiese Datenschutzerklärung beschreibt die Verarbeitung personenbezogener Daten auf test-it-academy.com.',
+        'Stand: 21. Juli 2026\nDiese Datenschutzerklärung beschreibt die Verarbeitung personenbezogener Daten auf test-it-academy.com.',
         '1. Verantwortlicher\nWAMOCON Academy GmbH\nMergenthalerallee 79–81\n65760 Eschborn\nTelefon: +49 (0) 6196 5838312\nE-Mail und Kontakt für Datenschutzanfragen: info@test-it-academy.com\nGeschäftsführer: Dipl.-Ing. Waleri Moretz\nEin Datenschutzbeauftragter ist nicht bestellt.',
         '2. Hosting und Server-Protokolle\nDie Astro-Website wird über Vercel Inc. bereitgestellt. Beim Aufruf werden technisch erforderliche Verbindungsdaten verarbeitet, insbesondere IP-Adresse, Zeitpunkt, angeforderte URL, Referrer, Browser und Betriebssystem. Zweck ist die sichere und stabile Bereitstellung. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Protokolle werden nur so lange gespeichert, wie dies für Betrieb, Sicherheit und Fehleranalyse erforderlich ist. Informationen des Anbieters: vercel.com/legal/privacy-notice.',
         '3. Kontakt- und Kursanfragen\nDie Formulare dienen ausschließlich unverbindlichen Anfragen und lösen keinen kostenpflichtigen Vertrag aus. Verarbeitet werden Name, E-Mail-Adresse, optional Telefonnummer sowie die freiwillig eingegebenen Inhalte. Rechtsgrundlagen sind Art. 6 Abs. 1 lit. b DSGVO für vorvertragliche Maßnahmen und Art. 6 Abs. 1 lit. f DSGVO für sonstige Anfragen. Die Übermittlung und interne E-Mail-Zustellung erfolgen über Vercel und Microsoft 365/Microsoft Graph. Die Daten werden gelöscht, sobald die Anfrage abschließend bearbeitet ist und keine gesetzlichen Aufbewahrungspflichten oder ein anschließendes Vertragsverhältnis entgegenstehen.',
         '4. Schutz der Formulare mit Cloudflare Turnstile\nBei aktiver Nutzung eines Formulars wird Cloudflare Turnstile von Cloudflare, Inc. geladen. Turnstile verarbeitet technische Verbindungs-, Browser- und Interaktionsdaten, um automatisierte Eingaben und Missbrauch zu erkennen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO; technisch erforderliche Speicherzugriffe dienen der ausdrücklich angeforderten, geschützten Formularfunktion. Turnstile wird serverseitig verifiziert. Informationen: cloudflare.com/privacypolicy.',
         '5. Einwilligungsverwaltung und externe Medien\nDie Website speichert Ihre Auswahl zu externen Medien lokal in Ihrem Browser unter „wamocon-academy-consent-v1“. Dies ist für die Verwaltung Ihrer Auswahl erforderlich. YouTube-Videos und Google Maps werden erst geladen, wenn Sie „Externe Medien“ erlauben. Dann können insbesondere IP-Adresse, Browserdaten, aufgerufene Seite und gegebenenfalls Kontodaten an Google Ireland Limited beziehungsweise verbundene Unternehmen übermittelt werden. Rechtsgrundlagen sind Art. 6 Abs. 1 lit. a DSGVO und § 25 Abs. 1 TDDDG. Sie können die Einwilligung jederzeit über „Datenschutzeinstellungen“ im Footer widerrufen. Informationen: policies.google.com/privacy.',
-        '6. Keine Reichweitenmessung und keine Werbung\nAuf dieser Astro-Website werden Yandex Metrica einschließlich Webvisor, Google Analytics, Google AdSense und reCAPTCHA nicht eingesetzt. Es findet keine Reichweitenmessung oder personalisierte Werbung durch diese Dienste statt. Google Fonts werden nicht von Google-Servern geladen.',
-        '7. Empfänger und Drittlandübermittlungen\nEmpfänger können Vercel, Microsoft und bei Formularnutzung Cloudflare sein. Google/YouTube erhält erst nach Ihrer Einwilligung Daten. Soweit Anbieter Daten außerhalb des Europäischen Wirtschaftsraums verarbeiten, stützen sie die Übermittlung nach eigener Angabe auf einen Angemessenheitsbeschluss, insbesondere das EU-US Data Privacy Framework, oder geeignete Garantien wie EU-Standardvertragsklauseln. Soweit ein Anbieter als Auftragsverarbeiter tätig wird, ist eine Vereinbarung nach Art. 28 DSGVO erforderlich.',
-        '8. Ihre Rechte\nSie haben nach Maßgabe der DSGVO Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch. Eine Einwilligung können Sie jederzeit mit Wirkung für die Zukunft widerrufen. Anfragen richten Sie an info@test-it-academy.com. Sie können sich außerdem bei einer Datenschutzaufsichtsbehörde beschweren; zuständig ist insbesondere der Hessische Beauftragte für Datenschutz und Informationsfreiheit, datenschutz.hessen.de.',
-        '9. Sicherheit und Aktualisierung\nWir schützen die Website durch TLS-Verschlüsselung, Sicherheits-Header, Zugriffsbeschränkungen und weitere angemessene technische und organisatorische Maßnahmen. Diese Erklärung wird aktualisiert, wenn sich Funktionen, Dienstleister oder die Rechtslage ändern.',
+        '6. Bewertungen und Teilnehmerstimmen\nAuf unserer Bewertungsseite können Sie freiwillig eine Bewertung abgeben. Verarbeitet werden Ihr Name, Ihre Bewertung und die freiwillig eingegebenen Inhalte. Die Veröffentlichung Ihrer Bewertung zusammen mit Ihrem Namen als Teilnehmerstimme auf den Websites und in den Social-Media-Kanälen der WAMOCON Academy GmbH erfolgt ausschließlich auf Grundlage Ihrer gesonderten, freiwilligen Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO. Ohne diese Einwilligung wird Ihre Bewertung nicht veröffentlicht; die Abgabe einer Bewertung ist keine Voraussetzung für die Teilnahme an unseren Programmen. Sie können Ihre Einwilligung jederzeit mit Wirkung für die Zukunft unter info@test-it-academy.com widerrufen. Wir entfernen die Veröffentlichung dann unverzüglich von unseren Websites; bereits erfolgte Übernahmen durch Dritte oder Social-Media-Plattformen können wir nicht in jedem Fall rückgängig machen. Bewertungen werden gelöscht, sobald die Einwilligung widerrufen wird oder der Zweck der Veröffentlichung entfällt.',
+        '7. Keine Reichweitenmessung und keine Werbung\nAuf dieser Astro-Website werden Yandex Metrica einschließlich Webvisor, Google Analytics, Google AdSense und reCAPTCHA nicht eingesetzt. Es findet keine Reichweitenmessung oder personalisierte Werbung durch diese Dienste statt. Google Fonts werden nicht von Google-Servern geladen.',
+        '8. Empfänger und Drittlandübermittlungen\nEmpfänger können Vercel, Microsoft und bei Formularnutzung Cloudflare sein. Google/YouTube erhält erst nach Ihrer Einwilligung Daten. Soweit Anbieter Daten außerhalb des Europäischen Wirtschaftsraums verarbeiten, stützen sie die Übermittlung nach eigener Angabe auf einen Angemessenheitsbeschluss, insbesondere das EU-US Data Privacy Framework, oder geeignete Garantien wie EU-Standardvertragsklauseln. Soweit ein Anbieter als Auftragsverarbeiter tätig wird, ist eine Vereinbarung nach Art. 28 DSGVO erforderlich.',
+        '9. Ihre Rechte\nSie haben nach Maßgabe der DSGVO Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch. Eine Einwilligung können Sie jederzeit mit Wirkung für die Zukunft widerrufen. Anfragen richten Sie an info@test-it-academy.com. Sie können sich außerdem bei einer Datenschutzaufsichtsbehörde beschweren; zuständig ist insbesondere der Hessische Beauftragte für Datenschutz und Informationsfreiheit, datenschutz.hessen.de.',
+        '10. Sicherheit und Aktualisierung\nWir schützen die Website durch TLS-Verschlüsselung, Sicherheits-Header, Zugriffsbeschränkungen und weitere angemessene technische und organisatorische Maßnahmen. Diese Erklärung wird aktualisiert, wenn sich Funktionen, Dienstleister oder die Rechtslage ändern.',
       ],
     },
     en: {
       title: 'Privacy policy',
       blocks: [
-        'Last updated: 17 July 2026\nThis privacy policy describes personal-data processing on test-it-academy.com.',
+        'Last updated: 21 July 2026\nThis privacy policy describes personal-data processing on test-it-academy.com.',
         '1. Controller\nWAMOCON Academy GmbH\nMergenthalerallee 79–81\n65760 Eschborn, Germany\nTelephone: +49 (0) 6196 5838312\nE-mail and privacy contact: info@test-it-academy.com\nManaging Director: Dipl.-Ing. Waleri Moretz\nNo data protection officer has been appointed.',
         '2. Hosting and server logs\nThis Astro website is delivered through Vercel Inc. When it is accessed, technically necessary connection data is processed, including the IP address, time, requested URL, referrer, browser and operating system. The purpose is secure and stable delivery. The legal basis is Article 6(1)(f) GDPR. Logs are retained only for as long as required for operation, security and troubleshooting. Provider information: vercel.com/legal/privacy-notice.',
         '3. Contact and course inquiries\nForms are solely for non-binding inquiries and do not create a paid contract. We process your name, e-mail address, optional telephone number and content you voluntarily enter. The legal bases are Article 6(1)(b) GDPR for pre-contractual steps and Article 6(1)(f) GDPR for other inquiries. Transmission and internal e-mail delivery use Vercel and Microsoft 365/Microsoft Graph. Data is deleted when the inquiry has been completed unless statutory retention duties or a subsequent contractual relationship require longer retention.',
         '4. Form protection with Cloudflare Turnstile\nWhen you actively use a form, Cloudflare Turnstile from Cloudflare, Inc. is loaded. Turnstile processes technical connection, browser and interaction data to identify automated input and misuse. The legal basis is Article 6(1)(f) GDPR; technically necessary storage access supports the protected form function you requested. Tokens are verified server-side. Information: cloudflare.com/privacypolicy.',
         '5. Consent management and external media\nYour external-media choice is stored locally in your browser under “wamocon-academy-consent-v1”. This is necessary to manage your choice. YouTube videos and Google Maps load only after you allow external media. Google Ireland Limited and affiliated companies may then receive your IP address, browser data, visited page and, where applicable, account data. The legal bases are Article 6(1)(a) GDPR and Section 25(1) TDDDG. You can withdraw consent at any time through “Privacy settings” in the footer. Information: policies.google.com/privacy.',
-        '6. No audience measurement or advertising\nThis Astro website does not use Yandex Metrica or Webvisor, Google Analytics, Google AdSense or reCAPTCHA. Those services do not perform audience measurement or personalised advertising here. Google Fonts are not loaded from Google servers.',
-        '7. Recipients and international transfers\nRecipients may include Vercel, Microsoft and, when a form is used, Cloudflare. Google/YouTube receives data only after consent. Where providers process data outside the European Economic Area, they state that they rely on an adequacy decision, especially the EU-US Data Privacy Framework, or safeguards such as EU Standard Contractual Clauses. An Article 28 GDPR agreement is required where a provider acts as a processor.',
-        '8. Your rights\nSubject to the GDPR, you have rights of access, rectification, erasure, restriction, data portability and objection. You may withdraw consent at any time for the future. Contact info@test-it-academy.com. You may also complain to a supervisory authority; in particular, the Hessian Commissioner for Data Protection and Freedom of Information, datenschutz.hessen.de.',
-        '9. Security and updates\nWe protect the website using TLS encryption, security headers, access controls and other appropriate technical and organisational measures. We update this policy when functions, providers or legal requirements change.',
+        '6. Reviews and participant testimonials\nYou can submit a review voluntarily on our reviews page. We process your name, your rating and the content you enter voluntarily. Publishing your review together with your name as a participant testimonial on the websites and social-media channels of WAMOCON Academy GmbH takes place solely on the basis of your separate, voluntary consent under Article 6(1)(a) GDPR. Without that consent your review is not published; submitting a review is not a condition for taking part in our programmes. You may withdraw your consent at any time for the future at info@test-it-academy.com. We will then remove the publication from our websites without delay; we cannot always reverse copies already made by third parties or social-media platforms. Reviews are deleted once consent is withdrawn or the purpose of publication no longer applies.',
+        '7. No audience measurement or advertising\nThis Astro website does not use Yandex Metrica or Webvisor, Google Analytics, Google AdSense or reCAPTCHA. Those services do not perform audience measurement or personalised advertising here. Google Fonts are not loaded from Google servers.',
+        '8. Recipients and international transfers\nRecipients may include Vercel, Microsoft and, when a form is used, Cloudflare. Google/YouTube receives data only after consent. Where providers process data outside the European Economic Area, they state that they rely on an adequacy decision, especially the EU-US Data Privacy Framework, or safeguards such as EU Standard Contractual Clauses. An Article 28 GDPR agreement is required where a provider acts as a processor.',
+        '9. Your rights\nSubject to the GDPR, you have rights of access, rectification, erasure, restriction, data portability and objection. You may withdraw consent at any time for the future. Contact info@test-it-academy.com. You may also complain to a supervisory authority; in particular, the Hessian Commissioner for Data Protection and Freedom of Information, datenschutz.hessen.de.',
+        '10. Security and updates\nWe protect the website using TLS encryption, security headers, access controls and other appropriate technical and organisational measures. We update this policy when functions, providers or legal requirements change.',
       ],
     },
   },

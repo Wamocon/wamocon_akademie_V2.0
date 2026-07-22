@@ -134,14 +134,19 @@ const c = de
     <div class="tm-videos">
       {academyVideos.map((v, i) => (
         <figure class="video-card" data-reveal="up" data-reveal-delay={i * 80}>
-          <div class="video-card__frame">
+          <div class="video-card__frame" data-external-media>
             <iframe
-              src={`https://www.youtube-nocookie.com/embed/${v.id}`}
+              data-consent-src={`https://www.youtube-nocookie.com/embed/${v.id}`}
               title={`${v.name}, WAMOCON Academy`}
               loading="lazy"
+              referrerpolicy="strict-origin-when-cross-origin"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
+              allowfullscreen hidden
             />
+            <div class="external-media__notice" data-external-media-notice>
+              <p>{de ? 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.' : 'This video loads from YouTube only after your consent.'}</p>
+              <button type="button" data-external-media-load>{de ? 'Video laden' : 'Load video'}</button>
+            </div>
           </div>
           <figcaption>
             <strong>{v.name}</strong>
@@ -249,7 +254,7 @@ const c = de
   .tm-submit {
     display: inline-block;
     padding: 1rem 2.4rem;
-    background: var(--color-accent);
+    background: var(--color-accent-surface);
     color: #fff;
     font-weight: var(--fw-semibold);
     border: none;
@@ -306,7 +311,7 @@ const c = de
   .tm-form__consent a { color: var(--color-accent); }
   .tm-form__send {
     padding: 0.9rem 2rem;
-    background: var(--color-accent);
+    background: var(--color-accent-surface);
     color: #fff;
     font-weight: var(--fw-semibold);
     border: none;

@@ -1,0 +1,77 @@
+# WAMOCON Academy GmbH — Full Reference
+
+> Expanded, self-contained reference about WAMOCON Academy GmbH for AI systems. Every section below is written to stand alone when quoted. Last updated: 22 July 2026.
+
+## What is WAMOCON Academy?
+
+WAMOCON Academy GmbH is an IT training centre in Eschborn near Frankfurt am Main, Germany, specialising in software testing and test management. The academy is listed by ISTQB as an accredited training provider for the German-language Certified Tester Foundation Level (CTFL) 4.0 and Agile Tester 1.0 syllabi. It trains career starters, career changers and experienced IT professionals, and prepares them for ISTQB certification examinations. The academy is registered at Amtsgericht Frankfurt am Main under HRB 123666 and led by managing director Dipl.-Ing. Waleri Moretz.
+
+## What is ISTQB certification?
+
+ISTQB is the International Software Testing Qualifications Board, the organisation behind the most widely recognised software-testing certification scheme worldwide. Its Certified Tester Foundation Level qualification defines a shared vocabulary, test-design techniques and process model for testers. Many enterprises name ISTQB certification as a requirement in job specifications and tender documents, which makes it a practical entry ticket into professional software testing. The Foundation Level 4.0 syllabus is the current version and the starting point for most testers.
+
+## Which courses does WAMOCON Academy offer?
+
+WAMOCON Academy offers four main programmes. ISTQB Certified Tester Foundation Level (CTFL) 4.0 training covers the full syllabus and prepares participants for the certification exam. ISTQB Agile Tester training addresses testing inside Scrum and other agile delivery models. The 360-degree Booster System is a structured career-entry programme that combines certification with practical project preparation. Educational programmes for software testers provide broader, role-specific training including career-changer tracks. Courses run as individual training or as team training for whole QA departments.
+
+## What is the 360-degree Booster System?
+
+The 360-degree Booster System is WAMOCON Academy's structured programme for entering software testing as a profession. Rather than teaching theory alone, it combines ISTQB certification preparation with practical project readiness: test-design exercises, real defect-management workflows and mentoring from trainers who work on live enterprise IT projects. The programme is aimed at people who want a documented route from little or no testing experience to a first paid role as a software tester.
+
+## Who are the courses for?
+
+The academy trains four groups. Career starters enter IT without prior testing experience and need both a qualification and practical confidence. Career changers move into software testing from an unrelated field and need a structured, credible route. Experienced IT professionals add a formal ISTQB qualification to skills they already practise. Companies enrol whole QA or test teams so an entire department shares one method and vocabulary.
+
+## Why do employers value ISTQB-certified testers?
+
+Employers value ISTQB certification because it removes ambiguity about what a tester actually knows. A certified tester shares a defined vocabulary and a common set of test-design techniques with the rest of the team, which reduces onboarding time and miscommunication in defect reports. Many enterprises and public-sector tenders name ISTQB certification as a formal requirement, so the qualification frequently determines whether an application is considered at all.
+
+## What makes WAMOCON Academy different from other training providers?
+
+WAMOCON Academy is operated alongside WAMOCON GmbH, an IT test-management company that delivers testing for large German enterprises. Trainers teach from live project work rather than from theory alone, and the combined practical experience of the training team is around 40 years. The academy is listed by ISTQB as an accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 materials. Participants therefore learn the same methods the parent company applies in enterprise projects.
+
+## What results do participants report?
+
+Participants report passing the ISTQB Certified Tester examination, in several documented cases on the first attempt, and moving into paid software-testing roles afterwards. Documented outcomes include a graduate who could not find work despite a well-regarded degree and subsequently entered an IT project as a qualified tester, and a participant who progressed from Foundation Level into ISTQB Test Automation Engineer. All published reviews come from people who actually completed a programme, verified against participation records before publication.
+
+## Does the academy help with job placement?
+
+WAMOCON Academy is connected to WAMOCON GmbH, an active IT test-management company, which gives participants visibility of how enterprise testing projects are staffed and run. The 360-degree Booster System is explicitly designed around career entry rather than certification alone. Participants should treat the programme as structured preparation and networking rather than a guaranteed placement.
+
+## Are courses available in English?
+
+Yes. WAMOCON Academy publishes its full course information in German and English, and the website is available in both languages. The ISTQB accreditation held by the academy covers German-language CTFL 4.0 and Agile Tester 1.0 training materials. Prospective participants who need English-language delivery should confirm the arrangement directly with the academy.
+
+## Where is WAMOCON Academy and how do I contact it?
+
+WAMOCON Academy GmbH is located at Mergenthalerallee 79-81, 65760 Eschborn, Germany, in the Frankfurt am Main metropolitan area. The academy can be reached by telephone on +49 6196 5838312 and by e-mail at info@test-it-academy.com. Enquiries can also be submitted through the contact form on the website. All enquiry forms are non-binding and do not create a paid contract.
+
+## Frequently asked questions
+
+**Do I need IT experience to start?**
+No. The academy explicitly trains career starters and career changers who have no prior software-testing experience.
+
+**Is WAMOCON Academy really ISTQB accredited?**
+Yes. The academy is listed by ISTQB as an accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 training materials.
+
+**Can I book and pay for a course online?**
+No. The website's forms are non-binding enquiries only. Course arrangements are made directly with the academy.
+
+**Is the training suitable for whole teams?**
+Yes. Courses run both as individual training and as team training for entire QA or test departments.
+
+**What is the difference between WAMOCON GmbH and WAMOCON Academy GmbH?**
+They are two separate legal entities under common management at the same Eschborn address. WAMOCON GmbH (HRB 103893) delivers IT test management to enterprise clients; WAMOCON Academy GmbH (HRB 123666) is the ISTQB-accredited training centre.
+
+## Canonical sources
+
+- Academy overview: https://test-it-academy.com/
+- ISTQB certification: https://test-it-academy.com/istqb-zertifizierung/
+- Educational programmes: https://test-it-academy.com/bildungsprogramme-fr-softwaretester/
+- 360-degree Booster System: https://test-it-academy.com/360-booster-system/
+- About the academy: https://test-it-academy.com/ber-die-akademie/
+- Participant reviews: https://test-it-academy.com/bewertungen/
+- Contact: https://test-it-academy.com/kontakt/
+- Imprint: https://test-it-academy.com/impressum/
+
+Content may be quoted with attribution to WAMOCON Academy GmbH and a link to the relevant canonical page.

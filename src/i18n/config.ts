@@ -73,6 +73,10 @@ export const legalNav = {
     de: { label: 'Impressum', href: '/impressum/' },
     en: { label: 'Imprint', href: '/imprint/' },
   },
+  accessibility: {
+    de: { label: 'Barrierefreiheit', href: '/barrierefreiheit/' },
+    en: { label: 'Accessibility', href: '/accessibility/' },
+  },
 };
 
 export const ui = {

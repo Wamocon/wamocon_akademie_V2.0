@@ -27,7 +27,7 @@ const copy = lang === 'de'
 const privacyHref = lang === 'de' ? '/datenschutz/' : '/privacy-policy/';
 ---
 
-<section class="consent" data-consent-root data-lang={lang} role="dialog" aria-modal="true" aria-labelledby="consent-title" hidden>
+<aside class="consent" data-consent-root data-lang={lang} role="dialog" aria-modal="true" aria-labelledby="consent-title" hidden>
   <div class="consent__panel" data-consent-summary>
     <p class="consent__eyebrow">{copy.label}</p>
     <h2 id="consent-title">{copy.title}</h2>
@@ -56,7 +56,7 @@ const privacyHref = lang === 'de' ? '/datenschutz/' : '/privacy-policy/';
     </div>
     <a class="consent__privacy" href={privacyHref}>{copy.privacy}</a>
   </div>
-</section>
+</aside>
 
 <style>
   .consent { position: fixed; inset: 0; z-index: calc(var(--z-modal) + 10); display: grid; place-items: end center; padding: 1rem; background: rgb(0 0 0 / .68); }
@@ -67,7 +67,7 @@ const privacyHref = lang === 'de' ? '/datenschutz/' : '/privacy-policy/';
   .consent p { color: rgb(255 255 255 / .78); font-size: .92rem; line-height: 1.55; }
   .consent__actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: .7rem; margin-top: 1.35rem; }
   .consent__actions button { min-height: 48px; padding: .7rem 1rem; border: 1px solid var(--color-accent); border-radius: 5px; color: #fff; font-weight: 600; }
-  .consent__actions button:hover, .consent__actions button:focus-visible { background: var(--color-accent); }
+  .consent__actions button:hover, .consent__actions button:focus-visible { background: var(--color-accent-surface); }
   .consent__privacy { display: inline-block; margin-top: 1rem; color: rgb(255 255 255 / .75); font-size: .82rem; text-decoration: underline; text-underline-offset: .22em; }
   .consent__option { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: center; padding: 1rem 0; border-top: 1px solid rgb(255 255 255 / .16); }
   .consent__option strong { display: block; margin-bottom: .2rem; }

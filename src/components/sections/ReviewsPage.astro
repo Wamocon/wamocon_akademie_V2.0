@@ -10,6 +10,9 @@ const copy = lang === 'de'
   ? {
       title: 'Was sagen unsere Teilnehmer?',
       intro: 'Unsere Teilnehmer berichten über ihre Erlebnisse und den Mehrwert, den sie von uns bezogen haben.',
+      // Pflichtangabe nach § 5b Abs. 3 UWG: ob und wie die Echtheit von
+      // Verbraucherbewertungen sichergestellt wird.
+      authenticity: 'Hinweis zur Echtheit unserer Bewertungen: Alle hier veröffentlichten Bewertungen und Teilnehmerstimmen stammen von Personen, die das jeweilige Programm der WAMOCON Academy tatsächlich absolviert haben. Vor der Veröffentlichung gleichen wir jede Bewertung anhand unserer Teilnahmeunterlagen ab. Bewertungen werden weder gekauft noch gegen eine Gegenleistung eingeholt; wir veröffentlichen sie unverändert und unabhängig davon, ob sie positiv oder kritisch ausfallen.',
       sendEvaluation: 'Senden Sie Ihre Bewertung',
       storiesLabel: 'Erfolgsgeschichten',
       testimonialsLabel: 'Teilnehmerstimmen',
@@ -47,6 +50,7 @@ const copy = lang === 'de'
   : {
       title: 'What do our participants say?',
       intro: 'Our participants report on their experiences and the added value they have gained from us.',
+      authenticity: 'How we ensure our reviews are genuine: every review and participant testimonial published here comes from a person who actually completed the relevant WAMOCON Academy programme. Before publication we verify each review against our participation records. Reviews are never bought or obtained in exchange for any benefit; we publish them unedited, whether they are positive or critical.',
       sendEvaluation: 'Send your evaluation',
       storiesLabel: 'Success stories',
       testimonialsLabel: 'Participant testimonials',
@@ -98,6 +102,7 @@ const graduatePoster = (name: string) => `/images/academy/testimonial-${name.toL
       <div class="reviews-hero__copy">
         <h1>{copy.title}</h1>
         <p>{copy.intro}</p>
+        <p class="reviews-authenticity">{copy.authenticity}</p>
         <button class="reviews-button" type="button" data-review-open>{copy.sendEvaluation}</button>
       </div>
     </div>
@@ -171,12 +176,20 @@ const graduatePoster = (name: string) => `/images/academy/testimonial-${name.toL
 </div>
 
 <style>
+  .reviews-authenticity {
+    max-width: 70ch;
+    margin-top: 1rem;
+    color: var(--color-text-muted);
+    font-size: 0.86rem;
+    line-height: 1.6;
+  }
+
   .reviews-page { background: #101010; color: #fff; }
   .reviews-hero { position: relative; overflow: hidden; padding-top: clamp(205px, 11vw, 225px); }
   .reviews-hero__inner { position: relative; z-index: 1; min-height: 520px; }
   .reviews-hero h1 { max-width: 980px; font-size: clamp(2.75rem, 3.5vw, 4.25rem); line-height: 1.12; }
   .reviews-hero p { max-width: 760px; margin-top: 1.5rem; font-size: clamp(1.05rem, 1.3vw, 1.25rem); line-height: 1.5; }
-  .reviews-button { min-height: 64px; margin-top: 1.65rem; padding: 0 1.65rem; border-radius: 5px; background: var(--color-accent); color: #fff; font-size: 1rem; font-weight: 600; transition: background 180ms, transform 180ms; }
+  .reviews-button { min-height: 64px; margin-top: 1.65rem; padding: 0 1.65rem; border-radius: 5px; background: var(--color-accent-surface); color: #fff; font-size: 1rem; font-weight: 600; transition: background 180ms, transform 180ms; }
   .reviews-button:hover { background: #df1911; transform: translateY(-2px); }
   .reviews-hero__shape { position: absolute; height: auto; pointer-events: none; filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.45)); }
   .reviews-hero__shape--small { top: 105px; right: clamp(-50px, 1.5vw, 30px); width: clamp(230px, 18vw, 360px); transform: rotate(250deg); animation: review-shape-small 8s ease-in-out infinite; }

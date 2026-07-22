@@ -5,7 +5,7 @@ import Footer from '../components/layout/Footer.astro';
 import CookieBanner from '../components/ui/CookieBanner.astro';
 import { assets } from '../data/academy';
 import { getAlternateLangUrl } from '../i18n/utils';
-import type { Lang } from '../i18n/config';
+import { company, type Lang } from '../i18n/config';
 
 interface Props {
   title: string;
@@ -14,14 +14,189 @@ interface Props {
   image?: string;
   showFooterContact?: boolean;
   noindex?: boolean;
+  /** Extra JSON-LD nodes (e.g. Course, FAQPage) merged into the page @graph. */
+  schema?: Record<string, unknown>[];
+  /** Breadcrumb trail, excluding Home which is prepended automatically. */
+  breadcrumbs?: { name: string; path: string }[];
 }
 
-const { title, description, lang, image = assets.hero, showFooterContact = true, noindex = false } = Astro.props;
+const {
+  title,
+  description,
+  lang,
+  image = assets.hero,
+  showFooterContact = true,
+  noindex = false,
+  schema = [],
+  breadcrumbs = [],
+} = Astro.props;
 const site = Astro.site ?? new URL('https://test-it-academy.com');
 const canonical = new URL(Astro.url.pathname, site).href;
 const altPath = getAlternateLangUrl(Astro.url.pathname, lang);
 const altLang = lang === 'de' ? 'en' : 'de';
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
+const origin = site.origin;
+const isDe = lang === 'de';
+// Single source of truth for the visible byline and schema dateModified.
+const lastReviewed = '2026-07-22';
+
+// ---------------------------------------------------------------------------
+// Structured data. AI answer engines lean heavily on JSON-LD to resolve a site
+// to a real-world entity, so the organisation node carries the full legal
+// identity, accreditation and contact block rather than just a name.
+// ---------------------------------------------------------------------------
+const organization = {
+  '@type': ['EducationalOrganization', 'Organization', 'LocalBusiness'],
+  '@id': `${origin}/#organization`,
+  name: company.name,
+  legalName: 'WAMOCON Academy GmbH',
+  alternateName: ['WAMOCON Academy', 'WMA', 'Test-IT Academy'],
+  url: `${origin}/`,
+  logo: `${origin}${assets.logo}`,
+  image: `${origin}${assets.hero}`,
+  description: isDe
+    ? 'IT-Bildungszentrum in Eschborn für Softwaretesting und Testmanagement. Von ISTQB als akkreditierter Trainingsanbieter für deutschsprachige CTFL 4.0- und Agile-Tester-1.0-Materialien gelistet.'
+    : 'IT training centre in Eschborn for software testing and test management. Listed by ISTQB as an accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 materials.',
+  telephone: company.phone,
+  email: company.email,
+  vatID: 'DE344930486',
+  identifier: 'Amtsgericht Frankfurt am Main, HRB 123666',
+  foundingLocation: { '@type': 'Place', name: 'Eschborn, Germany' },
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Mergenthalerallee 79–81',
+    postalCode: '65760',
+    addressLocality: 'Eschborn',
+    addressRegion: 'Hessen',
+    addressCountry: 'DE',
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: 50.1350963, longitude: 8.5722177 },
+  openingHoursSpecification: [
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday'], opens: '09:00', closes: '18:00' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Saturday', opens: '10:00', closes: '14:00' },
+  ],
+  areaServed: ['Germany', 'Austria', 'Switzerland', 'European Union'],
+  knowsLanguage: ['de', 'en'],
+  hasCredential: {
+    '@type': 'EducationalOccupationalCredential',
+    name: 'ISTQB Accredited Training Provider',
+    credentialCategory: 'Accreditation',
+    recognizedBy: {
+      '@type': 'Organization',
+      name: 'International Software Testing Qualifications Board (ISTQB)',
+      url: 'https://www.istqb.org/',
+    },
+  },
+  knowsAbout: [
+    'Software testing',
+    'ISTQB Certified Tester Foundation Level',
+    'ISTQB Agile Tester',
+    'Test management',
+    'Test automation',
+    'Quality assurance',
+    'IT career entry',
+  ],
+  parentOrganization: {
+    '@type': 'Organization',
+    name: 'WAMOCON GmbH',
+    url: 'https://www.wamocon.com/',
+  },
+  // sameAs asserts entity identity. The parent company's LinkedIn page must NOT
+  // appear here — it would tell every AI model that WAMOCON Academy GmbH (HRB
+  // 123666) and WAMOCON GmbH (HRB 103893) are the same legal entity.
+  sameAs: [
+    'https://www.youtube.com/@WAMOCONACADEMY',
+    'https://www.facebook.com/WAMOCONACADEMY/',
+    'https://www.instagram.com/bildungszentrum_wma/',
+  ],
+  contactPoint: [
+    {
+      '@type': 'ContactPoint',
+      telephone: company.phone,
+      email: company.email,
+      contactType: 'admissions',
+      availableLanguage: ['German', 'English'],
+      areaServed: 'EU',
+    },
+  ],
+};
+
+const website = {
+  '@type': 'WebSite',
+  '@id': `${origin}/#website`,
+  url: `${origin}/`,
+  name: 'WAMOCON Academy',
+  description,
+  inLanguage: ['de-DE', 'en-GB'],
+  publisher: { '@id': `${origin}/#organization` },
+};
+
+const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '/en/';
+const trail = [
+  { name: isDe ? 'Startseite' : 'Home', path: isDe ? '/' : '/en/' },
+  ...breadcrumbs,
+  // A breadcrumb that never names the current page conveys no position and is
+  // ineligible for the breadcrumb rich result.
+  ...(!isHome && breadcrumbs.length === 0
+    ? [{ name: title.split('|')[0].trim(), path: Astro.url.pathname }]
+    : []),
+];
+const breadcrumbList = {
+  '@type': 'BreadcrumbList',
+  '@id': `${canonical}#breadcrumb`,
+  itemListElement: trail.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.name,
+    item: new URL(item.path, site).href,
+  })),
+};
+
+const webPage = {
+  '@type': 'WebPage',
+  '@id': `${canonical}#webpage`,
+  url: canonical,
+  name: title,
+  description,
+  inLanguage: isDe ? 'de-DE' : 'en-GB',
+  isPartOf: { '@id': `${origin}/#website` },
+  about: { '@id': `${origin}/#organization` },
+  breadcrumb: { '@id': `${canonical}#breadcrumb` },
+  datePublished: '2026-07-01',
+  dateModified: lastReviewed,
+  reviewedBy: { '@id': `${origin}/#waleri-moretz` },
+  publisher: { '@id': `${origin}/#organization` },
+  primaryImageOfPage: { '@type': 'ImageObject', url: new URL(image, site).href },
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['h1', '.faq__item h3', '.faq__item > p'],
+  },
+};
+
+// Named expert behind the training content. E-E-A-T signals (a real person with
+// verifiable credentials) are what let AI systems treat the content as
+// authoritative rather than anonymous marketing copy.
+const expert = {
+  '@type': 'Person',
+  '@id': `${origin}/#waleri-moretz`,
+  name: 'Waleri Moretz',
+  honorificPrefix: 'Dipl.-Ing.',
+  jobTitle: isDe ? 'Geschäftsführer und Trainer' : 'Managing Director and Trainer',
+  description: isDe
+    ? 'Diplom-Ingenieur, Geschäftsführer der WAMOCON Academy GmbH und der WAMOCON GmbH. Leitet seit 2015 Testmanagement-Projekte für Konzerne und unterrichtet ISTQB-Lehrpläne.'
+    : 'Graduate engineer, managing director of WAMOCON Academy GmbH and WAMOCON GmbH. Has led enterprise test-management projects since 2015 and teaches the ISTQB syllabi.',
+  worksFor: { '@id': `${origin}/#organization` },
+  knowsAbout: ['Software testing', 'Test management', 'ISTQB Certified Tester', 'Quality assurance'],
+  knowsLanguage: ['de', 'en'],
+  url: `${origin}/`,
+  // Resolves this Person to the same human on the sister site.
+  sameAs: ['https://www.wamocon.com/#waleri-moretz'],
+};
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [organization, website, breadcrumbList, webPage, expert, ...schema],
+};
 ---
 
 <!doctype html>
@@ -30,19 +205,39 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+    <title>{title.includes('WAMOCON') ? title : `${title} | WAMOCON Academy`}</title>
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex, follow" />}
-    <link rel="canonical" href={canonical} />
-    <link rel="alternate" hreflang={lang} href={canonical} />
-    <link rel="alternate" hreflang={altLang} href={new URL(altPath, site).href} />
+    {!noindex && (
+      <>
+        <link rel="canonical" href={canonical} />
+        <link rel="alternate" hreflang={lang} href={canonical} />
+        <link rel="alternate" hreflang={altLang} href={new URL(altPath, site).href} />
+      </>
+    )}
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={new URL(image, site).href} />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(image, site).href} />
+    <meta property="og:image:alt" content={title} />
+    <meta property="og:site_name" content="WAMOCON Academy" />
+    <meta property="og:locale" content={isDe ? 'de_DE' : 'en_GB'} />
+    <meta property="og:locale:alternate" content={isDe ? 'en_GB' : 'de_DE'} />
+    <meta name="author" content="WAMOCON Academy GmbH" />
+    <meta name="theme-color" content="#0d0d0d" />
+    {!noindex && (
+      <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    )}
+    {!noindex && (
+      <link rel="alternate" hreflang="x-default" href={isDe ? canonical : new URL(altPath, site).href} />
+    )}
     <link rel="icon" href={assets.favicon} />
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
   </head>
   <body>
     <a class="skip-link" href="#main">{lang === 'de' ? 'Zum Inhalt springen' : 'Skip to content'}</a>

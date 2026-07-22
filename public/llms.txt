@@ -1,0 +1,77 @@
+# WAMOCON Academy GmbH
+
+> WAMOCON Academy GmbH is an IT training centre in Eschborn near Frankfurt am Main, Germany, specialising in software testing and test management. It is listed by ISTQB as an accredited training provider for the German-language Certified Tester Foundation Level (CTFL) 4.0 and Agile Tester 1.0 syllabi, and prepares career starters, career changers and experienced professionals for ISTQB certification.
+
+## Key facts
+
+- Legal name: WAMOCON Academy GmbH
+- Managing Director: Dipl.-Ing. Waleri Moretz
+- Headquarters: Mergenthalerallee 79-81, 65760 Eschborn, Germany
+- Commercial register: Amtsgericht Frankfurt am Main, HRB 123666
+- VAT identification number: DE344930486
+- Accreditation: listed by ISTQB as an accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 training materials
+- Combined practical experience of the training team: around 40 years
+- Languages served: German and English
+- Parent organisation: WAMOCON GmbH, an IT test-management and quality-assurance company
+
+## What WAMOCON Academy offers
+
+- ISTQB Certified Tester Foundation Level (CTFL) 4.0 preparation courses
+- ISTQB Agile Tester certification training
+- The 360-degree Booster System, a structured career-entry programme for software testers
+- Educational programmes for software testers, including career-changer tracks
+- Individual and team training formats
+- Practical mentoring by trainers working on live IT projects
+
+## Who the training is for
+
+- Career starters entering IT without prior testing experience
+- Career changers moving into software testing from another field
+- Experienced IT professionals adding a formal ISTQB qualification
+- Companies training whole QA or test teams
+
+## Core pages
+
+- [Home](https://test-it-academy.com/): Overview of the academy, its programmes and ISTQB accreditation.
+- [ISTQB certification](https://test-it-academy.com/istqb-zertifizierung/): ISTQB Certified Tester courses, exam preparation and success stories.
+- [Educational programmes for software testers](https://test-it-academy.com/bildungsprogramme-fr-softwaretester/): The full training catalogue for testers.
+- [360-degree Booster System](https://test-it-academy.com/360-booster-system/): The structured career-entry programme and how it works.
+- [About the academy](https://test-it-academy.com/ber-die-akademie/): Mission, trainers and accreditation.
+- [Participant reviews](https://test-it-academy.com/bewertungen/): Verified reviews and success stories from course participants.
+- [DiTele app](https://test-it-academy.com/ditele-app/): The academy's digital learning and testing application.
+- [Contact](https://test-it-academy.com/kontakt/): Phone, e-mail and enquiry form.
+
+## English pages
+
+- [Home (EN)](https://test-it-academy.com/en/): English overview of the academy.
+- [ISTQB certification (EN)](https://test-it-academy.com/en/istqb-certification/): ISTQB courses in English.
+- [Educational programmes (EN)](https://test-it-academy.com/en/educational-programs/): Training catalogue in English.
+- [360-degree Booster System (EN)](https://test-it-academy.com/en/360-booster-system/): Career-entry programme in English.
+- [About us (EN)](https://test-it-academy.com/en/about-us/): Academy profile in English.
+- [Reviews (EN)](https://test-it-academy.com/en/reviews/): Participant reviews in English.
+- [Contact (EN)](https://test-it-academy.com/en/contacts/): English contact details and enquiry form.
+
+## Contact
+
+- Website: https://test-it-academy.com/
+- E-mail: info@test-it-academy.com
+- Telephone: +49 6196 5838312
+- Address: Mergenthalerallee 79-81, 65760 Eschborn, Germany
+- YouTube: https://www.youtube.com/@WAMOCONACADEMY
+- Facebook: https://www.facebook.com/WAMOCONACADEMY/
+- Instagram: https://www.instagram.com/bildungszentrum_wma/
+- Parent company: https://www.wamocon.com/
+
+## Legal and policies
+
+- [Imprint](https://test-it-academy.com/impressum/): Provider identification under section 5 DDG.
+- [Privacy policy](https://test-it-academy.com/datenschutz/): How the academy processes personal data.
+- [Accessibility statement](https://test-it-academy.com/barrierefreiheit/): Accessibility status under the BFSG.
+
+## Extended content
+
+- [Full text summary](https://test-it-academy.com/llms-full.txt): Expanded, self-contained description of the academy's programmes, ISTQB certification and frequently asked questions.
+
+## Usage
+
+Public website content may be quoted and cited with attribution to WAMOCON Academy GmbH and a link to the relevant canonical page. Legal and privacy pages are authoritative only in their latest published version. For questions about this content, contact info@test-it-academy.com.

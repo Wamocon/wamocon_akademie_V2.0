@@ -223,14 +223,19 @@ const members: Member[] = de
       <div class="panels">
         {m.videos.map((v, vi) => (
           <div class={`panel${vi === 0 ? " active" : ""}`} data-member={mi} data-video={vi}>
-            <div class="video">
+            <div class="video" data-external-media>
               <iframe
                 loading="lazy"
-                src={`https://www.youtube-nocookie.com/embed/${v.id}`}
+                data-consent-src={`https://www.youtube-nocookie.com/embed/${v.id}`}
                 title={v.title}
+                referrerpolicy="strict-origin-when-cross-origin"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen
+                allowfullscreen hidden
               ></iframe>
+        <div class="external-media__notice" data-external-media-notice>
+          <p>{de ? 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.' : 'This video loads from YouTube only after your consent.'}</p>
+          <button type="button" data-external-media-load>{de ? 'Video laden' : 'Load video'}</button>
+        </div>
             </div>
             <div class="video-text">
               <h3 class="t-red">{v.title}</h3>
@@ -352,7 +357,7 @@ const members: Member[] = de
     transition: all var(--dur-fast) var(--ease-out);
   }
   .tab.active {
-    background: var(--color-accent);
+    background: var(--color-accent-surface);
     border-color: var(--color-accent);
     color: #fff;
   }
