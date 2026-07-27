@@ -5,7 +5,7 @@ interface Props { lang: Lang; }
 const { lang } = Astro.props;
 const heading = lang === 'de' ? '360° Büro Tour' : '360° Office tour';
 const text = lang === 'de'
-  ? 'Erkunden Sie unser Büro virtuell - öffnen Sie die interaktive 360°-Ansicht in Google Maps.'
+  ? 'Erkunden Sie unser Büro virtuell. Öffnen Sie die interaktive 360°-Ansicht in Google Maps.'
   : 'Explore our office virtually. Open the interactive 360° view in Google Maps.';
 const cta = lang === 'de' ? 'In Google Maps öffnen' : 'Open in Google Maps';
 const embedUrl = 'https://www.google.com/maps/embed?pb=!4v1782479371000!6m8!1m7!1sCAoSHENJQUJJaENVc3VTMzZndWlqazhoTlB1TmlkN1k.!2m2!1d50.1350963!2d8.5722177!3f0!4f-20!5f0.7820865974627469';

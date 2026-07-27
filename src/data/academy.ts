@@ -45,9 +45,9 @@ export const home = {
   hero: {
     title: 'WAMOCON Academy',
     de:
-      '– Unser IT-Bildungszentrum in Eschborn bietet Ihnen praxisnahe Ausbildungsmöglichkeiten im Softwaretesting',
+      'Unser IT-Bildungszentrum in Eschborn bietet Ihnen praxisnahe Ausbildungsmöglichkeiten im Softwaretesting',
     en:
-      '– Our IT training center in Eschborn offers practical software-testing education',
+      'Our IT training center in Eschborn offers practical software-testing education',
     cta: { de: 'Beratung erhalten', en: 'Receive advice' },
     stats: [
       { value: '50+', de: 'IT-Projekte', en: 'IT projects' },
@@ -63,11 +63,11 @@ export const home = {
     paragraphs: {
       de: [
         'Die WAMOCON Academy ist Ihr Sprungbrett in die Welt des Softwaretestings. Die WAMOCON Academy GmbH ist bei ISTQB® als akkreditierter Trainingsanbieter für deutschsprachige CTFL 4.0- und Agile Tester 1.0-Trainingsmaterialien gelistet. Unsere praxisnahen Kurse bereiten auf die jeweilige Zertifizierungsprüfung vor.',
-        'Egal, ob Sie Berufseinsteiger, Quereinsteiger oder erfahrener Profi sind - bei uns finden Sie die passende Weiterbildung! Erweitern Sie Ihre Fähigkeiten im Testmanagement und heben Sie sich mit einer zusätzlichen Qualifikation gemäß dem ISTQB®-Lehrplan von der Masse ab. Starten Sie jetzt Ihre Erfolgsgeschichte mit der WAMOCON Academy!',
+        'Egal, ob Sie Berufseinsteiger, Quereinsteiger oder erfahrener Profi sind: Bei uns finden Sie die passende Weiterbildung! Erweitern Sie Ihre Fähigkeiten im Testmanagement und heben Sie sich mit einer zusätzlichen Qualifikation gemäß dem ISTQB®-Lehrplan von der Masse ab. Starten Sie jetzt Ihre Erfolgsgeschichte mit der WAMOCON Academy!',
       ],
       en: [
         'WAMOCON Academy is your springboard into software testing. WAMOCON Academy GmbH is listed by ISTQB® as an accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 training materials. Our practical courses prepare participants for the relevant certification examination.',
-        'Whether you are a career starter, lateral entrant or experienced professional - we have the right training for you! Expand your test management skills and stand out from the crowd with an additional qualification in accordance with the ISTQB® curriculum. Start your success story now with the WAMOCON Academy!',
+        'Whether you are a career starter, lateral entrant or experienced professional, we have the right training for you! Expand your test management skills and stand out from the crowd with an additional qualification in accordance with the ISTQB® curriculum. Start your success story now with the WAMOCON Academy!',
       ],
     },
     mission: {
@@ -82,9 +82,9 @@ export const home = {
     },
     text: {
       de:
-        'Die WAMOCON Academy ist mehr als nur ein Ausbildungsort - sie ist Ihre strategische Plattform für die Entwicklung entscheidender Fähigkeiten und die Beschleunigung Ihrer Karriere im IT-Bereich. Ob durch maßgeschneiderte Einzelkurse oder dynamische Teamkurse, wir bieten Ihnen einzigartige Chancen für den erfolgreichen Berufseinstieg und die Erreichung neuer Karriereziele. Lassen Sie sich von uns auf Ihrem Weg zur nächsten Entwicklungsstufe begleiten und profitieren Sie von unserem umfassenden Know-how und Netzwerk.',
+        'Die WAMOCON Academy ist mehr als nur ein Ausbildungsort. Sie ist Ihre strategische Plattform für die Entwicklung entscheidender Fähigkeiten und die Beschleunigung Ihrer Karriere im IT-Bereich. Ob durch maßgeschneiderte Einzelkurse oder dynamische Teamkurse, wir bieten Ihnen einzigartige Chancen für den erfolgreichen Berufseinstieg und die Erreichung neuer Karriereziele. Lassen Sie sich von uns auf Ihrem Weg zur nächsten Entwicklungsstufe begleiten und profitieren Sie von unserem umfassenden Know-how und Netzwerk.',
       en:
-        'The WAMOCON Academy is more than just a training venue - it is your strategic platform for developing critical skills and accelerating your career in IT. Whether through customized individual courses or dynamic team courses, we offer you unique opportunities to successfully launch your career and achieve new career goals. Let us accompany you on your way to the next level of development and profit from our extensive know-how and network.',
+        'The WAMOCON Academy is more than just a training venue. It is your strategic platform for developing critical skills and accelerating your career in IT. Whether through customized individual courses or dynamic team courses, we offer you unique opportunities to successfully launch your career and achieve new career goals. Let us accompany you on your way to the next level of development and profit from our extensive know-how and network.',
     },
     without: {
       title: { de: 'Ohne die WAMOCON Academy', en: 'Without the WAMOCON Academy' },
@@ -262,11 +262,11 @@ export const pages = {
           text:
             'Nehmen Sie an Ihrem ersten kostenlosen Webinar teil, um zu erfahren, wie Sie Ihre Karriere als Softwaretester effektiv starten oder vorantreiben können. Es bietet die Möglichkeit, Fragen zu stellen und Antworten von Experten zu erhalten, die Ihnen dabei helfen, Ihren beruflichen Weg zu verbessern.',
           items: [
-            'Einstieg ins SOFTWARETESTING – Zielgruppe und Nutzen des Webinars.',
-            'Was verdient ein zertifizierter Softwaretester 2023? – Einblick in Gehaltsstrukturen und Karriereaussichten.',
-            'Vor welchen typischen Herausforderungen steht ein Tester? – Diskussion der gängigen Probleme und Hürden im Testmanagement.',
+            'Einstieg ins SOFTWARETESTING: Zielgruppe und Nutzen des Webinars.',
+            'Was verdient ein zertifizierter Softwaretester 2023? Einblick in Gehaltsstrukturen und Karriereaussichten.',
+            'Vor welchen typischen Herausforderungen steht ein Tester? Diskussion der gängigen Probleme und Hürden im Testmanagement.',
             'Bildungsgutschein: Eine Förderung kann im Einzelfall möglich sein. Die zuständige Agentur für Arbeit oder das Jobcenter entscheidet über Voraussetzungen, Umfang und Bewilligung.',
-            'Was zeichnet einen erfolgreichen Softwaretester aus? – Wichtige Fähigkeiten und Eigenschaften eines erfolgreichen Testers.',
+            'Was zeichnet einen erfolgreichen Softwaretester aus? Wichtige Fähigkeiten und Eigenschaften eines erfolgreichen Testers.',
           ],
         },
       ],
@@ -293,11 +293,11 @@ export const pages = {
           text:
             'Attend your first free webinar to learn how to effectively start or advance your career as a software tester. It gives you the opportunity to ask questions and get answers from experts who will help you improve your career path.',
           items: [
-            'Introduction to SOFTWARE TESTING - target group and benefits of the webinar.',
-            'What does a certified software tester earn? - Insight into salary structures and career prospects.',
-            'What typical challenges does a tester face? - Discussion of common problems and hurdles in test management.',
+            'Introduction to SOFTWARE TESTING: target group and benefits of the webinar.',
+            'What does a certified software tester earn? Insight into salary structures and career prospects.',
+            'What typical challenges does a tester face? Discussion of common problems and hurdles in test management.',
             'Bildungsgutschein: funding may be possible in individual cases. The responsible employment agency or job centre decides eligibility, scope and approval.',
-            'What distinguishes a successful software tester? - Important skills and characteristics of a successful tester.',
+            'What distinguishes a successful software tester? Important skills and characteristics of a successful tester.',
           ],
         },
       ],
@@ -309,7 +309,7 @@ export const pages = {
       title: 'Der Weg zum Erfolg beginnt mit der WAMOCON Academy',
       eyebrow: 'Über die Academy',
       lead:
-        'Unser Bildungszentrum bietet mehr als nur Kurse - es ist Ihre Startrampe für eine erfolgreiche IT-Karriere. Hier verwandeln wir Lernende in IT-Profis, die bereit sind, die Herausforderungen der heutigen digitalen Welt zu meistern.',
+        'Unser Bildungszentrum bietet mehr als nur Kurse. Es ist Ihre Startrampe für eine erfolgreiche IT-Karriere. Hier verwandeln wir Lernende in IT-Profis, die bereit sind, die Herausforderungen der heutigen digitalen Welt zu meistern.',
       sections: [
         {
           title: 'Unterstützung durch erfahrene Dozenten',
@@ -351,7 +351,7 @@ export const pages = {
       title: 'The path to success starts with the WAMOCON Academy',
       eyebrow: 'About the Academy',
       lead:
-        'Our training center offers more than just courses - it is your launchpad for a successful IT career. Here we transform learners into IT professionals who are ready to master the challenges of today’s digital world.',
+        'Our training center offers more than just courses. It is your launchpad for a successful IT career. Here we transform learners into IT professionals who are ready to master the challenges of today’s digital world.',
       sections: [
         {
           title: 'Support from experienced lecturers',

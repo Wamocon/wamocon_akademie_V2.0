@@ -135,8 +135,8 @@ export const company = {
   email: 'info@test-it-academy.com',
   emailHref: 'mailto:info@test-it-academy.com',
   hours: {
-    de: ['Montag - Freitag: 9:00 - 18:00 Uhr', 'Samstag: 10:00 - 14:00 Uhr'],
-    en: ['Monday - Friday: 9:00 am - 6:00 pm', 'Saturday: 10:00 am - 2:00 pm'],
+    de: ['Montag bis Freitag: 9:00 bis 18:00 Uhr', 'Samstag: 10:00 bis 14:00 Uhr'],
+    en: ['Monday to Friday: 9:00 am to 6:00 pm', 'Saturday: 10:00 am to 2:00 pm'],
   },
   social: {
     youtube: 'https://www.youtube.com/@WAMOCONACADEMY',
