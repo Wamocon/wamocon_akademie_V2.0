@@ -39,7 +39,7 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
   <div class="container experience__top">
     <div class="experience__copy" data-reveal>
       <h2>
-        {lang === 'de' ? <><span>40 Jahre gebündelte</span><br />Praxiserfahrung unseres Teams</> : <><span>40 years of combined</span><br />practical experience within our team</>}
+        {lang === 'de' ? <><span>über 50 Jahre gebündelte</span><br />Praxiserfahrung unseres Teams</> : <><span>over 50 years of combined</span><br />practical experience within our team</>}
       </h2>
       {h.intro.paragraphs[lang].map((p) => <p>{p}</p>)}
     </div>
@@ -55,12 +55,9 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
       <iframe data-consent-src="https://www.youtube-nocookie.com/embed/Q_0mtjo8GAU?autoplay=1&controls=1&playsinline=1&rel=0" data-consent-mode="manual" title="WAMOCON Academy Karriere-Booster IT" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen hidden></iframe>
       <div class="external-media__notice" data-external-media-notice>
         <img src="/images/academy/tild6466-6536-4065-b832-356661343462__wma_imagevideo_bild1.jpg" alt="" width="1920" height="1080" loading="lazy" aria-hidden="true" />
-        <div class="external-media__notice-content">
-          <button type="button" data-external-media-load aria-label={lang === 'de' ? 'Karriere-Booster Video abspielen' : 'Play Career Booster video'}>
-            <svg viewBox="0 0 68 48" aria-hidden="true"><path d="M66.5 7.7C65.7 4.8 64 2.3 61.1 1.5 55.8.1 34 0 34 0S12.2.1 6.9 1.5C4 2.3 2.3 4.8 1.5 7.7.1 13.1 0 24 0 24s.1 11 1.5 16.3c.8 2.9 2.5 5.4 5.4 6.2C12.2 47.9 34 48 34 48s21.8-.1 27.1-1.5c2.9-.8 4.6-3.3 5.4-6.2C67.9 35 68 24 68 24s-.1-11-1.5-16.3Z"/><path class="external-media__play-triangle" d="m27 14 18 10-18 10Z"/></svg>
-          </button>
-          <p>{lang === 'de' ? 'Mit Klick auf Play stimmen Sie dem Laden des YouTube-Videos zu.' : 'By selecting play, you consent to loading the YouTube video.'}</p>
-        </div>
+        <span class="external-media__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg></span>
+        <p>{lang === 'de' ? 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.' : 'This video loads from YouTube only after your consent.'}</p>
+        <button type="button" data-external-media-load>{lang === 'de' ? 'YouTube-Video laden' : 'Load YouTube video'}</button>
       </div>
     </div>
     <div class="success-story__copy" data-reveal>
@@ -84,7 +81,7 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
 <section class="section surface-light istqb">
   <div class="container istqb__grid">
     <div class="istqb__copy" data-reveal>
-      <span class="eyebrow">ISTQB®</span>
+      <span class="eyebrow">{lang === 'de' ? 'Zertifizierung' : 'Certification'}</span>
       <h2>{h.istqb.title}</h2>
       <p>{h.istqb[lang]}</p>
       <p>{h.istqb.closing[lang]}</p>
@@ -118,15 +115,6 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
   </div>
 </section>
 
-<LeadForm
-  lang={lang}
-  type="lead"
-  title={lang === 'en' ? 'Get advice' : undefined}
-  intro={lang === 'de'
-    ? 'Rufen Sie uns an +49 (0) 6196 5838312, oder senden Sie eine unverbindliche Anfrage an die WAMOCON Academy GmbH, damit wir Ihre Fragen beantworten können.'
-    : 'Give us a call +49 (0) 6196 5838312, or send a non-binding inquiry to WAMOCON Academy GmbH so that we can answer your questions.'}
-  complianceMode
-/>
 <OfficeTour lang={lang} />
 
 <style>
@@ -334,7 +322,7 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
     color: rgba(255,255,255,.9);
     font-size: clamp(12px, .72vw, 14px);
     line-height: 1.35;
-    text-align: center;
+    text-align: left;
   }
   .success-story__copy { position: relative; padding-top: 25px; }
   .success-story__copy h2 { margin-bottom: 26px; }
@@ -385,7 +373,28 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
     padding-top: calc(clamp(46px, 2.8vw, 60px) + clamp(18px, 1.4vw, 26px));
     border: 1px solid rgba(255, 255, 255, 0.62);
     background: transparent;
+    transition: border-color 200ms ease, transform 200ms ease, background 200ms ease;
   }
+  .steps__list li:hover {
+    border-color: var(--color-accent);
+    background: rgba(244, 14, 14, 0.06);
+    transform: translateY(-4px);
+  }
+  /* Arrows between the boxes so they read as a connected, ordered sequence
+     (review AK#3 / AK#11). Hidden after the last box in each row. */
+  .steps__list li::after {
+    content: '→';
+    position: absolute;
+    top: 50%;
+    right: clamp(-30px, -1.7vw, -18px);
+    transform: translateY(-50%);
+    color: var(--color-accent);
+    font-size: 1.5rem;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .steps__list li:nth-child(3n)::after,
+  .steps__list li:last-child::after { content: none; }
 
   .steps__list span {
     position: absolute;
@@ -465,6 +474,10 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
     .steps__list {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+    /* Two columns: arrow only after odd items (end of a pair is even). */
+    .steps__list li:nth-child(3n)::after { content: '→'; }
+    .steps__list li:nth-child(2n)::after,
+    .steps__list li:last-child::after { content: none; }
   }
 
   @media (max-width: 980px) {
@@ -546,7 +559,12 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
     .academy-hero__stats strong { font-size: 21px; }
     .academy-hero__stats span { font-size: clamp(13px, 3.6vw, 16px); }
     .steps .section-head h2 { font-size: clamp(2rem, 10vw, 2.7rem); }
-    .steps__list { grid-template-columns: 1fr; gap: 18px; }
+    .steps__list { grid-template-columns: 1fr; gap: 30px; }
+    /* Single column: arrows point down between every box except the last. */
+    .steps__list li::after,
+    .steps__list li:nth-child(3n)::after,
+    .steps__list li:nth-child(2n)::after { content: '↓'; top: auto; right: auto; bottom: clamp(-26px, -5vw, -20px); left: 50%; transform: translateX(-50%); }
+    .steps__list li:last-child::after { content: none; }
     .steps__closing { margin-top: 28px; }
   }
 

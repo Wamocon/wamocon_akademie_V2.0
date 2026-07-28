@@ -13,6 +13,13 @@ const altHref = getAlternateLangUrl(currentPath, lang);
 const homeHref = lang === 'de' ? '/' : '/en/';
 const t = (key: keyof (typeof ui)['de']) => ui[lang][key];
 
+// Language options for the switcher dropdown. The active language links to the
+// current page (a no-op); the other links to its translated equivalent.
+const languages = [
+  { code: 'de', label: 'Deutsch', short: 'DE', href: lang === 'de' ? currentPath : altHref },
+  { code: 'en', label: 'English', short: 'EN', href: lang === 'en' ? currentPath : altHref },
+] as const;
+
 const normalize = (path: string) => (path.endsWith('/') ? path : `${path}/`);
 const isActive = (item: NavLink) => {
   const path = normalize(currentPath);
@@ -72,9 +79,42 @@ const isActive = (item: NavLink) => {
       >
         <span></span><span></span><span></span>
       </button>
-      <a class="site-header__lang" href={altHref} aria-label={`${t('lang.label')}: ${t('lang.switch')}`}>
-        {t('lang.switch')}
-      </a>
+      <div class="site-header__langswitch" data-lang-switch>
+        <button
+          type="button"
+          class="site-header__lang"
+          id="lang-switch-button"
+          aria-haspopup="true"
+          aria-expanded="false"
+          aria-label={t('lang.label')}
+        >
+          <svg class="site-header__globe" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18" />
+          </svg>
+          <span>{lang.toUpperCase()}</span>
+          <svg class="site-header__caret" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </button>
+        <ul class="site-header__langmenu" role="menu" aria-labelledby="lang-switch-button">
+          {languages.map((l) => (
+            <li role="none">
+              <a
+                role="menuitem"
+                href={l.href}
+                hreflang={l.code}
+                lang={l.code}
+                class:list={['site-header__langoption', { 'is-active': l.code === lang }]}
+                aria-current={l.code === lang ? 'true' : undefined}
+              >
+                <span>{l.label}</span>
+                {l.code === lang && (
+                  <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                )}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   </div>
 </header>
@@ -211,19 +251,61 @@ const isActive = (item: NavLink) => {
     gap: 0.75rem;
   }
 
+  /* ---- language switcher (shows the active language + dropdown) ---- */
+  .site-header__langswitch { position: relative; }
   .site-header__lang {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 0.4rem;
     min-width: 80px;
     height: 40px;
+    padding: 0 0.75rem;
     border: 1px solid var(--color-line);
     border-radius: 0;
     background: #0d0d0d;
     color: #fff;
     font-size: clamp(1rem, 0.8vw, 1.12rem);
     font-weight: var(--fw-semibold);
+    cursor: pointer;
   }
+  .site-header__lang:hover,
+  .site-header__lang[aria-expanded='true'] { color: var(--color-accent); border-color: var(--color-accent); }
+  .site-header__globe { flex: 0 0 auto; }
+  .site-header__caret { transition: transform var(--dur-fast) var(--ease-out); }
+  .site-header__lang[aria-expanded='true'] .site-header__caret { transform: rotate(180deg); }
+  .site-header__langmenu {
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    right: 0;
+    min-width: 168px;
+    margin: 0;
+    padding: 0.35rem;
+    list-style: none;
+    background: rgba(15, 17, 21, 0.98);
+    border: 1px solid var(--color-line);
+    box-shadow: 0 18px 38px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out), visibility var(--dur-fast);
+  }
+  .site-header__langswitch.is-open .site-header__langmenu {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+  .site-header__langoption {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.6rem 0.7rem;
+    color: var(--color-muted);
+    font-size: 0.98rem;
+  }
+  .site-header__langoption:hover { background: rgba(255, 255, 255, 0.07); color: #fff; }
+  .site-header__langoption.is-active { color: var(--color-accent); font-weight: var(--fw-semibold); }
 
   .site-header__toggle {
     display: none;
@@ -315,7 +397,8 @@ const isActive = (item: NavLink) => {
       overflow: hidden;
     }
 
-    .site-header__lang { min-width: 54px; height: 36px; font-size: 0.8rem; }
+    .site-header__lang { min-width: 54px; height: 36px; font-size: 0.85rem; }
+    .site-header__langmenu { min-width: 150px; }
   }
 
   @media (max-width: 460px) {
@@ -368,4 +451,23 @@ const isActive = (item: NavLink) => {
   window.addEventListener('resize', () => {
     if (window.innerWidth >= 1280) closeMenu();
   }, { passive: true });
+
+  // Language dropdown: toggle on click, close on outside click / Escape.
+  const langSwitch = document.querySelector('[data-lang-switch]');
+  const langButton = document.getElementById('lang-switch-button');
+  const closeLang = () => {
+    langSwitch?.classList.remove('is-open');
+    langButton?.setAttribute('aria-expanded', 'false');
+  };
+  langButton?.addEventListener('click', (event) => {
+    event.stopPropagation();
+    const open = langSwitch?.classList.toggle('is-open');
+    langButton.setAttribute('aria-expanded', String(Boolean(open)));
+  });
+  document.addEventListener('click', (event) => {
+    if (langSwitch && !langSwitch.contains(event.target as Node)) closeLang();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeLang();
+  });
 </script>

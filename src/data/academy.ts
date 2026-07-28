@@ -57,8 +57,8 @@ export const home = {
   },
   intro: {
     heading: {
-      de: '40 Jahre gebündelte Praxiserfahrung unseres Teams',
-      en: '40 years of combined practical experience within our team',
+      de: 'über 50 Jahre gebündelte Praxiserfahrung unseres Teams',
+      en: 'over 50 years of combined practical experience within our team',
     },
     paragraphs: {
       de: [
@@ -122,7 +122,7 @@ export const home = {
     },
   },
   istqb: {
-    title: 'ISTQB® Certified Tester:',
+    title: 'ISTQB® Certified Tester',
     de:
       'Entdecken Sie die Welt des Softwaretestings mit unseren umfassenden Kursen, die Ihnen nicht nur tiefgehendes theoretisches Wissen über Testverfahren, Testmodelle und Testwerkzeuge vermitteln, sondern auch praxisnahe Einblicke bieten.',
     en:
@@ -332,7 +332,7 @@ export const pages = {
         {
           title: 'WMC-Methode +',
           text:
-            'Die IT-Welt war noch nie so komplex wie heute, besonders durch den rasanten Fortschritt der künstlichen Intelligenz. Hier kommt die WMC-Methode ins Spiel, die auf 40 Jahren gebündelter Praxiserfahrung unseres Teams im Test- und Qualitätsmanagement aufbaut.',
+            'Die IT-Welt war noch nie so komplex wie heute, besonders durch den rasanten Fortschritt der künstlichen Intelligenz. Hier kommt die WMC-Methode ins Spiel, die auf über 50 Jahren gebündelter Praxiserfahrung unseres Teams im Test- und Qualitätsmanagement aufbaut.',
           items: [
             'Priorisierung',
             'Risikobewertung',
@@ -374,7 +374,7 @@ export const pages = {
         {
           title: 'WMC method +',
           text:
-            'The IT world has never been as complex as it is today, especially due to the rapid progress of artificial intelligence. This is where the WMC method comes into play: it builds on 40 years of combined practical experience within our team in testing and quality management.',
+            'The IT world has never been as complex as it is today, especially due to the rapid progress of artificial intelligence. This is where the WMC method comes into play: it builds on over 50 years of combined practical experience within our team in testing and quality management.',
           items: [
             'Prioritization',
             'Risk assessment',

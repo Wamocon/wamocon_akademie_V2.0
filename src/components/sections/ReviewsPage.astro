@@ -131,14 +131,15 @@ const graduatePoster = (name: string) => `/images/academy/testimonial-${name.toL
               </div>
             </dl>
           </div>
-          <button class="video-preview video-preview--story" type="button" data-review-video-id={story.videoId} data-review-video-title={story.videoTitle} aria-label={`${copy.playVideo}: ${story.videoTitle}`}>
-            <img src={storyPosters[index]} alt={`${story.name} ${copy.interview}`} width="1920" height="1080" loading="lazy" />
-            <span class="video-preview__headline">{story.videoTitle}</span>
-            <span class="video-preview__brand">WAMOCON ACADEMY</span>
-            <span class="video-preview__play" aria-hidden="true">
-              <svg viewBox="0 0 68 48"><path d="M66.5 7.7C65.7 4.8 64 2.3 61.1 1.5 55.8.1 34 0 34 0S12.2.1 6.9 1.5C4 2.3 2.3 4.8 1.5 7.7.1 13.1 0 24 0 24s.1 11 1.5 16.3c.8 2.9 2.5 5.4 5.4 6.2C12.2 47.9 34 48 34 48s21.8-.1 27.1-1.5c2.9-.8 4.6-3.3 5.4-6.2C67.9 35 68 24 68 24s-.1-11-1.5-16.3Z"/><path class="video-preview__triangle" d="m27 14 18 10-18 10Z"/></svg>
-            </span>
-          </button>
+          <div class="video-preview video-preview--story" data-external-media>
+            <iframe data-consent-src={`https://www.youtube-nocookie.com/embed/${story.videoId}?autoplay=1&controls=1&playsinline=1&rel=0`} data-consent-mode="manual" title={story.videoTitle} loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen hidden></iframe>
+            <div class="external-media__notice" data-external-media-notice>
+              <img src={storyPosters[index]} alt={`${story.name} ${copy.interview}`} width="1920" height="1080" loading="lazy" />
+              <span class="external-media__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg></span>
+              <p>{lang === 'de' ? 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.' : 'This video loads from YouTube only after your consent.'}</p>
+              <button type="button" data-external-media-load>{lang === 'de' ? 'YouTube-Video laden' : 'Load YouTube video'}</button>
+            </div>
+          </div>
         </article>
       ))}
     </div>
@@ -148,13 +149,15 @@ const graduatePoster = (name: string) => `/images/academy/testimonial-${name.toL
     <div class="container graduates__grid">
       {graduates.map((graduate) => (
         <article class="graduate">
-          <button class="video-preview video-preview--graduate" type="button" data-review-video-id={graduate.videoId} data-review-video-title={`${graduate.name}: ${copy.testimonialsLabel}`} aria-label={`${copy.playVideo}: ${graduate.name}`}>
-            <img src={graduatePoster(graduate.name)} alt={`${graduate.name}, ${graduate.role}`} width="1280" height="720" loading="lazy" />
-            <span class="video-preview__play" aria-hidden="true">
-              <svg viewBox="0 0 68 48"><path d="M66.5 7.7C65.7 4.8 64 2.3 61.1 1.5 55.8.1 34 0 34 0S12.2.1 6.9 1.5C4 2.3 2.3 4.8 1.5 7.7.1 13.1 0 24 0 24s.1 11 1.5 16.3c.8 2.9 2.5 5.4 5.4 6.2C12.2 47.9 34 48 34 48s21.8-.1 27.1-1.5c2.9-.8 4.6-3.3 5.4-6.2C67.9 35 68 24 68 24s-.1-11-1.5-16.3Z"/><path class="video-preview__triangle" d="m27 14 18 10-18 10Z"/></svg>
-            </span>
-            <span class="graduate__caption"><strong>{graduate.name}</strong><small>{graduate.role}</small></span>
-          </button>
+          <div class="video-preview video-preview--graduate" data-external-media>
+            <iframe data-consent-src={`https://www.youtube-nocookie.com/embed/${graduate.videoId}?autoplay=1&controls=1&playsinline=1&rel=0`} data-consent-mode="manual" title={`${graduate.name}: ${copy.testimonialsLabel}`} loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen hidden></iframe>
+            <div class="external-media__notice" data-external-media-notice>
+              <img src={graduatePoster(graduate.name)} alt={`${graduate.name}, ${graduate.role}`} width="1280" height="720" loading="lazy" />
+              <span class="external-media__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg></span>
+              <p>{lang === 'de' ? 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.' : 'This video loads from YouTube only after your consent.'}</p>
+              <button type="button" data-external-media-load>{lang === 'de' ? 'YouTube-Video laden' : 'Load YouTube video'}</button>
+            </div>
+          </div>
           <h2>{graduate.name}</h2>
           <p>{graduate.role}</p>
         </article>
@@ -164,8 +167,6 @@ const graduatePoster = (name: string) => `/images/academy/testimonial-${name.toL
       <button class="reviews-button" type="button" data-review-open>{copy.sendEvaluation}</button>
     </div>
   </section>
-
-  <LeadForm lang={lang} type="reviews" compact complianceMode />
 
   <ReviewModal lang={lang} />
 
@@ -197,14 +198,15 @@ const graduatePoster = (name: string) => `/images/academy/testimonial-${name.toL
 
   .stories { padding-bottom: 5rem; }
   .stories__list { display: grid; gap: clamp(4rem, 7vw, 8rem); }
-  .story { display: grid; grid-template-columns: minmax(320px, 0.72fr) minmax(0, 1.28fr); gap: clamp(3rem, 7vw, 8rem); align-items: center; }
+  .story { display: grid; grid-template-columns: minmax(320px, 1fr) minmax(0, 1fr); gap: clamp(3rem, 7vw, 8rem); align-items: center; }
   .story__copy { max-width: 720px; }
   .story h2 { margin-bottom: 1.75rem; font-size: clamp(1.2rem, 1.6vw, 1.55rem); line-height: 1.3; }
   .story dl { display: grid; gap: 1.35rem; font-size: clamp(1rem, 0.9vw, 1.125rem); line-height: 1.55; }
   .story dt { color: var(--color-accent); font-weight: 400; }
   .story dd { margin: 0; }
 
-  .video-preview { position: relative; display: block; width: 100%; overflow: hidden; border: 0; background: #000; color: inherit; text-align: left; cursor: pointer; }
+  .video-preview { position: relative; display: block; width: 100%; overflow: hidden; border: 0; background: #000; color: inherit; text-align: left; }
+  .video-preview iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
   .video-preview img { width: 100%; height: 100%; object-fit: cover; transition: transform 400ms var(--ease-out), opacity 200ms; }
   .video-preview img:not([src]) { opacity: 0; }
   .video-preview:hover img { transform: scale(1.025); opacity: 0.88; }
@@ -212,6 +214,9 @@ const graduatePoster = (name: string) => `/images/academy/testimonial-${name.toL
   .video-preview--graduate { aspect-ratio: 16 / 9; background: #191919; }
   .video-preview__headline { position: absolute; top: 0.8rem; left: 5.8rem; right: 1rem; z-index: 1; overflow: hidden; color: #fff; font-size: clamp(0.8rem, 1.65vw, 1.25rem); font-weight: 700; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; text-shadow: 0 2px 8px #000; }
   .video-preview__brand { position: absolute; top: 2.45rem; left: 5.8rem; z-index: 1; font-size: 0.82rem; font-weight: 600; text-shadow: 0 2px 8px #000; }
+  .video-preview__hint { position: absolute; left: 0; right: 0; z-index: 2; padding: 9px 12px; color: #fff; font-size: 0.76rem; line-height: 1.3; text-align: center; pointer-events: none; }
+  .video-preview--story .video-preview__hint { bottom: 0; padding-top: 28px; background: linear-gradient(transparent, rgba(0, 0, 0, 0.82)); }
+  .video-preview--graduate .video-preview__hint { top: 0; padding-bottom: 26px; background: linear-gradient(rgba(0, 0, 0, 0.82), transparent); }
   .video-preview__play { position: absolute; top: 50%; left: 50%; width: 68px; color: #f03; transform: translate(-50%, -50%); transition: transform 180ms; }
   .video-preview:hover .video-preview__play { transform: translate(-50%, -50%) scale(1.08); }
   .video-preview__play svg { width: 100%; fill: currentColor; }
@@ -254,24 +259,25 @@ const graduatePoster = (name: string) => `/images/academy/testimonial-${name.toL
     .graduates__grid { gap: clamp(56px, 3vw, 96px); }
   }
 
-  /* Match the full-width 1200 × 600 hero artboard used by the reference page. */
+  /* Full-width hero. The copy sits just below the header instead of halfway
+     down the artboard, so the space under the header is actually used (AK#13). */
   @media (min-width: 1200px) {
     .reviews-hero {
       width: 100%;
-      min-height: 50vw;
-      height: 50vw;
+      min-height: 40vw;
+      height: 40vw;
       padding-top: 0;
     }
     .reviews-hero__inner {
       width: 100%;
       max-width: none;
-      min-height: 50vw;
-      height: 50vw;
+      min-height: 40vw;
+      height: 40vw;
       padding: 0;
     }
     .reviews-hero__copy {
       position: absolute;
-      top: 29vw;
+      top: 13vw;
       left: 1.6667vw;
       width: 48vw;
     }
@@ -386,5 +392,20 @@ const graduatePoster = (name: string) => `/images/academy/testimonial-${name.toL
     }
     if (!detail?.externalMedia && videoDialog?.open) videoDialog.close();
     pendingReviewVideo = null;
+  });
+
+  // Inline consent-gated videos (story + graduate cards): load the YouTube iframe on click.
+  document.querySelectorAll<HTMLElement>('.video-preview[data-external-media]').forEach((media) => {
+    const frame = media.querySelector<HTMLIFrameElement>('iframe[data-consent-src]');
+    const notice = media.querySelector<HTMLElement>('[data-external-media-notice]');
+    const loadButton = media.querySelector<HTMLButtonElement>('[data-external-media-load]');
+    loadButton?.addEventListener('click', () => {
+      const source = frame?.dataset.consentSrc;
+      if (!frame || !source) return;
+      (window as Window & { wamoconConsent?: { grantExternalMedia?: () => void } }).wamoconConsent?.grantExternalMedia?.();
+      frame.src = source;
+      frame.hidden = false;
+      if (notice) notice.hidden = true;
+    });
   });
 </script>

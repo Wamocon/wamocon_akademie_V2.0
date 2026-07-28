@@ -57,11 +57,6 @@ export const nav: NavLink[] = [
     de: { label: 'DiTeLe App', href: '/ditele-app/' },
     en: { label: 'DiTeLe App', href: '/en/ditele-app/' },
   },
-  {
-    key: 'contact',
-    de: { label: 'Kontakt', href: '/kontakt/' },
-    en: { label: 'Contact us', href: '/en/contacts/' },
-  },
 ];
 
 export const legalNav = {
@@ -140,7 +135,7 @@ export const company = {
   },
   social: {
     youtube: 'https://www.youtube.com/@WAMOCONACADEMY',
-    facebook: 'https://tr-tr.facebook.com/WAMOCONACADEMY/',
+    facebook: 'https://www.facebook.com/WAMOCON/',
     linkedin: 'https://de.linkedin.com/company/wamocon-gmbh',
     instagram: 'https://www.instagram.com/bildungszentrum_wma/',
   },

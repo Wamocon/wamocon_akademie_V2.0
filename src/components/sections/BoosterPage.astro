@@ -33,8 +33,8 @@ const copy = {
       ['05', 'Erfüllung', 'Erlernte bewährte Methoden ermöglichen es Ihnen, sich abzuheben und auf alle Projektanforderungen vorbereitet zu sein.'],
       ['06', 'Abschluss', 'Selbst wenn die Fristen knapp sind und die Arbeit noch nicht abgeschlossen ist, können Sie mit der schrittweisen Anleitung von WAMOCON Academy, die durch jahrelange Praxis erprobt ist, das Projekt effizient abschließen und erfolgreich abliefern.'],
     ],
-    storyTitle: 'Den Wachstumscode knacken:',
-    storySubtitle: '360° Booster System: Erfolgsgeschichte enthüllt',
+    storyTitle: 'Den Wachstumscode knacken',
+    storySubtitle: '360° Booster System · Erfolgsgeschichte',
     stories: [
       {
         image: sharedImages.storyOne,
@@ -72,7 +72,7 @@ const copy = {
       ['Fertigstellung', 'Am Ende des Projekts hatte ich trotz eines vollen Terminkalenders und kürzlicher Änderungen seitens des Kunden das Projekt dank eines klar organisierten Prozesses und der Unterstützung durch das Team erfolgreich abgeschlossen.'],
     ],
     quote: 'Beim Lesen von WAMOCON werden Sie feststellen, dass diese Informationen nun in einer neuen Fachsprache verfügbar sind. Im Jahr 2024, nach der Modernisierung der Universität, wird ein KI-Programm entwickelt, das durch die Ressourcen von WAMOCON unterstützt wird.',
-    author: 'Lingcen Wang, WAMOCON-Mitarbeiter',
+    author: 'Nurzhan Kukeyev, WAMOCON-Mitarbeiter',
     formTitle: 'Beratung erhalten',
     formText: 'Rufen Sie die WAMOCON Academy GmbH unter +49 (0) 6196 5838312 an oder hinterlassen Sie unten Ihre Kontaktdaten, damit wir Sie erreichen und Ihre Fragen beantworten können. Ihre Anfrage ist unverbindlich und kein Kauf.',
   },
@@ -95,8 +95,8 @@ const copy = {
       ['05', 'Fulfillment', 'Learned best practices allow you to stand out and be prepared for all project requirements.'],
       ['06', 'Conclusion', 'Even if the deadlines are tight and the work has not yet been completed, you can complete the project efficiently and deliver it successfully with the step-by-step instructions from WAMOCON Academy, which have been tried and tested over many years.'],
     ],
-    storyTitle: 'Cracking the growth code:',
-    storySubtitle: '360° Booster System: success story unveiled',
+    storyTitle: 'Cracking the growth code',
+    storySubtitle: '360° Booster System · success story',
     stories: [
       {
         image: sharedImages.storyOne,
@@ -134,7 +134,7 @@ const copy = {
       ['Completion', 'By the end of the project, despite a busy schedule and recent changes from the client, I had successfully completed the project thanks to a clearly organized process and support from the team.'],
     ],
     quote: 'As you read WAMOCON, you will notice that this information is now available in a new technical language. In 2024, after the modernization of the university, an AI program will be developed supported by the resources of WAMOCON.',
-    author: 'Lingcen Wang, WAMOCON employee',
+    author: 'Nurzhan Kukeyev, WAMOCON employee',
     formTitle: 'Get advice',
     formText: 'Call WAMOCON Academy GmbH at +49 (0) 6196 5838312 or leave your contact details below so that we can reach you and answer your questions. Your inquiry is non-binding and is not a purchase.',
   },
@@ -187,8 +187,8 @@ const systemVisual = lang === 'de' ? assets.ditele : assets.appEn;
 <section class="booster-story" aria-labelledby="story-title">
   <div class="container">
     <header class="booster-story__header" data-reveal>
+      <span class="booster-story__eyebrow">{c.storySubtitle}</span>
       <h2 id="story-title">{c.storyTitle}</h2>
-      <p>{c.storySubtitle}</p>
     </header>
 
     <div class="booster-story__rows">
@@ -228,15 +228,6 @@ const systemVisual = lang === 'de' ? assets.ditele : assets.appEn;
   </div>
 </section>
 
-<LeadForm
-  lang={lang}
-  type="booster"
-  compact
-  title={c.formTitle}
-  intro={c.formText}
-  image={image('tild6537-3034-4532-a562-323161646230__04_.png')}
-/>
-
 <style>
   .booster-hero, .booster-intro, .booster-steps, .booster-story { background: #101010; }
   .booster-hero { position: relative; min-height: 700px; overflow: hidden; background: #0d0d0d; }
@@ -262,21 +253,27 @@ const systemVisual = lang === 'de' ? assets.ditele : assets.appEn;
   .booster-steps { padding-block: 0 90px; }
   .booster-steps h2 { max-width: 837px; margin-bottom: 40px; color: #ff0b00; }
   .booster-steps__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1.5rem, 2.5vw, 2.75rem); list-style: none; }
-  .booster-step { position: relative; min-height: 245px; padding: 72px clamp(1.25rem, 2vw, 2rem) 30px; border: 1px solid #fff; }
+  .booster-step { position: relative; min-height: 245px; padding: 72px clamp(1.25rem, 2vw, 2rem) 30px; border: 1px solid #fff; transition: border-color 200ms ease, transform 200ms ease, background 200ms ease; }
+  .booster-step:hover { border-color: var(--color-accent); background: rgba(244, 14, 14, 0.06); transform: translateY(-4px); }
+  /* Arrows connect the boxes into an ordered sequence (review AK#11). */
+  .booster-step::after { content: '→'; position: absolute; top: 50%; right: clamp(-24px, -1.5vw, -14px); transform: translateY(-50%); color: var(--color-accent); font-size: 1.4rem; line-height: 1; pointer-events: none; }
+  .booster-step:nth-child(3n)::after, .booster-step:last-child::after { content: none; }
   .booster-step__number { position: absolute; top: 10px; left: 18px; display: grid; width: 40px; height: 40px; place-items: center; border: 1px solid #fff; border-radius: 50%; background: #fff; color: #ff0b00; font-size: 14px; font-weight: 600; }
   .booster-step h3 { margin-bottom: 10px; font-size: 20px; font-weight: 600; line-height: 1.3; }
   .booster-step p, .booster-story__copy p, .booster-timeline p { color: #fff; font-size: 1.0625rem; font-weight: 300; line-height: 1.55; }
 
   .booster-story { padding-block: 140px 0; }
   .booster-story__header { padding-bottom: 45px; }
-  .booster-story__header h2 { margin-bottom: 20px; }
-  .booster-story__header p { font-size: 1.125rem; line-height: 1.5; }
+  /* Eyebrow-above-heading, matching the other section headings on the site. */
+  .booster-story__eyebrow { display: block; margin-bottom: 0.8rem; color: var(--color-accent); font-size: 0.82rem; font-weight: var(--fw-semibold); letter-spacing: 0.09em; text-transform: uppercase; }
+  .booster-story__header h2 { margin-bottom: 0; }
   .booster-story__rows { display: grid; gap: clamp(2.5rem, 4vw, 4.5rem); }
-  .booster-story__row { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(420px, 0.88fr); align-items: stretch; }
-  .booster-story__row--reverse { grid-template-columns: minmax(420px, 0.88fr) minmax(0, 1.12fr); }
+  .booster-story__row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(460px, 1fr); align-items: stretch; }
+  .booster-story__row--reverse { grid-template-columns: minmax(460px, 1fr) minmax(0, 1fr); }
   .booster-story__row > img { width: 100%; height: 100%; min-height: 510px; object-fit: cover; }
   .booster-story__copy { display: flex; min-height: 510px; flex-direction: column; justify-content: center; gap: 16px; padding: clamp(2rem, 4vw, 4.5rem); background: #171717; }
-  .booster-story__block h3 { margin-bottom: 14px; font-size: 20px; font-weight: 600; line-height: 1.3; }
+  .booster-story__block h3 { margin-bottom: 14px; font-size: 22px; font-weight: 600; line-height: 1.3; }
+  .booster-story__block p { font-size: 1.15rem; line-height: 1.6; }
   .booster-story__block { max-width: 76ch; }
 
   .booster-timeline { padding-top: 45px; }
@@ -363,6 +360,8 @@ const systemVisual = lang === 'de' ? assets.ditele : assets.appEn;
     .booster-intro__visual img { max-height: 545px; }
     .booster-steps { padding-top: 28px; }
     .booster-steps__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+    .booster-step:nth-child(3n)::after { content: '→'; }
+    .booster-step:nth-child(2n)::after, .booster-step:last-child::after { content: none; }
     .booster-story__row > img, .booster-story__copy { min-height: 390px; }
     .booster-timeline__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
@@ -380,8 +379,12 @@ const systemVisual = lang === 'de' ? assets.ditele : assets.appEn;
     .booster-hero__ring--outer { left: calc(50% - 50px); width: 334px; }
     .booster-hero__ring--inner { top: 80px; left: calc(50% - 113px); width: 259px; }
     .booster-hero h1, .booster-intro h2, .booster-steps h2, .booster-story__header h2 { font-size: 30px; }
-    .booster-steps__grid { grid-template-columns: 1fr; }
+    .booster-steps__grid { grid-template-columns: 1fr; gap: 30px; }
     .booster-step { min-height: 0; }
+    .booster-step::after,
+    .booster-step:nth-child(3n)::after,
+    .booster-step:nth-child(2n)::after { content: '↓'; top: auto; right: auto; bottom: -26px; left: 50%; transform: translateX(-50%); }
+    .booster-step:last-child::after { content: none; }
     .booster-story { padding-top: 90px; }
     .booster-story__row { grid-template-columns: 1fr; }
     .booster-story__row--reverse .booster-story__copy { order: 2; }

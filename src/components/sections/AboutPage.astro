@@ -23,7 +23,7 @@ const c = de
         { h: '100+ Kunden weltweit.', p: 'Unser Erfolg spricht für sich: zufriedene Partner in über 100 Ländern.' },
         { h: '50+ IT-Projekte erfolgreich umgesetzt.', p: 'Wir liefern Ergebnisse, die zählen, Projekt für Projekt.' },
         { h: '35+ Partnerschaften weltweit.', p: 'Mit starken Verbindungen zu langfristigem Erfolg.' },
-        { h: '40 Jahre gebündelte Praxiserfahrung.', p: 'Vertraue auf die gemeinsame Erfahrung unseres Teams im Test- und Qualitätsmanagement.' },
+        { h: 'über 50 Jahre gebündelte Praxiserfahrung.', p: 'Vertraue auf die gemeinsame Erfahrung unseres Teams im Test- und Qualitätsmanagement.' },
         { h: 'Effizient. Präzise. Strukturiert.', p: 'Schnelle Umsetzung mit durchdachten Prozessen für deinen Erfolg.' },
         { h: 'Wissen, das wächst.', p: 'Regelmäßige Weiterbildung unserer IT-Profis für Spitzenleistungen im Testmanagement.' },
         { h: 'Immer am Puls der Zeit.', p: 'Unsere Lösungen basieren auf den neuesten Markttrends und Anforderungen.' },
@@ -36,7 +36,7 @@ const c = de
         {
           h: 'Softwarelösungen und Beratung, die wirken.',
           items: [
-            '40 Jahre gebündelte Praxiserfahrung unseres Teams in IT-Projekten für Testing und Qualitätsmanagement.',
+            'über 50 Jahre gebündelte Praxiserfahrung unseres Teams in IT-Projekten für Testing und Qualitätsmanagement.',
             'Expertise in klassischer, hybrider und agiler Projektumsetzung.',
             'Testmanagement nach ISTQB-Richtlinien, praxisnah und bewährt.',
             'Zugriff auf ein erfahrenes Team aus Testern, Automatisierungsexperten und Testmanagern.',
@@ -92,7 +92,7 @@ const c = de
         { h: '100+ customers worldwide.', p: 'Our success speaks for itself: satisfied partners in over 100 countries.' },
         { h: '50+ IT projects successfully implemented.', p: 'We deliver results that count, project by project.' },
         { h: '35+ partnerships worldwide.', p: 'With strong connections to long-term success.' },
-        { h: '40 years of combined practical experience.', p: 'Rely on our team’s shared experience in test and quality management.' },
+        { h: 'over 50 years of combined practical experience.', p: 'Rely on our team’s shared experience in test and quality management.' },
         { h: 'Efficient. Precise. Structured.', p: 'Fast implementation with well-thought-out processes for your success.' },
         { h: 'Knowledge that grows.', p: 'Regular training of our IT professionals for top performance in test management.' },
         { h: 'Always at the cutting edge.', p: 'Our solutions are based on the latest market trends and requirements.' },
@@ -105,7 +105,7 @@ const c = de
         {
           h: 'Software solutions and consulting that work.',
           items: [
-            '40 years of combined practical experience within our team in IT projects for testing and quality management.',
+            'over 50 years of combined practical experience within our team in IT projects for testing and quality management.',
             'Expertise in classic, hybrid and agile project implementation.',
             'Test management according to ISTQB guidelines, practical and proven.',
             'Access to an experienced team of testers, automation experts and test managers.',
@@ -787,9 +787,12 @@ const magazinUrl = de
     width: 100%;
     max-height: 88vh;
     overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
     padding: clamp(2rem, 4vw, 3.25rem);
     box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
   }
+  .ab-modal__dialog::-webkit-scrollbar { width: 0; height: 0; display: none; }
   .ab-modal__close {
     position: sticky;
     top: 0;

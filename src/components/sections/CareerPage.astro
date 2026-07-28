@@ -916,11 +916,14 @@ const videos = [
     width: min(720px, 100%);
     max-height: 86vh;
     overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
     background: #161616;
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-lg);
     padding: clamp(1.5rem, 3vw, 2.5rem);
   }
+  .vpopup__box::-webkit-scrollbar { width: 0; height: 0; display: none; }
   .vpopup__close {
     position: absolute;
     top: 0.75rem;

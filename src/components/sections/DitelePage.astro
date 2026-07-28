@@ -153,10 +153,46 @@ const copy = isDe
       <button class="ditele-test__video-stop" type="button" data-stop-external-media hidden>{lang === 'de' ? 'Video schließen' : 'Close video'}</button>
     </div>
     <div class="ditele-test__content" data-reveal>
+      <span class="ditele-test__badge ditele-test__badge--live">{isDe ? 'Live-Demo' : 'Live demo'}</span>
       <h2 id="ditele-test-title">{copy.testTitle}</h2>
       <p>{copy.testText}</p>
-      <div class="ditele-form ditele-form--test">
-        <button type="button" id="ditele-check-button">{copy.testButton}</button>
+
+      <div class="ditele-quiz" data-ditele-quiz>
+        <div class="ditele-quiz__top">
+          <span class="ditele-quiz__live"><span class="ditele-quiz__dot" aria-hidden="true"></span>{isDe ? 'Live-Demo: DiTeLe Praxisübung' : 'Live demo: DiTeLe practice exercise'}</span>
+          <span class="ditele-quiz__count">{isDe ? 'Frage 1 von 300+' : 'Question 1 of 300+'}</span>
+        </div>
+        <h3 class="ditele-quiz__q">{isDe ? 'Was ist der Hauptzweck des Softwaretestens?' : 'What is the main purpose of software testing?'}</h3>
+        <ul class="ditele-quiz__options">
+          {[
+            { k: 'A', de: 'Fehler finden', en: 'Find defects', correct: false },
+            { k: 'B', de: 'Qualität bewerten', en: 'Assess quality', correct: false },
+            { k: 'C', de: 'Anforderungen validieren', en: 'Validate requirements', correct: false },
+            { k: 'D', de: 'Alle oben genannten', en: 'All of the above', correct: true },
+          ].map((o) => (
+            <li>
+              <button type="button" class="ditele-quiz__option" data-quiz-option data-correct={String(o.correct)}>
+                <span class="ditele-quiz__key">{o.k}</span>
+                <span>{isDe ? o.de : o.en}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+        <p class="ditele-quiz__feedback" data-quiz-feedback hidden></p>
+        <p class="ditele-quiz__hint">
+          {isDe
+            ? 'Das ist Übung 1 von 45+ in DiTeLe. Mit DiTeLe lernst du nicht nur über Softwaretesten – du machst Softwaretesten.'
+            : 'This is exercise 1 of 45+ in DiTeLe. With DiTeLe you don’t just learn about software testing – you do it.'}
+        </p>
+        <a class="ditele-quiz__cta" href="https://onlinekurs.test-it-academy.de/#preise" target="_blank" rel="noopener noreferrer">
+          {isDe ? 'Alle Übungen in DiTeLe freischalten' : 'Unlock all exercises in DiTeLe'}
+        </a>
+      </div>
+
+      <div class="ditele-test__actions">
+        <a class="ditele-test__course-link" href="https://onlinekurs.test-it-academy.de/" target="_blank" rel="noopener noreferrer">
+          {isDe ? 'Ditele entdecken' : 'Discover DiTeLe'} <span aria-hidden="true">→</span>
+        </a>
       </div>
     </div>
   </div>
@@ -239,8 +275,6 @@ const copy = isDe
   </div>
 </section>
 
-<LeadForm lang={lang} type="ditele" compact complianceMode />
-
 <style>
   .ditele-hero,
   .ditele-section {
@@ -319,7 +353,7 @@ const copy = isDe
   .ditele-test__video {
     position: relative;
     z-index: 1;
-    aspect-ratio: 16 / 9;
+    min-height: 460px;
     min-width: 0;
     overflow: hidden;
     background: #080808;
@@ -359,13 +393,12 @@ const copy = isDe
   }
 
   .ditele-test__video-consent svg {
-    width: 52px;
-    height: 52px;
+    width: 60px;
+    height: 60px;
     margin-bottom: 12px;
-    fill: none;
-    stroke: #ff0b00;
-    stroke-width: 2;
   }
+  .ditele-test__video-consent svg circle { fill: #ff0b00; stroke: none; }
+  .ditele-test__video-consent svg path { fill: #fff; }
 
   .ditele-test__video-consent strong {
     font-size: 1.125rem;
@@ -478,6 +511,133 @@ const copy = isDe
 
   .ditele-form button:hover { background: #e90a00; transform: translateY(-1px); }
   .ditele-form button:disabled { cursor: wait; opacity: 0.7; }
+
+  /* Test placeholder + online-course link (test coming soon). */
+  .ditele-test__badge {
+    display: inline-block;
+    margin-bottom: 0.9rem;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 999px;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .ditele-test__note {
+    margin-top: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-style: italic;
+  }
+  .ditele-test__actions { margin-top: 1.5rem; }
+  .ditele-test__course-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 50px;
+    padding: 0 1.6rem;
+    background: #ff0b00;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 5px;
+    transition: background 180ms ease, transform 180ms ease;
+  }
+  .ditele-test__course-link:hover { background: #e90a00; transform: translateY(-2px); }
+  .ditele-test__badge--live { border-color: rgba(255, 11, 0, 0.5); color: #ff5a4d; }
+
+  /* Interactive live-demo quiz (mirrors the DiTeLe online-course practice tool). */
+  .ditele-test__grid { align-items: stretch; }
+  .ditele-quiz {
+    margin-top: 1.6rem;
+    padding: clamp(1.1rem, 2.5vw, 1.6rem);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+  .ditele-quiz__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.9rem;
+  }
+  .ditele-quiz__live {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: #ff5a4d;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .ditele-quiz__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff0b00;
+    animation: ditele-pulse 1.8s ease-out infinite;
+  }
+  @keyframes ditele-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 11, 0, 0.55); }
+    100% { box-shadow: 0 0 0 10px rgba(255, 11, 0, 0); }
+  }
+  .ditele-quiz__count { color: rgba(255, 255, 255, 0.55); font-size: 0.78rem; font-weight: 600; }
+  .ditele-quiz__q { margin: 0 0 1rem; font-size: clamp(1.1rem, 2vw, 1.35rem); line-height: 1.35; }
+  .ditele-quiz__options { list-style: none; display: grid; gap: 0.6rem; margin: 0; padding: 0; }
+  .ditele-quiz__option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    color: #fff;
+    font-size: 1rem;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 160ms ease, background 160ms ease, transform 120ms ease;
+  }
+  .ditele-quiz__option:hover:not(:disabled) { border-color: rgba(255, 90, 77, 0.6); background: rgba(255, 90, 77, 0.06); transform: translateY(-1px); }
+  .ditele-quiz__option:disabled { cursor: default; }
+  .ditele-quiz__key {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    flex: none;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+  .ditele-quiz__option.is-correct { border-color: #22c55e; background: rgba(34, 197, 94, 0.12); }
+  .ditele-quiz__option.is-correct .ditele-quiz__key { border-color: #22c55e; color: #22c55e; }
+  .ditele-quiz__option.is-wrong { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+  .ditele-quiz__option.is-wrong .ditele-quiz__key { border-color: #ef4444; color: #ef4444; }
+  .ditele-quiz__feedback { margin: 0.9rem 0 0; font-size: 0.95rem; font-weight: 600; }
+  .ditele-quiz__feedback.is-correct { color: #22c55e; }
+  .ditele-quiz__feedback.is-wrong { color: #ff6a5d; }
+  .ditele-quiz__hint { margin: 0.9rem 0 1.1rem; color: rgba(255, 255, 255, 0.62); font-size: 0.9rem; line-height: 1.5; }
+  .ditele-quiz__cta {
+    display: block;
+    width: 100%;
+    padding: 0.95rem 1.2rem;
+    background: #ff0b00;
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
+    border-radius: 8px;
+    transition: background 180ms ease, transform 160ms ease, box-shadow 180ms ease;
+  }
+  .ditele-quiz__cta:hover { background: #e90a00; transform: translateY(-2px); }
+  .ditele-quiz.is-answered .ditele-quiz__cta { box-shadow: 0 0 0 3px rgba(255, 11, 0, 0.28); }
+  @media (prefers-reduced-motion: reduce) {
+    .ditele-quiz__dot { animation: none; }
+  }
 
   .ditele-curve {
     position: absolute;
@@ -861,5 +1021,32 @@ const copy = isDe
   const checkButton = document.getElementById('ditele-check-button');
   checkButton?.addEventListener('click', () => {
     document.getElementById('lernplattform')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // Interactive live-demo quiz: reveal the answer, then nudge toward the course.
+  const quizDe = document.documentElement.lang !== 'en';
+  document.querySelectorAll<HTMLElement>('[data-ditele-quiz]').forEach((quiz) => {
+    const options = quiz.querySelectorAll<HTMLButtonElement>('[data-quiz-option]');
+    const feedback = quiz.querySelector<HTMLElement>('[data-quiz-feedback]');
+    options.forEach((option) => {
+      option.addEventListener('click', () => {
+        if (quiz.dataset.answered) return;
+        quiz.dataset.answered = '1';
+        const chosenCorrect = option.getAttribute('data-correct') === 'true';
+        option.classList.add(chosenCorrect ? 'is-correct' : 'is-wrong');
+        options.forEach((other) => {
+          if (other.getAttribute('data-correct') === 'true') other.classList.add('is-correct');
+          other.disabled = true;
+        });
+        if (feedback) {
+          feedback.hidden = false;
+          feedback.textContent = chosenCorrect
+            ? (quizDe ? 'Richtig! Alle drei Ziele gehören zum Softwaretesten.' : 'Correct! All three goals are part of software testing.')
+            : (quizDe ? 'Nicht ganz – richtig ist D: Alle oben genannten.' : 'Not quite – the answer is D: all of the above.');
+          feedback.classList.add(chosenCorrect ? 'is-correct' : 'is-wrong');
+        }
+        quiz.classList.add('is-answered');
+      });
+    });
   });
 </script>

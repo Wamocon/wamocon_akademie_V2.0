@@ -50,7 +50,7 @@ const src = 'https://www.google.com/maps?q=Mergenthalerallee+79-81%2C+65760+Esch
   }
   .office-map__heading span { color: var(--color-accent); font-weight: var(--fw-semibold); }
   .office-map__heading h2 { margin-top: 0.35rem; font-size: clamp(1.8rem, 4vw, 3.2rem); }
-  .office-map__heading address { color: var(--color-muted); font-size: 1.125rem; font-style: normal; line-height: 1.5; text-align: right; }
+  .office-map__heading address { color: var(--color-muted); font-size: 1.125rem; font-style: normal; line-height: 1.5; text-align: left; }
   .office-map__frame { position: relative; display: grid; place-items: center; width: 100%; height: clamp(380px, 42vw, 650px); overflow: hidden; background: #171717; }
   .office-map__frame::before { content: ''; position: absolute; right: -60px; bottom: -90px; width: clamp(220px, 18vw, 360px); aspect-ratio: 1; background: url('/images/academy/tild3730-6132-4863-b462-623032303533__group_11.png') center / contain no-repeat; opacity: .55; pointer-events: none; transform: rotate(138deg); animation: map-object-drift 10s ease-in-out infinite; }
   .office-map--compact .office-map__frame { max-width: calc(var(--container-max) - (2 * var(--container-pad))); height: clamp(340px, 30vw, 520px); margin-inline: auto; }

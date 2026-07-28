@@ -7,6 +7,11 @@ interface Props {
 }
 
 const { lang } = Astro.props;
+const boosterHref = lang === 'de' ? '/360-booster-system/' : '/en/360-booster-system/';
+// Magazine download switches with the active language (DE / EN edition).
+const magazineUrl = lang === 'de'
+  ? 'https://wamocon-my.sharepoint.com/:b:/p/waleri_moretz/EZUMpxrfjYdPt7g1H7xkQhkBnuG6v-tWKLCPNZIN6Wejlw?e=bQVx7k&download=1'
+  : 'https://wamocon-my.sharepoint.com/my?id=%2Fpersonal%2Fwaleri%5Fmoretz%5Fwamocon%5Fcom%2FDocuments%2F01%5FWMC%2F01%20Vertrieb%20und%20Marketing%2F01%2D01%20Marketing%2F01%2D01%2D14%20WMC%20Marketing%2F07%20WMC%20Magazin%2FFinal%20Magazin%20WAMOCON&viewid=6e86f4bd%2D8476%2D4fa5%2Dad74%2D5e1cf1eedc8b';
 
 const copy = {
   de: {
@@ -32,7 +37,7 @@ const copy = {
     advantagesSummary: 'Dank dieser Vorteile bietet die WAMOCON Academy eine umfassende und qualitativ hochwertige Ausbildung für Fachleute, damit sie in der Lage sind, persönliche und berufliche Ziele in der sich schnell verändernden Technologiewelt zu erreichen.',
     wmcTitle: 'WMC-Methode +',
     wmcParagraphs: [
-      'Die IT-Welt war noch nie so komplex wie heute, besonders durch den rasanten Fortschritt der künstlichen Intelligenz. Hier kommt die WMC-Methode ins Spiel, die auf 40 Jahren gebündelter Praxiserfahrung unseres Teams im IT-Qualitätsmanagement aufbaut.',
+      'Die IT-Welt war noch nie so komplex wie heute, besonders durch den rasanten Fortschritt der künstlichen Intelligenz. Hier kommt die WMC-Methode ins Spiel, die auf über 50 Jahren gebündelter Praxiserfahrung unseres Teams im IT-Qualitätsmanagement aufbaut.',
       'Diese bewährte Methode sorgt dafür, dass auch zukünftige IT-Projekte erfolgreich umgesetzt werden. Vertrauen Sie auf die WMC-Methode, Ihren stabilen Anker in der sich ständig wandelnden IT-Welt.',
     ],
     methodIntro: 'IT-Projekte können manchmal kompliziert sein, aber die WMC-Methode hilft, alles einfacher zu machen. Hier sind die drei wichtigsten Dinge, die du wissen musst:',
@@ -99,7 +104,7 @@ const copy = {
     advantagesSummary: 'Thanks to these advantages, the WAMOCON Academy offers comprehensive and high-quality training for professionals to enable them to achieve personal and professional goals in the rapidly changing world of technology.',
     wmcTitle: 'WMC method +',
     wmcParagraphs: [
-      'The IT world has never been as complex as it is today, especially with the rapid advances in artificial intelligence. This is where the WMC method comes into play, building on 40 years of combined practical experience within our team in IT quality management.',
+      'The IT world has never been as complex as it is today, especially with the rapid advances in artificial intelligence. This is where the WMC method comes into play, building on over 50 years of combined practical experience within our team in IT quality management.',
       'This proven method ensures that future IT projects are also implemented successfully. Put your trust in the WMC method, your stable anchor in the constantly changing IT world.',
     ],
     methodIntro: 'IT projects can sometimes be complicated, but the WMC method helps to make everything simpler. Here are the three most important things you need to know:',
@@ -228,6 +233,10 @@ const videos = [
       <div class="about-booster__copy" data-reveal>
         <h2><span>{c.boosterLead}</span> {c.boosterRest}</h2>
         {c.boosterParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+        <a class="about-booster__cta" href={boosterHref}>
+          {lang === 'de' ? 'Zum 360° Booster System' : 'To the 360° Booster System'}
+          <span aria-hidden="true">→</span>
+        </a>
       </div>
     </div>
   </section>
@@ -268,21 +277,12 @@ const videos = [
       <div class="about-magazine__copy">
         <h2>{c.magazineTitle}</h2>
         <p>{c.magazineText}</p>
-        <a class="about-button about-button--magazine" href="https://wamocon-my.sharepoint.com/:b:/p/waleri_moretz/EZUMpxrfjYdPt7g1H7xkQhkBnuG6v-tWKLCPNZIN6Wejlw?e=bQVx7k&download=1" target="_blank" rel="noopener">{c.magazineCta}</a>
+        <a class="about-button about-button--magazine" href={magazineUrl} target="_blank" rel="noopener">{c.magazineCta}</a>
       </div>
       <img class="about-magazine__badge" src="/images/badge-zukunft.webp" alt="Unternehmen der Zukunft" width="1052" height="1524" loading="lazy" />
     </div>
   </section>
 
-  <LeadForm
-    lang={lang}
-    type="about"
-    compact
-    complianceMode
-    title={c.adviceTitle}
-    intro={c.adviceText}
-    image="/images/academy/tild6537-3034-4532-a562-323161646230__04_.png"
-  />
 
 </div>
 
@@ -345,6 +345,14 @@ const videos = [
   .about-booster__image { width: 100%; max-height: 720px; object-fit: contain; }
   .about-booster__copy h2 { max-width: 640px; margin-bottom: 38px; font-size: 40px; }
   .about-booster__copy p { max-width: 730px; margin-bottom: 22px; font-size: 16px; line-height: 1.5; }
+  .about-booster__cta {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    margin-top: 0.5rem; padding: 0.85rem 1.6rem;
+    background: var(--color-accent-surface); color: #fff;
+    border-radius: 5px; font-weight: var(--fw-semibold);
+    transition: background 180ms, transform 180ms;
+  }
+  .about-booster__cta:hover { background: var(--color-accent-hover, #c81111); transform: translateY(-2px); }
   .about-booster__accent { position: absolute; right: -80px; bottom: 50px; width: clamp(300px, 24vw, 440px); transform: rotate(20deg); animation: booster-curve-drift 10s ease-in-out infinite alternate; will-change: transform; }
 
   .about-graduates { padding-block: clamp(120px, 10vw, 180px) 55px; }
@@ -358,12 +366,13 @@ const videos = [
   .about-video > img { display: block; width: 100%; height: 100%; object-fit: cover; border: 0; }
   :global(.about-video > iframe) { display: block; width: 100%; height: 100%; object-fit: cover; border: 0; }
   .about-video > img { filter: saturate(.55) brightness(.55); }
-  .about-video__consent { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 24px; background: rgba(0,0,0,.42); text-align: center; }
-  .about-video__consent strong { margin-top: 56px; font-size: 14px; font-weight: 600; }
-  .about-video__consent small { max-width: 290px; font-size: 11px; font-weight: 300; line-height: 1.35; }
-  .about-video__consent:hover { background: rgba(0,0,0,.28); }
-  .about-video__play { position: absolute; inset: 50% auto auto 50%; display: grid; place-items: center; width: 64px; height: 48px; border-radius: 14px; background: rgba(0,0,0,.65); color: #fff; transform: translate(-50%,-50%); }
-  .about-video__play svg { width: 34px; height: 34px; }
+  .about-video__consent { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; background: rgba(0,0,0,.42); text-align: center; }
+  .about-video__consent strong { order: 3; display: inline-block; margin-top: 2px; padding: 0.68rem 1.5rem; border-radius: 6px; background: var(--color-accent-surface); color: #fff; font-size: 15px; font-weight: 600; }
+  .about-video__consent small { order: 2; max-width: 340px; color: rgba(255,255,255,.85); font-size: 13px; font-weight: 300; line-height: 1.45; }
+  .about-video__consent:hover { background: rgba(0,0,0,.3); }
+  .about-video__consent:hover strong { background: var(--color-accent-hover); }
+  .about-video__play { order: 1; position: static; display: grid; place-items: center; width: 62px; height: 62px; border-radius: 50%; background: var(--color-accent-surface); color: #fff; transform: none; box-shadow: 0 8px 24px rgba(0,0,0,.35); }
+  .about-video__play svg { width: 26px; height: 26px; margin-left: 3px; }
   :global(.about-video__stop) { position: absolute; z-index: 2; top: 10px; right: 10px; min-height: 38px; padding: 0 14px; border: 1px solid rgba(255,255,255,.82); border-radius: 4px; background: rgba(0,0,0,.82); color: #fff; font-size: 13px; }
 
   .about-magazine { padding-block: 0 135px; }

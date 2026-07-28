@@ -179,7 +179,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
 <section class="program-section program-future">
   <div class="program-shell program-future__grid">
     <div class="program-future__copy" data-reveal>
-      <h2><a href={certificationHref}><span>{content.futureTitleAccent}</span><br />{content.futureTitleRest}</a></h2>
+      <h2><a href={certificationHref}><span class="program-future__eyebrow">{content.futureTitleAccent}</span>{content.futureTitleRest}</a></h2>
       <p>{content.futureIntro}</p>
       <p>{content.futureText}</p>
     </div>
@@ -265,6 +265,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
         ))}
       </div>
     </article>
+    <span class="course-dialog__scrollhint" aria-hidden="true">{lang === 'de' ? 'Nach unten scrollen ↓' : 'Scroll down ↓'}</span>
   </dialog>
 ))}
 
@@ -326,10 +327,11 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   <article class="course-dialog__panel">
     <button class="course-dialog__close" type="button" data-dialog-close aria-label={content.close}><span aria-hidden="true">×</span></button>
     <div class="external-media" data-external-media>
-      <iframe data-consent-src="https://www.youtube-nocookie.com/embed/8t24ww8EVbk?autoplay=1&controls=1&playsinline=1&rel=0" data-consent-mode="manual" title={content.video} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen hidden></iframe>
+      <iframe data-consent-src="https://www.youtube-nocookie.com/embed/Q_0mtjo8GAU?autoplay=1&controls=1&playsinline=1&rel=0" data-consent-mode="manual" title={content.video} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen hidden></iframe>
       <div class="external-media__notice" data-external-media-notice>
+        <span class="external-media__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg></span>
         <p>{lang === 'de' ? 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.' : 'This video loads from YouTube only after your consent.'}</p>
-        <button class="program-button" type="button" data-external-media-load>{lang === 'de' ? 'Video laden' : 'Load video'}</button>
+        <button type="button" data-external-media-load>{lang === 'de' ? 'YouTube-Video laden' : 'Load YouTube video'}</button>
       </div>
     </div>
   </article>
@@ -847,9 +849,21 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     align-items: center;
   }
 
+  /* The accent line is now a small eyebrow, and the heading itself is capped
+     lower so it no longer fills most of the screen (review AK#6). */
   .program-future h2 {
     margin-bottom: 1.4rem;
-    font-size: clamp(2.2rem, 4.6vw, 4.5rem);
+    font-size: clamp(1.7rem, 3vw, 2.9rem);
+    line-height: 1.14;
+  }
+  .program-future__eyebrow {
+    display: block;
+    margin-bottom: 0.7rem;
+    color: var(--color-accent);
+    font-size: 0.8rem;
+    font-weight: var(--fw-semibold);
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
   }
 
   .program-future p + p {
@@ -1008,15 +1022,55 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
     position: relative;
     max-height: min(88vh, 900px);
     overflow-y: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    overscroll-behavior: contain;
+    /* Scrollbar stays visible so it is obvious the content scrolls (AK#16). */
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-accent-surface) rgba(255, 255, 255, 0.12);
     padding: clamp(2rem, 4.5vw, 5.5rem);
   }
 
   .course-dialog__panel::-webkit-scrollbar {
-    width: 0;
-    height: 0;
+    width: 10px;
   }
+  .course-dialog__panel::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .course-dialog__panel::-webkit-scrollbar-thumb {
+    background: var(--color-accent-surface);
+    border-radius: 8px;
+    border: 2px solid #131313;
+  }
+
+  /* Bottom fade + hint, shown only while the panel can still scroll down. */
+  .course-dialog::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 10px;
+    bottom: 0;
+    height: 64px;
+    background: linear-gradient(transparent, #131313);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms ease;
+  }
+  .course-dialog.is-scrollable:not(.is-bottom)::after { opacity: 1; }
+  .course-dialog__scrollhint {
+    position: absolute;
+    left: 50%;
+    bottom: 14px;
+    z-index: 2;
+    display: none;
+    transform: translateX(-50%);
+    padding: 0.3rem 0.85rem;
+    border-radius: 999px;
+    background: var(--color-accent-surface);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  .course-dialog.is-scrollable:not(.is-bottom) .course-dialog__scrollhint { display: inline-block; }
 
   .course-dialog h2 {
     max-width: 20ch;
@@ -1554,6 +1608,16 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   const popupLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-course-popup], [data-dialog-hook]'));
   const dialogs = Array.from(document.querySelectorAll<HTMLDialogElement>('.course-dialog'));
 
+  // Show the "scroll down" cue only while the panel can still scroll.
+  const updateScrollCue = (dialog: HTMLDialogElement) => {
+    const panel = dialog.querySelector<HTMLElement>('.course-dialog__panel');
+    if (!panel) return;
+    const scrollable = panel.scrollHeight - panel.clientHeight > 8;
+    dialog.classList.toggle('is-scrollable', scrollable);
+    const atBottom = panel.scrollTop + panel.clientHeight >= panel.scrollHeight - 8;
+    dialog.classList.toggle('is-bottom', atBottom);
+  };
+
   const openPopup = (link: HTMLAnchorElement) => {
     const dialogId = link.dataset.coursePopup ?? link.dataset.dialogHook;
     const dialog = dialogId ? document.getElementById(dialogId) : null;
@@ -1563,6 +1627,7 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
       parentDialog.close();
     }
     if (!dialog.open) dialog.showModal();
+    requestAnimationFrame(() => updateScrollCue(dialog));
     const hook = link.getAttribute('href');
     if (hook) history.replaceState(null, '', hook);
   };
@@ -1575,6 +1640,9 @@ const scheduleMonths: Array<[string, string[]]> = lang === 'de'
   });
 
   dialogs.forEach((dialog) => {
+    const panel = dialog.querySelector<HTMLElement>('.course-dialog__panel');
+    panel?.addEventListener('scroll', () => updateScrollCue(dialog), { passive: true });
+    window.addEventListener('resize', () => { if (dialog.open) updateScrollCue(dialog); });
     dialog.querySelector('[data-dialog-close]')?.addEventListener('click', () => dialog.close());
     dialog.addEventListener('click', (event) => {
       if (event.target === dialog) dialog.close();

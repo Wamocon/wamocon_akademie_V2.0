@@ -144,8 +144,9 @@ const c = de
               allowfullscreen hidden
             />
             <div class="external-media__notice" data-external-media-notice>
+              <span class="external-media__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg></span>
               <p>{de ? 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.' : 'This video loads from YouTube only after your consent.'}</p>
-              <button type="button" data-external-media-load>{de ? 'Video laden' : 'Load video'}</button>
+              <button type="button" data-external-media-load>{de ? 'YouTube-Video laden' : 'Load YouTube video'}</button>
             </div>
           </div>
           <figcaption>
