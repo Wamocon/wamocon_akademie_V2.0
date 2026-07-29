@@ -2,6 +2,10 @@
 
 Bilingual Astro implementation of [test-it-academy.com](https://test-it-academy.com/) for German and English visitors.
 
+German is the default locale and is served from the site root, English from `/en/`. Locale routing, navigation labels, legal-page URLs and the shared UI strings all live in `src/i18n/config.ts`; `src/i18n/utils.ts` maps a path onto its sibling for the language switcher and the `hreflang` tags, and exposes `pick(lang, {...})` for per-locale copy with a German fallback.
+
+Participant reviews are published unedited in the language they were given in (German).
+
 ## Architecture
 
 - `src/pages/` defines all public Astro routes.

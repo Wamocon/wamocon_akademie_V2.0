@@ -11,7 +11,8 @@ import { appCategories } from '../../data/apps';
 import type { Lang } from '../../i18n/config';
 
 interface Props {
-  lang: Lang;
+  /** LEGACY component: unreachable from any route, still German/English only. */
+  lang: "de" | "en";
 }
 const { lang } = Astro.props;
 const de = lang === 'de';

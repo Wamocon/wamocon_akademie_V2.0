@@ -1,6 +1,7 @@
 ---
 import { assets } from '../../data/academy';
 import { company, legalNav, nav, ui, type Lang } from '../../i18n/config';
+import { pick } from '../../i18n/utils';
 import OfficeMap from '../ui/OfficeMap.astro';
 import LeadForm from '../sections/LeadForm.astro';
 
@@ -11,19 +12,44 @@ const t = (key: keyof (typeof ui)['de']) => ui[lang][key];
 const year = new Date().getFullYear();
 const primaryLinks = nav.filter((item) => ['home', 'courses', 'certification', 'ditele'].includes(item.key));
 const aboutLinks = nav.find((item) => item.key === 'about-group')?.children ?? [];
-const labels = lang === 'de'
-  ? { title: 'Kontakt', location: 'Standort:', phone: 'Telefon:', email: 'E-Mail:', hours: 'Öffnungszeiten:', follow: 'Folgen Sie uns auf\nsozialen Medien' }
-  : { title: 'Contact us', location: 'Location:', phone: 'Phone:', email: 'E-Mail:', hours: 'Opening hours:', follow: 'Follow us on\nsocial media' };
-const privacySettings = lang === 'de' ? 'Cookie-Einstellungen' : 'Cookie settings';
+const labels = pick(lang, {
+  de: {
+    title: 'Kontakt', location: 'Standort:', phone: 'Telefon:', email: 'E-Mail:',
+    hours: 'Öffnungszeiten:', follow: 'Folgen Sie uns auf\nsozialen Medien',
+    privacySettings: 'Cookie-Einstellungen',
+    aboutNav: 'Über die Academy', legalNav: 'Rechtliches',
+    workplaceAlt: 'Arbeitsplatz der WAMOCON Academy',
+    ratingLabel: 'Google-Bewertung: 5,0 von 5 Sternen',
+    rating: '5,0',
+    ctaTitle: 'Lieber direkt schreiben?',
+    ctaText: 'Senden Sie uns Ihre Nachricht – wir melden uns zeitnah bei Ihnen.',
+    ctaButton: 'Kontakt aufnehmen',
+    close: 'Schließen',
+    aiNotice: 'Einzelne grafische Elemente dieser Website (abstrakte Illustrationen und 3D-Renderings) wurden mit Hilfe Künstlicher Intelligenz erstellt. Alle Fotografien von Personen, Räumen und Veranstaltungen sind echte Aufnahmen und nicht KI-generiert. Sämtliche Texte werden redaktionell von einem Menschen geprüft und verantwortet.',
+  },
+  en: {
+    title: 'Contact us', location: 'Location:', phone: 'Phone:', email: 'E-Mail:',
+    hours: 'Opening hours:', follow: 'Follow us on\nsocial media',
+    privacySettings: 'Cookie settings',
+    aboutNav: 'About the Academy', legalNav: 'Legal',
+    workplaceAlt: 'WAMOCON Academy workplace',
+    ratingLabel: 'Google rating: 5.0 out of 5 stars',
+    rating: '5.0',
+    ctaTitle: 'Prefer to write directly?',
+    ctaText: 'Send us your message – we will get back to you promptly.',
+    ctaButton: 'Get in touch',
+    close: 'Close',
+    aiNotice: 'Some graphical elements on this website (abstract illustrations and 3D renderings) were created with the help of artificial intelligence. All photographs of people, places and events are genuine and not AI-generated. All texts are editorially reviewed and approved by a human.',
+  },
+});
+const privacySettings = labels.privacySettings;
 const socialLinks = [
   { label: 'YouTube', href: company.social.youtube, icon: '/images/icon-youtube.svg' },
   { label: 'LinkedIn', href: company.social.linkedin, icon: '/images/icon-linkedin.svg' },
   { label: 'Instagram', href: company.social.instagram, icon: '/images/icon-instagram.svg' },
   { label: 'Facebook', href: company.social.facebook, icon: '/images/icon-facebook.svg' },
 ];
-const aiNotice = lang === 'de'
-  ? 'Einzelne grafische Elemente dieser Website (abstrakte Illustrationen und 3D-Renderings) wurden mit Hilfe Künstlicher Intelligenz erstellt. Alle Fotografien von Personen, Räumen und Veranstaltungen sind echte Aufnahmen und nicht KI-generiert. Sämtliche Texte werden redaktionell von einem Menschen geprüft und verantwortet.'
-  : 'Some graphical elements on this website (abstract illustrations and 3D renderings) were created with the help of artificial intelligence. All photographs of people, places and events are genuine and not AI-generated. All texts are editorially reviewed and approved by a human.';
+const aiNotice = labels.aiNotice;
 ---
 
 {showContact && (
@@ -55,8 +81,8 @@ const aiNotice = lang === 'de'
       </div>
     </div>
     <figure class="footer-contact__image" data-reveal>
-      <img src={assets.workspace} alt={lang === 'de' ? 'Arbeitsplatz der WAMOCON Academy' : 'WAMOCON Academy workplace'} width="1680" height="1120" loading="lazy" />
-      <figcaption aria-label={lang === 'de' ? 'Google-Bewertung: 5,0 von 5 Sternen' : 'Google rating: 5.0 out of 5 stars'}>
+      <img src={assets.workspace} alt={labels.workplaceAlt} width="1680" height="1120" loading="lazy" />
+      <figcaption aria-label={labels.ratingLabel}>
         <span class="google-rating__top" aria-hidden="true">
           <svg class="google-rating__mark" viewBox="0 0 48 48" role="img">
             <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.3-.4-3.5Z" />
@@ -64,7 +90,7 @@ const aiNotice = lang === 'de'
             <path fill="#4CAF50" d="M24 44c5.1 0 9.8-2 13.3-5.2l-6.1-5.2A11.9 11.9 0 0 1 12.9 28.5l-6.5 5C9.7 39.7 16.3 44 24 44Z" />
             <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3a12 12 0 0 1-4.1 5.6l6.1 5.2C36.9 39.2 44 34 44 24c0-1.2-.1-2.3-.4-3.5Z" />
           </svg>
-          <strong>{lang === 'de' ? '5,0' : '5.0'}</strong>
+          <strong>{labels.rating}</strong>
         </span>
         <span class="google-rating__stars" aria-hidden="true">★★★★★</span>
       </figcaption>
@@ -76,12 +102,12 @@ const aiNotice = lang === 'de'
   <div class="footer-cta">
     <div class="footer-cta__inner">
       <div class="footer-cta__copy">
-        <strong>{lang === 'de' ? 'Lieber direkt schreiben?' : 'Prefer to write directly?'}</strong>
-        <span>{lang === 'de' ? 'Senden Sie uns Ihre Nachricht – wir melden uns zeitnah bei Ihnen.' : 'Send us your message – we will get back to you promptly.'}</span>
+        <strong>{labels.ctaTitle}</strong>
+        <span>{labels.ctaText}</span>
       </div>
       <button class="footer-cta__btn" type="button" data-contact-open>
         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16v14H4z" stroke-linejoin="round"/><path d="M4 6l8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        {lang === 'de' ? 'Kontakt aufnehmen' : 'Get in touch'}
+        {labels.ctaButton}
       </button>
     </div>
   </div>
@@ -90,9 +116,9 @@ const aiNotice = lang === 'de'
 {showContact && (
   <div class="footer-modal" id="wma-contact-modal" hidden>
     <div class="footer-modal__overlay" data-contact-close></div>
-    <div class="footer-modal__dialog" role="dialog" aria-modal="true" aria-label={lang === 'de' ? 'Kontakt aufnehmen' : 'Get in touch'}>
-      <button class="footer-modal__close" type="button" data-contact-close aria-label={lang === 'de' ? 'Schließen' : 'Close'}>&times;</button>
-      <LeadForm lang={lang} type="contact" compact title={lang === 'de' ? 'Kontakt aufnehmen' : 'Get in touch'} />
+    <div class="footer-modal__dialog" role="dialog" aria-modal="true" aria-label={labels.ctaButton}>
+      <button class="footer-modal__close" type="button" data-contact-close aria-label={labels.close}>&times;</button>
+      <LeadForm lang={lang} type="contact" compact title={labels.ctaButton} />
     </div>
   </div>
 )}
@@ -108,10 +134,10 @@ const aiNotice = lang === 'de'
     <nav aria-label={t('footer.navigation')}>
       {primaryLinks.map((item) => <a href={item[lang].href}>{item[lang].label}</a>)}
     </nav>
-    <nav aria-label={lang === 'de' ? 'Über die Academy' : 'About the Academy'}>
+    <nav aria-label={labels.aboutNav}>
       {aboutLinks.map((item) => <a href={item[lang].href}>{item[lang].label}</a>)}
     </nav>
-    <nav aria-label={lang === 'de' ? 'Rechtliches' : 'Legal'}>
+    <nav aria-label={labels.legalNav}>
       <a href={legalNav.privacy[lang].href}>{legalNav.privacy[lang].label}</a>
       <a href={legalNav.imprint[lang].href}>{legalNav.imprint[lang].label}</a>
       <a href={legalNav.accessibility[lang].href}>{legalNav.accessibility[lang].label}</a>

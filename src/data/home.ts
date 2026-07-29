@@ -1,11 +1,17 @@
 /**
  * Home page text content (German + English).
  * Edit copy here — the page components read from this file.
+ *
+ * LEGACY: no route imports this file. The live home page is rendered by
+ * `components/sections/AcademyHome.astro` from `data/academy.ts`. It is
+ * therefore deliberately typed against its own German/English union rather than
+ * the site-wide `Lang` (which also includes Turkish) — adding a third locale to
+ * unreachable copy would be busywork. Widen `LegacyLang` if this is ever revived.
  */
-import type { Lang } from '../i18n/config';
+type LegacyLang = 'de' | 'en';
 
-type L = Record<Lang, string>;
-type LA = Record<Lang, string[]>;
+type L = Record<LegacyLang, string>;
+type LA = Record<LegacyLang, string[]>;
 
 export interface HomeContent {
   seo: { title: L; description: L };

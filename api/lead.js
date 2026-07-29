@@ -166,11 +166,50 @@ async function graphSendMail(accessToken, message) {
   if (!response.ok) throw new Error(`Graph sendMail failed with status ${response.status}`);
 }
 
+// Email copy per locale. German is the fallback for anything unrecognised.
+const EMAIL_COPY = {
+  de: {
+    footer: 'Diese E-Mail wurde automatisch über die Website der WAMOCON Academy versendet.',
+    form: 'Formular',
+    page: 'Seite',
+    phone: 'Telefon',
+    message: 'Nachricht',
+    publicationAllowed: 'Veröffentlichung erlaubt',
+    yes: 'Ja',
+    no: 'Nein',
+    internalTitle: 'Neue Anfrage über die Academy-Website',
+    internalBody: 'Eine neue Anfrage wurde übermittelt.',
+    internalSubject: (name) => `Neue Academy-Anfrage von ${name}`,
+    confirmTitle: 'Vielen Dank für Ihre Anfrage',
+    greeting: 'Hallo',
+    confirmBody:
+      'vielen Dank für Ihre Anfrage bei der WAMOCON Academy. Wir haben Ihre Daten erhalten und melden uns schnellstmöglich bei Ihnen.',
+    confirmSubject: 'Vielen Dank für Ihre Anfrage bei WAMOCON Academy',
+  },
+  en: {
+    footer: 'This email was sent automatically via the WAMOCON Academy website.',
+    form: 'Form',
+    page: 'Page',
+    phone: 'Phone',
+    message: 'Message',
+    publicationAllowed: 'Publication allowed',
+    yes: 'Yes',
+    no: 'No',
+    internalTitle: 'New inquiry via the Academy website',
+    internalBody: 'A new inquiry was submitted.',
+    internalSubject: (name) => `New Academy inquiry from ${name}`,
+    confirmTitle: 'Thank you for your request',
+    greeting: 'Hi',
+    confirmBody:
+      'thank you for your request to WAMOCON Academy. We have received your details and will get back to you as soon as possible.',
+    confirmSubject: 'Thank you for your request to WAMOCON Academy',
+  },
+};
+
+const copyFor = (lang) => EMAIL_COPY[lang] || EMAIL_COPY.de;
+
 function emailLayout(title, body, lang) {
-  const footer =
-    lang === 'de'
-      ? 'Diese E-Mail wurde automatisch über die Website der WAMOCON Academy versendet.'
-      : 'This email was sent automatically via the WAMOCON Academy website.';
+  const footer = copyFor(lang).footer;
 
   return `<!doctype html>
 <html lang="${escapeHtml(lang)}">
@@ -195,14 +234,17 @@ function emailLayout(title, body, lang) {
 }
 
 function details(submission, lang) {
+  const t = copyFor(lang);
   const rows = [
-    [lang === 'de' ? 'Formular' : 'Form', submission.type],
-    [lang === 'de' ? 'Seite' : 'Page', submission.source],
+    [t.form, submission.type],
+    [t.page, submission.source],
     ['Name', submission.name],
-    [lang === 'de' ? 'Telefon' : 'Phone', submission.phone || '-'],
+    [t.phone, submission.phone || '-'],
     ['E-Mail', submission.email],
-    [lang === 'de' ? 'Nachricht' : 'Message', submission.comment || '-'],
-    ...(submission.type === 'review' ? [[lang === 'de' ? 'Veröffentlichung erlaubt' : 'Publication allowed', submission.publicationConsent ? (lang === 'de' ? 'Ja' : 'Yes') : (lang === 'de' ? 'Nein' : 'No')]] : []),
+    [t.message, submission.comment || '-'],
+    ...(submission.type === 'review'
+      ? [[t.publicationAllowed, submission.publicationConsent ? t.yes : t.no]]
+      : []),
   ];
 
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e5e7eb;border-radius:8px;">
@@ -216,12 +258,12 @@ function details(submission, lang) {
 }
 
 function internalMessage(submission) {
-  const isDe = submission.lang === 'de';
-  const title = isDe ? 'Neue Anfrage über die Academy-Website' : 'New inquiry via the Academy website';
-  const body = `<p>${isDe ? 'Eine neue Anfrage wurde übermittelt.' : 'A new inquiry was submitted.'}</p>${details(submission, submission.lang)}`;
+  const t = copyFor(submission.lang);
+  const title = t.internalTitle;
+  const body = `<p>${t.internalBody}</p>${details(submission, submission.lang)}`;
 
   return {
-    subject: isDe ? `Neue Academy-Anfrage von ${submission.name}` : `New Academy inquiry from ${submission.name}`,
+    subject: t.internalSubject(submission.name),
     body: { contentType: 'HTML', content: emailLayout(title, body, submission.lang) },
     toRecipients: [{ emailAddress: { address: RECIPIENT } }],
     replyTo: [{ emailAddress: { address: submission.email } }],
@@ -229,17 +271,13 @@ function internalMessage(submission) {
 }
 
 function confirmationMessage(submission) {
-  const isDe = submission.lang === 'de';
-  const title = isDe ? 'Vielen Dank für Ihre Anfrage' : 'Thank you for your request';
-  const body = `<p>${isDe ? 'Hallo' : 'Hi'} ${escapeHtml(submission.name)},</p>
-    <p>${
-      isDe
-        ? 'vielen Dank für Ihre Anfrage bei der WAMOCON Academy. Wir haben Ihre Daten erhalten und melden uns schnellstmöglich bei Ihnen.'
-        : 'thank you for your request to WAMOCON Academy. We have received your details and will get back to you as soon as possible.'
-    }</p>${details(submission, submission.lang)}`;
+  const t = copyFor(submission.lang);
+  const title = t.confirmTitle;
+  const body = `<p>${t.greeting} ${escapeHtml(submission.name)},</p>
+    <p>${t.confirmBody}</p>${details(submission, submission.lang)}`;
 
   return {
-    subject: isDe ? 'Vielen Dank für Ihre Anfrage bei WAMOCON Academy' : 'Thank you for your request to WAMOCON Academy',
+    subject: t.confirmSubject,
     body: { contentType: 'HTML', content: emailLayout(title, body, submission.lang) },
     toRecipients: [{ emailAddress: { address: submission.email } }],
   };

@@ -1,5 +1,7 @@
 ---
 import type { Lang } from '../../i18n/config';
+import { pick } from '../../i18n/utils';
+import VideoEmbed from '../ui/VideoEmbed.astro';
 import LeadForm from './LeadForm.astro';
 
 interface Props {
@@ -7,7 +9,6 @@ interface Props {
 }
 
 const { lang } = Astro.props;
-const isDe = lang === 'de';
 
 const image = (name: string) => `/images/academy/${name}`;
 const assets = {
@@ -17,8 +18,8 @@ const assets = {
   classroom: image('tild3034-3664-4337-b734-326139353235__young-programmer-is-.jpg'),
 };
 
-const copy = isDe
-  ? {
+const copy = pick(lang, {
+  de: {
       hero: 'Die WAMOCON Academy bietet mit ihrer digitalen Lernplattform DiTeLe eine innovative Möglichkeit, umfassende Kurse bequem und effektiv zu absolvieren. Diese Plattform wurde speziell entwickelt, um das Lernen zu einem interaktiven und praxisorientierten Erlebnis zu machen.',
       testTitle: 'Überprüfe dein Wissen mit uns!',
       testText: 'Die Benutzerregistrierung im Online-Shop ist entscheidend für zukünftige Interaktionen. Sie umfasst mehr als nur das Ausfüllen eines Formulars. Es geht um die Erstellung eines Kontos für personalisierte Nutzungserlebnisse. Bereiten wir uns gemeinsam auf die Testvorbereitung vor!',
@@ -66,8 +67,17 @@ const copy = isDe
       videoConsentTitle: 'YouTube-Video',
       videoConsentText: 'Mit dem Laden des Videos stimmen Sie einer Verbindung zu YouTube und der Übertragung Ihrer IP-Adresse zu.',
       videoConsentButton: 'YouTube-Video laden',
-    }
-  : {
+      closeVideo: 'Video schließen',
+      liveBadge: 'Live-Demo',
+      liveDemo: 'Live-Demo: DiTeLe Praxisübung',
+      questionCount: 'Frage 1 von 300+',
+      question: 'Was ist der Hauptzweck des Softwaretestens?',
+      quizHint: 'Das ist Übung 1 von 45+ in DiTeLe. Mit DiTeLe lernst du nicht nur über Softwaretesten – du machst Softwaretesten.',
+      quizCta: 'Alle Übungen in DiTeLe freischalten',
+      discover: 'Ditele entdecken',
+      developerAlt: 'Softwareentwickler bei der Arbeit am Computer',
+    },
+  en: {
       hero: 'With its digital learning platform DiTeLe, the WAMOCON Academy offers an innovative way of completing comprehensive courses conveniently and effectively. This platform has been specially developed to make learning an interactive and practice-oriented experience.',
       testTitle: 'Test your knowledge with us!',
       testText: "User registration in the online store is crucial for future interactions. It involves more than just filling out a form. It's about creating an account for personalized user experiences. Let's prepare for the test together!",
@@ -115,7 +125,17 @@ const copy = isDe
       videoConsentTitle: 'YouTube video',
       videoConsentText: 'By loading the video, you consent to a connection to YouTube and the transfer of your IP address.',
       videoConsentButton: 'Load YouTube video',
-    };
+      closeVideo: 'Close video',
+      liveBadge: 'Live demo',
+      liveDemo: 'Live demo: DiTeLe practice exercise',
+      questionCount: 'Question 1 of 300+',
+      question: 'What is the main purpose of software testing?',
+      quizHint: 'This is exercise 1 of 45+ in DiTeLe. With DiTeLe you don’t just learn about software testing – you do it.',
+      quizCta: 'Unlock all exercises in DiTeLe',
+      discover: 'Discover DiTeLe',
+      developerAlt: 'Software developer working at a computer',
+    },
+});
 
 ---
 
@@ -132,37 +152,24 @@ const copy = isDe
 
 <section class="ditele-section ditele-test" aria-labelledby="ditele-test-title">
   <div class="container ditele-test__grid">
-    <div class="ditele-test__video" data-external-media data-reveal>
-      <div class="ditele-test__video-consent">
-        <svg viewBox="0 0 64 64" aria-hidden="true">
-          <circle cx="32" cy="32" r="29" />
-          <path d="m27 21 17 11-17 11z" />
-        </svg>
-        <strong>{copy.videoConsentTitle}</strong>
-        <p>{copy.videoConsentText}</p>
-        <button type="button" data-load-external-media>{copy.videoConsentButton}</button>
-      </div>
-      <iframe
-        data-consent-src="https://www.youtube-nocookie.com/embed/FQ8dXuBDzb0?autoplay=1&controls=1&playsinline=1&rel=0"
-        data-consent-mode="manual"
-        title={copy.videoTitle}
-        loading="lazy"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-        hidden
-      ></iframe>
-      <button class="ditele-test__video-stop" type="button" data-stop-external-media hidden>{lang === 'de' ? 'Video schließen' : 'Close video'}</button>
-    </div>
+    <VideoEmbed
+      class="ditele-test__video"
+      videoId="FQ8dXuBDzb0"
+      title={copy.videoTitle}
+      poster={assets.classroom}
+      lang={lang}
+    />
     <div class="ditele-test__content" data-reveal>
-      <span class="ditele-test__badge ditele-test__badge--live">{isDe ? 'Live-Demo' : 'Live demo'}</span>
+      <span class="ditele-test__badge ditele-test__badge--live">{copy.liveBadge}</span>
       <h2 id="ditele-test-title">{copy.testTitle}</h2>
       <p>{copy.testText}</p>
 
       <div class="ditele-quiz" data-ditele-quiz>
         <div class="ditele-quiz__top">
-          <span class="ditele-quiz__live"><span class="ditele-quiz__dot" aria-hidden="true"></span>{isDe ? 'Live-Demo: DiTeLe Praxisübung' : 'Live demo: DiTeLe practice exercise'}</span>
-          <span class="ditele-quiz__count">{isDe ? 'Frage 1 von 300+' : 'Question 1 of 300+'}</span>
+          <span class="ditele-quiz__live"><span class="ditele-quiz__dot" aria-hidden="true"></span>{copy.liveDemo}</span>
+          <span class="ditele-quiz__count">{copy.questionCount}</span>
         </div>
-        <h3 class="ditele-quiz__q">{isDe ? 'Was ist der Hauptzweck des Softwaretestens?' : 'What is the main purpose of software testing?'}</h3>
+        <h3 class="ditele-quiz__q">{copy.question}</h3>
         <ul class="ditele-quiz__options">
           {[
             { k: 'A', de: 'Fehler finden', en: 'Find defects', correct: false },
@@ -173,25 +180,21 @@ const copy = isDe
             <li>
               <button type="button" class="ditele-quiz__option" data-quiz-option data-correct={String(o.correct)}>
                 <span class="ditele-quiz__key">{o.k}</span>
-                <span>{isDe ? o.de : o.en}</span>
+                <span>{o[lang]}</span>
               </button>
             </li>
           ))}
         </ul>
         <p class="ditele-quiz__feedback" data-quiz-feedback hidden></p>
-        <p class="ditele-quiz__hint">
-          {isDe
-            ? 'Das ist Übung 1 von 45+ in DiTeLe. Mit DiTeLe lernst du nicht nur über Softwaretesten – du machst Softwaretesten.'
-            : 'This is exercise 1 of 45+ in DiTeLe. With DiTeLe you don’t just learn about software testing – you do it.'}
-        </p>
+        <p class="ditele-quiz__hint">{copy.quizHint}</p>
         <a class="ditele-quiz__cta" href="https://onlinekurs.test-it-academy.de/#preise" target="_blank" rel="noopener noreferrer">
-          {isDe ? 'Alle Übungen in DiTeLe freischalten' : 'Unlock all exercises in DiTeLe'}
+          {copy.quizCta}
         </a>
       </div>
 
       <div class="ditele-test__actions">
         <a class="ditele-test__course-link" href="https://onlinekurs.test-it-academy.de/" target="_blank" rel="noopener noreferrer">
-          {isDe ? 'Ditele entdecken' : 'Discover DiTeLe'} <span aria-hidden="true">→</span>
+          {copy.discover} <span aria-hidden="true">→</span>
         </a>
       </div>
     </div>
@@ -266,7 +269,7 @@ const copy = isDe
     <figure class="ditele-advantages__media" data-reveal>
       <img
         src={assets.classroom}
-        alt={isDe ? 'Softwareentwickler bei der Arbeit am Computer' : 'Software developer working at a computer'}
+        alt={copy.developerAlt}
         width="1680"
         height="1120"
         loading="eager"
@@ -353,7 +356,8 @@ const copy = isDe
   .ditele-test__video {
     position: relative;
     z-index: 1;
-    min-height: 460px;
+    /* Height comes from the 16:9 ratio in VideoEmbed. A min-height here would
+       instead resolve the width and blow the tile past its grid track. */
     min-width: 0;
     overflow: hidden;
     background: #080808;
@@ -985,38 +989,6 @@ const copy = isDe
 </style>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-external-media]').forEach((container) => {
-    const button = container.querySelector<HTMLButtonElement>('[data-load-external-media]');
-    const iframe = container.querySelector<HTMLIFrameElement>('iframe[data-consent-src]');
-    const placeholder = container.querySelector<HTMLElement>('.ditele-test__video-consent');
-    const stopButton = container.querySelector<HTMLButtonElement>('[data-stop-external-media]');
-
-    const stop = () => {
-      if (!iframe) return;
-      iframe.removeAttribute('src');
-      iframe.hidden = true;
-      if (placeholder) placeholder.hidden = false;
-      if (stopButton) stopButton.hidden = true;
-      container.classList.remove('is-loaded');
-    };
-
-    button?.addEventListener('click', () => {
-      const src = iframe?.dataset.consentSrc;
-      if (!iframe || !src) return;
-
-      iframe.src = src;
-      iframe.hidden = false;
-      placeholder?.setAttribute('hidden', '');
-      if (stopButton) stopButton.hidden = false;
-      container.classList.add('is-loaded');
-    });
-    stopButton?.addEventListener('click', stop);
-    window.addEventListener('pagehide', stop);
-    window.addEventListener('wamocon:consent', (event) => {
-      const detail = (event as CustomEvent<{ externalMedia?: boolean }>).detail;
-      if (!detail?.externalMedia) stop();
-    });
-  });
 
   const checkButton = document.getElementById('ditele-check-button');
   checkButton?.addEventListener('click', () => {

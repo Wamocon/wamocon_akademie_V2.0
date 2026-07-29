@@ -39,7 +39,6 @@
 - [About the academy](https://test-it-academy.com/ber-die-akademie/): Mission, trainers and accreditation.
 - [Participant reviews](https://test-it-academy.com/bewertungen/): Verified reviews and success stories from course participants.
 - [DiTele app](https://test-it-academy.com/ditele-app/): The academy's digital learning and testing application.
-- [Contact](https://test-it-academy.com/kontakt/): Phone, e-mail and enquiry form.
 
 ## English pages
 
@@ -49,7 +48,8 @@
 - [360-degree Booster System (EN)](https://test-it-academy.com/en/360-booster-system/): Career-entry programme in English.
 - [About us (EN)](https://test-it-academy.com/en/about-us/): Academy profile in English.
 - [Reviews (EN)](https://test-it-academy.com/en/reviews/): Participant reviews in English.
-- [Contact (EN)](https://test-it-academy.com/en/contacts/): English contact details and enquiry form.
+- [DiTele app (EN)](https://test-it-academy.com/en/ditele-app/): Digital learning application in English.
+
 
 ## Contact
 
@@ -64,9 +64,11 @@
 
 ## Legal and policies
 
-- [Imprint](https://test-it-academy.com/impressum/): Provider identification under section 5 DDG.
-- [Privacy policy](https://test-it-academy.com/datenschutz/): How the academy processes personal data.
-- [Accessibility statement](https://test-it-academy.com/barrierefreiheit/): Accessibility status under the BFSG.
+- [Imprint](https://test-it-academy.com/impressum/): Provider identification under section 5 DDG. Also available in [English](https://test-it-academy.com/imprint/).
+- [Privacy policy](https://test-it-academy.com/datenschutz/): How the academy processes personal data. Also available in [English](https://test-it-academy.com/privacy-policy/).
+- [Accessibility statement](https://test-it-academy.com/barrierefreiheit/): Accessibility status under the BFSG. Also available in [English](https://test-it-academy.com/accessibility/).
+
+The German versions of the legal pages are the legally binding ones; the English versions are provided for information.
 
 ## Extended content
 

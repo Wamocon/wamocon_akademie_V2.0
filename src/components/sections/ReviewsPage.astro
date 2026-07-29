@@ -1,13 +1,36 @@
 ---
 import type { Lang } from '../../i18n/config';
+import { pick } from '../../i18n/utils';
 import LeadForm from './LeadForm.astro';
 import ReviewModal from './ReviewModal.astro';
+import VideoEmbed from '../ui/VideoEmbed.astro';
 
 interface Props { lang: Lang; }
 
 const { lang } = Astro.props;
-const copy = lang === 'de'
-  ? {
+
+// Participant reviews are published unedited (§ 5b (3) UWG). Locales added after
+// the reviews were collected therefore reuse the original German wording for the
+// stories, quotes and video titles, and translate only the surrounding chrome.
+const originalStories = [
+  {
+    name: 'Leon Christen', title: 'Leon Christen und sein Hindernis', videoId: '1u100i0b9LM',
+    videoTitle: 'Leon und seine Erfahrung über die WMA und seine IT-Karriere',
+    challenge: 'Leon konnte trotz unzähliger Bewerbungen keinen Arbeitsplatz finden. Unternehmen lehnten ihn ab, obwohl er einen hoch angesehenen Studiengang absolviert hatte.',
+    goal: 'Das Ziel war ganz klar, Leon wollte in seiner IT-Karriere durchstarten.',
+    result: ['Qualifizierter ISTQB® Certified Tester', 'Besseres Verständnis in seinem Projekt', 'Mehr Verantwortung im Unternehmen erhalten'],
+  },
+  {
+    name: 'Christian-Oliver Friedrich', title: 'Christian-Oliver Friedrich und sein Hindernis', videoId: '-M1JD6mZVvY',
+    videoTitle: 'Wie eine Entscheidung Christians ganzes Leben veränderte',
+    challenge: 'Christian-Oliver wollte Praxiserfahrung über echte IT-Projekte sammeln. Jedoch ohne Praxiserfahrung und ISTQB® Tester Zertifikat ist es ihm nicht möglich.',
+    goal: 'Sein Ziel ist es, als Testautomatisierer IT-Projekte durchführen zu können. Dafür muss Christian-Oliver jedoch zuerst das ISTQB® Tester Zertifikat erfolgreich abschließen.',
+    result: ['Mit dem ersten Versuch das ISTQB® Zertifikat bestanden', 'Sein Einstieg ins IT-Projekt als Tester sicher gefunden', 'Sich weiterentwickelt mit ISTQB® Test Automation Engineer'],
+  },
+];
+
+const copy = pick(lang, {
+  de: {
       title: 'Was sagen unsere Teilnehmer?',
       intro: 'Unsere Teilnehmer berichten über ihre Erlebnisse und den Mehrwert, den sie von uns bezogen haben.',
       // Pflichtangabe nach § 5b Abs. 3 UWG: ob und wie die Echtheit von
@@ -18,22 +41,7 @@ const copy = lang === 'de'
       testimonialsLabel: 'Teilnehmerstimmen',
       challenge: 'Herausforderung', goal: 'Ziel', result: 'Ergebnis', onYouTube: 'auf YouTube ansehen', interview: 'im Interview',
       playVideo: 'Video abspielen', closeVideo: 'Video schließen',
-      stories: [
-        {
-          name: 'Leon Christen', title: 'Leon Christen und sein Hindernis', videoId: '1u100i0b9LM',
-          videoTitle: 'Leon und seine Erfahrung über die WMA und seine IT-Karriere',
-          challenge: 'Leon konnte trotz unzähliger Bewerbungen keinen Arbeitsplatz finden. Unternehmen lehnten ihn ab, obwohl er einen hoch angesehenen Studiengang absolviert hatte.',
-          goal: 'Das Ziel war ganz klar, Leon wollte in seiner IT-Karriere durchstarten.',
-          result: ['Qualifizierter ISTQB® Certified Tester', 'Besseres Verständnis in seinem Projekt', 'Mehr Verantwortung im Unternehmen erhalten'],
-        },
-        {
-          name: 'Christian-Oliver Friedrich', title: 'Christian-Oliver Friedrich und sein Hindernis', videoId: '-M1JD6mZVvY',
-          videoTitle: 'Wie eine Entscheidung Christians ganzes Leben veränderte',
-          challenge: 'Christian-Oliver wollte Praxiserfahrung über echte IT-Projekte sammeln. Jedoch ohne Praxiserfahrung und ISTQB® Tester Zertifikat ist es ihm nicht möglich.',
-          goal: 'Sein Ziel ist es, als Testautomatisierer IT-Projekte durchführen zu können. Dafür muss Christian-Oliver jedoch zuerst das ISTQB® Tester Zertifikat erfolgreich abschließen.',
-          result: ['Mit dem ersten Versuch das ISTQB® Zertifikat bestanden', 'Sein Einstieg ins IT-Projekt als Tester sicher gefunden', 'Sich weiterentwickelt mit ISTQB® Test Automation Engineer'],
-        },
-      ],
+      stories: originalStories,
       graduates: [
         { name: 'Natalie', role: 'Teilnehmerin WAMOCON Academy', videoId: 'Y530fsyTCe4' },
         { name: 'Artur', role: 'Teilnehmer WAMOCON Academy', videoId: 'GIzxhk4tzmM' },
@@ -46,8 +54,8 @@ const copy = lang === 'de'
       name: 'Ihr Name', phone: 'Telefon', email: 'E-Mail', submit: 'Anfrage senden',
       consentPre: 'Hiermit bestätige ich, dass ich die ', consentLink: 'Datenschutzerklärung',
       consentPost: ' gelesen habe und damit einverstanden bin, dass die WAMOCON Academy GmbH meine Daten, einschließlich personenbezogener Daten, speichern und verarbeiten darf.',
-    }
-  : {
+    },
+  en: {
       title: 'What do our participants say?',
       intro: 'Our participants report on their experiences and the added value they have gained from us.',
       authenticity: 'How we ensure our reviews are genuine: every review and participant testimonial published here comes from a person who actually completed the relevant WAMOCON Academy programme. Before publication we verify each review against our participation records. Reviews are never bought or obtained in exchange for any benefit; we publish them unedited, whether they are positive or critical.',
@@ -84,10 +92,21 @@ const copy = lang === 'de'
       name: 'Name', phone: 'Phone', email: 'E-Mail', submit: 'Send request',
       consentPre: 'I hereby confirm that I have read the ', consentLink: 'privacy policy',
       consentPost: ' and agree that WAMOCON Academy GmbH may store and process my data, including personal data.',
-    };
+    },
+});
 
 const stories = copy.stories;
 const graduates = copy.graduates;
+const videoCopy = pick(lang, {
+  de: {
+    notice: 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.',
+    load: 'YouTube-Video laden',
+  },
+  en: {
+    notice: 'This video loads from YouTube only after your consent.',
+    load: 'Load YouTube video',
+  },
+});
 
 const storyPosters = [
   '/images/academy/story-leon.jpg',
@@ -131,15 +150,14 @@ const graduatePoster = (name: string) => `/images/academy/testimonial-${name.toL
               </div>
             </dl>
           </div>
-          <div class="video-preview video-preview--story" data-external-media>
-            <iframe data-consent-src={`https://www.youtube-nocookie.com/embed/${story.videoId}?autoplay=1&controls=1&playsinline=1&rel=0`} data-consent-mode="manual" title={story.videoTitle} loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen hidden></iframe>
-            <div class="external-media__notice" data-external-media-notice>
-              <img src={storyPosters[index]} alt={`${story.name} ${copy.interview}`} width="1920" height="1080" loading="lazy" />
-              <span class="external-media__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg></span>
-              <p>{lang === 'de' ? 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.' : 'This video loads from YouTube only after your consent.'}</p>
-              <button type="button" data-external-media-load>{lang === 'de' ? 'YouTube-Video laden' : 'Load YouTube video'}</button>
-            </div>
-          </div>
+          <VideoEmbed
+            class="video-preview video-preview--story"
+            videoId={story.videoId}
+            title={story.videoTitle}
+            poster={storyPosters[index]}
+            lang={lang}
+            channel={`${story.name} ${copy.interview}`}
+          />
         </article>
       ))}
     </div>
@@ -149,15 +167,14 @@ const graduatePoster = (name: string) => `/images/academy/testimonial-${name.toL
     <div class="container graduates__grid">
       {graduates.map((graduate) => (
         <article class="graduate">
-          <div class="video-preview video-preview--graduate" data-external-media>
-            <iframe data-consent-src={`https://www.youtube-nocookie.com/embed/${graduate.videoId}?autoplay=1&controls=1&playsinline=1&rel=0`} data-consent-mode="manual" title={`${graduate.name}: ${copy.testimonialsLabel}`} loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen hidden></iframe>
-            <div class="external-media__notice" data-external-media-notice>
-              <img src={graduatePoster(graduate.name)} alt={`${graduate.name}, ${graduate.role}`} width="1280" height="720" loading="lazy" />
-              <span class="external-media__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg></span>
-              <p>{lang === 'de' ? 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.' : 'This video loads from YouTube only after your consent.'}</p>
-              <button type="button" data-external-media-load>{lang === 'de' ? 'YouTube-Video laden' : 'Load YouTube video'}</button>
-            </div>
-          </div>
+          <VideoEmbed
+            class="video-preview video-preview--graduate"
+            videoId={graduate.videoId}
+            title={graduate.name}
+            poster={graduatePoster(graduate.name)}
+            lang={lang}
+            channel={graduate.role}
+          />
           <h2>{graduate.name}</h2>
           <p>{graduate.role}</p>
         </article>
@@ -262,23 +279,27 @@ const graduatePoster = (name: string) => `/images/academy/testimonial-${name.toL
   /* Full-width hero. The copy sits just below the header instead of halfway
      down the artboard, so the space under the header is actually used (AK#13). */
   @media (min-width: 1200px) {
+    /* The hero keeps its 40vw stage proportions but must be free to grow: the
+       copy also carries the mandatory review-authenticity notice, and a hard
+       height clipped the "send your review" CTA off the page entirely
+       (107-161px lost between 1280 and 1920). */
     .reviews-hero {
       width: 100%;
       min-height: 40vw;
-      height: 40vw;
       padding-top: 0;
+      padding-bottom: 4vw;
     }
     .reviews-hero__inner {
       width: 100%;
       max-width: none;
       min-height: 40vw;
-      height: 40vw;
       padding: 0;
     }
     .reviews-hero__copy {
-      position: absolute;
-      top: 13vw;
-      left: 1.6667vw;
+      /* In flow rather than absolute, so its height counts towards the hero. */
+      position: relative;
+      margin-left: 1.6667vw;
+      padding-top: 13vw;
       width: 48vw;
     }
     .reviews-hero h1 {
@@ -395,17 +416,4 @@ const graduatePoster = (name: string) => `/images/academy/testimonial-${name.toL
   });
 
   // Inline consent-gated videos (story + graduate cards): load the YouTube iframe on click.
-  document.querySelectorAll<HTMLElement>('.video-preview[data-external-media]').forEach((media) => {
-    const frame = media.querySelector<HTMLIFrameElement>('iframe[data-consent-src]');
-    const notice = media.querySelector<HTMLElement>('[data-external-media-notice]');
-    const loadButton = media.querySelector<HTMLButtonElement>('[data-external-media-load]');
-    loadButton?.addEventListener('click', () => {
-      const source = frame?.dataset.consentSrc;
-      if (!frame || !source) return;
-      (window as Window & { wamoconConsent?: { grantExternalMedia?: () => void } }).wamoconConsent?.grantExternalMedia?.();
-      frame.src = source;
-      frame.hidden = false;
-      if (notice) notice.hidden = true;
-    });
-  });
 </script>

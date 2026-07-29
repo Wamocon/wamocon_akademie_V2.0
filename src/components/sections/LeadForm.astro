@@ -1,6 +1,7 @@
 ---
 import { assets } from '../../data/academy';
-import { legalNav, ui, type Lang } from '../../i18n/config';
+import { legalNav, thanksHref, ui, type Lang } from '../../i18n/config';
+import { pick } from '../../i18n/utils';
 
 interface Props {
   lang: Lang;
@@ -14,23 +15,30 @@ interface Props {
 
 const { lang, type = 'lead', compact = false, title, image = assets.consultation, intro, complianceMode = false } = Astro.props;
 const t = (key: keyof (typeof ui)['de']) => ui[lang][key];
-const redirect = lang === 'de' ? '/danke/' : '/thanks/';
+const redirect = thanksHref[lang];
 const privacyHref = legalNav.privacy[lang].href;
 const displayTitle = title ?? t('form.title');
-const privacyNotice = lang === 'de'
-  ? 'Mit dem Absenden senden Sie eine unverbindliche Anfrage an die WAMOCON Academy GmbH. Wir verwenden Ihre Angaben nur zur Beantwortung Ihrer Anfrage. Weitere Informationen finden Sie in der '
-  : 'By submitting, you send a non-binding inquiry to WAMOCON Academy GmbH. We use your details only to answer your inquiry. More information is available in the ';
+const privacyNotice = pick(lang, {
+  de: 'Mit dem Absenden senden Sie eine unverbindliche Anfrage an die WAMOCON Academy GmbH. Wir verwenden Ihre Angaben nur zur Beantwortung Ihrer Anfrage. Weitere Informationen finden Sie in der ',
+  en: 'By submitting, you send a non-binding inquiry to WAMOCON Academy GmbH. We use your details only to answer your inquiry. More information is available in the ',
+});
 
 // Named person accountable for enquiries submitted through this form.
-const responsiblePerson = lang === 'de'
-  ? 'Ihre Anfrage wird bearbeitet von Dipl.-Ing. Waleri Moretz, Geschäftsführer der WAMOCON Academy GmbH.'
-  : 'Your enquiry is handled by Dipl.-Ing. Waleri Moretz, Managing Director of WAMOCON Academy GmbH.';
+const responsiblePerson = pick(lang, {
+  de: 'Ihre Anfrage wird bearbeitet von Dipl.-Ing. Waleri Moretz, Geschäftsführer der WAMOCON Academy GmbH.',
+  en: 'Your enquiry is handled by Dipl.-Ing. Waleri Moretz, Managing Director of WAMOCON Academy GmbH.',
+});
+
+const consultationAlt = pick(lang, {
+  de: 'Persönliche Beratung bei der WAMOCON Academy',
+  en: 'Personal consultation at WAMOCON Academy',
+});
 ---
 
 <section class:list={['lead-section', { 'lead-section--compact': compact }]} id="beratung">
   <div class="container lead-section__grid">
     <div class="lead-section__image" data-reveal>
-      <img src={image} alt={lang === 'de' ? 'Persönliche Beratung bei der WAMOCON Academy' : 'Personal consultation at WAMOCON Academy'} width="1600" height="900" loading="lazy" />
+      <img src={image} alt={consultationAlt} width="1600" height="900" loading="lazy" />
     </div>
 
     <img class="lead-section__curve lead-section__curve--top" src={assets.accentCurve} alt="" width="2228" height="1724" aria-hidden="true" loading="lazy" />

@@ -50,15 +50,21 @@ assert(!/Als offizieller Partner (?:von|des)|As an official partner of ISTQB/i.t
 assert(!/5838311|info@wamocon\.com/i.test(combined), 'Conflicting legacy Academy contact details remain in rendered pages');
 assert(combined.includes('+49 (0) 6196 5838312') && combined.includes('info@test-it-academy.com'), 'Canonical Academy phone or e-mail is missing');
 assert(combined.includes('DE344930486'), 'Confirmed Academy VAT ID is missing');
-assert(combined.includes('40 Jahre gebündelte Praxiserfahrung unseres Teams'), 'Confirmed combined team-experience wording is missing');
+assert(combined.includes('50 Jahre gebündelte Praxiserfahrung unseres Teams'), 'Confirmed combined team-experience wording is missing');
 assert(combined.includes('Die WAMOCON Academy GmbH ist nicht bereit und nicht verpflichtet'), 'Confirmed Academy consumer-dispute statement is missing');
 assert(!combined.includes('info@test-it-academy.de'), 'Obsolete .de Academy e-mail remains');
 assert(!/Regierungspräsidium Hessen|Hesse Regional Council/i.test(combined), 'Unverified authority recognition claim remains');
 assert(!/von der Bundesrepublik Deutschland ausgewählt|selected as a training provider by the Federal Republic of Germany/i.test(combined), 'Unverified federal-authority selection claim remains');
 assert(!/seit zwanzig Jahren|for twenty years/i.test(combined), 'Outdated WMC-method experience claim remains');
 assert(!/Schulung komplett kostenfrei durch das Arbeitsamt|training completely free of charge through the employment office/i.test(combined), 'Unqualified employment-office funding promise remains');
-assert(combined.includes('Texte, Bilder, Videos, Audios und Grafiken, die hier bereitgestellt werden'), 'German AI transparency notice missing');
-assert(combined.includes('Texts, images, videos, audio and graphics provided here may have been created'), 'English AI transparency notice missing');
+assert(combined.includes('Einzelne grafische Elemente dieser Website'), 'German AI transparency notice missing');
+assert(combined.includes('Some graphical elements on this website'), 'English AI transparency notice missing');
+
+// Published participant reviews must stay in the language they were given in.
+assert(
+  combined.includes('Leon konnte trotz unzähliger Bewerbungen keinen Arbeitsplatz finden'),
+  'Original German participant review wording is missing',
+);
 assert(sourceHtml.length === 0, `Standalone HTML source files remain: ${sourceHtml.join(', ')}`);
 assert(!/\.lead-form label\s*\{[^}]*font-size:\s*0[;\s}]/s.test(leadFormSource), 'Shared lead-form labels are visually hidden');
 assert(/data-external-media-load.*data-load-external-media|data-load-external-media.*data-external-media-load/s.test(consentSource), 'Contextual external-media buttons are not connected to consent storage');

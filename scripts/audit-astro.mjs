@@ -5,44 +5,35 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('..', import.meta.url));
 const dist = join(root, 'dist');
 
-const routes = [
-  '/',
-  '/360-booster-system/',
-  '/ber-die-akademie/',
-  '/bewertungen/',
-  '/danke/',
-  '/datenschutz/',
-  '/ditele-app/',
-  '/impressum/',
-  '/istqb-zertifizierung/',
-  '/kontakt/',
-  '/en/',
-  '/en/360-booster-system/',
-  '/en/about-us/',
-  '/en/contacts/',
-  '/en/ditele-app/',
-  '/en/istqb-certification/',
-  '/en/reviews/',
-  '/imprint/',
-  '/privacy-policy/',
-  '/thanks/',
+// Every route the site publishes, grouped by locale. German is served from the
+// root and English from /en/.
+const localeRoutes = [
+  { de: '/', en: '/en/' },
+  { de: '/bildungsprogramme-fr-softwaretester/', en: '/en/educational-programs/' },
+  { de: '/ber-die-akademie/', en: '/en/about-us/' },
+  { de: '/360-booster-system/', en: '/en/360-booster-system/' },
+  { de: '/bewertungen/', en: '/en/reviews/' },
+  { de: '/istqb-zertifizierung/', en: '/en/istqb-certification/' },
+  { de: '/ditele-app/', en: '/en/ditele-app/' },
+  { de: '/datenschutz/', en: '/privacy-policy/' },
+  { de: '/impressum/', en: '/imprint/' },
+  { de: '/barrierefreiheit/', en: '/accessibility/' },
+  { de: '/danke/', en: '/thanks/' },
 ];
 
-const bilingualRoutes = [
-  ['/', '/en/'],
-  ['/360-booster-system/', '/en/360-booster-system/'],
-  ['/ber-die-akademie/', '/en/about-us/'],
-  ['/bewertungen/', '/en/reviews/'],
-  ['/datenschutz/', '/privacy-policy/'],
-  ['/ditele-app/', '/en/ditele-app/'],
-  ['/impressum/', '/imprint/'],
-  ['/istqb-zertifizierung/', '/en/istqb-certification/'],
-  ['/kontakt/', '/en/contacts/'],
-  ['/danke/', '/thanks/'],
-];
+const locales = ['de', 'en'];
+const routes = localeRoutes.flatMap((group) => locales.map((code) => group[code]));
+// Confirmation pages render with noindex and therefore emit no canonical or
+// hreflang tags.
+const noindexRoutes = new Set(['/danke/', '/thanks/']);
 
 const failures = [];
-const nonNavigationRoutes = new Set(['/danke/', '/datenschutz/', '/impressum/', '/imprint/', '/privacy-policy/', '/thanks/']);
+const nonNavigationRoutes = new Set([
+  '/danke/', '/thanks/',
+  '/datenschutz/', '/privacy-policy/',
+  '/impressum/', '/imprint/',
+  '/barrierefreiheit/', '/accessibility/',
+]);
 const normalizeRoute = (pathname) => pathname === '/' ? '/' : `${pathname.replace(/\/+$/, '')}/`;
 const knownRoutes = new Set(routes.map(normalizeRoute));
 const renderedPages = new Map();
@@ -63,14 +54,18 @@ for (const route of routes) {
 
   assert(html.includes('name="generator" content="Astro'), `${route}: missing Astro generator metadata`);
   assert(html.includes('<title>') && html.includes('name="description"'), `${route}: missing SEO title/description`);
-  assert(html.includes('rel="canonical"'), `${route}: missing canonical URL`);
-  if (route === '/danke/' || route === '/thanks/') {
+  // Confirmation pages are noindex, so they deliberately emit no canonical or
+  // hreflang tags; every indexable route must carry them.
+  if (noindexRoutes.has(route)) {
     assert(html.includes('name="robots" content="noindex, follow"'), `${route}: confirmation page must be excluded from search results`);
+  } else {
+    assert(html.includes('rel="canonical"'), `${route}: missing canonical URL`);
   }
   assert(html.includes('class="office-map'), `${route}: shared office map is missing`);
   assert(html.includes('Mergenthalerallee+79-81%2C+65760+Eschborn'), `${route}: map address is incorrect`);
   assert(html.indexOf('class="office-map') < html.indexOf('<footer'), `${route}: map must appear above the footer`);
-  assert(html.includes('tild3661-6362-4233-a538-636439366365__frame_929516.png'), `${route}: WMA favicon is missing`);
+  assert(html.includes('href="/images/favicon-32.png"'), `${route}: WMA favicon is missing`);
+  assert(html.includes('rel="apple-touch-icon"'), `${route}: apple-touch-icon is missing`);
   if (!nonNavigationRoutes.has(route)) {
     assert(html.includes('aria-current="page"'), `${route}: active navigation state is missing`);
   }
@@ -109,17 +104,28 @@ for (const route of routes) {
   }
 }
 
-for (const [deRoute, enRoute] of bilingualRoutes) {
-  const de = renderedPages.get(deRoute) ?? '';
-  const en = renderedPages.get(enRoute) ?? '';
-  const escapedEnRoute = enRoute.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const escapedDeRoute = deRoute.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  assert(de.includes('<html lang="de">'), `${deRoute}: German html language is missing`);
-  assert(en.includes('<html lang="en">'), `${enRoute}: English html language is missing`);
-  assert(de.includes(`hreflang="en" href="https://test-it-academy.com${enRoute}"`), `${deRoute}: English alternate link is incorrect`);
-  assert(en.includes(`hreflang="de" href="https://test-it-academy.com${deRoute}"`), `${enRoute}: German alternate link is incorrect`);
-  assert(new RegExp(`class="site-header__lang" href="${escapedEnRoute}"[^>]*>\\s*EN\\s*<\\/a>`).test(de), `${deRoute}: language switch does not point to ${enRoute}`);
-  assert(new RegExp(`class="site-header__lang" href="${escapedDeRoute}"[^>]*>\\s*DE\\s*<\\/a>`).test(en), `${enRoute}: language switch does not point to ${deRoute}`);
+// Each locale must declare its own language, link to its two siblings via
+// hreflang, and offer all three in the header switcher.
+for (const group of localeRoutes) {
+  for (const code of locales) {
+    const route = group[code];
+    const html = renderedPages.get(route) ?? '';
+    assert(html.includes(`<html lang="${code}">`), `${route}: ${code} html language is missing`);
+
+    for (const other of locales) {
+      if (other === code) continue;
+      assert(
+        noindexRoutes.has(route) ||
+          html.includes(`hreflang="${other}" href="https://test-it-academy.com${group[other]}"`),
+        `${route}: ${other} alternate link is incorrect (expected ${group[other]})`,
+      );
+      const escaped = group[other].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      assert(
+        new RegExp(`href="${escaped}"[^>]*hreflang="${other}"[^>]*class="site-header__langoption`).test(html),
+        `${route}: language switcher does not offer ${other} at ${group[other]}`,
+      );
+    }
+  }
 }
 
 for (const route of ['/', '/en/']) {
@@ -155,5 +161,5 @@ if (failures.length) {
   failures.forEach((failure) => console.error(`- ${failure}`));
   process.exitCode = 1;
 } else {
-  console.log(`Astro production audit passed: ${routes.length} routes, ${bilingualRoutes.length} bilingual pairs, internal links, button hooks, accessible images, form security, video and 360-degree tour.`);
+  console.log(`Astro production audit passed: ${routes.length} routes, ${localeRoutes.length} bilingual groups (${locales.join('/')}), internal links, button hooks, accessible images, form security, video and 360-degree tour.`);
 }

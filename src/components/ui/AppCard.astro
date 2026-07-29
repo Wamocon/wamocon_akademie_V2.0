@@ -9,7 +9,8 @@ import type { Lang } from '../../i18n/config';
 interface Props {
   app: AppItem;
   category: string;
-  lang: Lang;
+  /** LEGACY component: unreachable from any route, still German/English only. */
+  lang: "de" | "en";
 }
 const { app, category, lang } = Astro.props;
 const soonLabel = lang === 'de' ? 'Bald verfügbar' : 'Coming soon';

@@ -7,10 +7,29 @@ export type Lang = keyof typeof languages;
 
 export const defaultLang: Lang = 'de';
 
+/** Every locale the site ships, in the order the language switcher lists them. */
+export const langCodes = Object.keys(languages) as Lang[];
+
+/** Locales served from a URL prefix. German is the default and lives at the root. */
+export const prefixedLangs = langCodes.filter((code) => code !== defaultLang);
+
+/** BCP 47 tags used for `hreflang`, JSON-LD `inLanguage` and Open Graph locales. */
+export const localeTags = {
+  de: 'de-DE',
+  en: 'en-GB',
+} as const satisfies Record<Lang, string>;
+
+export const ogLocales = {
+  de: 'de_DE',
+  en: 'en_GB',
+} as const satisfies Record<Lang, string>;
+
+export type LocalizedLink = { label: string; href: string };
+
 export type NavLink = {
   key: string;
-  de: { label: string; href: string };
-  en: { label: string; href: string };
+  de: LocalizedLink;
+  en: LocalizedLink;
   children?: NavLink[];
 };
 
@@ -72,7 +91,13 @@ export const legalNav = {
     de: { label: 'Barrierefreiheit', href: '/barrierefreiheit/' },
     en: { label: 'Accessibility', href: '/accessibility/' },
   },
-};
+} satisfies Record<string, Record<Lang, LocalizedLink>>;
+
+/** Thank-you page shown after a lead form submits, per locale. */
+export const thanksHref = {
+  de: '/danke/',
+  en: '/thanks/',
+} as const satisfies Record<Lang, string>;
 
 export const ui = {
   de: {
@@ -119,7 +144,7 @@ export const ui = {
     'form.consent.link': 'privacy policy',
     'form.consent.post': '. Submitting this form does not create a paid contract.',
   },
-} as const;
+} as const satisfies Record<Lang, Record<string, string>>;
 
 export const company = {
   name: 'WAMOCON Academy GmbH',

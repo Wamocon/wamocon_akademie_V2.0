@@ -1,14 +1,17 @@
 ---
 
+import { legalNav, nav, thanksHref, type Lang } from '../../i18n/config';
+import { pick } from '../../i18n/utils';
+import VideoEmbed from '../ui/VideoEmbed.astro';
+
 interface Props {
-  lang?: 'de' | 'en';
+  lang?: Lang;
 }
 
 const { lang = 'de' } = Astro.props;
-const isEn = lang === 'en';
 const asset = (name: string) => `/images/academy/${name}`;
 
-const careerBenefits = isEn ? [
+const careerBenefits = pick(lang, { en: [
   {
     title: 'Occupational safety and demand',
     text: 'High demand: Software testers are in high demand in the IT industry, as quality assurance plays a central role in the development of software.\n\nStability: As software development is a continuous process, there is always a need for qualified testers.',
@@ -33,7 +36,7 @@ const careerBenefits = isEn ? [
     title: 'Competitive salary',
     text: 'Software testers generally earn a competitive salary that increases with experience and specialization.',
   },
-] : [
+], de: [
   {
     title: 'Berufliche Sicherheit und Nachfrage',
     text: 'Hohe Nachfrage: Softwaretester sind in der IT-Branche sehr gefragt, da die Qualitätssicherung eine zentrale Rolle bei der Entwicklung von Software spielt.\n\nStabilität: Da Softwareentwicklung ein kontinuierlicher Prozess ist, gibt es immer Bedarf an qualifizierten Testern.',
@@ -58,9 +61,9 @@ const careerBenefits = isEn ? [
     title: 'Wettbewerbsfähiges Gehalt',
     text: 'Softwaretester verdienen in der Regel ein wettbewerbsfähiges Gehalt, das mit zunehmender Erfahrung und Spezialisierung weiter steigt.',
   },
-] as const;
+] } as const);
 
-const certificationBenefits = isEn ? [
+const certificationBenefits = pick(lang, { en: [
   {
     icon: 'tild6430-3331-4166-b437-616166393834__scenario_text_pater.svg',
     title: 'International recognition',
@@ -91,7 +94,7 @@ const certificationBenefits = isEn ? [
     title: 'Strengthening quality assurance',
     text: 'ISTQB® certified testers ensure software quality, promote customer satisfaction, strengthen confidence in products and support the long-term success of the company.',
   },
-] : [
+], de: [
   {
     icon: 'tild6430-3331-4166-b437-616166393834__scenario_text_pater.svg',
     title: 'Internationale Anerkennung',
@@ -122,9 +125,9 @@ const certificationBenefits = isEn ? [
     title: 'Qualitätssicherung stärken',
     text: 'ISTQB® zertifizierte Tester sichern Softwarequalität, fördern Kundenzufriedenheit, stärken Vertrauen in Produkte und unterstützen den langfristigen Unternehmenserfolg.',
   },
-] as const;
+] } as const);
 
-const hurdles = isEn ? [
+const hurdles = pick(lang, { en: [
   {
     title: 'Experience gaps and skills shortages',
     paragraphs: [
@@ -146,7 +149,7 @@ const hurdles = isEn ? [
       'Time management: Working professionals or students need to manage their time effectively to successfully complete the preparation, which can be an additional challenge.',
     ],
   },
-] : [
+], de: [
   {
     title: 'Erfahrungslücken und Fachkräftemangel',
     paragraphs: [
@@ -168,23 +171,23 @@ const hurdles = isEn ? [
       'Zeitmanagement: Berufstätige oder Studierende müssen ihre Zeit effektiv managen, um die Vorbereitung erfolgreich abzuschließen, was eine zusätzliche Herausforderung sein kann.',
     ],
   },
-] as const;
+] } as const);
 
-const webinarTopics = isEn ? [
+const webinarTopics = pick(lang, { en: [
   ['Entry into SOFTWARETESTING', 'Target group and benefits of the webinar.'],
   ['What does a certified software tester earn?', 'Insight into salary structures and career prospects.'],
   ['What typical challenges does a tester face?', 'Discussion of common problems and hurdles in test management.'],
   ['State funding program: Education voucher', 'Funding may be available in individual cases. The responsible employment agency or job centre decides eligibility, covered costs and approval. Please obtain written confirmation before registering.'],
   ['What makes a successful software tester?', 'Important skills and characteristics of a successful tester.'],
-] : [
+], de: [
   ['Einstieg ins SOFTWARETESTING', 'Zielgruppe und Nutzen des Webinars.'],
   ['Was verdient ein zertifizierter Softwaretester?', 'Einblick in Gehaltsstrukturen und Karriereaussichten.'],
   ['Vorwelchen typischen Herausforderungen steht ein Tester?', 'Diskussion der gängigen Probleme und Hürden im Testmanagement.'],
   ['Staatliches Förderprogramm: Bildungsgutschein', 'Eine Förderung kann im Einzelfall möglich sein. Über Voraussetzungen, förderfähige Kosten und Bewilligung entscheiden die zuständige Agentur für Arbeit oder das Jobcenter. Bitte lassen Sie die Förderung vor einer Anmeldung schriftlich bestätigen.'],
   ['Was zeichnet einen erfolgreichen Softwaretester aus?', 'Wichtige Fähigkeiten und Eigenschaften eines erfolgreichen Testers.'],
-] as const;
+] } as const);
 
-const participationSteps = isEn ? [
+const participationSteps = pick(lang, { en: [
   {
     title: 'Sign in',
     text: 'Leave your name, e-mail address and telephone number in the registration form. We will handle your data with absolute confidentiality.',
@@ -197,7 +200,7 @@ const participationSteps = isEn ? [
     title: 'Webinar start',
     text: 'You will receive an e-mail one week before the start of the webinar containing your login details so that you can take part in the webinar.',
   },
-] : [
+], de: [
   {
     title: 'Trag dich ein',
     text: 'Hinterlasse deinen Namen, E-Mail-Adresse und deine Telefonnummer im Anmeldeformular. Wir gehen absolut vertraulich mit deinen Daten um.',
@@ -210,7 +213,7 @@ const participationSteps = isEn ? [
     title: 'Webinar Beginn',
     text: 'Du erhältst eine Woche vor dem Webinar Beginn eine E-Mail, in der die Login Daten enthalten sind, damit du am Webinar teilnehmen kannst.',
   },
-] as const;
+] } as const);
 
 const testimonials = [
   ['Natalie', 'Y530fsyTCe4', 'natalie'],
@@ -220,7 +223,9 @@ const testimonials = [
   ['Jonathan', 'C6jFQwt6E0o', 'jonathan'],
 ] as const;
 
-const successStories = isEn ? [
+// Participant success stories. Published reviews stay in the language they were
+// given in, so the Turkish page shows the original German wording unchanged.
+const successStories = pick(lang, { en: [
   {
     name: 'Leon Christen and his obstacle',
     video: '1u100i0b9LM',
@@ -237,7 +242,7 @@ const successStories = isEn ? [
     goal: 'His goal is to be able to carry out IT projects as a test automation engineer. However, Christian-Oliver must first successfully complete the ISTQB® Tester certificate.',
     results: ['Passed the ISTQB® certificate on his first attempt', 'Found his way into IT projects as a tester', 'Developed further with ISTQB® Test Automation Engineer'],
   },
-] : [
+], de: [
   {
     name: 'Leon Christen und sein Hindernis',
     video: '1u100i0b9LM',
@@ -254,7 +259,7 @@ const successStories = isEn ? [
     goal: 'Sein Ziel ist es, als Testautomatisierer IT-Projekte durchführen zu können. Dafür muss Christian-Oliver jedoch zuerst das ISTQB® Tester Zertifikat erfolgreich abschließen.',
     results: ['Mit dem ersten Versuch das ISTQB® Zertifikat bestanden', 'Sein Einstieg ins IT-Projekt als Tester sicher gefunden', 'Sich weiterentwickelt mit ISTQB® Test Automation Engineer'],
   },
-] as const;
+] } as const);
 
 const trainers = [
   ['Daniel Moretz', 'team-daniel.jpg'],
@@ -262,7 +267,7 @@ const trainers = [
   ['Nikolaj Schefner', 'tild3732-3031-4537-a430-356132326434__img80.jpg'],
 ] as const;
 
-const faqs = isEn ? [
+const faqs = pick(lang, { en: [
   ['Why do I need the ISTQB® certificate?', 'The ISTQB® Certified Tester certificate is the most important basis for a software tester. With the certificate, you demonstrate competence, inspire confidence and give your IT career a boost!'],
   ['What happens to my data?', 'We treat the data you provide in accordance with the requirements of the GDPR and use it exclusively to inform you about our upcoming webinars on software testing and to maintain contact. You have the right at any time to request information about the data we have stored about you, to have it corrected or to request its deletion.'],
   ['Insurance and torts', 'Our work in this field includes: litigation, research and legal opinions, peaceful settlements.'],
@@ -272,7 +277,7 @@ const faqs = isEn ? [
   ['What is software testing?', 'Software testing is an ideal way to start a career in IT. With the specialist training that you undergo during our seminar, you will receive all the tools from theory and practice combined to not only understand exactly what software testing is, but also to qualify and have the best opportunities to start as a software tester!'],
   ['Is the webinar for me?', 'The webinar is intended for every curious person who is looking for education and training opportunities and wants to start their IT career with the best prerequisites.'],
   ['Career opportunities as a software tester?', 'As a software tester, all doors are open to you for your IT career! The software tester combines an extraordinary number of topics in IT without going too deep. With the knowledge and skills of a software tester, you build the best basis for your IT career with enormous development potential!'],
-] : [
+], de: [
   ['Weshalb benötige ich das ISTQB® Zertifikat?', 'Das ISTQB® Certified Tester Zertifikat stellt die wichtigste Basis für einen Softwaretester dar. Mit dem Zertifikat zeigst du Kompetenz, weckst Vertrauen und erhältst einen Boost für deine IT-Karriere!'],
   ['Was passiert mit meinen Daten?', 'Wir behandeln Ihre bereitgestellten Daten gemäß den Anforderungen der DSGVO und nutzen sie ausschließlich, um Sie über unsere kommenden Webinare zum Thema Softwaretest zu informieren und den Kontakt aufrechtzuerhalten. Du hast jederzeit das Recht dir eine Auskunft über die von dir gespeicherten Daten anzufragen, sie berichtigen zu lassen oder die Löschung zu verlangen.'],
   ['Versicherung und Schadenersatz', 'Unsere Arbeit in diesem Tätigkeitsbereich umfasst: Rechtsstreitigkeiten, recherchen und Rechtsgutachten, friedliche Siedlungen.'],
@@ -282,9 +287,9 @@ const faqs = isEn ? [
   ['Was ist Softwaretesting?', 'Der Softwaretest stellt einen idealen Einstieg in die IT-Karriere dar. Mit der fachlichen Ausbildung, die du während unseres Seminars durchläufst, erhältst du alle Mittel aus der Theorie und Praxis vereint, um nicht nur genau zu verstehen, was Softwaretesting ist, sondern dich auch zu qualifizieren und die besten Chancen für den Start als Softwaretester zu erhalten!'],
   ['Ist das Webinar etwas für mich?', 'Das Webinar ist für jede neugierige Person gedacht, die nach Aus- und Weiterbildungsmöglichkeiten sucht und einen Einstieg in seine IT-Karriere mit den besten Voraussetzungen wagen will.'],
   ['Karrierechancen als Softwaretester?', 'Als Softwaretester stehen dir alle Türen für deine IT-Karriere offen! Der Softwaretester vereint so außergewöhnlich viele Themen in der IT, ohne zu tief abzutauchen. Mit dem Wissen und Fähigkeiten des Softwaretesters baust du dir die beste Basis für deine IT-Karriere auf mit einem riesigen Weiterentwicklungspotenzial!'],
-] as const;
+] } as const);
 
-const copy = isEn ? {
+const copy = pick(lang, { en: {
   heroLead: 'Learn the steps to work successfully as a software tester. Together we will prepare you optimally for the ISTQB® certification.',
   heroKicker: 'ISTQB® Certification',
   heroTitle: 'Become a certified software tester',
@@ -333,7 +338,12 @@ const copy = isEn ? {
   faqTitle: 'Questions and answers',
   faqText1: 'We understand that deciding on a career path raises a number of questions. Our webinar gives you the opportunity to discuss your most important concerns live with our speakers.',
   faqText2: 'So sign up for the webinar and get all your questions answered in real time.',
-} : {
+  videoNotice: 'This video loads from YouTube only after your consent.',
+  videoLoad: 'Load YouTube video',
+  closeVideo: 'Close video',
+  close: 'Close',
+  comparisonSub: 'Certification holders by region, as of 2024.',
+}, de: {
   heroLead: 'Lerne die Schritte, um erfolgreich als Softwaretester zu arbeiten. Gemeinsam bereiten wir dich optimal auf die ISTQB® Zertifizierung vor.',
   heroKicker: 'ISTQB® Zertifizierung',
   heroTitle: 'Werde zum zertifizierten Softwaretester',
@@ -382,17 +392,28 @@ const copy = isEn ? {
   faqTitle: 'Fragen und Antworten',
   faqText1: 'Wir verstehen, dass die Entscheidung für den Karriereweg einige Fragen aufwirft. In unserem Webinar erhältst du die Möglichkeit, mit unseren Referenten deine wichtigsten Anliegen live zu besprechen.',
   faqText2: 'Trage dich deshalb für das Webinar ein und lasse dir all deine Fragen in Echtzeit beantworten.',
-};
+  videoNotice: 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.',
+  videoLoad: 'YouTube-Video laden',
+  closeVideo: 'Video schließen',
+  close: 'Schließen',
+  comparisonSub: 'Zertifikatsinhaber nach Region, Stand 2024.',
+} } as const);
 
-const webinarHash = isEn ? '#popup:Webinar-Anmeldung-en' : '#popup:Webinar-Anmeldung';
-const reviewsHref = isEn ? '/en/reviews' : '/bewertungen';
-const privacyHref = isEn ? '/privacy-policy' : '/datenschutz';
-const redirect = isEn ? '/thanks/' : '/danke/';
+const webinarHash = pick(lang, {
+  de: '#popup:Webinar-Anmeldung',
+  en: '#popup:Webinar-Anmeldung-en',
+});
+const reviewsHref = nav
+  .find((item) => item.key === 'about-group')!
+  .children!.find((child) => child.key === 'reviews')![lang].href;
+const privacyHref = legalNav.privacy[lang].href;
+const redirect = thanksHref[lang];
 // Number of certification holders per region (replaces the old pixelated
 // comparison image with a crisp, on-brand table). Figures as of 2024.
-const comparisonHead = isEn
-  ? ['Certification', 'Germany', 'Europe', 'Worldwide', 'As of']
-  : ['Zertifizierung', 'Deutschland', 'Europa', 'Weltweit', 'Stand'];
+const comparisonHead = pick(lang, {
+  de: ['Zertifizierung', 'Deutschland', 'Europa', 'Weltweit', 'Stand'],
+  en: ['Certification', 'Germany', 'Europe', 'Worldwide', 'As of'],
+});
 const comparisonRows: Array<{ cert: string; de: string; eu: string; ww: string; year: string; highlight?: boolean }> = [
   { cert: 'Project Management Professional (PMP)', de: '25.000', eu: '100.000', ww: '1.400.000', year: '2024' },
   { cert: 'Cisco Certified Network Associate (CCNA)', de: '50.000', eu: '200.000', ww: '1.000.000', year: '2024' },
@@ -405,8 +426,8 @@ const comparisonRows: Array<{ cert: string; de: string; eu: string; ww: string; 
   { cert: 'Google Certified Professional Cloud Architect', de: '5.000', eu: '20.000', ww: '150.000', year: '2024' },
   { cert: 'Certified Information Systems Security Professional (CISSP)', de: '5.000', eu: '20.000', ww: '150.000', year: '2024' },
 ];
-const voucherCopy = isEn
-  ? {
+const voucherCopy = pick(lang, {
+  en: {
       title: 'Education voucher from the employment office: requirements and application',
       lead: 'A training voucher can help you to continue your vocational training Here is the most important information on the',
       process: 'Requirements and the application process:',
@@ -418,8 +439,8 @@ const voucherCopy = isEn
         ['Targeted measure:', 'The further training must be aimed at obtaining a recognized professional qualification or expanding your professional qualifications.'],
       ],
       link: 'About the voucher',
-    }
-  : {
+    },
+  de: {
       title: 'Bildungsgutschein vom Arbeitsamt: Voraussetzungen und Beantragung',
       lead: 'Ein Bildungsgutschein kann Ihnen helfen, eine berufliche Weiterbildung Hier sind die wichtigsten Informationen zu den',
       process: 'Voraussetzungen und dem Beantragungsprozess:',
@@ -431,10 +452,11 @@ const voucherCopy = isEn
         ['Zielgerichtete Maßnahme:', 'Die Weiterbildung muss auf einen anerkannten Berufsabschluss oder eine Erweiterung Ihrer beruflichen Qualifikationen abzielen.'],
       ],
       link: 'Über den Gutschein',
-    };
+    },
+});
 
-const registrationCopy = isEn
-  ? {
+const registrationCopy = pick(lang, {
+  en: {
       title: 'Webinar registration',
       name: 'Name',
       email: 'E-Mail',
@@ -443,8 +465,8 @@ const registrationCopy = isEn
       consentPost: '.',
       inquiry: 'This is a non-binding inquiry and does not constitute a purchase.',
       submit: 'Send request',
-    }
-  : {
+    },
+  de: {
       title: 'Webinar Anmeldung',
       name: 'Ihr Name',
       email: 'E-Mail',
@@ -453,7 +475,8 @@ const registrationCopy = isEn
       consentPost: '.',
       inquiry: 'Dies ist eine unverbindliche Anfrage und kein Kauf.',
       submit: 'Anfrage senden',
-    };
+    },
+});
 ---
 
 <section class="page-hero istqb-hero">
@@ -529,7 +552,7 @@ const registrationCopy = isEn
     </div>
     <figure class="istqb-career__quote" data-reveal>
       <blockquote>{copy.quote}</blockquote>
-      <figcaption>{isEn ? 'WAMOCON Academy' : 'WAMOCON Academy'}</figcaption>
+      <figcaption>WAMOCON Academy</figcaption>
     </figure>
   </div>
 </section>
@@ -634,15 +657,14 @@ const registrationCopy = isEn
     <div class="istqb-testimonials__grid">
       {testimonials.map(([name, video, image]) => (
         <article data-reveal>
-          <div class="istqb-testimonial-video" data-success-video>
-            <iframe data-consent-src={`https://www.youtube-nocookie.com/embed/${video}?autoplay=1&controls=1&playsinline=1&rel=0`} data-consent-mode="manual" title={name} loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen hidden></iframe>
-            <div class="external-media__notice" data-external-media-notice>
-              <img src={`/images/academy/testimonial-${image}.jpg`} alt="" loading="lazy" aria-hidden="true" />
-              <span class="external-media__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg></span>
-              <p>{isEn ? 'This video loads from YouTube only after your consent.' : 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.'}</p>
-              <button type="button" data-success-video-load>{isEn ? 'Load YouTube video' : 'YouTube-Video laden'}</button>
-            </div>
-          </div>
+          <VideoEmbed
+            class="istqb-testimonial-video"
+            videoId={video}
+            title={name}
+            poster={`/images/academy/testimonial-${image}.jpg`}
+            lang={lang}
+            channel={copy.participant}
+          />
           <strong>{name}</strong>
           <span>{copy.participant}</span>
         </article>
@@ -661,24 +683,13 @@ const registrationCopy = isEn
     <div class="istqb-success__grid">
       {successStories.map((story) => (
         <article data-reveal>
-          <div class="istqb-success__media" data-success-video>
-            <div class="external-media__notice" data-external-media-notice>
-              <img src={`/images/academy/${story.image}`} alt="" width="1280" height="720" loading="lazy" aria-hidden="true" />
-              <span class="external-media__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg></span>
-              <p>{isEn ? 'This video loads from YouTube only after your consent.' : 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.'}</p>
-              <button type="button" data-success-video-load>{isEn ? 'Load YouTube video' : 'YouTube-Video laden'}</button>
-            </div>
-            <iframe
-              data-consent-src={`https://www.youtube-nocookie.com/embed/${story.video}?autoplay=1&controls=1&playsinline=1&rel=0`}
-              data-consent-mode="manual"
-              title={story.name}
-              loading="lazy"
-              referrerpolicy="strict-origin-when-cross-origin"
-              allow="autoplay; encrypted-media; picture-in-picture"
-              allowfullscreen
-              hidden
-            ></iframe>
-          </div>
+          <VideoEmbed
+            class="istqb-success__media"
+            videoId={story.video}
+            title={story.name}
+            poster={`/images/academy/${story.image}`}
+            lang={lang}
+          />
           <div>
             <h3>{story.name}</h3>
             <h4>{copy.challenge}</h4>
@@ -734,7 +745,7 @@ const registrationCopy = isEn
 </section>
 
 <dialog class="istqb-modal" id="istqb-video-modal" aria-label={copy.video}>
-  <button class="istqb-modal__close" type="button" data-close-modal aria-label={isEn ? 'Close video' : 'Video schließen'}>×</button>
+  <button class="istqb-modal__close" type="button" data-close-modal aria-label={copy.closeVideo}>×</button>
   <div class="istqb-modal__video">
     <iframe
       title={copy.video}
@@ -749,7 +760,7 @@ const registrationCopy = isEn
 </dialog>
 
 <dialog class="istqb-modal istqb-modal--content" id="istqb-voucher-modal" aria-labelledby="voucher-modal-title">
-  <button class="istqb-modal__close" type="button" data-close-modal aria-label={isEn ? 'Close' : 'Schließen'}>×</button>
+  <button class="istqb-modal__close" type="button" data-close-modal aria-label={copy.close}>×</button>
   <div class="istqb-modal__content">
     <h2 id="voucher-modal-title">{voucherCopy.title}</h2>
     <p>{voucherCopy.lead}</p>
@@ -763,9 +774,9 @@ const registrationCopy = isEn
 </dialog>
 
 <dialog class="istqb-modal istqb-modal--comparison" id="istqb-comparison-modal" aria-label={copy.comparison}>
-  <button class="istqb-modal__close" type="button" data-close-modal aria-label={isEn ? 'Close' : 'Schließen'}>×</button>
+  <button class="istqb-modal__close" type="button" data-close-modal aria-label={copy.close}>×</button>
   <h2 class="istqb-compare__title">{copy.comparison}</h2>
-  <p class="istqb-compare__sub">{isEn ? 'Certification holders by region, as of 2024.' : 'Zertifikatsinhaber nach Region, Stand 2024.'}</p>
+  <p class="istqb-compare__sub">{copy.comparisonSub}</p>
   <div class="istqb-compare__scroll">
     <table class="istqb-compare">
       <thead>
@@ -787,7 +798,7 @@ const registrationCopy = isEn
 </dialog>
 
 <dialog class="istqb-modal istqb-modal--form" id="istqb-webinar-modal" aria-labelledby="webinar-modal-title">
-  <button class="istqb-modal__close" type="button" data-close-modal aria-label={isEn ? 'Close' : 'Schließen'}>×</button>
+  <button class="istqb-modal__close" type="button" data-close-modal aria-label={copy.close}>×</button>
   <form class="istqb-registration-form js-lead-form" data-redirect={redirect}>
     <h2 id="webinar-modal-title">{registrationCopy.title}</h2>
     <input type="hidden" name="type" value="webinar" />
@@ -1017,7 +1028,6 @@ const registrationCopy = isEn
   .istqb-testimonials__grid article { display: grid; align-content: start; background: transparent; color: #fff; }
   .istqb-testimonial-video { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 8px; background: #050505; }
   .istqb-testimonial-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-  .istqb-testimonial-video.is-loaded .external-media__notice { display: none; }
   .istqb-testimonial-video__play {
     position: absolute;
     inset: 50% auto auto 50%;
@@ -1069,7 +1079,6 @@ const registrationCopy = isEn
   .istqb-success__play span::after { content: ''; position: absolute; top: 50%; left: 52%; border-top: 12px solid transparent; border-bottom: 12px solid transparent; border-left: 20px solid #fff; transform: translate(-40%, -50%); }
   .istqb-success__play:hover span,
   .istqb-success__play:focus-visible span { background: var(--color-accent-surface); transform: scale(1.06); }
-  .istqb-success__media.is-loaded .external-media__notice { display: none; }
   .istqb-success h3 { margin-bottom: 1.3rem; }
   .istqb-success h4 { margin-top: 1rem; color: var(--color-accent); font-size: 0.9rem; text-transform: uppercase; }
   .istqb-success p { margin-top: 0.35rem; }
@@ -1094,7 +1103,9 @@ const registrationCopy = isEn
   .istqb-faq__intro > div { max-width: 1200px; }
   .istqb-faq__intro p { max-width: 1100px; margin-top: 1rem; font-size: clamp(1.05rem, 1.15vw, 1.3rem); }
   .istqb-faq__intro > .istqb-button { min-width: clamp(190px, 13vw, 250px); justify-self: end; margin-bottom: 4px; }
-  .istqb-faq__items { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 0 clamp(40px, 5vw, 80px); }
+  /* min() keeps the track from demanding 340px inside a narrower viewport,
+     which would push the column past the screen edge. */
+  .istqb-faq__items { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 0 clamp(40px, 5vw, 80px); }
   .istqb-faq__col { min-width: 0; }
   .istqb-faq__items details { border-top: 1px solid rgba(255, 11, 0, .72); }
   .istqb-faq__col details:last-child { border-bottom: 1px solid rgba(255, 11, 0, .72); }
@@ -1241,7 +1252,11 @@ const registrationCopy = isEn
     .istqb-certificate__media { min-height: 330px; }
     .istqb-certificate__photo { height: 300px; }
     .istqb-certificate__document { width: 120px; left: 12px; }
-    .istqb-comparison, .istqb-career__grid, .istqb-benefits__grid, .istqb-participation__steps, .istqb-testimonials__grid, .istqb-trainers__grid { grid-template-columns: 1fr; }
+    /* minmax(0, 1fr) rather than 1fr: a bare 1fr track leaves items at
+       min-width: auto, so their longest word sets the floor and the card
+       overruns the screen. */
+    .istqb-comparison, .istqb-career__grid, .istqb-benefits__grid, .istqb-participation__steps, .istqb-testimonials__grid, .istqb-trainers__grid { grid-template-columns: minmax(0, 1fr); }
+    .istqb-comparison article { min-width: 0; overflow-wrap: break-word; }
     .istqb-career__grid article { min-height: 0; }
     .istqb-benefits__grid { gap: 30px; }
     .istqb-experience__media > img:first-child { min-height: 360px; }
@@ -1258,7 +1273,9 @@ const registrationCopy = isEn
     .istqb-benefits__grid img { width: 34px; height: 34px; }
     .istqb-hurdles__list article { grid-template-columns: 1fr; }
     .istqb-webinar__media img { aspect-ratio: 4 / 3; }
-    .istqb-success__media { min-height: 260px; }
+    /* aspect-ratio must be released here: with 16/9 still applied, min-height
+       resolves the *width* to 462px and the tile runs off a 320px screen. */
+    .istqb-success__media { aspect-ratio: auto; min-height: 260px; }
     .istqb-modal { width: calc(100vw - 16px); }
     .istqb-modal__content,
     .istqb-registration-form { padding: 52px 20px 28px; }
@@ -1281,19 +1298,6 @@ const registrationCopy = isEn
 </style>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-success-video]').forEach((media) => {
-    const loadButton = media.querySelector<HTMLButtonElement>('[data-success-video-load]');
-    const frame = media.querySelector<HTMLIFrameElement>('iframe[data-consent-src]');
-    loadButton?.addEventListener('click', () => {
-      const source = frame?.dataset.consentSrc;
-      if (!frame || !source) return;
-      const consent = (window as Window & { wamoconConsent?: { grantExternalMedia?: () => void } }).wamoconConsent;
-      consent?.grantExternalMedia?.();
-      frame.src = source;
-      frame.hidden = false;
-      media.classList.add('is-loaded');
-    });
-  });
 
   const modalLinks = document.querySelectorAll<HTMLAnchorElement>('[data-open-modal]');
   const modalDialogs = document.querySelectorAll<HTMLDialogElement>('.istqb-modal');

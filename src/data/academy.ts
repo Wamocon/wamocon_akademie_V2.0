@@ -87,7 +87,10 @@ export const home = {
         'The WAMOCON Academy is more than just a training venue. It is your strategic platform for developing critical skills and accelerating your career in IT. Whether through customized individual courses or dynamic team courses, we offer you unique opportunities to successfully launch your career and achieve new career goals. Let us accompany you on your way to the next level of development and profit from our extensive know-how and network.',
     },
     without: {
-      title: { de: 'Ohne die WAMOCON Academy', en: 'Without the WAMOCON Academy' },
+      title: {
+        de: 'Ohne die WAMOCON Academy',
+        en: 'Without the WAMOCON Academy',
+      },
       items: {
         de: [
           'Niedriges Gehalt',
@@ -104,7 +107,10 @@ export const home = {
       },
     },
     with: {
-      title: { de: 'Mit der WAMOCON Academy', en: 'With the WAMOCON Academy' },
+      title: {
+        de: 'Mit der WAMOCON Academy',
+        en: 'With the WAMOCON Academy',
+      },
       items: {
         de: [
           'Überdurchschnittliches Gehalt',
@@ -550,7 +556,10 @@ export const testimonials = [
   'Jonathan',
 ].map((name) => ({
   name,
-  role: { de: 'Teilnehmerin WAMOCON Academy', en: 'Participant WAMOCON Academy' },
+  role: {
+    de: 'Teilnehmerin WAMOCON Academy',
+    en: 'Participant WAMOCON Academy',
+  },
   text: {
     de:
       'Die WAMOCON Academy begleitet Teilnehmer Schritt für Schritt beim Einstieg in die IT-Branche.',

@@ -1,13 +1,16 @@
 ---
-import type { Lang } from '../../i18n/config';
+import { nav, type Lang } from '../../i18n/config';
 import LeadForm from './LeadForm.astro';
+import VideoEmbed from '../ui/VideoEmbed.astro';
 
 interface Props {
   lang: Lang;
 }
 
 const { lang } = Astro.props;
-const boosterHref = lang === 'de' ? '/360-booster-system/' : '/en/360-booster-system/';
+const boosterHref = nav
+  .find((item) => item.key === 'about-group')!
+  .children!.find((child) => child.key === 'booster')![lang].href;
 // Magazine download switches with the active language (DE / EN edition).
 const magazineUrl = lang === 'de'
   ? 'https://wamocon-my.sharepoint.com/:b:/p/waleri_moretz/EZUMpxrfjYdPt7g1H7xkQhkBnuG6v-tWKLCPNZIN6Wejlw?e=bQVx7k&download=1'
@@ -80,6 +83,8 @@ const copy = {
     hours: 'Öffnungszeiten',
     follow: 'Folgen Sie uns auf sozialen Medien',
     imageAlt: 'WAMOCON Academy Team',
+    boosterCta: 'Zum 360° Booster System',
+    closeVideo: 'Video schließen',
   },
   en: {
     heroLead: 'The road to success',
@@ -147,10 +152,13 @@ const copy = {
     hours: 'Opening hours',
     follow: 'Follow us on social media',
     imageAlt: 'WAMOCON Academy team',
+    boosterCta: 'To the 360° Booster System',
+    closeVideo: 'Close video',
   },
 } as const;
 
 const c = copy[lang];
+// The booster graphic is a localised SVG; Turkish falls back to the English edition.
 const boosterImage = lang === 'de'
   ? '/images/academy/tild6230-6463-4530-a631-353632323538__-3_deu-1.svg'
   : '/images/academy/tild6331-6362-4837-b333-343461653664__-3_eng_1.svg';
@@ -234,7 +242,7 @@ const videos = [
         <h2><span>{c.boosterLead}</span> {c.boosterRest}</h2>
         {c.boosterParagraphs.map((paragraph) => <p>{paragraph}</p>)}
         <a class="about-booster__cta" href={boosterHref}>
-          {lang === 'de' ? 'Zum 360° Booster System' : 'To the 360° Booster System'}
+          {c.boosterCta}
           <span aria-hidden="true">→</span>
         </a>
       </div>
@@ -248,21 +256,13 @@ const videos = [
       <div class="about-graduates__grid">
         {videos.map(([name, id, poster]) => (
           <article>
-            <div class="about-video">
-              <img src={poster} alt={`${name}, ${c.participant}`} width="1280" height="720" loading="lazy" />
-              <button
-                class="about-video__consent"
-                type="button"
-                data-consent-src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&controls=1&playsinline=1&rel=0`}
-                data-video-title={`${name}: YouTube video`}
-                data-stop-label={lang === 'de' ? 'Video schließen' : 'Close video'}
-                aria-label={`${c.loadVideo}: ${name}`}
-              >
-                <span class="about-video__play" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M18 13 36 24 18 35Z" fill="currentColor" /></svg></span>
-                <strong>{c.loadVideo}</strong>
-                <small>{c.videoConsent}</small>
-              </button>
-            </div>
+            <VideoEmbed
+              videoId={id}
+              title={name}
+              poster={poster}
+              lang={lang}
+              channel={c.participant}
+            />
             <h3>{name}</h3>
             <p>{c.participant}</p>
           </article>
@@ -298,6 +298,7 @@ const videos = [
   .academy-about-hero__inner { position: relative; display: flex; min-height: clamp(680px, 88svh, 920px); align-items: center; }
   .academy-about-hero__copy { position: relative; z-index: 2; width: min(54%, 780px); padding-top: 96px; }
   .academy-about-hero h1 { max-width: 760px; margin-bottom: 24px; font-size: clamp(46px, 4.5vw, 70px); line-height: 1.06; }
+
   .academy-about-hero p { max-width: 760px; font-size: clamp(16px, 1.15vw, 19px); line-height: 1.48; }
   .academy-about-hero__art { position: absolute; inset: 0; pointer-events: none; }
   /* Only the width is set per breakpoint — without this the height="1200"
@@ -362,18 +363,6 @@ const videos = [
   .about-graduates__grid article { min-width: 0; }
   .about-graduates__grid h3 { margin: 22px 0 6px; font-size: 16px; line-height: 1.3; }
   .about-graduates__grid p { font-size: 14px; line-height: 1.3; }
-  .about-video { position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; background: #171717; }
-  .about-video > img { display: block; width: 100%; height: 100%; object-fit: cover; border: 0; }
-  :global(.about-video > iframe) { display: block; width: 100%; height: 100%; object-fit: cover; border: 0; }
-  .about-video > img { filter: saturate(.55) brightness(.55); }
-  .about-video__consent { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; background: rgba(0,0,0,.42); text-align: center; }
-  .about-video__consent strong { order: 3; display: inline-block; margin-top: 2px; padding: 0.68rem 1.5rem; border-radius: 6px; background: var(--color-accent-surface); color: #fff; font-size: 15px; font-weight: 600; }
-  .about-video__consent small { order: 2; max-width: 340px; color: rgba(255,255,255,.85); font-size: 13px; font-weight: 300; line-height: 1.45; }
-  .about-video__consent:hover { background: rgba(0,0,0,.3); }
-  .about-video__consent:hover strong { background: var(--color-accent-hover); }
-  .about-video__play { order: 1; position: static; display: grid; place-items: center; width: 62px; height: 62px; border-radius: 50%; background: var(--color-accent-surface); color: #fff; transform: none; box-shadow: 0 8px 24px rgba(0,0,0,.35); }
-  .about-video__play svg { width: 26px; height: 26px; margin-left: 3px; }
-  :global(.about-video__stop) { position: absolute; z-index: 2; top: 10px; right: 10px; min-height: 38px; padding: 0 14px; border: 1px solid rgba(255,255,255,.82); border-radius: 4px; background: rgba(0,0,0,.82); color: #fff; font-size: 13px; }
 
   .about-magazine { padding-block: 0 135px; }
   .about-magazine__panel { position: relative; display: grid; grid-template-columns: 430px 1fr 190px; gap: clamp(50px, 6vw, 110px); align-items: center; height: 380px; margin-top: 110px; padding: 0 clamp(36px, 4vw, 66px) 0 clamp(72px, 6vw, 110px); background: #303030; }
@@ -699,11 +688,9 @@ const videos = [
       min-width: clamp(230px, 15vw, 320px);
     }
 
-    .about-video__consent strong {
       font-size: clamp(16px, 1vw, 20px);
     }
 
-    .about-video__consent small {
       max-width: 380px;
       font-size: clamp(13px, .8vw, 16px);
     }
@@ -850,6 +837,17 @@ const videos = [
     .academy-about-hero__ring { top: 116px; left: calc(50% - 112px); width: 146px; }
   }
 
+  /* Final guard, deliberately last and more specific than the per-breakpoint
+     rules above. That ladder sets hard pixel widths plus `max-width: none`
+     (e.g. a 317px h1 inside a 310px column at <=479px), which runs off a 320px
+     screen. Cap against the parent rather than unpicking the pixel layout. */
+  .academy-about-hero .academy-about-hero__copy h1,
+  .academy-about-hero .academy-about-hero__copy p {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .academy-about-hero__disc,
     .academy-about-hero__ring,
@@ -860,70 +858,3 @@ const videos = [
   }
 </style>
 
-<script>
-  type ConsentWindow = Window & {
-    wamoconConsent?: {
-      hasExternalMedia?: () => boolean;
-      open?: () => void;
-      grantExternalMedia?: () => void;
-    };
-  };
-
-  let pendingVideoButton: HTMLButtonElement | null = null;
-
-  const loadConsentedVideo = (button: HTMLButtonElement) => {
-    const src = button.dataset.consentSrc;
-    const frame = button.closest<HTMLElement>('.about-video');
-    if (!src || !frame) return;
-    if (frame.querySelector('iframe')) return;
-    const poster = frame.querySelector<HTMLImageElement>('img');
-    const iframe = document.createElement('iframe');
-    iframe.src = src;
-    iframe.title = button.dataset.videoTitle || 'YouTube video';
-    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
-    iframe.allowFullscreen = true;
-    iframe.referrerPolicy = 'strict-origin-when-cross-origin';
-    const stopButton = document.createElement('button');
-    stopButton.type = 'button';
-    stopButton.className = 'about-video__stop';
-    stopButton.textContent = button.dataset.stopLabel || 'Close video';
-
-    const stop = () => {
-      iframe.remove();
-      stopButton.remove();
-      button.hidden = false;
-      if (poster) poster.hidden = false;
-    };
-
-    button.hidden = true;
-    if (poster) poster.hidden = true;
-    frame.append(iframe, stopButton);
-    stopButton.addEventListener('click', stop);
-    window.addEventListener('pagehide', stop, { once: true });
-  };
-
-  document.querySelectorAll<HTMLButtonElement>('.about-video__consent[data-consent-src]').forEach((button) => {
-    button.addEventListener('click', () => {
-      const consent = (window as ConsentWindow).wamoconConsent;
-      if (consent?.hasExternalMedia?.()) {
-        loadConsentedVideo(button);
-        return;
-      }
-      pendingVideoButton = button;
-      if (consent?.grantExternalMedia) {
-        consent.grantExternalMedia();
-        return;
-      }
-      consent?.open?.();
-    });
-  });
-
-  window.addEventListener('wamocon:consent', (event) => {
-    const detail = (event as CustomEvent<{ externalMedia?: boolean }>).detail;
-    if (detail?.externalMedia && pendingVideoButton) loadConsentedVideo(pendingVideoButton);
-    if (!detail?.externalMedia) {
-      document.querySelectorAll<HTMLButtonElement>('.about-video__stop').forEach((button) => button.click());
-    }
-    pendingVideoButton = null;
-  });
-</script>

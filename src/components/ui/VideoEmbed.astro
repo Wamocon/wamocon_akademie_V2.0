@@ -1,0 +1,332 @@
+---
+/**
+ * Consent-gated YouTube facade, styled after the player card on wamocon.com:
+ * poster, channel row, YouTube play button and a "Watch on YouTube" pill.
+ *
+ * Nothing is requested from YouTube until the visitor clicks. The markup uses
+ * the shared consent hooks that `ui/CookieBanner.astro` already drives
+ * (`data-external-media`, `data-external-media-notice`, `data-external-media-load`,
+ * `data-consent-mode="manual"`), so this component is the single place that
+ * needs to change if the consent flow ever moves.
+ */
+import { assets } from '../../data/academy';
+import type { Lang } from '../../i18n/config';
+import { pick } from '../../i18n/utils';
+
+interface Props {
+  /** YouTube video id, e.g. "Q_0mtjo8GAU". */
+  videoId: string;
+  /** Human title, shown in the channel row and used as the iframe title. */
+  title: string;
+  /** Poster still shown before consent. */
+  poster: string;
+  lang: Lang;
+  /** Channel line under the title. */
+  channel?: string;
+  /** Extra classes on the outer element. */
+  class?: string;
+  /** Constrain the frame to 16:9. Off for tiles that set their own height. */
+  ratio?: boolean;
+}
+
+const {
+  videoId,
+  title,
+  poster,
+  lang,
+  channel = 'WAMOCON Academy',
+  class: className,
+  ratio = true,
+} = Astro.props;
+
+const t = pick(lang, {
+  de: {
+    watch: 'Auf YouTube ansehen',
+    play: 'Video abspielen',
+    close: 'Video schließen',
+    consent: 'Erst mit dem Klick wird eine Verbindung zu YouTube hergestellt.',
+  },
+  en: {
+    watch: 'Watch on YouTube',
+    play: 'Play video',
+    close: 'Close video',
+    consent: 'A connection to YouTube is established only once you click.',
+  },
+});
+
+const src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&controls=1&playsinline=1&rel=0`;
+---
+
+<div class:list={['video-embed', className, { 'video-embed--ratio': ratio }]} data-external-media data-video-embed>
+  <iframe
+    data-consent-src={src}
+    data-consent-mode="manual"
+    title={title}
+    loading="lazy"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allow="autoplay; encrypted-media; picture-in-picture; web-share"
+    allowfullscreen
+    hidden
+  ></iframe>
+
+  <button
+    class="video-embed__facade"
+    type="button"
+    data-external-media-load
+    data-video-embed-play
+    aria-label={`${t.play}: ${title}. ${t.consent}`}
+  >
+    <img class="video-embed__poster" src={poster} alt="" width="1280" height="720" loading="lazy" aria-hidden="true" />
+
+    <span class="video-embed__head">
+      <img class="video-embed__avatar" src={assets.academyMark} alt="" width="48" height="48" aria-hidden="true" />
+      <span class="video-embed__titles">
+        <span class="video-embed__title">{title}</span>
+        <span class="video-embed__channel">{channel}</span>
+      </span>
+    </span>
+
+    <span class="video-embed__play" aria-hidden="true">
+      <svg viewBox="0 0 68 48" focusable="false">
+        <path class="video-embed__play-bg" d="M66.5 7.7a8.6 8.6 0 0 0-6-6C55.2 0 34 0 34 0S12.8 0 7.5 1.7a8.6 8.6 0 0 0-6 6A89.6 89.6 0 0 0 0 24a89.6 89.6 0 0 0 1.5 16.3 8.6 8.6 0 0 0 6 6C12.8 48 34 48 34 48s21.2 0 26.5-1.7a8.6 8.6 0 0 0 6-6A89.6 89.6 0 0 0 68 24a89.6 89.6 0 0 0-1.5-16.3Z" />
+        <path d="M27 34 44 24 27 14Z" fill="#fff" />
+      </svg>
+    </span>
+
+    <span class="video-embed__watch">
+      <svg class="video-embed__watch-mark" viewBox="0 0 68 48" aria-hidden="true" focusable="false">
+        <path fill="currentColor" d="M66.5 7.7a8.6 8.6 0 0 0-6-6C55.2 0 34 0 34 0S12.8 0 7.5 1.7a8.6 8.6 0 0 0-6 6A89.6 89.6 0 0 0 0 24a89.6 89.6 0 0 0 1.5 16.3 8.6 8.6 0 0 0 6 6C12.8 48 34 48 34 48s21.2 0 26.5-1.7a8.6 8.6 0 0 0 6-6A89.6 89.6 0 0 0 68 24a89.6 89.6 0 0 0-1.5-16.3Z" />
+        <path d="M27 34 44 24 27 14Z" fill="#fff" />
+      </svg>
+      <span>{t.watch}</span>
+    </span>
+
+    <span class="video-embed__consent">{t.consent}</span>
+  </button>
+
+  <button class="video-embed__stop" type="button" data-external-media-stop hidden>{t.close}</button>
+</div>
+
+<style>
+  .video-embed {
+    position: relative;
+    /* Never wider than the column that holds it. Without this a caller's
+       `min-height` combined with the aspect-ratio below resolves the *width*
+       and the tile balloons far past its container. */
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #000;
+  }
+
+  .video-embed--ratio {
+    aspect-ratio: 16 / 9;
+    /* Height follows the width, so any inherited min-height must not win. */
+    min-height: 0;
+    /* A flex/grid parent using `align-items: stretch` would otherwise set the
+       height itself and defeat the ratio, giving a very tall, cropped poster. */
+    align-self: center;
+  }
+
+  .video-embed iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  /* The whole poster is the consent target, matching the reference player. */
+  .video-embed__facade {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: #000;
+    color: #fff;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .video-embed.is-loaded .video-embed__facade { display: none; }
+
+  .video-embed__poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Slight dim so the overlaid controls keep contrast on bright stills. */
+    filter: brightness(0.82);
+    transition: filter var(--dur-med) var(--ease-out), transform var(--dur-med) var(--ease-out);
+  }
+
+  .video-embed__facade:hover .video-embed__poster,
+  .video-embed__facade:focus-visible .video-embed__poster {
+    filter: brightness(0.7);
+    transform: scale(1.02);
+  }
+
+  /* Channel row, top-left, over a gradient scrim for legibility. */
+  .video-embed__head {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 1.4vw, 12px);
+    padding: clamp(10px, 1.8vw, 16px) clamp(12px, 2vw, 18px) clamp(24px, 4vw, 40px);
+    background: linear-gradient(rgba(0, 0, 0, 0.72), transparent);
+    pointer-events: none;
+  }
+
+  .video-embed__avatar {
+    flex: 0 0 auto;
+    width: clamp(28px, 4vw, 40px);
+    height: clamp(28px, 4vw, 40px);
+    border-radius: 50%;
+    background: #fff;
+    object-fit: contain;
+    padding: 4px;
+  }
+
+  .video-embed__titles {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .video-embed__title {
+    /* Two lines maximum: titles vary a lot in length across locales. */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    color: #fff;
+    font-size: clamp(0.85rem, 1.5vw, 1.05rem);
+    font-weight: var(--fw-semibold);
+    line-height: 1.25;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+  }
+
+  .video-embed__channel {
+    color: rgba(255, 255, 255, 0.82);
+    font-size: clamp(0.72rem, 1.15vw, 0.85rem);
+    line-height: 1.2;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+  }
+
+  /* YouTube-style play button, centred. */
+  .video-embed__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: clamp(54px, 11%, 72px);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .video-embed__play svg { display: block; width: 100%; height: auto; }
+  .video-embed__play-bg { fill: #f00; opacity: 0.92; transition: opacity var(--dur-fast) var(--ease-out); }
+  .video-embed__facade:hover .video-embed__play-bg,
+  .video-embed__facade:focus-visible .video-embed__play-bg { opacity: 1; }
+
+  /* "Watch on YouTube" pill. Anchored bottom-right: several participant
+     posters carry a name caption burnt into the lower-left of the still, and a
+     centred pill sat straight on top of it. */
+  .video-embed__watch {
+    position: absolute;
+    right: clamp(8px, 2vw, 14px);
+    bottom: clamp(8px, 2vw, 14px);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    max-width: calc(100% - 24px);
+    padding: 0.42em 0.9em;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.68);
+    color: #fff;
+    font-size: clamp(0.72rem, 1.5vw, 0.95rem);
+    font-weight: var(--fw-semibold);
+    line-height: 1.2;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .video-embed__watch-mark { flex: 0 0 auto; width: 1.5em; height: auto; color: #f00; }
+
+  /* The consent sentence stays in the accessible name; it is only shown as
+     visible text where the tile is tall enough to carry it. */
+  .video-embed__consent {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .video-embed__stop {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    z-index: 2;
+    min-height: 36px;
+    padding: 0 0.9rem;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.72);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: var(--fw-semibold);
+  }
+
+  .video-embed__stop:hover { background: var(--color-accent); }
+
+  /* Short tiles cannot carry the channel row without crowding the play button. */
+  @container (max-height: 190px) {
+    .video-embed__head { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .video-embed__poster,
+    .video-embed__play-bg { transition: none; }
+    .video-embed__facade:hover .video-embed__poster { transform: none; }
+  }
+</style>
+
+<script>
+  // One handler for every facade on the page. Consent itself is stored by
+  // CookieBanner (the button also carries `data-external-media-load`); this
+  // only swaps the clicked tile over to the real player.
+  document.querySelectorAll<HTMLElement>('[data-video-embed]').forEach((container) => {
+    const facade = container.querySelector<HTMLButtonElement>('[data-video-embed-play]');
+    const iframe = container.querySelector<HTMLIFrameElement>('iframe[data-consent-src]');
+    const stop = container.querySelector<HTMLButtonElement>('[data-external-media-stop]');
+    if (!facade || !iframe) return;
+
+    facade.addEventListener('click', () => {
+      const src = iframe.dataset.consentSrc;
+      if (!src) return;
+      iframe.setAttribute('src', src);
+      iframe.hidden = false;
+      container.classList.add('is-loaded');
+      if (stop) stop.hidden = false;
+      iframe.focus?.();
+    });
+
+    stop?.addEventListener('click', () => {
+      iframe.removeAttribute('src');
+      iframe.hidden = true;
+      container.classList.remove('is-loaded');
+      stop.hidden = true;
+      facade.focus();
+    });
+  });
+</script>

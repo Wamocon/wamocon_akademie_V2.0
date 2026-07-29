@@ -141,6 +141,7 @@ const copy = {
 } as const;
 
 const c = copy[lang];
+// The system diagram is a localised SVG; Turkish falls back to the English edition.
 const systemVisual = lang === 'de' ? assets.ditele : assets.appEn;
 ---
 

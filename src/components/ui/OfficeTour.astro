@@ -1,13 +1,28 @@
 ---
 import type { Lang } from '../../i18n/config';
+import { pick } from '../../i18n/utils';
 
 interface Props { lang: Lang; }
 const { lang } = Astro.props;
-const heading = lang === 'de' ? '360° Büro Tour' : '360° Office tour';
-const text = lang === 'de'
-  ? 'Erkunden Sie unser Büro virtuell. Öffnen Sie die interaktive 360°-Ansicht in Google Maps.'
-  : 'Explore our office virtually. Open the interactive 360° view in Google Maps.';
-const cta = lang === 'de' ? 'In Google Maps öffnen' : 'Open in Google Maps';
+const copy = pick(lang, {
+  de: {
+    heading: '360° Büro Tour',
+    text: 'Erkunden Sie unser Büro virtuell. Öffnen Sie die interaktive 360°-Ansicht in Google Maps.',
+    cta: 'In Google Maps öffnen',
+    notice: 'Die 360°-Ansicht wird erst nach Ihrer Zustimmung von Google Maps geladen.',
+    load: '360°-Ansicht laden',
+  },
+  en: {
+    heading: '360° Office tour',
+    text: 'Explore our office virtually. Open the interactive 360° view in Google Maps.',
+    cta: 'Open in Google Maps',
+    notice: 'The 360° view loads from Google Maps only after your consent.',
+    load: 'Load 360° view',
+  },
+});
+const heading = copy.heading;
+const text = copy.text;
+const cta = copy.cta;
 const embedUrl = 'https://www.google.com/maps/embed?pb=!4v1782479371000!6m8!1m7!1sCAoSHENJQUJJaENVc3VTMzZndWlqazhoTlB1TmlkN1k.!2m2!1d50.1350963!2d8.5722177!3f0!4f-20!5f0.7820865974627469';
 const mapsUrl = 'https://www.google.com/maps/@?api=1&map_action=pano&pano=CAoSHENJQUJJaENVc3VTMzZndWlqazhoTlB1TmlkN1k.&heading=0&pitch=-20&fov=80';
 ---
@@ -21,8 +36,8 @@ const mapsUrl = 'https://www.google.com/maps/@?api=1&map_action=pano&pano=CAoSHE
     <div class="office-tour__frame" data-external-media data-reveal>
       <iframe data-consent-src={embedUrl} title={heading} loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen hidden></iframe>
       <div class="office-tour__notice" data-external-media-notice>
-        <p>{lang === 'de' ? 'Die 360°-Ansicht wird erst nach Ihrer Zustimmung von Google Maps geladen.' : 'The 360° view loads from Google Maps only after your consent.'}</p>
-        <button type="button" data-external-media-load>{lang === 'de' ? '360°-Ansicht laden' : 'Load 360° view'}</button>
+        <p>{copy.notice}</p>
+        <button type="button" data-external-media-load>{copy.load}</button>
       </div>
     </div>
     <a class="office-tour__link" href={mapsUrl} target="_blank" rel="noopener noreferrer">{cta}</a>

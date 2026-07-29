@@ -108,8 +108,13 @@ export const coursePopupBlocks = (
   return blocks;
 };
 
+const popupCategories = {
+  de: { team: 'Teamkurse', individual: 'Einzelkurse' },
+  en: { team: 'Team courses', individual: 'Individual courses' },
+} satisfies Record<Lang, { team: string; individual: string }>;
+
 export const coursePopupCategory = (hook: string, lang: Lang) => {
   const isTeamCourse = /-2-(?:de|en)$/.test(hook);
-  if (lang === 'de') return isTeamCourse ? 'Teamkurse' : 'Einzelkurse';
-  return isTeamCourse ? 'Team courses' : 'Individual courses';
+  const labels = popupCategories[lang] ?? popupCategories.de;
+  return isTeamCourse ? labels.team : labels.individual;
 };

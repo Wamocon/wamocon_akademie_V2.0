@@ -4,8 +4,8 @@ import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import CookieBanner from '../components/ui/CookieBanner.astro';
 import { assets } from '../data/academy';
-import { getAlternateLangUrl } from '../i18n/utils';
-import { company, type Lang } from '../i18n/config';
+import { getAlternateLangUrls, pick } from '../i18n/utils';
+import { company, langCodes, localeTags, ogLocales, thanksHref, type Lang } from '../i18n/config';
 
 interface Props {
   title: string;
@@ -32,8 +32,9 @@ const {
 } = Astro.props;
 const site = Astro.site ?? new URL('https://test-it-academy.com');
 const canonical = new URL(Astro.url.pathname, site).href;
-const altPath = getAlternateLangUrl(Astro.url.pathname, lang);
-const altLang = lang === 'de' ? 'en' : 'de';
+const altPaths = getAlternateLangUrls(Astro.url.pathname, lang);
+// Every locale except the current one, for the reciprocal hreflang tags.
+const altLangs = langCodes.filter((code) => code !== lang);
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
 const origin = site.origin;
 const isDe = lang === 'de';
@@ -54,9 +55,10 @@ const organization = {
   url: `${origin}/`,
   logo: `${origin}${assets.logo}`,
   image: `${origin}${assets.hero}`,
-  description: isDe
-    ? 'IT-Bildungszentrum in Eschborn für Softwaretesting und Testmanagement. Von ISTQB als akkreditierter Trainingsanbieter für deutschsprachige CTFL 4.0- und Agile-Tester-1.0-Materialien gelistet.'
-    : 'IT training centre in Eschborn for software testing and test management. Listed by ISTQB as an accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 materials.',
+  description: pick(lang, {
+    de: 'IT-Bildungszentrum in Eschborn für Softwaretesting und Testmanagement. Von ISTQB als akkreditierter Trainingsanbieter für deutschsprachige CTFL 4.0- und Agile-Tester-1.0-Materialien gelistet.',
+    en: 'IT training centre in Eschborn for software testing and test management. Listed by ISTQB as an accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 materials.',
+  }),
   telephone: company.phone,
   email: company.email,
   vatID: 'DE344930486',
@@ -127,13 +129,16 @@ const website = {
   url: `${origin}/`,
   name: 'WAMOCON Academy',
   description,
-  inLanguage: ['de-DE', 'en-GB'],
+  inLanguage: Object.values(localeTags),
   publisher: { '@id': `${origin}/#organization` },
 };
 
-const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '/en/';
+const isHome = ['/', '/en/', '/tr/'].includes(Astro.url.pathname);
 const trail = [
-  { name: isDe ? 'Startseite' : 'Home', path: isDe ? '/' : '/en/' },
+  {
+    name: pick(lang, { de: 'Startseite', en: 'Home' }),
+    path: pick(lang, { de: '/', en: '/en/' }),
+  },
   ...breadcrumbs,
   // A breadcrumb that never names the current page conveys no position and is
   // ineligible for the breadcrumb rich result.
@@ -158,7 +163,7 @@ const webPage = {
   url: canonical,
   name: title,
   description,
-  inLanguage: isDe ? 'de-DE' : 'en-GB',
+  inLanguage: localeTags[lang],
   isPartOf: { '@id': `${origin}/#website` },
   about: { '@id': `${origin}/#organization` },
   breadcrumb: { '@id': `${canonical}#breadcrumb` },
@@ -181,10 +186,14 @@ const expert = {
   '@id': `${origin}/#waleri-moretz`,
   name: 'Waleri Moretz',
   honorificPrefix: 'Dipl.-Ing.',
-  jobTitle: isDe ? 'Geschäftsführer und Trainer' : 'Managing Director and Trainer',
-  description: isDe
-    ? 'Diplom-Ingenieur, Geschäftsführer der WAMOCON Academy GmbH und der WAMOCON GmbH. Leitet seit 2015 Testmanagement-Projekte für Konzerne und unterrichtet ISTQB-Lehrpläne.'
-    : 'Graduate engineer, managing director of WAMOCON Academy GmbH and WAMOCON GmbH. Has led enterprise test-management projects since 2015 and teaches the ISTQB syllabi.',
+  jobTitle: pick(lang, {
+    de: 'Geschäftsführer und Trainer',
+    en: 'Managing Director and Trainer',
+  }),
+  description: pick(lang, {
+    de: 'Diplom-Ingenieur, Geschäftsführer der WAMOCON Academy GmbH und der WAMOCON GmbH. Leitet seit 2015 Testmanagement-Projekte für Konzerne und unterrichtet ISTQB-Lehrpläne.',
+    en: 'Graduate engineer, managing director of WAMOCON Academy GmbH and WAMOCON GmbH. Has led enterprise test-management projects since 2015 and teaches the ISTQB syllabi.',
+  }),
   worksFor: { '@id': `${origin}/#organization` },
   knowsAbout: ['Software testing', 'Test management', 'ISTQB Certified Tester', 'Quality assurance'],
   knowsLanguage: ['de', 'en'],
@@ -212,7 +221,9 @@ const structuredData = {
       <>
         <link rel="canonical" href={canonical} />
         <link rel="alternate" hreflang={lang} href={canonical} />
-        <link rel="alternate" hreflang={altLang} href={new URL(altPath, site).href} />
+        {altLangs.map((code) => (
+          <link rel="alternate" hreflang={code} href={new URL(altPaths[code], site).href} />
+        ))}
       </>
     )}
     <meta property="og:type" content="website" />
@@ -226,15 +237,15 @@ const structuredData = {
     <meta name="twitter:image" content={new URL(image, site).href} />
     <meta property="og:image:alt" content={title} />
     <meta property="og:site_name" content="WAMOCON Academy" />
-    <meta property="og:locale" content={isDe ? 'de_DE' : 'en_GB'} />
-    <meta property="og:locale:alternate" content={isDe ? 'en_GB' : 'de_DE'} />
+    <meta property="og:locale" content={ogLocales[lang]} />
+    {altLangs.map((code) => <meta property="og:locale:alternate" content={ogLocales[code]} />)}
     <meta name="author" content="WAMOCON Academy GmbH" />
     <meta name="theme-color" content="#0d0d0d" />
     {!noindex && (
       <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     )}
     {!noindex && (
-      <link rel="alternate" hreflang="x-default" href={isDe ? canonical : new URL(altPath, site).href} />
+      <link rel="alternate" hreflang="x-default" href={isDe ? canonical : new URL(altPaths.de, site).href} />
     )}
     <!-- Favicons (WAMOCON Academy wordmark logo) -->
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png" />
@@ -243,7 +254,9 @@ const structuredData = {
     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
   </head>
   <body>
-    <a class="skip-link" href="#main">{lang === 'de' ? 'Zum Inhalt springen' : 'Skip to content'}</a>
+    <a class="skip-link" href="#main">
+      {pick(lang, { de: 'Zum Inhalt springen', en: 'Skip to content' })}
+    </a>
     <Header lang={lang} />
     <main id="main"><slot /></main>
     <Footer lang={lang} showContact={showFooterContact} />
@@ -271,8 +284,21 @@ const structuredData = {
       } else revealEls.forEach(show);
     </script>
 
-    <script is:inline define:vars={{ turnstileSiteKey }}>
+    <script is:inline define:vars={{ turnstileSiteKey, thanksHref }}>
       // @ts-nocheck
+      // Form status messages, per locale. Falls back to German for unknown values.
+      const FORM_MESSAGES = {
+        de: {
+          captcha: 'Bitte bestätigen Sie die Sicherheitsprüfung.',
+          failed: 'Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es erneut oder rufen Sie uns an.',
+        },
+        en: {
+          captcha: 'Please complete the security check.',
+          failed: 'The request could not be sent. Please try again or call us.',
+        },
+      };
+      const messagesFor = (code) => FORM_MESSAGES[code] || FORM_MESSAGES.de;
+
       const isLocalPreview = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
       // The production key is domain-locked; on localhost use Cloudflare's always-pass
       // test key so the captcha still renders and can be tested.
@@ -329,9 +355,7 @@ const structuredData = {
             await ensureTurnstile(form).catch(() => {});
             if (!form.querySelector('input[name="cf-turnstile-response"]')?.value) {
               if (status) {
-                status.textContent = language === 'en'
-                  ? 'Please complete the security check.'
-                  : 'Bitte bestätigen Sie die Sicherheitsprüfung.';
+                status.textContent = messagesFor(language).captcha;
                 status.hidden = false;
               }
               return;
@@ -352,7 +376,7 @@ const structuredData = {
             company: String(data.get('company') || ''),
             'cf-turnstile-response': String(data.get('cf-turnstile-response') || ''),
           };
-          const redirect = form.dataset.redirect || (payload.lang === 'de' ? '/danke/' : '/thanks/');
+          const redirect = form.dataset.redirect || thanksHref[payload.lang] || thanksHref.de;
           try {
             const response = await fetch('/api/lead', {
               method: 'POST',
@@ -363,9 +387,7 @@ const structuredData = {
             window.location.assign(redirect);
           } catch {
             if (status) {
-              status.textContent = language === 'en'
-                ? 'The request could not be sent. Please try again or call us.'
-                : 'Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es erneut oder rufen Sie uns an.';
+              status.textContent = messagesFor(language).failed;
               status.hidden = false;
             }
             if (button) button.disabled = false;

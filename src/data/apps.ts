@@ -5,7 +5,12 @@
  * To add or edit an app: update the relevant category below.
  *  - `soon: true` renders a "coming soon" card with no outbound link.
  */
-import type { Lang } from '../i18n/config';
+/**
+ * LEGACY: no route imports this file (the live pages do not render an app
+ * showcase). Typed against its own German/English union rather than the
+ * site-wide `Lang`, which also includes Turkish.
+ */
+type LegacyLang = 'de' | 'en';
 
 export interface AppItem {
   name: string;
@@ -475,4 +480,4 @@ export const appCategories: AppCategory[] = [
 ];
 
 /** Helper to pick the right language string. */
-export const pick = (obj: { de: string; en: string }, lang: Lang) => obj[lang];
+export const pick = (obj: { de: string; en: string }, lang: LegacyLang) => obj[lang];

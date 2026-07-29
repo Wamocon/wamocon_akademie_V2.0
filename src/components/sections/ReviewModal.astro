@@ -1,24 +1,26 @@
 ---
-import { legalNav, type Lang } from '../../i18n/config';
+import { legalNav, thanksHref, type Lang } from '../../i18n/config';
+import { pick } from '../../i18n/utils';
 
 interface Props { lang: Lang; }
 
 const { lang } = Astro.props;
-const copy = lang === 'de'
-  ? {
-      close: 'Schließen', title: 'Senden Sie Ihre Bewertung', name: 'Name', namePlaceholder: 'Ihr Name',
-      review: 'Bewertung', comments: 'Kommentare/Link zur Datei', submit: 'Anfrage senden',
-      privacyPre: 'Informationen zur Verarbeitung finden Sie in der ', privacyLink: 'Datenschutzerklärung',
-      publication: 'Optional: Ich willige ein, dass meine Bewertung zusammen mit meinem Namen als Teilnehmerstimme auf den Websites und in den Social-Media-Kanälen der WAMOCON Academy GmbH veröffentlicht werden darf. Die Einwilligung ist freiwillig und jederzeit mit Wirkung für die Zukunft widerrufbar.',
-      notice: 'Ohne diese freiwillige Einwilligung wird die Bewertung nicht veröffentlicht. Dies ist kein Kauf.',
-    }
-  : {
-      close: 'Close', title: 'Send your evaluation', name: 'Name', namePlaceholder: 'Name',
-      review: 'Evaluation', comments: 'Comments/link to the file', submit: 'Send request',
-      privacyPre: 'Information about processing is provided in the ', privacyLink: 'privacy policy',
-      publication: 'Optional: I consent to my review and name being published as a participant testimonial on WAMOCON Academy GmbH websites and social-media channels. This consent is voluntary and can be withdrawn at any time for the future.',
-      notice: 'Without this voluntary consent, the review will not be published. This is not a purchase.',
-    };
+const copy = pick(lang, {
+  de: {
+    close: 'Schließen', title: 'Senden Sie Ihre Bewertung', name: 'Name', namePlaceholder: 'Ihr Name',
+    review: 'Bewertung', comments: 'Kommentare/Link zur Datei', submit: 'Anfrage senden',
+    privacyPre: 'Informationen zur Verarbeitung finden Sie in der ', privacyLink: 'Datenschutzerklärung',
+    publication: 'Optional: Ich willige ein, dass meine Bewertung zusammen mit meinem Namen als Teilnehmerstimme auf den Websites und in den Social-Media-Kanälen der WAMOCON Academy GmbH veröffentlicht werden darf. Die Einwilligung ist freiwillig und jederzeit mit Wirkung für die Zukunft widerrufbar.',
+    notice: 'Ohne diese freiwillige Einwilligung wird die Bewertung nicht veröffentlicht. Dies ist kein Kauf.',
+  },
+  en: {
+    close: 'Close', title: 'Send your evaluation', name: 'Name', namePlaceholder: 'Name',
+    review: 'Evaluation', comments: 'Comments/link to the file', submit: 'Send request',
+    privacyPre: 'Information about processing is provided in the ', privacyLink: 'privacy policy',
+    publication: 'Optional: I consent to my review and name being published as a participant testimonial on WAMOCON Academy GmbH websites and social-media channels. This consent is voluntary and can be withdrawn at any time for the future.',
+    notice: 'Without this voluntary consent, the review will not be published. This is not a purchase.',
+  },
+});
 ---
 
 <dialog class="review-dialog" id="review-dialog" aria-labelledby="review-dialog-title">
@@ -29,7 +31,7 @@ const copy = lang === 'de'
       </svg>
     </button>
     <h2 id="review-dialog-title">{copy.title}</h2>
-    <form class="review-dialog__form js-lead-form" data-redirect={lang === 'de' ? '/danke/' : '/thanks/'}>
+    <form class="review-dialog__form js-lead-form" data-redirect={thanksHref[lang]}>
       <input type="hidden" name="type" value="review" />
       <input type="hidden" name="lang" value={lang} />
       <input class="review-dialog__trap" type="text" name="company" tabindex="-1" autocomplete="off" />

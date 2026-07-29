@@ -1,9 +1,11 @@
 ---
 import { assets, home, steps } from '../../data/academy';
-import type { Lang } from '../../i18n/config';
+import { nav, type Lang } from '../../i18n/config';
+import { pick } from '../../i18n/utils';
 import Button from '../ui/Button.astro';
 import LeadForm from './LeadForm.astro';
 import OfficeTour from '../ui/OfficeTour.astro';
+import VideoEmbed from '../ui/VideoEmbed.astro';
 
 interface Props {
   lang: Lang;
@@ -11,7 +13,40 @@ interface Props {
 
 const { lang } = Astro.props;
 const h = home;
-const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certification/';
+const istqbHref = nav.find((item) => item.key === 'certification')![lang].href;
+const c = pick(lang, {
+  de: {
+    experienceLead: 'über 50 Jahre gebündelte',
+    experienceRest: 'Praxiserfahrung unseres Teams',
+    mission: 'UNSERE MISSION',
+    videoNotice: 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.',
+    videoLoad: 'YouTube-Video laden',
+    successLead: 'Starten Sie Ihre',
+    successLeadTwo: 'Erfolgsgeschichte mit',
+    successRest: 'der WAMOCON Academy',
+    certification: 'Zertifizierung',
+    istqbCta: 'Mehr über ISTQB®',
+    stepsLead: 'Von der Bewerbung bis zum IT-Projekt:',
+    stepsRest: '6 Schritte zum gefragten Softwaretester',
+    stepsClosing:
+      'Entdecken Sie jetzt, wie diese sechs entscheidenden Schritte Ihre Karriere verändern können. Melden Sie sich noch heute an!',
+  },
+  en: {
+    experienceLead: 'over 50 years of combined',
+    experienceRest: 'practical experience within our team',
+    mission: 'OUR MISSION',
+    videoNotice: 'This video loads from YouTube only after your consent.',
+    videoLoad: 'Load YouTube video',
+    successLead: 'Start your success story with',
+    successLeadTwo: '',
+    successRest: 'the WAMOCON Academy',
+    certification: 'Certification',
+    istqbCta: 'More about ISTQB®',
+    stepsLead: 'From the application to the IT project:',
+    stepsRest: '6 steps to becoming a sought-after software tester',
+    stepsClosing: 'Discover now how these six decisive steps can change your career. Sign up today!',
+  },
+});
 ---
 
 <section class="academy-hero" data-hero-media>
@@ -39,30 +74,28 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
   <div class="container experience__top">
     <div class="experience__copy" data-reveal>
       <h2>
-        {lang === 'de' ? <><span>über 50 Jahre gebündelte</span><br />Praxiserfahrung unseres Teams</> : <><span>over 50 years of combined</span><br />practical experience within our team</>}
+        <span>{c.experienceLead}</span><br />{c.experienceRest}
       </h2>
       {h.intro.paragraphs[lang].map((p) => <p>{p}</p>)}
     </div>
     <aside class="mission" data-reveal>
-      <strong>{lang === 'de' ? 'UNSERE MISSION' : 'OUR MISSION'}</strong>
+      <strong>{c.mission}</strong>
       <p>{h.intro.mission[lang]}</p>
       <img src={assets.missionRing} alt="" width="600" height="600" loading="lazy" aria-hidden="true" />
     </aside>
   </div>
 
   <div class="container success-story">
-    <div class="success-story__video external-media" data-external-media data-reveal>
-      <iframe data-consent-src="https://www.youtube-nocookie.com/embed/Q_0mtjo8GAU?autoplay=1&controls=1&playsinline=1&rel=0" data-consent-mode="manual" title="WAMOCON Academy Karriere-Booster IT" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen hidden></iframe>
-      <div class="external-media__notice" data-external-media-notice>
-        <img src="/images/academy/tild6466-6536-4065-b832-356661343462__wma_imagevideo_bild1.jpg" alt="" width="1920" height="1080" loading="lazy" aria-hidden="true" />
-        <span class="external-media__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg></span>
-        <p>{lang === 'de' ? 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.' : 'This video loads from YouTube only after your consent.'}</p>
-        <button type="button" data-external-media-load>{lang === 'de' ? 'YouTube-Video laden' : 'Load YouTube video'}</button>
-      </div>
-    </div>
+    <VideoEmbed
+      class="success-story__video"
+      videoId="Q_0mtjo8GAU"
+      title="WAMOCON Academy Karriere-Booster IT"
+      poster="/images/academy/tild6466-6536-4065-b832-356661343462__wma_imagevideo_bild1.jpg"
+      lang={lang}
+    />
     <div class="success-story__copy" data-reveal>
       <h2>
-        {lang === 'de' ? <><span>Starten Sie Ihre<br />Erfolgsgeschichte mit</span><br />der WAMOCON Academy</> : <><span>Start your success story with</span><br />the WAMOCON Academy</>}
+        <span>{c.successLead}{c.successLeadTwo && <><br />{c.successLeadTwo}</>}</span><br />{c.successRest}
       </h2>
       <p>{h.success.text[lang]}</p>
       <img src={assets.accentCurve} alt="" width="320" height="320" loading="lazy" aria-hidden="true" />
@@ -81,11 +114,11 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
 <section class="section surface-light istqb">
   <div class="container istqb__grid">
     <div class="istqb__copy" data-reveal>
-      <span class="eyebrow">{lang === 'de' ? 'Zertifizierung' : 'Certification'}</span>
+      <span class="eyebrow">{c.certification}</span>
       <h2>{h.istqb.title}</h2>
       <p>{h.istqb[lang]}</p>
       <p>{h.istqb.closing[lang]}</p>
-      <Button href={istqbHref}>{lang === 'de' ? 'Mehr über ISTQB®' : 'More about ISTQB®'}</Button>
+      <Button href={istqbHref}>{c.istqbCta}</Button>
     </div>
     <figure class="istqb__certificate" data-reveal>
       <img src={assets.certificate} alt="ISTQB Accredited Training Provider" width="960" height="1358" loading="lazy" />
@@ -97,21 +130,15 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
   <div class="container">
     <div class="section-head" data-reveal>
       <h2>
-        <span>{lang === 'de' ? 'Von der Bewerbung bis zum IT-Projekt:' : 'From the application to the IT project:'}</span>
-        {lang === 'de' ? '6 Schritte zum gefragten Softwaretester' : '6 steps to becoming a sought-after software tester'}
+        <span>{c.stepsLead}</span>
+        {c.stepsRest}
       </h2>
     </div>
     <ol class="steps__list">
       {steps[lang].map((step, index) => <li data-reveal><span>{String(index + 1).padStart(2, '0')}</span><p>{step}</p></li>)}
     </ol>
-    <p class="steps__closing" data-reveal>
-      {lang === 'de'
-        ? 'Entdecken Sie jetzt, wie diese sechs entscheidenden Schritte Ihre Karriere verändern können. Melden Sie sich noch heute an!'
-        : 'Discover now how these six decisive steps can change your career. Sign up today!'}
-    </p>
-    <Button href={istqbHref} class="steps__cta">
-      {lang === 'de' ? 'Mehr über ISTQB®' : 'More about ISTQB®'}
-    </Button>
+    <p class="steps__closing" data-reveal>{c.stepsClosing}</p>
+    <Button href={istqbHref} class="steps__cta">{c.istqbCta}</Button>
   </div>
 </section>
 
@@ -467,7 +494,16 @@ const istqbHref = lang === 'de' ? '/istqb-zertifizierung/' : '/en/istqb-certific
     }
 
     .experience { padding-block: 60px 80px; }
-    .mission { min-height: 330px; }
+    /* The ring is a flourish that bleeds out of the panel on desktop. On a
+       single-column layout that bleed runs off-screen to the right and hangs
+       ~115px below the panel, painting on top of the video underneath, so clip
+       it to its own card here. */
+    .mission { min-height: 330px; overflow: hidden; }
+    .mission img {
+      right: -72px;
+      bottom: -84px;
+      width: min(72%, 300px);
+    }
     .success-story { margin-top: 70px; }
     .success-story__copy > img { display: none; }
 

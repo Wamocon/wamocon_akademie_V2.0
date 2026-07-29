@@ -8,7 +8,8 @@ import { home } from '../../../data/home';
 import { nav, legalNav, type Lang } from '../../../i18n/config';
 
 interface Props {
-  lang: Lang;
+  /** LEGACY component: unreachable from any route, still German/English only. */
+  lang: "de" | "en";
 }
 const { lang } = Astro.props;
 const aboutHref = nav.find((n) => n.key === 'about')![lang].href;

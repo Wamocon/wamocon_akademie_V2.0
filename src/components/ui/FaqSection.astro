@@ -37,10 +37,20 @@ const {
   lang = 'de',
 } = Astro.props;
 
+const reviewedFormats = {
+  de: { locale: 'de-DE', label: (date: string) => `Zuletzt fachlich geprüft am ${date}` },
+  en: { locale: 'en-GB', label: (date: string) => `Last reviewed on ${date}` },
+} as const;
+
+const reviewedFormat = reviewedFormats[lang] ?? reviewedFormats.de;
 const reviewedLabel = lastReviewed
-  ? (lang === 'de'
-      ? `Zuletzt fachlich geprüft am ${new Date(lastReviewed).toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })}`
-      : `Last reviewed on ${new Date(lastReviewed).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })}`)
+  ? reviewedFormat.label(
+      new Date(lastReviewed).toLocaleDateString(reviewedFormat.locale, {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+      }),
+    )
   : '';
 
 const faqSchema = {

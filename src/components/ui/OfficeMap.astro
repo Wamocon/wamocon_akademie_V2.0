@@ -1,5 +1,6 @@
 ---
 import type { Lang } from '../../i18n/config';
+import { pick } from '../../i18n/utils';
 
 interface Props {
   lang: Lang;
@@ -7,7 +8,21 @@ interface Props {
 }
 
 const { lang, compact = false } = Astro.props;
-const title = lang === 'de' ? 'Standort der WAMOCON Academy' : 'WAMOCON Academy location';
+const copy = pick(lang, {
+  de: {
+    title: 'Standort der WAMOCON Academy',
+    eyebrow: 'Standort',
+    notice: 'Google Maps wird erst nach Ihrer Einwilligung geladen.',
+    settings: 'Datenschutzeinstellungen öffnen',
+  },
+  en: {
+    title: 'WAMOCON Academy location',
+    eyebrow: 'Location',
+    notice: 'Google Maps loads only after your consent.',
+    settings: 'Open privacy settings',
+  },
+});
+const title = copy.title;
 const address = 'Mergenthalerallee 79–81, 65760 Eschborn';
 const src = 'https://www.google.com/maps?q=Mergenthalerallee+79-81%2C+65760+Eschborn&output=embed';
 ---
@@ -16,7 +31,7 @@ const src = 'https://www.google.com/maps?q=Mergenthalerallee+79-81%2C+65760+Esch
   {!compact && (
     <div class="office-map__heading container">
       <div>
-        <span>{lang === 'de' ? 'Standort' : 'Location'}</span>
+        <span>{copy.eyebrow}</span>
         <h2>{title}</h2>
       </div>
       <address>{address}</address>
@@ -32,8 +47,8 @@ const src = 'https://www.google.com/maps?q=Mergenthalerallee+79-81%2C+65760+Esch
       hidden
     ></iframe>
     <div class="office-map__notice" data-external-media-notice>
-      <p>{lang === 'de' ? 'Google Maps wird erst nach Ihrer Einwilligung geladen.' : 'Google Maps loads only after your consent.'}</p>
-      <button type="button" data-open-consent-settings>{lang === 'de' ? 'Datenschutzeinstellungen öffnen' : 'Open privacy settings'}</button>
+      <p>{copy.notice}</p>
+      <button type="button" data-open-consent-settings>{copy.settings}</button>
     </div>
   </div>
 </section>
