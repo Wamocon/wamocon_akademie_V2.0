@@ -68,19 +68,10 @@ const isActive = (item: NavLink) => {
       </ul>
     </nav>
 
+    <!-- Order matters: logo, then the language switcher, then the burger last so
+         it sits hard against the right edge on mobile. DOM order is kept the
+         same as the visual order so tab order matches what is on screen. -->
     <div class="site-header__actions">
-      <button
-        class="site-header__toggle"
-        type="button"
-        id="nav-toggle"
-        aria-controls="primary-nav"
-        aria-expanded="false"
-        aria-label={t('nav.menu')}
-        data-label-open={t('nav.menu')}
-        data-label-close={t('nav.close')}
-      >
-        <span></span><span></span><span></span>
-      </button>
       <div class="site-header__langswitch" data-lang-switch>
         <button
           type="button"
@@ -117,6 +108,18 @@ const isActive = (item: NavLink) => {
           ))}
         </ul>
       </div>
+      <button
+        class="site-header__toggle"
+        type="button"
+        id="nav-toggle"
+        aria-controls="primary-nav"
+        aria-expanded="false"
+        aria-label={t('nav.menu')}
+        data-label-open={t('nav.menu')}
+        data-label-close={t('nav.close')}
+      >
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
 </header>
@@ -320,10 +323,12 @@ const isActive = (item: NavLink) => {
   .site-header__toggle {
     display: none;
     /* 44px keeps the tap target at the accessible minimum without letting the
-       three bars overflow the box. */
+       three bars overflow the box. The bars are 22px inside that box, so pull
+       the button out by half the slack to optically align them with the
+       container edge now that this is the last item in the row. */
     width: 44px;
     height: 44px;
-    margin-right: -0.5rem;
+    margin-right: -11px;
     flex-direction: column;
     align-items: center;
     justify-content: center;
