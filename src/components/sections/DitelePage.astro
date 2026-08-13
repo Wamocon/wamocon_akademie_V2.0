@@ -148,6 +148,9 @@ const copy = pick(lang, {
     <div class="ditele-hero__copy page-hero__copy">
       <h1 id="ditele-title">DiTeLe App</h1>
       <p>{copy.hero}</p>
+      <a class="ditele-discover" href="https://onlinekurs.test-it-academy.com/" target="_blank" rel="noopener noreferrer">
+        {copy.discover} <span aria-hidden="true">→</span>
+      </a>
     </div>
   </div>
 </section>
@@ -189,14 +192,8 @@ const copy = pick(lang, {
         </ul>
         <p class="ditele-quiz__feedback" data-quiz-feedback hidden></p>
         <p class="ditele-quiz__hint">{copy.quizHint}</p>
-        <a class="ditele-quiz__cta" href="https://onlinekurs.test-it-academy.de/#preise" target="_blank" rel="noopener noreferrer">
+        <a class="ditele-quiz__cta" href="https://onlinekurs.test-it-academy.com/#preise" target="_blank" rel="noopener noreferrer">
           {copy.quizCta}
-        </a>
-      </div>
-
-      <div class="ditele-test__actions">
-        <a class="ditele-test__course-link" href="https://onlinekurs.test-it-academy.de/" target="_blank" rel="noopener noreferrer">
-          {copy.discover} <span aria-hidden="true">→</span>
         </a>
       </div>
     </div>
@@ -252,6 +249,11 @@ const copy = pick(lang, {
       {copy.togetherItems.map((text) => <article class="ditele-card ditele-card--strong" data-reveal><p>{text}</p></article>)}
     </div>
     <p class="ditele-together__outro" data-reveal>{copy.togetherOutro}</p>
+    <div class="ditele-together__actions" data-reveal>
+      <a class="ditele-discover" href="https://onlinekurs.test-it-academy.com/" target="_blank" rel="noopener noreferrer">
+        {copy.discover} <span aria-hidden="true">→</span>
+      </a>
+    </div>
   </div>
 </section>
 
@@ -517,20 +519,27 @@ const copy = pick(lang, {
     color: rgba(255, 255, 255, 0.7);
     font-style: italic;
   }
-  .ditele-test__actions { margin-top: 1.5rem; }
-  .ditele-test__course-link {
+  /* Shared CTA to the online-course shop. Sized on the site's control tokens
+     so it matches every other button, and uses the accessible red: white on
+     #ff0b00 is 4.2:1 and fails WCAG AA. */
+  .ditele-discover {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    min-height: 50px;
-    padding: 0 1.6rem;
-    background: #ff0b00;
+    min-height: var(--btn-h);
+    margin-top: 1.75rem;
+    padding-inline: var(--btn-pad-x);
+    background: var(--color-accent-surface);
     color: #fff;
-    font-weight: 600;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    letter-spacing: 0.02em;
     border-radius: var(--radius-pill);
-    transition: background 180ms ease, transform 180ms ease;
+    box-shadow: var(--shadow-accent);
+    transition: background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
   }
-  .ditele-test__course-link:hover { background: #e90a00; transform: translateY(-2px); }
+  .ditele-discover:hover { background: var(--color-accent-hover); transform: translateY(-2px); }
+  .ditele-discover:active { transform: translateY(0); }
   .ditele-test__badge--live { border-color: rgba(255, 11, 0, 0.5); color: #ff5a4d; }
 
   /* Interactive live-demo quiz (mirrors the DiTeLe online-course practice tool). */
@@ -647,7 +656,9 @@ const copy = pick(lang, {
   }
 
   .ditele-platform__intro {
-    max-width: 1020px;
+    /* Was 1020px, which wrapped this two-line intro well short of the card
+       grid below it and left the right third of the section empty. */
+    max-width: 1100px;
   }
 
   .ditele-card-grid {

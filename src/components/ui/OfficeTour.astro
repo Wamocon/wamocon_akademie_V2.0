@@ -50,7 +50,10 @@ const mapsUrl = 'https://www.google.com/maps/@?api=1&map_action=pano&pano=CAoSHE
     content: '';
     position: absolute;
     top: 4%;
-    right: -80px;
+    /* Offset from the container edge, not the viewport. The section is
+       full-bleed, so a plain `right: -80px` pinned this to the screen edge —
+       ~846px away from the tour content on a 3800px monitor, and clipped. */
+    right: calc(var(--page-gutter) - 80px);
     width: clamp(190px, 14vw, 300px);
     aspect-ratio: 1;
     background: url('/images/academy/tild3730-6132-4863-b462-623032303533__group_11.png') center / contain no-repeat;

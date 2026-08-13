@@ -11,9 +11,13 @@ interface Props {
   image?: string;
   intro?: string;
   complianceMode?: boolean;
+  /* The modal copy in the footer passes null: it is opened by JS, never by the
+     #beratung anchor, and a second id="beratung" collides with the inline
+     advice section on the course pages. */
+  anchorId?: string | null;
 }
 
-const { lang, type = 'lead', compact = false, title, image = assets.consultation, intro, complianceMode = false } = Astro.props;
+const { lang, type = 'lead', compact = false, title, image = assets.consultation, intro, complianceMode = false, anchorId = 'beratung' } = Astro.props;
 const t = (key: keyof (typeof ui)['de']) => ui[lang][key];
 const redirect = thanksHref[lang];
 const privacyHref = legalNav.privacy[lang].href;
@@ -35,7 +39,7 @@ const consultationAlt = pick(lang, {
 });
 ---
 
-<section class:list={['lead-section', { 'lead-section--compact': compact }]} id="beratung">
+<section class:list={['lead-section', { 'lead-section--compact': compact }]} id={anchorId ?? undefined}>
   <div class="container lead-section__grid">
     <div class="lead-section__image" data-reveal>
       <img src={image} alt={consultationAlt} width="1600" height="900" loading="lazy" />
