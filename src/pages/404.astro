@@ -5,19 +5,19 @@ const lang = 'de';
 ---
 
 <BaseLayout title="Fehler 404" description="Die gewünschte Seite wurde nicht gefunden." lang={lang} noindex>
-  <section class="not-found surface-light">
-    <div class="container">
-      <span class="eyebrow">Fehler 404</span>
-      <h1>Fehler 404</h1>
-      <p>Die gewünschte Seite wurde nicht gefunden.</p>
-      <a href="/">Startseite</a>
+  <section class="not-found page-hero">
+    <div class="container page-hero__inner">
+      <div class="page-hero__copy">
+        <h1>Fehler 404</h1>
+        <p>Die gewünschte Seite wurde nicht gefunden.</p>
+        <a href="/">Startseite</a>
+      </div>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .not-found { min-height: 70vh; padding-block: clamp(6rem, 12vw, 10rem); }
-  .not-found h1 { margin: 1rem 0; color: var(--color-text-dark); }
-  .not-found p { color: var(--color-muted-dark); }
+  .not-found h1 { margin: 0 0 1.25rem; color: var(--color-text); }
+  .not-found p { color: var(--color-muted); }
   .not-found a { display: inline-flex; margin-top: 1.5rem; color: var(--color-accent); font-weight: var(--fw-semibold); }
 </style>

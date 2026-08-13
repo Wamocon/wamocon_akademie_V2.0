@@ -16,7 +16,6 @@ const notice = 'notice' in page ? (page.notice as { text: string; linkLabel: str
 
 <section class="legal-page">
   <div class="container legal-page__inner">
-    <span class="eyebrow">{page.title}</span>
     <h1>{page.title}</h1>
     {notice && (
       <aside class="legal-page__notice" role="note">
@@ -43,8 +42,9 @@ const notice = 'notice' in page ? (page.notice as { text: string; linkLabel: str
      so a light background left them invisible (review AK#23). */
   .legal-page {
     min-height: 70vh;
-    /* Top padding clears the fixed header (up to 180px on desktop). */
-    padding-top: clamp(7rem, 15vw, 12rem);
+    /* Same opening line as every other page — the hero token owns the offset
+       that clears the fixed header. */
+    padding-top: var(--hero-pad-top);
     padding-bottom: clamp(4rem, 8vw, 6rem);
     background: var(--color-bg);
     color: var(--color-text);
@@ -55,14 +55,16 @@ const notice = 'notice' in page ? (page.notice as { text: string; linkLabel: str
   }
 
   .legal-page h1 {
-    margin: 1rem 0 2rem;
+    margin: 0 0 2rem;
     color: var(--color-text);
   }
 
   .legal-page__blocks {
     display: grid;
     gap: 1.25rem;
-    max-width: 1100px;
+    /* A ch-based cap, not 1100px. Statutory text set 1100px wide runs ~130
+       characters per line, roughly double a comfortable measure. */
+    max-width: 78ch;
   }
 
   /* Precedence notice on courtesy translations of the binding German text. */
@@ -79,7 +81,7 @@ const notice = 'notice' in page ? (page.notice as { text: string; linkLabel: str
   .legal-page__notice p {
     margin: 0;
     color: var(--color-text);
-    font-size: 0.95rem;
+    font-size: var(--fs-sm);
     line-height: 1.55;
   }
 
@@ -97,7 +99,7 @@ const notice = 'notice' in page ? (page.notice as { text: string; linkLabel: str
   .legal-page h2 {
     margin-bottom: 0.7rem;
     color: var(--color-text);
-    font-size: clamp(1.2rem, 2.3vw, 1.6rem);
+    font-size: var(--fs-h4);
   }
 
   .legal-page p {

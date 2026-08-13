@@ -38,7 +38,7 @@ const copy = {
       ['Unterstützung und Mentoring', 'Unsere Dozenten sind erfahrene Fachleute und Praktiker, die nicht nur Wissen vermitteln, sondern die Teilnehmer auf jedem Schritt ihrer Ausbildung unterstützen, indem sie Feedback und Mentoring anbieten.'],
     ],
     advantagesSummary: 'Dank dieser Vorteile bietet die WAMOCON Academy eine umfassende und qualitativ hochwertige Ausbildung für Fachleute, damit sie in der Lage sind, persönliche und berufliche Ziele in der sich schnell verändernden Technologiewelt zu erreichen.',
-    wmcTitle: 'WMC-Methode +',
+    wmcTitle: 'WMC-Methode +',
     wmcParagraphs: [
       'Die IT-Welt war noch nie so komplex wie heute, besonders durch den rasanten Fortschritt der künstlichen Intelligenz. Hier kommt die WMC-Methode ins Spiel, die auf über 50 Jahren gebündelter Praxiserfahrung unseres Teams im IT-Qualitätsmanagement aufbaut.',
       'Diese bewährte Methode sorgt dafür, dass auch zukünftige IT-Projekte erfolgreich umgesetzt werden. Vertrauen Sie auf die WMC-Methode, Ihren stabilen Anker in der sich ständig wandelnden IT-Welt.',
@@ -107,7 +107,7 @@ const copy = {
       ['Support and mentoring', 'Our lecturers are experienced professionals and practitioners who not only impart knowledge, but also support participants at every step of their training by providing feedback and mentoring.'],
     ],
     advantagesSummary: 'Thanks to these advantages, the WAMOCON Academy offers comprehensive and high-quality training for professionals to enable them to achieve personal and professional goals in the rapidly changing world of technology.',
-    wmcTitle: 'WMC method +',
+    wmcTitle: 'WMC method +',
     wmcParagraphs: [
       'The IT world has never been as complex as it is today, especially with the rapid advances in artificial intelligence. This is where the WMC method comes into play, building on over 50 years of combined practical experience within our team in IT quality management.',
       'This proven method ensures that future IT projects are also implemented successfully. Put your trust in the WMC method, your stable anchor in the constantly changing IT world.',
@@ -173,14 +173,14 @@ const videos = [
 
 <div class="academy-about">
   <section class="academy-about-hero page-hero">
-    <div class="about-container academy-about-hero__inner">
-      <div class="academy-about-hero__copy" data-reveal>
+    <div class="academy-about-hero__art page-hero__art" aria-hidden="true">
+      <img class="academy-about-hero__disc" src="/images/academy/tild6130-3637-4836-a562-333834303031__jn.png" alt="" width="1200" height="1200" />
+      <img class="academy-about-hero__ring" src="/images/academy/tild3838-3030-4564-a133-303164373338__hh.png" alt="" width="1200" height="1200" />
+    </div>
+    <div class="about-container academy-about-hero__inner page-hero__inner">
+      <div class="academy-about-hero__copy page-hero__copy" data-reveal>
         <h1><span>{c.heroLead}</span> {c.heroRest}</h1>
         <p>{c.heroText}</p>
-      </div>
-      <div class="academy-about-hero__art" aria-hidden="true">
-        <img class="academy-about-hero__disc" src="/images/academy/tild6130-3637-4836-a562-333834303031__jn.png" alt="" width="1200" height="1200" />
-        <img class="academy-about-hero__ring" src="/images/academy/tild3838-3030-4564-a133-303164373338__hh.png" alt="" width="1200" height="1200" />
       </div>
     </div>
   </section>
@@ -291,66 +291,84 @@ const videos = [
   .about-container { width: 100%; max-width: var(--container-max); margin-inline: auto; padding-inline: var(--about-gutter); }
   .academy-about h1, .academy-about h2, .academy-about h3, .academy-about h4 { overflow-wrap: normal; }
   .academy-about p { font-weight: 300; line-height: 1.42; }
-  .academy-about h2 { font-size: clamp(38px, 3.2vw, 54px); line-height: 1.14; }
+  .academy-about h2 { font-size: var(--fs-h2); line-height: 1.14; }
   .academy-about h2 span, .academy-about-hero h1 span { color: var(--color-accent); }
 
-  .academy-about-hero { min-height: clamp(680px, 88svh, 920px); position: relative; overflow: hidden; }
-  .academy-about-hero__inner { position: relative; display: flex; min-height: clamp(680px, 88svh, 920px); align-items: center; }
-  .academy-about-hero__copy { position: relative; z-index: 2; width: min(54%, 780px); padding-top: 96px; }
-  .academy-about-hero h1 { max-width: 760px; margin-bottom: 24px; font-size: clamp(46px, 4.5vw, 70px); line-height: 1.06; }
-
-  .academy-about-hero p { max-width: 760px; font-size: clamp(16px, 1.15vw, 19px); line-height: 1.48; }
-  .academy-about-hero__art { position: absolute; inset: 0; pointer-events: none; }
-  /* Only the width is set per breakpoint — without this the height="1200"
-     attribute wins and the artwork renders stretched. */
-  .academy-about-hero__art img { height: auto; }
-  .academy-about-hero__disc { position: absolute; top: 74px; left: calc(50% + 151px); width: 502px; max-width: none; transform: rotate(273deg); animation: about-disc-drift 11s ease-in-out infinite alternate; will-change: transform; }
-  .academy-about-hero__ring { position: absolute; top: 126px; left: calc(50% + 93px); width: 343px; max-width: none; transform: rotate(73deg); animation: about-ring-drift 8s ease-in-out infinite alternate; will-change: transform; }
+  /* Hero geometry (height, alignment, padding, copy width, type sizes) is
+     owned by .page-hero in global.css — do not restate it here. */
+  /* Decorative renders are sized from the hero's HEIGHT, not the viewport
+     width. A vw-sized square overflowed the frame on wide screens, so the
+     shape was sliced off and the space it should have filled read as an empty
+     gap. Height-bounding keeps the whole render inside at every width, which
+     also makes the per-breakpoint width ladders unnecessary. */
+  /* Centred in the art box (see .page-hero__art); offsets off 50% keep the
+     layered composition. */
+  .academy-about-hero__disc,
+  .academy-about-hero__ring { will-change: transform; }
+  .academy-about-hero__disc {
+    left: 58%;
+    max-height: min(80%, 450px);
+    max-width: 64%;
+    transform: rotate(273deg);
+    animation: about-disc-drift 11s ease-in-out infinite alternate;
+  }
+  .academy-about-hero__ring {
+    left: 32%;
+    top: 56%;
+    max-height: min(54%, 305px);
+    max-width: 44%;
+    transform: rotate(73deg);
+    animation: about-ring-drift 8s ease-in-out infinite alternate;
+  }
 
   .about-support { position: relative; padding-block: clamp(120px, 10vw, 180px) 0; }
   .about-support__grid { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); gap: clamp(54px, 7vw, 128px); align-items: center; }
-  .about-support__photo { width: 100%; height: clamp(440px, 38vw, 650px); object-fit: cover; }
+  /* The group photo is wide and shallow; a tall fixed height cropped people out
+     of the left and right edges. A 4:3 box with the crop biased to the top of
+     the frame keeps everyone in shot. */
+  .about-support__photo { width: 100%; height: auto; max-height: clamp(400px, 34vw, 560px); aspect-ratio: 4 / 3; object-fit: cover; object-position: center 28%; border-radius: var(--radius-lg); box-shadow: var(--shadow-card); }
   .about-support__copy h2 { max-width: 620px; margin-bottom: 34px; }
-  .about-support__copy p { max-width: 700px; margin-bottom: 18px; font-size: 16px; line-height: 1.5; }
+  .about-support__copy p { max-width: 700px; margin-bottom: 18px; font-size: var(--fs-body); line-height: 1.5; }
   .about-support__accent { position: absolute; right: -72px; top: -55px; width: clamp(190px, 16vw, 290px); transform: rotate(-22deg); animation: about-curve-drift 9s ease-in-out infinite alternate; will-change: transform; }
 
   .about-advantages { padding-block: clamp(120px, 10vw, 180px); }
   .about-advantages h2 { max-width: 900px; margin-bottom: 54px; }
   .about-advantages__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(24px, 2.5vw, 40px); }
-  .about-advantages__grid article { min-height: 280px; padding: clamp(34px, 3vw, 50px); background: #303030; }
-  .about-advantages__grid h3 { margin-bottom: 16px; font-size: clamp(20px, 1.35vw, 26px); line-height: 1.3; }
-  .about-advantages__grid p { font-size: clamp(16px, 1.05vw, 20px); line-height: 1.55; }
-  .about-advantages__summary { margin: 45px 0 28px; max-width: 1120px; font-size: clamp(16px, 1.05vw, 20px); line-height: 1.55; }
-  .about-button { display: inline-flex; align-items: center; justify-content: center; min-height: 50px; padding: 12px 28px; border-radius: 5px; background: var(--color-accent-surface); color: #fff; font-size: 12px; font-weight: 600; transition: background .18s, transform .18s; }
+  .about-advantages__grid article { min-height: 280px; padding: clamp(34px, 3vw, 50px); background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); transition: transform var(--dur-med) var(--ease-out), border-color var(--dur-med) var(--ease-out), background var(--dur-med) var(--ease-out); }
+  .about-advantages__grid article:hover { transform: translateY(-4px); border-color: var(--border-strong); background: var(--surface-card-hover); }
+  .about-advantages__grid h3 { margin-bottom: 16px; font-size: var(--fs-h4); line-height: 1.3; }
+  .about-advantages__grid p { font-size: var(--fs-lead); line-height: 1.55; }
+  .about-advantages__summary { margin: 45px 0 28px; max-width: 1120px; font-size: var(--fs-lead); line-height: 1.55; }
+  .about-button { display: inline-flex; align-items: center; justify-content: center; min-height: var(--btn-h); padding-inline: var(--btn-pad-x); border-radius: var(--radius-pill); background: var(--color-accent-surface); color: #fff; font-size: var(--fs-2xs); font-weight: 600; transition: background .18s, transform .18s; }
   .about-button--courses { width: 260px; }
-  .about-button--magazine { width: 200px; min-height: 55px; border-radius: 0; font-size: 14px; }
+  .about-button--magazine { width: 200px; border-radius: 0; font-size: var(--fs-sm); }
   .about-button:hover { background: var(--color-accent-hover); transform: translateY(-2px); }
 
   .about-wmc { padding-block: 0; }
   .about-wmc__intro { display: grid; grid-template-columns: minmax(0, .86fr) minmax(0, 1.14fr); gap: clamp(54px, 7vw, 128px); align-items: center; }
-  .about-wmc__intro h2 { margin-bottom: 32px; }
-  .about-wmc__intro p { max-width: 690px; margin-bottom: 20px; font-size: 16px; line-height: 1.5; }
+  .about-wmc__intro h2 { margin-bottom: 32px; overflow-wrap: normal; text-wrap: balance; }
+  .about-wmc__intro p { max-width: 690px; margin-bottom: 20px; font-size: var(--fs-body); line-height: 1.5; }
   .about-wmc__intro img { width: 100%; height: clamp(420px, 34vw, 580px); object-fit: cover; }
   .about-wmc__method { margin-top: clamp(55px, 6vw, 90px); }
-  .about-wmc__method > h3 { max-width: 1260px; margin-bottom: 38px; font-size: clamp(22px, 1.75vw, 28px); line-height: 1.35; }
+  .about-wmc__method > h3 { max-width: 1260px; margin-bottom: 38px; font-size: var(--fs-h4); line-height: 1.35; }
   .about-wmc__columns { display: grid; grid-template-columns: repeat(3, 1fr); }
   .about-wmc__columns > article { border-left: 1px solid rgba(255,255,255,.65); }
   .about-wmc__columns > article:last-child { border-right: 1px solid rgba(255,255,255,.65); }
-  .about-wmc__number { display: block; padding: 20px 20px 16px; border-bottom: 1px solid rgba(255,255,255,.65); color: var(--color-accent); font-size: 40px; font-weight: 700; line-height: 1; }
+  .about-wmc__number { display: block; padding: 20px 20px 16px; border-bottom: 1px solid rgba(255,255,255,.65); color: var(--color-accent); font-size: var(--fs-h3); font-weight: 700; line-height: 1; }
   .about-wmc__items { display: grid; gap: 30px; padding: clamp(28px, 2.8vw, 46px); }
-  .about-wmc__items h4 { margin-bottom: 8px; font-size: 18px; line-height: 1.3; }
-  .about-wmc__items p { font-size: 14px; line-height: 1.3; }
+  .about-wmc__items h4 { margin-bottom: 8px; font-size: var(--fs-body); line-height: 1.3; }
+  .about-wmc__items p { font-size: var(--fs-sm); line-height: 1.3; }
 
   .about-booster { position: relative; padding-block: clamp(120px, 10vw, 180px) 0; }
   .about-booster__grid { display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); gap: clamp(56px, 7vw, 130px); align-items: center; min-height: 680px; }
   .about-booster__image { width: 100%; max-height: 720px; object-fit: contain; }
-  .about-booster__copy h2 { max-width: 640px; margin-bottom: 38px; font-size: 40px; }
-  .about-booster__copy p { max-width: 730px; margin-bottom: 22px; font-size: 16px; line-height: 1.5; }
+  .about-booster__copy h2 { max-width: 640px; margin-bottom: 38px; font-size: var(--fs-h3); }
+  .about-booster__copy p { max-width: 730px; margin-bottom: 22px; font-size: var(--fs-body); line-height: 1.5; }
   .about-booster__cta {
     display: inline-flex; align-items: center; gap: 0.5rem;
     margin-top: 0.5rem; padding: 0.85rem 1.6rem;
     background: var(--color-accent-surface); color: #fff;
-    border-radius: 5px; font-weight: var(--fw-semibold);
+    border-radius: var(--radius-pill); font-weight: var(--fw-semibold);
     transition: background 180ms, transform 180ms;
   }
   .about-booster__cta:hover { background: var(--color-accent-hover, #c81111); transform: translateY(-2px); }
@@ -361,16 +379,16 @@ const videos = [
   .about-graduates__lead { margin-bottom: 50px; }
   .about-graduates__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(48px, 4vw, 68px) clamp(28px, 3vw, 48px); }
   .about-graduates__grid article { min-width: 0; }
-  .about-graduates__grid h3 { margin: 22px 0 6px; font-size: 16px; line-height: 1.3; }
-  .about-graduates__grid p { font-size: 14px; line-height: 1.3; }
+  .about-graduates__grid h3 { margin: 22px 0 6px; font-size: var(--fs-body); line-height: 1.3; }
+  .about-graduates__grid p { font-size: var(--fs-sm); line-height: 1.3; }
 
   .about-magazine { padding-block: 0 135px; }
-  .about-magazine__panel { position: relative; display: grid; grid-template-columns: 430px 1fr 190px; gap: clamp(50px, 6vw, 110px); align-items: center; height: 380px; margin-top: 110px; padding: 0 clamp(36px, 4vw, 66px) 0 clamp(72px, 6vw, 110px); background: #303030; }
+  .about-magazine__panel { position: relative; display: grid; grid-template-columns: 430px 1fr 190px; gap: clamp(50px, 6vw, 110px); align-items: center; height: 380px; margin-top: 110px; padding: 0 clamp(36px, 4vw, 66px) 0 clamp(72px, 6vw, 110px); background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); }
   .about-magazine__cover { position: absolute; top: -110px; left: clamp(72px, 6vw, 110px); width: 390px; height: 550px; object-fit: cover; object-position: center 60%; }
   .about-magazine__copy { grid-column: 2; }
   .about-magazine__badge { grid-column: 3; }
   .about-magazine__copy h2 { max-width: 420px; margin-bottom: 22px; }
-  .about-magazine__copy p { max-width: 620px; margin-bottom: 28px; font-size: 16px; line-height: 1.48; }
+  .about-magazine__copy p { max-width: 620px; margin-bottom: 28px; font-size: var(--fs-body); line-height: 1.48; }
   .about-magazine__badge { width: 190px; max-height: 280px; object-fit: contain; }
 
   @keyframes about-disc-drift {
@@ -395,55 +413,16 @@ const videos = [
 
 
   @media (max-width: 1050px) {
-    .academy-about h2 { font-size: 35px; }
-    .academy-about-hero h1 { font-size: clamp(40px, 5.8vw, 56px); }
-    .academy-about-hero__copy { width: 57%; }
-    .academy-about-hero__art { inset: 0; }
+    .academy-about h2 { font-size: var(--fs-h3); }
     .about-advantages__grid { gap: 24px; }
     .about-magazine__panel { grid-template-columns: 360px 1fr 90px; gap: 30px; padding-left: 30px; }
     .about-magazine__cover { left: 30px; width: 360px; }
   }
 
   @media (min-width: 821px) and (max-width: 1199px) {
-    .academy-about-hero,
-    .academy-about-hero__inner {
-      min-height: clamp(490px, 48vw, 560px);
-    }
-
-    .academy-about-hero__inner {
-      display: block;
-    }
-
-    .academy-about-hero__copy {
-      width: min(68%, 760px);
-      padding-top: clamp(280px, 30vw, 330px);
-    }
-
-    .academy-about-hero h1 {
-      max-width: 760px;
-      margin-bottom: 16px;
-      font-size: clamp(36px, 3.8vw, 46px);
-      line-height: 1.04;
-    }
-
-    .academy-about-hero p {
-      max-width: 700px;
-      font-size: clamp(14px, 1.35vw, 17px);
-      line-height: 1.42;
-    }
-
-    .academy-about-hero__art { inset: 0; }
-    .academy-about-hero__disc { top: 84px; left: calc(50% + 62px); width: 502px; }
-    .academy-about-hero__ring { top: 93px; left: calc(50% - 37px); width: 343px; }
   }
 
   @media (max-width: 820px) {
-    .academy-about-hero, .academy-about-hero__inner { min-height: 650px; }
-    .academy-about-hero__inner { display: block; }
-    .academy-about-hero__copy { width: 100%; padding-top: 365px; }
-    .academy-about-hero__art { inset: 0; }
-    .academy-about-hero__disc { top: 118px; left: calc(50% + 18px); width: 353px; }
-    .academy-about-hero__ring { top: 125px; left: calc(50% - 51px); width: 199px; }
     .about-support__grid, .about-wmc__intro, .about-booster__grid { grid-template-columns: 1fr; }
     .about-support__copy { order: -1; }
     .about-support__photo { height: auto; }
@@ -459,42 +438,33 @@ const videos = [
   }
 
   @media (max-width: 560px) {
-    .academy-about { --about-gutter: 20px; }
-    .academy-about h2 { font-size: 30px; }
-    .academy-about p { font-size: 15px; }
-    .academy-about-hero, .academy-about-hero__inner { min-height: 620px; }
-    .academy-about-hero__copy { width: 100%; padding-top: 315px; }
-    .academy-about-hero h1 { font-size: 30px; }
-    .academy-about-hero p { font-size: 14px; }
-    .academy-about-hero__art { inset: 0; }
-    .academy-about-hero__disc { top: 68px; left: calc(50% - 62px); width: 353px; }
-    .academy-about-hero__ring { top: 75px; left: calc(50% - 131px); width: 199px; }
+    .academy-about h2 { font-size: var(--fs-h3); }
+    .academy-about p { font-size: var(--fs-sm); }
     .about-support { padding-block: 90px 0; }
     .about-support__copy h2, .about-advantages h2 { margin-bottom: 28px; }
-    .about-support__copy p { font-size: 14px; }
+    .about-support__copy p { font-size: var(--fs-sm); }
     .about-support__accent { width: 115px; right: -48px; }
     .about-advantages { padding-block: 90px; }
     .about-advantages__grid { grid-template-columns: 1fr; gap: 18px; }
     .about-advantages__grid article { min-height: 0; padding: 28px 24px; }
-    .about-advantages__grid h3 { font-size: 20px; }
-    .about-advantages__grid p { font-size: 16px; }
-    .about-advantages__summary { font-size: 16px; }
-    .about-button { padding-inline: 18px; }
-    .about-button--courses { width: 220px; min-height: 45px; }
+    .about-advantages__grid h3 { font-size: var(--fs-h5); }
+    .about-advantages__grid p { font-size: var(--fs-body); }
+    .about-advantages__summary { font-size: var(--fs-body); }
+    .about-button--courses { width: 220px; }
     .about-wmc { padding-bottom: 0; }
     .about-wmc__intro { gap: 30px; }
-    .about-wmc__intro p { font-size: 14px; }
+    .about-wmc__intro p { font-size: var(--fs-sm); }
     .about-wmc__intro img { height: 210px; }
     .about-wmc__method { margin-top: 62px; }
-    .about-wmc__method > h3 { margin-bottom: 30px; font-size: 18px; }
-    .about-wmc__number { font-size: 38px; }
+    .about-wmc__method > h3 { margin-bottom: 30px; font-size: var(--fs-body); }
+    .about-wmc__number { font-size: var(--fs-h3); }
     .about-wmc__items { gap: 22px; }
-    .about-wmc__items h4 { font-size: 18px; }
-    .about-wmc__items p { font-size: 14px; }
+    .about-wmc__items h4 { font-size: var(--fs-body); }
+    .about-wmc__items p { font-size: var(--fs-sm); }
     .about-booster { padding-block: 90px 0; }
     .about-booster__grid { gap: 28px; min-height: 868px; }
-    .about-booster__copy h2 { font-size: 30px; }
-    .about-booster__copy p { font-size: 14px; }
+    .about-booster__copy h2 { font-size: var(--fs-h3); }
+    .about-booster__copy p { font-size: var(--fs-sm); }
     .about-booster__accent { width: 150px; right: -60px; }
     .about-graduates { padding-block: 90px 45px; }
     .about-graduates__lead { margin-bottom: 30px; }
@@ -507,55 +477,24 @@ const videos = [
   }
 
   @media (max-width: 479px) {
-    .academy-about { --about-gutter: 20px; }
-    .academy-about h2 { font-size: 25px; }
-    .academy-about-hero, .academy-about-hero__inner { min-height: 640px; }
-    .academy-about-hero__copy { width: 100%; padding-top: 325px; }
-    .academy-about-hero h1 { max-width: 330px; font-size: 29px; }
-    .academy-about-hero p { max-width: 340px; }
-    .academy-about-hero__art { inset: 0; }
-    .academy-about-hero__disc { top: 112px; left: calc(50% - 62px); width: 259px; }
-    .academy-about-hero__ring { top: 116px; left: calc(50% - 112px); width: 146px; }
-    .about-wmc__number { font-size: 35px; }
+    .academy-about h2 { font-size: var(--fs-h4); }
+    .about-wmc__number { font-size: var(--fs-h3); }
     .about-booster__grid { min-height: 743px; }
     .about-booster__image { width: calc(100% + 40px); max-width: none; height: 380px; margin-left: -20px; }
-    .about-booster__copy h2 { font-size: 25px; }
+    .about-booster__copy h2 { font-size: var(--fs-h4); }
     .about-magazine__panel { display: grid; grid-template-columns: 1fr; gap: 24px; height: auto; min-height: 658px; padding: 30px 20px 28px; }
     .about-magazine__copy { grid-column: 1; order: -1; }
-    .about-magazine__copy p { font-size: 14px; }
+    .about-magazine__copy p { font-size: var(--fs-sm); }
     .about-magazine__cover { grid-column: 1; width: 100%; height: 359px; max-height: none; }
     .about-magazine__badge { position: absolute; top: 11px; right: 9px; display: block; width: 40px; }
   }
 
   @media (min-width: 1200px) {
     .academy-about h2 {
-      font-size: clamp(52px, 3.6vw, 80px);
+      font-size: var(--fs-display);
       line-height: 1.08;
     }
 
-    .academy-about-hero,
-    .academy-about-hero__inner {
-      min-height: clamp(760px, 92svh, 1120px);
-    }
-
-    .academy-about-hero__copy {
-      width: min(56vw, 1120px);
-      padding-top: 112px;
-    }
-
-    .academy-about-hero h1 {
-      max-width: 1080px;
-      font-size: clamp(64px, 4.8vw, 116px);
-      line-height: 1.02;
-    }
-
-    .academy-about-hero p {
-      max-width: min(52vw, 1050px);
-      font-size: clamp(20px, 1.45vw, 31px);
-      line-height: 1.42;
-    }
-
-    .academy-about-hero__art { inset: 0; }
 
     .about-support__grid {
       grid-template-columns: minmax(0, 1.16fr) minmax(0, .84fr);
@@ -575,7 +514,7 @@ const videos = [
     .about-booster__copy p,
     .about-wmc__intro p {
       max-width: 900px;
-      font-size: clamp(19px, 1.25vw, 28px);
+      font-size: var(--fs-h4);
       line-height: 1.46;
     }
 
@@ -588,17 +527,17 @@ const videos = [
     }
 
     .about-advantages__grid h3 {
-      font-size: clamp(24px, 1.65vw, 32px);
+      font-size: var(--fs-h3);
     }
 
     .about-advantages__grid p,
     .about-advantages__summary {
-      font-size: clamp(18px, 1.25vw, 25px);
+      font-size: var(--fs-h4);
       line-height: 1.55;
     }
 
     .about-wmc__items p {
-      font-size: clamp(15px, .95vw, 20px);
+      font-size: var(--fs-lead);
     }
 
     .about-advantages__summary {
@@ -616,15 +555,15 @@ const videos = [
 
     .about-wmc__method > h3 {
       max-width: 1560px;
-      font-size: clamp(26px, 1.8vw, 38px);
+      font-size: var(--fs-h3);
     }
 
     .about-wmc__number {
-      font-size: clamp(46px, 3vw, 68px);
+      font-size: var(--fs-stat);
     }
 
     .about-wmc__items h4 {
-      font-size: clamp(20px, 1.3vw, 29px);
+      font-size: var(--fs-h3);
     }
 
     .about-booster__grid {
@@ -643,15 +582,15 @@ const videos = [
 
     .about-graduates__lead {
       max-width: 1200px;
-      font-size: clamp(18px, 1.15vw, 25px);
+      font-size: var(--fs-h4);
     }
 
     .about-graduates__grid h3 {
-      font-size: clamp(18px, 1.2vw, 25px);
+      font-size: var(--fs-h4);
     }
 
     .about-graduates__grid p {
-      font-size: clamp(15px, .95vw, 20px);
+      font-size: var(--fs-lead);
     }
 
     .about-magazine__panel {
@@ -673,13 +612,11 @@ const videos = [
     }
 
     .about-magazine__copy p {
-      font-size: clamp(19px, 1.2vw, 26px);
+      font-size: var(--fs-h4);
     }
 
     .about-button {
-      min-height: clamp(56px, 3.5vw, 72px);
-      padding-inline: clamp(24px, 1.8vw, 40px);
-      font-size: clamp(15px, 1vw, 19px);
+      font-size: var(--fs-body);
     }
 
     .about-button--courses,
@@ -688,153 +625,36 @@ const videos = [
       min-width: clamp(230px, 15vw, 320px);
     }
 
-      font-size: clamp(16px, 1vw, 20px);
+      font-size: var(--fs-lead);
     }
 
       max-width: 380px;
-      font-size: clamp(13px, .8vw, 16px);
+      font-size: var(--fs-body);
     }
   }
 
-  /* The live Tilda hero uses fixed artboards. Keep these rules last so the
-     shared responsive section styles cannot shift its artwork or copy. */
-  .academy-about-hero,
   .academy-about-hero__inner {
-    height: 600px;
-    min-height: 600px;
-  }
-
-  .academy-about-hero__inner {
+    /* Keeps the .about-container box; nulling it pushed the copy to the edge. */
     display: block;
-    max-width: none;
-    padding-inline: 0;
   }
 
-  .academy-about-hero__copy {
-    position: absolute;
-    top: 361px;
-    left: calc(50% - 580px);
-    width: 769px;
-    padding-top: 0;
-  }
-
-  .academy-about-hero h1 {
-    width: 641px;
-    max-width: none;
-    margin: 0 0 10px;
-    font-size: 40px;
-    line-height: 1.2;
-  }
-
-  .academy-about-hero p {
-    width: 769px;
-    max-width: none;
-    font-size: 16px;
-    line-height: 1.3;
-  }
-
-  .academy-about-hero__art { inset: 0; }
-  .academy-about-hero__disc { top: 74px; left: calc(50% + 151px); width: 502px; animation: about-disc-drift 4s infinite; }
-  .academy-about-hero__ring { top: 126px; left: calc(50% + 93px); width: 343px; animation: about-ring-drift 4s infinite; }
 
   @media (min-width: 1200px) {
-    .academy-about-hero,
-    .academy-about-hero__inner {
-      height: 50vw;
-      min-height: 50vw;
-    }
 
-    .academy-about-hero__copy {
-      top: 30.0833vw;
-      left: 1.6667vw;
-      width: 64.0833vw;
-    }
 
-    .academy-about-hero h1 {
-      width: 53.4167vw;
-      margin-bottom: .8333vw;
-      font-size: 3.3333vw;
-    }
-
-    .academy-about-hero p {
-      width: 64.0833vw;
-      font-size: 1.3333vw;
-    }
-
-    .academy-about-hero__disc {
-      --about-motion-shift: .5vw;
-      top: 6.1667vw;
-      left: 62.5833vw;
-      width: 41.8333vw;
-    }
-
-    .academy-about-hero__ring {
-      --about-motion-shift: .5vw;
-      top: 10.5vw;
-      left: 57.75vw;
-      width: 28.5833vw;
-    }
   }
 
   @media (max-width: 1199px) {
-    .academy-about-hero__copy {
-      top: 363px;
-      left: calc(50% - 470px);
-      width: 560px;
-    }
-
-    .academy-about-hero h1 { width: 547px; margin-bottom: 20px; font-size: 35px; }
-    .academy-about-hero p { width: 560px; }
-    .academy-about-hero__disc { top: 84px; left: calc(50% + 62px); width: 502px; }
-    .academy-about-hero__ring { top: 93px; left: calc(50% - 37px); width: 343px; }
   }
 
   @media (max-width: 959px) {
-    .academy-about-hero,
-    .academy-about-hero__inner {
-      height: 438px;
-      min-height: 438px;
-    }
 
-    .academy-about-hero__copy {
-      top: 250px;
-      left: calc(50% - 310px);
-    }
-
-    .academy-about-hero__disc { top: 118px; left: calc(50% + 18px); width: 353px; }
-    .academy-about-hero__ring { top: 125px; left: calc(50% - 51px); width: 199px; }
   }
 
   @media (max-width: 639px) {
-    .academy-about-hero__copy {
-      top: 241px;
-      left: calc(50% - 230px);
-      width: 437px;
-    }
-
-    .academy-about-hero h1 { width: 470px; margin-bottom: 20px; font-size: 30px; }
-    .academy-about-hero p { width: 437px; }
-    .academy-about-hero__disc { top: 68px; left: calc(50% - 62px); width: 353px; }
-    .academy-about-hero__ring { top: 75px; left: calc(50% - 131px); width: 199px; }
   }
 
   @media (max-width: 479px) {
-    .academy-about-hero,
-    .academy-about-hero__inner {
-      height: 449px;
-      min-height: 449px;
-    }
-
-    .academy-about-hero__copy {
-      top: 241px;
-      left: calc(50% - 150px);
-      width: 310px;
-    }
-
-    .academy-about-hero h1 { width: 317px; margin-bottom: 10px; font-size: 25px; }
-    .academy-about-hero p { width: 310px; font-size: 14px; }
-    .academy-about-hero__disc { top: 112px; left: calc(50% - 62px); width: 259px; }
-    .academy-about-hero__ring { top: 116px; left: calc(50% - 112px); width: 146px; }
   }
 
   /* Final guard, deliberately last and more specific than the per-breakpoint
@@ -843,7 +663,6 @@ const videos = [
      screen. Cap against the parent rather than unpicking the pixel layout. */
   .academy-about-hero .academy-about-hero__copy h1,
   .academy-about-hero .academy-about-hero__copy p {
-    max-width: 100%;
     overflow-wrap: break-word;
     hyphens: auto;
   }

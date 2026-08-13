@@ -116,17 +116,19 @@ const graduatePoster = (name: string) => `/images/academy/testimonial-${name.toL
 ---
 
 <div class="reviews-page">
-  <section class="reviews-hero">
-    <div class="reviews-hero__inner container">
-      <div class="reviews-hero__copy">
+  <section class="reviews-hero page-hero">
+    <div class="reviews-hero__inner container page-hero__inner">
+      <div class="reviews-hero__copy page-hero__copy">
         <h1>{copy.title}</h1>
         <p>{copy.intro}</p>
         <p class="reviews-authenticity">{copy.authenticity}</p>
         <button class="reviews-button" type="button" data-review-open>{copy.sendEvaluation}</button>
       </div>
     </div>
-    <img class="reviews-hero__shape reviews-hero__shape--small" src="/images/academy/tild3730-6132-4863-b462-623032303533__group_11.png" alt="" />
-    <img class="reviews-hero__shape reviews-hero__shape--large" src="/images/academy/tild3730-6132-4863-b462-623032303533__group_11.png" alt="" />
+    <div class="reviews-hero__art page-hero__art" aria-hidden="true">
+      <img class="reviews-hero__shape reviews-hero__shape--small" src="/images/academy/tild3730-6132-4863-b462-623032303533__group_11.png" alt="" />
+      <img class="reviews-hero__shape reviews-hero__shape--large" src="/images/academy/tild3730-6132-4863-b462-623032303533__group_11.png" alt="" />
+    </div>
   </section>
 
   <section class="stories" aria-label={copy.storiesLabel}>
@@ -198,27 +200,28 @@ const graduatePoster = (name: string) => `/images/academy/testimonial-${name.toL
     max-width: 70ch;
     margin-top: 1rem;
     color: var(--color-text-muted);
-    font-size: 0.86rem;
+    font-size: var(--fs-xs);
     line-height: 1.6;
   }
 
   .reviews-page { background: #101010; color: #fff; }
-  .reviews-hero { position: relative; overflow: hidden; padding-top: clamp(205px, 11vw, 225px); }
-  .reviews-hero__inner { position: relative; z-index: 1; min-height: 520px; }
-  .reviews-hero h1 { max-width: 980px; font-size: clamp(2.75rem, 3.5vw, 4.25rem); line-height: 1.12; }
-  .reviews-hero p { max-width: 760px; margin-top: 1.5rem; font-size: clamp(1.05rem, 1.3vw, 1.25rem); line-height: 1.5; }
-  .reviews-button { min-height: 64px; margin-top: 1.65rem; padding: 0 1.65rem; border-radius: 5px; background: var(--color-accent-surface); color: #fff; font-size: 1rem; font-weight: 600; transition: background 180ms, transform 180ms; }
+  .reviews-button { min-height: var(--btn-h); margin-top: 1.65rem; padding-inline: var(--btn-pad-x); border-radius: var(--radius-pill); background: var(--color-accent-surface); color: #fff; font-size: var(--fs-body); font-weight: 600; transition: background 180ms, transform 180ms; }
   .reviews-button:hover { background: #df1911; transform: translateY(-2px); }
-  .reviews-hero__shape { position: absolute; height: auto; pointer-events: none; filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.45)); }
-  .reviews-hero__shape--small { top: 105px; right: clamp(-50px, 1.5vw, 30px); width: clamp(230px, 18vw, 360px); transform: rotate(250deg); animation: review-shape-small 8s ease-in-out infinite; }
-  .reviews-hero__shape--large { top: 285px; right: clamp(110px, 12vw, 245px); width: clamp(340px, 25vw, 500px); transform: rotate(151deg); animation: review-shape-large 10s ease-in-out infinite; }
+  /* Decorative renders are sized from the hero's HEIGHT, not the viewport
+     width. A vw-sized square overflowed the frame on wide screens, so the
+     shape was sliced off and the space it should have filled read as an empty
+     gap. Height-bounding keeps the whole render inside at every width, which
+     also makes the per-breakpoint width ladders unnecessary. */
+  .reviews-hero__shape { filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.45)); }
+  .reviews-hero__shape--small { left: 64%; top: 34%; max-height: min(38%, 215px); max-width: 46%; transform: rotate(250deg); animation: review-shape-small 8s ease-in-out infinite; }
+  .reviews-hero__shape--large { left: 36%; top: 62%; max-height: min(52%, 300px); max-width: 62%; transform: rotate(151deg); animation: review-shape-large 10s ease-in-out infinite; }
 
   .stories { padding-bottom: 5rem; }
   .stories__list { display: grid; gap: clamp(4rem, 7vw, 8rem); }
-  .story { display: grid; grid-template-columns: minmax(320px, 1fr) minmax(0, 1fr); gap: clamp(3rem, 7vw, 8rem); align-items: center; }
+  .story { display: grid; grid-template-columns: minmax(320px, 1fr) minmax(0, 1fr); gap: clamp(2rem, 4vw, 4rem); align-items: center; }
   .story__copy { max-width: 720px; }
-  .story h2 { margin-bottom: 1.75rem; font-size: clamp(1.2rem, 1.6vw, 1.55rem); line-height: 1.3; }
-  .story dl { display: grid; gap: 1.35rem; font-size: clamp(1rem, 0.9vw, 1.125rem); line-height: 1.55; }
+  .story h2 { margin-bottom: 1.75rem; font-size: var(--fs-h4); line-height: 1.3; }
+  .story dl { display: grid; gap: 1.35rem; font-size: var(--fs-body); line-height: 1.55; }
   .story dt { color: var(--color-accent); font-weight: 400; }
   .story dd { margin: 0; }
 
@@ -229,9 +232,9 @@ const graduatePoster = (name: string) => `/images/academy/testimonial-${name.toL
   .video-preview:hover img { transform: scale(1.025); opacity: 0.88; }
   .video-preview--story { aspect-ratio: 16 / 9; }
   .video-preview--graduate { aspect-ratio: 16 / 9; background: #191919; }
-  .video-preview__headline { position: absolute; top: 0.8rem; left: 5.8rem; right: 1rem; z-index: 1; overflow: hidden; color: #fff; font-size: clamp(0.8rem, 1.65vw, 1.25rem); font-weight: 700; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; text-shadow: 0 2px 8px #000; }
-  .video-preview__brand { position: absolute; top: 2.45rem; left: 5.8rem; z-index: 1; font-size: 0.82rem; font-weight: 600; text-shadow: 0 2px 8px #000; }
-  .video-preview__hint { position: absolute; left: 0; right: 0; z-index: 2; padding: 9px 12px; color: #fff; font-size: 0.76rem; line-height: 1.3; text-align: center; pointer-events: none; }
+  .video-preview__headline { position: absolute; top: 0.8rem; left: 5.8rem; right: 1rem; z-index: 1; overflow: hidden; color: #fff; font-size: var(--fs-h5); font-weight: 700; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; text-shadow: 0 2px 8px #000; }
+  .video-preview__brand { position: absolute; top: 2.45rem; left: 5.8rem; z-index: 1; font-size: var(--fs-xs); font-weight: 600; text-shadow: 0 2px 8px #000; }
+  .video-preview__hint { position: absolute; left: 0; right: 0; z-index: 2; padding: 9px 12px; color: #fff; font-size: var(--fs-2xs); line-height: 1.3; text-align: center; pointer-events: none; }
   .video-preview--story .video-preview__hint { bottom: 0; padding-top: 28px; background: linear-gradient(transparent, rgba(0, 0, 0, 0.82)); }
   .video-preview--graduate .video-preview__hint { top: 0; padding-bottom: 26px; background: linear-gradient(rgba(0, 0, 0, 0.82), transparent); }
   .video-preview__play { position: absolute; top: 50%; left: 50%; width: 68px; color: #f03; transform: translate(-50%, -50%); transition: transform 180ms; }
@@ -240,18 +243,24 @@ const graduatePoster = (name: string) => `/images/academy/testimonial-${name.toL
   .video-preview__play .video-preview__triangle { fill: #fff; }
 
   .graduates { padding: 2.5rem 0 clamp(6rem, 12vw, 10rem); }
-  .graduates__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: clamp(2.5rem, 4vw, 4.5rem) clamp(1.5rem, 2.5vw, 2.75rem); }
+  /* Three equal columns, filled left to right. The five cards therefore read
+     as three over two, with the second row starting under the first card
+     rather than centred beneath the row above.
+     This used to be a six-column track where each card spanned two and the
+     fourth was nudged in by one, which centred the trailing pair. The extra
+     track existed only to enable that nudge, so it went with it. */
+  .graduates__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(2rem, 3vw, 3rem) clamp(1.5rem, 2.5vw, 2.75rem); }
   .graduate__caption { position: absolute; inset: auto 0 0; display: grid; min-height: 58px; align-content: center; padding: 0.5rem 1.25rem; background: #fff; color: #5b1717; text-transform: uppercase; }
-  .graduate__caption strong { font-size: 1.0625rem; line-height: 1; }
-  .graduate__caption small { color: #666; font-size: 0.875rem; font-weight: 400; text-transform: none; }
-  .graduate h2 { margin-top: 1.25rem; font-size: 1.125rem; }
-  .graduate p { margin-top: 0.5rem; font-size: 1.0625rem; }
+  .graduate__caption strong { font-size: var(--fs-body); line-height: 1; }
+  .graduate__caption small { color: #666; font-size: var(--fs-sm); font-weight: 400; text-transform: none; }
+  .graduate h2 { margin-top: 1.25rem; font-size: var(--fs-body); }
+  .graduate p { margin-top: 0.5rem; font-size: var(--fs-body); }
   .graduates__action { margin-top: 2.4rem; }
 
-  .reviews-video-dialog { width: min(1120px, calc(100vw - 32px)); margin: auto; padding: 48px 12px 12px; border: 1px solid rgba(255,255,255,.3); border-radius: 6px; background: #090909; color: #fff; box-shadow: 0 34px 100px rgba(0,0,0,.65); }
+  .reviews-video-dialog { width: min(1120px, calc(100vw - 32px)); margin: auto; padding: 48px 12px 12px; border: 1px solid rgba(255,255,255,.3); border-radius: var(--radius-lg); background: #090909; color: #fff; box-shadow: 0 34px 100px rgba(0,0,0,.65); }
   .reviews-video-dialog::backdrop { background: rgba(0,0,0,.84); backdrop-filter: blur(5px); }
   .reviews-video-dialog iframe { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; }
-  .reviews-video-dialog__close { position: absolute; top: 6px; right: 10px; width: 40px; height: 40px; color: #fff; font-size: 28px; line-height: 1; }
+  .reviews-video-dialog__close { position: absolute; top: 6px; right: 10px; width: 40px; height: 40px; color: #fff; font-size: var(--fs-h4); line-height: 1; }
 
   @keyframes review-shape-small {
     0%, 100% { transform: translate3d(0, 0, 0) rotate(250deg); }
@@ -264,84 +273,44 @@ const graduatePoster = (name: string) => `/images/academy/testimonial-${name.toL
   }
 
   @media (max-width: 820px) {
-    .reviews-hero { padding-top: 118px; }
-    .reviews-hero__inner { min-height: 300px; }
-    .reviews-hero__shape { display: none; }
+    .reviews-hero__art { display: none; }
     .story { grid-template-columns: 1fr; gap: 1.5rem; }
     .graduates__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
 
   @media (min-width: 2200px) {
-    .story { grid-template-columns: minmax(420px, 0.62fr) minmax(0, 1.38fr); gap: clamp(100px, 9vw, 280px); }
+    .story { grid-template-columns: minmax(420px, 0.8fr) minmax(0, 1.2fr); gap: clamp(48px, 4vw, 96px); }
     .graduates__grid { gap: clamp(56px, 3vw, 96px); }
   }
 
   /* Full-width hero. The copy sits just below the header instead of halfway
      down the artboard, so the space under the header is actually used (AK#13). */
   @media (min-width: 1200px) {
-    /* The hero keeps its 40vw stage proportions but must be free to grow: the
-       copy also carries the mandatory review-authenticity notice, and a hard
-       height clipped the "send your review" CTA off the page entirely
-       (107-161px lost between 1280 and 1920). */
-    .reviews-hero {
-      width: 100%;
-      min-height: 40vw;
-      padding-top: 0;
-      padding-bottom: 4vw;
-    }
     .reviews-hero__inner {
+    /* Keeps the .container box it already carries: nulling it here is what
+         dragged the copy out to the viewport edge. */
       width: 100%;
-      max-width: none;
-      min-height: 40vw;
-      padding: 0;
-    }
+  }
     .reviews-hero__copy {
-      /* In flow rather than absolute, so its height counts towards the hero. */
+    /* In flow rather than absolute, so its height counts towards the hero.
+         The container's own padding provides the gutter now. */
       position: relative;
-      margin-left: 1.6667vw;
-      padding-top: 13vw;
-      width: 48vw;
-    }
-    .reviews-hero h1 {
-      max-width: 46vw;
-      font-size: 3.5vw;
-      line-height: 1.08;
-    }
-    .reviews-hero p {
-      max-width: 44vw;
-      margin-top: 1.3333vw;
-      font-size: 1.4vw;
-      line-height: 1.35;
-    }
+    margin-left: 0;
+  }
+    /* A viewport-scaled control grew to 109px tall on a 2560px monitor. */
     .reviews-hero .reviews-button {
-      min-width: 16.75vw;
-      min-height: 4.25vw;
-      margin-top: 2vw;
-      padding-inline: 1.5vw;
-      font-size: 1.15vw;
-    }
-    .reviews-hero__shape--small {
-      top: 7.5vw;
-      right: -1.5vw;
-      width: 22vw;
-    }
-    .reviews-hero__shape--large {
-      top: 16vw;
-      right: 11vw;
-      width: 32vw;
+      min-width: 260px;
+      margin-top: 2rem;
     }
   }
 
   @media (max-width: 520px) {
-    .reviews-hero__inner { min-height: 328px; }
-    .reviews-hero h1 { max-width: 340px; font-size: 1.9rem; }
-    .reviews-hero p { margin-top: 0.8rem; font-size: 1rem; }
-    .reviews-button { min-height: 55px; margin-top: 1rem; padding-inline: 1.5rem; }
+    .reviews-button { margin-top: 1rem; }
     .stories__list { gap: 4rem; }
-    .story h2 { margin-bottom: 1.4rem; font-size: 1rem; }
-    .story dl { font-size: 0.95rem; line-height: 1.45; }
-    .video-preview__headline { left: 4.25rem; font-size: 0.82rem; }
-    .video-preview__brand { top: 2.2rem; left: 4.25rem; font-size: 0.75rem; }
+    .story h2 { margin-bottom: 1.4rem; font-size: var(--fs-body); }
+    .story dl { font-size: var(--fs-sm); line-height: 1.45; }
+    .video-preview__headline { left: 4.25rem; font-size: var(--fs-xs); }
+    .video-preview__brand { top: 2.2rem; left: 4.25rem; font-size: var(--fs-2xs); }
     .graduates { padding-top: 4rem; }
     .graduates__grid { grid-template-columns: 1fr; gap: 1.5rem; }
     .graduate h2 { margin-top: 0.85rem; }

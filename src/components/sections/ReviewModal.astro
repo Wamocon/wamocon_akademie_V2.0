@@ -65,33 +65,70 @@ const copy = pick(lang, {
     max-height: calc(100dvh - 2rem);
     margin: auto;
     border: 0;
-    border-radius: 0;
+    border-radius: var(--radius-lg);
     background: transparent;
     color: #fff;
   }
 
   .review-dialog::backdrop {
-    background: rgba(0, 0, 0, 0.82);
-    backdrop-filter: blur(4px);
+    background: rgba(6, 6, 6, 0.72);
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
   }
 
+  /* Matches the course dialog so every popup on the site reads as one family. */
   .review-dialog__panel {
     position: relative;
     overflow-y: auto;
-    padding: clamp(1.5rem, 5vw, 3rem);
-    border-left: 3px solid var(--color-accent);
-    background: #262626;
+    padding: clamp(1.5rem, 4vw, 2.75rem);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-card);
+    box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.9);
+  }
+
+  .review-dialog[open] {
+    animation: review-dialog-in var(--dur-med) var(--ease-out);
+  }
+
+  @keyframes review-dialog-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px) scale(0.98);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .review-dialog[open] {
+      animation: none;
+    }
   }
 
   .review-dialog__close {
     position: absolute;
     top: 1rem;
     right: 1rem;
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
     display: grid;
     place-items: center;
-    color: var(--color-accent);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.75);
+    transition:
+      background var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out);
+  }
+
+  .review-dialog__close:hover,
+  .review-dialog__close:focus-visible {
+    border-color: var(--color-accent);
+    background: rgba(244, 14, 14, 0.14);
+    color: #fff;
+    transform: rotate(90deg);
   }
 
   .review-dialog__close svg { width: 26px; }
@@ -99,7 +136,7 @@ const copy = pick(lang, {
 
   .review-dialog h2 {
     padding-right: 3rem;
-    font-size: clamp(1.9rem, 5vw, 3rem);
+    font-size: var(--fs-h2);
   }
 
   .review-dialog__form {
@@ -124,19 +161,36 @@ const copy = pick(lang, {
 
   .review-dialog__form > label:not(.review-dialog__consent) > span {
     color: #fff;
-    font-size: 1rem;
+    font-size: var(--fs-body);
     line-height: 1.4;
   }
 
+  /* Fields sit on the dialog's own dark surface. Solid white boxes punched
+     holes in the panel and made the form the loudest thing on screen. */
   .review-dialog__form input:not([type='checkbox']),
   .review-dialog__form textarea {
     width: 100%;
-    border: 0;
-    border-radius: 0;
-    background: #fff;
-    color: #101010;
-    padding: 1rem 1.2rem;
-    font-size: 1rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    padding: 0.9rem 1.1rem;
+    font-size: var(--fs-body);
+    transition:
+      border-color var(--dur-fast) var(--ease-out),
+      background var(--dur-fast) var(--ease-out);
+  }
+
+  .review-dialog__form input:not([type='checkbox'])::placeholder,
+  .review-dialog__form textarea::placeholder {
+    color: rgba(255, 255, 255, 0.42);
+  }
+
+  .review-dialog__form input:not([type='checkbox']):focus,
+  .review-dialog__form textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    background: rgba(255, 255, 255, 0.08);
   }
 
   .review-dialog__form textarea { resize: vertical; }
@@ -147,17 +201,17 @@ const copy = pick(lang, {
     grid-template-columns: 22px 1fr;
     gap: 0.75rem;
     color: rgba(255, 255, 255, 0.55);
-    font-size: 0.95rem;
+    font-size: var(--fs-sm);
     line-height: 1.55;
   }
 
   .review-dialog__consent input { width: 22px; height: 22px; accent-color: var(--color-accent); }
   .review-dialog__consent a { text-decoration: underline; }
-  .review-dialog__privacy { color: rgba(255,255,255,.72); font-size: .95rem; line-height: 1.5; }
+  .review-dialog__privacy { color: rgba(255,255,255,.72); font-size: var(--fs-sm); line-height: 1.5; }
   .review-dialog__privacy a { text-decoration: underline; }
-  .review-dialog__notice { color: rgba(255, 255, 255, 0.72); font-size: 0.95rem; line-height: 1.5; }
-  .review-dialog__submit { min-height: 52px; padding-inline: 2rem; justify-self: start; border-radius: 5px; background: var(--color-accent-surface); font-size: .95rem; font-weight: 600; }
-  .lead-form__status { color: #ff9b96; font-size: 0.95rem; }
+  .review-dialog__notice { color: rgba(255, 255, 255, 0.72); font-size: var(--fs-sm); line-height: 1.5; }
+  .review-dialog__submit { min-height: 52px; padding-inline: 2rem; justify-self: start; border-radius: var(--radius-pill); background: var(--color-accent-surface); font-size: var(--fs-sm); font-weight: 600; }
+  .lead-form__status { color: #ff9b96; font-size: var(--fs-sm); }
 
   @media (max-width: 640px) {
     .review-dialog__form { grid-template-columns: 1fr; }

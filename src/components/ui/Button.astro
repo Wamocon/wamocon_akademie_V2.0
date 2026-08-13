@@ -50,33 +50,39 @@ const Tag = href ? 'a' : 'button';
 
 <style>
   .btn {
-    --btn-bg: var(--color-accent);
+    /* Filled buttons carry white text, so they use --color-accent-surface
+       (#d40000, 5.53:1) rather than the brighter CI red, which only reaches
+       4.27:1 and fails WCAG 2.1 AA. */
+    --btn-bg: var(--color-accent-surface);
     --btn-fg: #ffffff;
     --btn-border: transparent;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5em;
-    padding: 0.9em 1.9em;
-    font-size: 0.95rem;
+    min-height: var(--btn-h);
+    padding-inline: var(--btn-pad-x);
+    font-size: var(--fs-sm);
     font-weight: var(--fw-semibold);
     line-height: 1;
     letter-spacing: 0.02em;
     color: var(--btn-fg);
     background: var(--btn-bg);
     border: 1.5px solid var(--btn-border);
-    border-radius: 5px;
+    border-radius: var(--radius-pill);
     cursor: pointer;
     transition:
       transform var(--dur-fast) var(--ease-out),
       background var(--dur-fast) var(--ease-out),
       color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out),
       box-shadow var(--dur-fast) var(--ease-out);
   }
 
   .btn--lg {
-    padding: 1.05em 2.4em;
-    font-size: 1.02rem;
+    min-height: var(--btn-h-lg);
+    padding-inline: var(--btn-pad-x-lg);
+    font-size: var(--fs-body);
   }
 
   .btn:hover {
@@ -87,14 +93,16 @@ const Tag = href ? 'a' : 'button';
     transform: translateY(0);
   }
 
-  /* Primary: solid red */
+  /* Primary: solid red with the brand glow. The glow is what makes a CTA pull
+     the eye out of a dark section. */
   .btn--primary {
-    --btn-bg: var(--color-accent);
+    --btn-bg: var(--color-accent-surface);
     --btn-fg: #ffffff;
-    box-shadow: none;
+    box-shadow: var(--shadow-accent);
   }
   .btn--primary:hover {
     --btn-bg: var(--color-accent-hover);
+    box-shadow: 0 16px 44px -12px rgba(244, 14, 14, 0.5);
   }
 
   /* Outline: transparent with border */

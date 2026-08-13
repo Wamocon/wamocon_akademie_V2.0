@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import CookieBanner from '../components/ui/CookieBanner.astro';
+import ChatWidget from '../components/ui/ChatWidget.astro';
 import { assets } from '../data/academy';
 import { getAlternateLangUrls, pick } from '../i18n/utils';
 import { company, langCodes, localeTags, ogLocales, thanksHref, type Lang } from '../i18n/config';
@@ -214,6 +215,19 @@ const structuredData = {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
+    <!-- The brand face, self-hosted (see styles/fonts.css for why not the
+         Google CDN). Preloading only the latin subset: it carries all of German
+         and English, so latin-ext would be bytes almost no visitor renders.
+         crossorigin is required even same-origin, because fonts are always
+         fetched in CORS mode; without it the preload is discarded and
+         refetched. -->
+    <link
+      rel="preload"
+      href="/fonts/open-sans-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <title>{title.includes('WAMOCON') ? title : `${title} | WAMOCON Academy`}</title>
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex, follow" />}
@@ -252,6 +266,12 @@ const structuredData = {
     <link rel="icon" type="image/png" sizes="192x192" href="/images/favicon-192.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    <!-- Marks the document as scripted before first paint, so the scroll-reveal
+         start state (opacity: 0) only applies where JS can undo it. Without
+         this, a visitor with JavaScript disabled sees an empty page. -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main">
@@ -261,15 +281,60 @@ const structuredData = {
     <main id="main"><slot /></main>
     <Footer lang={lang} showContact={showFooterContact} />
     <CookieBanner lang={lang} />
+    <ChatWidget lang={lang} />
 
     <script>
       const revealEls = Array.from(document.querySelectorAll('[data-reveal]'));
       const show = (el: Element) => el.classList.add('is-visible');
+      // Siblings that reveal together are staggered so a grid of cards arrives
+      // as a sequence rather than a single block. An explicit data-reveal-delay
+      // always wins. The cap keeps a long list from crawling in.
+      const seen = new Map<Element, number>();
       revealEls.forEach((el) => {
-        if (el instanceof HTMLElement && el.dataset.revealDelay) {
+        if (!(el instanceof HTMLElement)) return;
+        if (el.dataset.revealDelay) {
           el.style.transitionDelay = `${Number(el.dataset.revealDelay) || 0}ms`;
+          return;
         }
+        const parent = el.parentElement;
+        if (!parent) return;
+        const index = seen.get(parent) ?? 0;
+        seen.set(parent, index + 1);
+        if (index > 0) el.style.transitionDelay = `${Math.min(index * 80, 400)}ms`;
       });
+      // Safety sweep. The observer alone is not deterministic: on a very tall
+      // page a fast flick-scroll or a jump to an anchor can coalesce entries to
+      // a final "not intersecting" state, leaving content stuck at opacity 0.
+      // This reveals anything the reader has already scrolled to, and is cheap
+      // because revealed elements are dropped from the list.
+      let pending = revealEls.slice();
+      let queued = false;
+      const sweep = () => {
+        queued = false;
+        const vh = window.innerHeight;
+        pending = pending.filter((el) => {
+          if (el.classList.contains('is-visible')) return false;
+          const rect = el.getBoundingClientRect();
+          if (rect.width === 0 && rect.height === 0) return true;
+          if (rect.top < vh * 0.92 && rect.bottom > 0) {
+            show(el);
+            return false;
+          }
+          return true;
+        });
+        if (!pending.length) {
+          window.removeEventListener('scroll', onScroll);
+          window.removeEventListener('resize', onScroll);
+        }
+      };
+      const onScroll = () => {
+        if (queued) return;
+        queued = true;
+        window.requestAnimationFrame(sweep);
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+
       if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver(
           (entries) => entries.forEach((entry) => {
@@ -277,10 +342,16 @@ const structuredData = {
             show(entry.target);
             observer.unobserve(entry.target);
           }),
-          { threshold: 0.08 }
+          // Fire slightly before the element reaches the fold so the motion has
+          // finished by the time the reader's eye arrives.
+          { threshold: 0.08, rootMargin: '0px 0px -8% 0px' }
         );
         revealEls.forEach((el) => observer.observe(el));
-        window.setTimeout(() => revealEls.forEach(show), 1000);
+        // Last-resort guard only. An element that never intersects — inside a
+        // collapsed or zero-height container, say — must not stay invisible
+        // forever. This used to fire at 1s, which revealed the whole page
+        // before the reader could scroll to any of it.
+        window.setTimeout(() => revealEls.forEach(show), 15000);
       } else revealEls.forEach(show);
     </script>
 

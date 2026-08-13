@@ -42,8 +42,15 @@ assert(!/fonts\.googleapis\.com|fonts\.gstatic\.com/i.test(combined), 'Remote Go
 assert(!/Mergenthaleralee/i.test(combined), 'Misspelled Mergenthaleralee remains');
 assert(!/November 2024|Dezember 2024|December 2024|Januar 2025|January 2025/i.test(combined), 'Expired course dates remain');
 assert(!/<iframe\b(?=[^>]*\ssrc=)[^>]*\ssrc="https:\/\/(?:www\.google\.com|www\.youtube|youtube)/i.test(combined), 'Third-party iframe loads before consent');
+// Funding via a Bildungsgutschein is always decided case by case by the
+// employment agency, so the site may describe it as possible but never promise
+// it. The English patterns are checked as explicitly as the German ones — an
+// earlier version only caught one English phrasing, and the same claim shipped
+// on the English course popups for months.
 assert(
-  !/vollständig finanziert|alle Kosten (?:werden )?übernommen|free of charge with an education voucher/i.test(combined),
+  !/vollständig finanziert|alle Kosten (?:werden |wurden )?(?:übernommen|abgedeckt)|komplette Kostenübernahme|free of charge with an education voucher|all costs are covered|fully financed|full coverage of course fees/i.test(
+    combined,
+  ),
   'Blanket funding promise remains in the rendered website',
 );
 assert(!/Als offizieller Partner (?:von|des)|As an official partner of ISTQB/i.test(combined), 'Unverified ISTQB partner wording remains');

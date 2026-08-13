@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import devApi from './scripts/dev-api.mjs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -22,9 +23,14 @@ export default defineConfig({
   image: {
     domains: [],
   },
-  // Generates /sitemap-index.xml + /sitemap-0.xml at build time for SEO.
-  integrations: [sitemap({
+  integrations: [
+    // Generates /sitemap-index.xml + /sitemap-0.xml at build time for SEO.
+    sitemap({
       filter: (page) =>
         !['/404/', '/danke/', '/thanks/'].includes(new URL(page).pathname),
-    })],
+    }),
+    // Dev only: serves the Vercel functions in api/ so `npm run dev` can talk
+    // to the chat assistant. Does nothing during `astro build`.
+    devApi(),
+  ],
 });

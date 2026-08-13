@@ -117,7 +117,7 @@ const src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&contro
     max-width: 100%;
     min-width: 0;
     overflow: hidden;
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     background: #000;
   }
 
@@ -208,7 +208,7 @@ const src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&contro
     -webkit-box-orient: vertical;
     overflow: hidden;
     color: #fff;
-    font-size: clamp(0.85rem, 1.5vw, 1.05rem);
+    font-size: var(--fs-body);
     font-weight: var(--fw-semibold);
     line-height: 1.25;
     text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
@@ -216,7 +216,7 @@ const src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&contro
 
   .video-embed__channel {
     color: rgba(255, 255, 255, 0.82);
-    font-size: clamp(0.72rem, 1.15vw, 0.85rem);
+    font-size: var(--fs-xs);
     line-height: 1.2;
     text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
   }
@@ -251,7 +251,7 @@ const src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&contro
     border-radius: 999px;
     background: rgba(0, 0, 0, 0.68);
     color: #fff;
-    font-size: clamp(0.72rem, 1.5vw, 0.95rem);
+    font-size: var(--fs-sm);
     font-weight: var(--fw-semibold);
     line-height: 1.2;
     white-space: nowrap;
@@ -283,7 +283,7 @@ const src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&contro
     border-radius: 999px;
     background: rgba(0, 0, 0, 0.72);
     color: #fff;
-    font-size: 0.82rem;
+    font-size: var(--fs-xs);
     font-weight: var(--fw-semibold);
   }
 

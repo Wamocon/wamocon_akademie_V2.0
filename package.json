@@ -5,14 +5,16 @@
   "private": true,
   "description": "Production-faithful WAMOCON Academy website.",
   "scripts": {
-    "build": "astro build",
+    "build": "astro build && node scripts/build-knowledge.mjs",
     "build:astro": "astro build",
     "stop": "astro dev stop",
     "check": "npm run build && node scripts/audit-astro.mjs && node scripts/audit-compliance.mjs",
     "dev": "astro dev --host 127.0.0.1 --port 4322",
     "preview": "astro preview --host 127.0.0.1 --port 4322",
     "start": "astro dev --host 127.0.0.1 --port 4322",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "build:knowledge": "node scripts/build-knowledge.mjs",
+    "dev:api": "node scripts/dev-with-api.mjs"
   },
   "engines": {
     "node": ">=22.12"

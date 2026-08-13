@@ -1,58 +1,193 @@
+/* ---------------------------------------------------------------------------
+   WAMOCON Academy design tokens.
+
+   Aligned with the WAMOCON group design system (wamocon.com) so both sites read
+   as one brand: the same rounding, elevation, surface gradients, content width
+   and motion curves. Academy-only tokens (the light surfaces used by
+   `.surface-light` sections, the ISTQB blue) are kept below the shared set.
+   --------------------------------------------------------------------------- */
+
 :root {
-  --color-bg: #0d0d0d;
+  /* ---- Ground and surfaces ---------------------------------------------- */
+  --color-bg: #101010;
   --color-bg-soft: #303030;
+  --color-bg-elevated: #181818;
+
+  /* Cards are a gradient, not a flat fill — a flat fill is what made every
+     panel read as an unstyled div. Always consume via `background:`, never
+     `background-color:`, or the gradient is dropped. */
+  --surface-card: linear-gradient(165deg, #1e1e1e 0%, #141414 45%, #181818 100%);
+  --surface-card-hover: linear-gradient(165deg, #242424 0%, #181818 45%, #1e1e1e 100%);
+
+  /* Light surfaces, used by `.surface-light` sections (ISTQB, legal pages). */
   --color-surface: #ffffff;
   --color-surface-soft: #f3f6fb;
-  --color-text: #f8fafc;
+
+  /* ---- Text -------------------------------------------------------------- */
+  --color-text: #ffffff;
   --color-text-dark: #111827;
-  --color-muted: rgba(248, 250, 252, 0.72);
+  --color-muted: rgba(255, 255, 255, 0.66);
   --color-muted-dark: #5b6474;
+  --color-text-muted: var(--color-muted);
+  --color-text-subtle: rgba(255, 255, 255, 0.45);
+
+  /* ---- Brand ------------------------------------------------------------- */
   /* CI primary. Used for red text, borders, icons and decoration. */
   --color-accent: #f40e0e;
+  --color-accent-2: #f40e0e;
   /* Accessible variants for FILLED surfaces that carry white text.
      White on #f40e0e is only 4.27:1 and fails WCAG 2.1 AA (4.5:1).
      White on #d40000 is 5.53:1; on #b80000 it is 6.91:1. */
   --color-accent-surface: #d40000;
   --color-accent-surface-hover: #b80000;
   --color-accent-hover: var(--color-accent-surface-hover);
+  /* ISTQB / certification accent, Academy-only. */
   --color-blue: #1d4f91;
-  --color-line: rgba(255, 255, 255, 0.14);
-  --color-line-dark: rgba(17, 24, 39, 0.12);
-  --border-subtle: rgba(255, 255, 255, 0.14);
-  --border-strong: rgba(255, 255, 255, 0.42);
-  --surface-card: #171717;
-  --surface-card-hover: #202020;
-  --color-text-muted: var(--color-muted);
-  --color-text-subtle: rgba(248, 250, 252, 0.58);
 
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  /* ---- Lines and borders -------------------------------------------------- */
+  --color-line: rgba(255, 255, 255, 0.2);
+  --color-line-dark: rgba(17, 24, 39, 0.12);
+  --border-subtle: rgba(255, 255, 255, 0.2);
+  --border-strong: rgba(255, 255, 255, 0.32);
+  --divider: #545454;
+
+  /* ---- Atmospheric lighting ----------------------------------------------- */
+  /* Red radial glows layered behind heroes and feature blocks. */
+  --glow-top: rgba(244, 14, 14, 0.16);
+  --glow-side: rgba(244, 14, 14, 0.07);
+
+  /* ---- Typography ---------------------------------------------------------- */
+  /* Open Sans is self-hosted in styles/fonts.css. The stack behind it is the
+     historical system stack, which is what the site shipped with — so if the
+     webfont fails the page degrades to the exact type it used to have.
+     'Segoe UI' leads the fallbacks because Open Sans and Segoe UI share a
+     designer (Steve Matteson) and a humanist skeleton, which keeps the swap
+     from visibly reflowing on Windows. */
+  --font-sans: 'Open Sans', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont,
+    Roboto, Helvetica, Arial, sans-serif;
+
   --fw-light: 300;
   --fw-regular: 400;
   --fw-medium: 500;
   --fw-semibold: 600;
   --fw-bold: 700;
+  --fw-extrabold: 800;
 
-  --fs-h1: clamp(2.7rem, 8vw, 6.8rem);
-  --fs-h2: clamp(2rem, 5vw, 4rem);
-  --fs-h3: clamp(1.25rem, 2.4vw, 2rem);
-  --fs-h4: clamp(1.05rem, 1.5vw, 1.35rem);
-  --fs-body: clamp(1rem, 1.05vw, 1.22rem);
-  --lh-tight: 1.05;
-  --lh-body: 1.65;
+  /* ---- Type scale -----------------------------------------------------------
+     One fluid ramp for the whole site. Every step interpolates between its min
+     at a 360px viewport and its max at 1680px (--container-max), so sizes track
+     the layout instead of the screen edge.
 
-  /* One broad content canvas, matching the approved wide reference across pages. */
-  --container-max: 3200px;
-  --container-pad: clamp(20px, 1.6vw, 64px);
-  --section-gap: clamp(4rem, 8vw, 7rem);
-  --radius-sm: 6px;
-  --radius-md: 0;
-  --radius-lg: 0;
-  --radius-pill: 5px;
-  --shadow-card: none;
-  --shadow-accent: none;
-  --z-header: 50;
-  --z-modal: 100;
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --dur-fast: 180ms;
-  --dur-med: 320ms;
+     The middle term is `rem + vw`, never bare `vw`. A pure-viewport font-size
+     ignores the reader's browser text-size setting, which fails WCAG 2.1 SC
+     1.4.4 (Resize Text); the rem component keeps zoom working.
+
+     Pick by ROLE, not by how big it looks:
+       hero     the page's opening headline, once per page
+       display  secondary oversized headline (section openers, CTA banners)
+       h1–h5    document hierarchy
+       lead     intro paragraph under a heading
+       body     default running text
+       sm/xs    metadata, captions, legal, form help
+       2xs      eyebrows and badges (always paired with wide tracking)
+       stat     the big standalone figures (50+, 5500+)
+     --------------------------------------------------------------------------- */
+  --fs-hero: clamp(3.25rem, 2.13rem + 5vw, 7.375rem);      /* 52 → 118px */
+  --fs-display: clamp(2.75rem, 2.07rem + 3.03vw, 5.25rem); /* 44 → 84px */
+  --fs-h1: clamp(2.25rem, 1.77rem + 2.12vw, 4rem);         /* 36 → 64px */
+  --fs-h2: clamp(1.875rem, 1.57rem + 1.36vw, 3rem);        /* 30 → 48px */
+  --fs-h3: clamp(1.5rem, 1.33rem + 0.76vw, 2.125rem);      /* 24 → 34px */
+  --fs-h4: clamp(1.25rem, 1.18rem + 0.3vw, 1.5rem);        /* 20 → 24px */
+  --fs-h5: clamp(1.0625rem, 1.01rem + 0.23vw, 1.25rem);    /* 17 → 20px */
+  --fs-lead: clamp(1.125rem, 1.06rem + 0.3vw, 1.375rem);   /* 18 → 22px */
+  --fs-body: clamp(1rem, 0.98rem + 0.08vw, 1.0625rem);     /* 16 → 17px */
+  --fs-sm: 0.9375rem;                                      /* 15px */
+  --fs-xs: 0.8125rem;                                      /* 13px */
+  --fs-2xs: 0.75rem;                                       /* 12px */
+  --fs-stat: clamp(2.5rem, 1.95rem + 2.42vw, 4.5rem);      /* 40 → 72px */
+
+  /* Kept as an alias so older rules keep resolving. Prefer --fs-sm. */
+  --fs-small: var(--fs-sm);
+
+  /* ---- Leading ------------------------------------------------------------- */
+  /* Large type needs tighter leading than small type — the same ratio that
+     reads as airy at 16px reads as disconnected at 84px. */
+  --lh-display: 1.04;
+  --lh-tight: 1.1;
+  --lh-snug: 1.25;
+  --lh-body: 1.6;
+  --lh-relaxed: 1.7;
+
+  /* ---- Tracking ------------------------------------------------------------ */
+  /* Open Sans is spaced for text sizes, so display sizes need it pulled back in
+     and uppercase micro-labels need it opened up. */
+  --tracking-display: -0.022em;
+  --tracking-tight: -0.012em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.14em;
+
+  /* ---- Space and measure ---------------------------------------------------- */
+  --container-max: 1680px;
+  --container-pad: clamp(1rem, 3vw, 3rem);
+  --section-gap: clamp(4rem, 9vw, 8rem);
+
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 2rem;
+  --space-lg: 4rem;
+  --space-xl: 6rem;
+  --space-2xl: 8rem;
+
+  /* ---- Page hero -------------------------------------------------------------
+     One geometry for every inner-page hero. Before these existed each page
+     invented its own: h1 sizes ran 45→106px, the headline started anywhere
+     between 187px and 540px down the page, and the copy column ranged from
+     545px to 1354px wide — so every navigation felt like a different site.
+     The home page is the deliberate exception (full-bleed, bottom-anchored).
+     ---------------------------------------------------------------------------- */
+  --hero-min-h: clamp(460px, 58svh, 660px);
+  /* Clears the fixed header (--header-height) with breathing room under it. */
+  --hero-pad-top: clamp(150px, 18vh, 230px);
+  --hero-pad-bottom: clamp(3rem, 6vw, 5.5rem);
+  /* Copy column. Caps the measure so the lead never runs the full 1680px. */
+  --hero-copy-w: min(100%, 46rem);
+  --hero-measure: 58ch;
+
+  /* ---- Controls ---------------------------------------------------------------
+     One button size for the whole site. Components previously each picked their
+     own: min-heights of 45, 48, 50, 55, 64 and clamp(56,3.5vw,72) px, plus a
+     bare `4.25vw` that grew to 109px on a 2560px monitor — which is why some
+     CTAs read as enormous. 48px also meets the WCAG 2.5.8 target minimum.
+     ------------------------------------------------------------------------------ */
+  --btn-h: 48px;
+  --btn-h-lg: 56px;
+  --btn-pad-x: 1.9em;
+  --btn-pad-x-lg: 2.4em;
+
+  /* ---- Header --------------------------------------------------------------- */
+  --header-height: 112px;
+  --header-min-h: clamp(64px, 13vw, 112px);
+  --header-logo-h: clamp(48px, 11vw, 100px);
+  --header-max: 2100px;
+
+  /* ---- Shape ---------------------------------------------------------------- */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 100px;
+
+  /* ---- Elevation ------------------------------------------------------------- */
+  --shadow-card: 0 18px 40px -20px rgba(0, 0, 0, 0.8);
+  --shadow-accent: 0 12px 40px -12px rgba(244, 14, 14, 0.35);
+
+  /* ---- Layers ----------------------------------------------------------------- */
+  --z-header: 100;
+  --z-overlay: 200;
+  --z-modal: 300;
+
+  /* ---- Motion ------------------------------------------------------------------ */
+  --ease-out: cubic-bezier(0.25, 0.8, 0.25, 1);
+  --dur-fast: 0.2s;
+  --dur-med: 0.4s;
+  --dur-slow: 0.6s;
 }

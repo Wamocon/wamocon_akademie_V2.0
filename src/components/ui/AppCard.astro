@@ -75,7 +75,7 @@ const Tag = isLink ? 'a' : 'div';
   .app-card__name {
     flex: 1 1 auto;
     min-width: 0;
-    font-size: clamp(1.2rem, 1rem + 1vw, 1.55rem);
+    font-size: var(--fs-h4);
     font-weight: var(--fw-bold);
     letter-spacing: -0.01em;
     line-height: 1.15;
@@ -106,7 +106,7 @@ const Tag = isLink ? 'a' : 'div';
   }
   .app-card__cat {
     align-self: flex-start;
-    font-size: 0.66rem;
+    font-size: var(--fs-2xs);
     font-weight: var(--fw-semibold);
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -117,14 +117,14 @@ const Tag = isLink ? 'a' : 'div';
     background: rgba(244, 14, 14, 0.08);
   }
   .app-card__desc {
-    font-size: 0.95rem;
+    font-size: var(--fs-sm);
     line-height: 1.6;
     color: var(--color-text-muted);
     overflow-wrap: anywhere;
   }
   .app-card__soon {
     align-self: flex-start;
-    font-size: 0.7rem;
+    font-size: var(--fs-2xs);
     text-transform: uppercase;
     letter-spacing: 0.1em;
     padding: 0.3rem 0.7rem;

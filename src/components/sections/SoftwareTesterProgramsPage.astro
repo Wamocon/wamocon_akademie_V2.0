@@ -81,8 +81,19 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
 ---
 
 <section class="page-hero program-hero">
-  <div class="program-shell program-hero__layout">
-    <div class="program-hero__copy" data-reveal>
+  <div class="program-hero__media page-hero__art" aria-hidden="true">
+    <img
+        class="program-hero__accreditation"
+        src={programAssets.accreditation}
+        alt="Hessen, ISTQB Accredited Training Provider und International Software Testing Qualifications Board"
+        width="1400"
+        height="450"
+      />
+    <img class="program-hero__art program-hero__art--small" src={programAssets.hero} alt="" width="1680" height="1670" loading="eager" aria-hidden="true" />
+    <img class="program-hero__art program-hero__art--large" src={programAssets.hero} alt="" width="1680" height="1670" loading="eager" aria-hidden="true" />
+  </div>
+  <div class="program-shell program-hero__layout page-hero__inner">
+    <div class="program-hero__copy page-hero__copy" data-reveal>
       <h1>
         <span class="program-hero__headline-accent">
           {heroAccentLines.map((line) => <span class="program-hero__headline-line">{line}</span>)}
@@ -90,17 +101,6 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
         <span class="program-hero__headline-rest">{content.heroRest}</span>
       </h1>
       <p>{content.lead}</p>
-    </div>
-    <div class="program-hero__media">
-      <img
-        class="program-hero__accreditation"
-        src={programAssets.accreditation}
-        alt="Hessen, ISTQB Accredited Training Provider und International Software Testing Qualifications Board"
-        width="1400"
-        height="450"
-      />
-      <img class="program-hero__art program-hero__art--small" src={programAssets.hero} alt="" width="1680" height="1670" loading="eager" aria-hidden="true" />
-      <img class="program-hero__art program-hero__art--large" src={programAssets.hero} alt="" width="1680" height="1670" loading="eager" aria-hidden="true" />
     </div>
   </div>
 </section>
@@ -280,8 +280,8 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
       <button class="course-dialog__close" type="button" data-dialog-close aria-label={content.close}>
         <span aria-hidden="true">×</span>
       </button>
-      <h2 id={`${popupId(popup.hook)}-title`}>{popup.title}</h2>
       <p class="course-dialog__eyebrow">{coursePopupCategory(popup.hook, lang)}</p>
+      <h2 id={`${popupId(popup.hook)}-title`}>{popup.title}</h2>
       <div class="course-dialog__content">
         {coursePopupBlocks(popup.description, lang, popup.links).map((block) => (
           block.type === 'heading'
@@ -391,7 +391,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
   }
 
   .program-section h2 {
-    font-size: clamp(2rem, 4.25vw, 4.4rem);
+    font-size: var(--fs-h1);
   }
 
   .program-section h2 span,
@@ -399,35 +399,14 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
     color: var(--color-accent);
   }
 
+  /* Hero geometry is owned by .page-hero in global.css. */
   .program-hero {
-    min-height: max(900px, 100svh);
-    overflow: hidden;
     background: #0d0d0d;
   }
 
-  .program-hero__layout {
-    position: relative;
-    display: grid;
-    min-height: max(900px, 100svh);
-    grid-template-columns: minmax(0, 1.5fr) minmax(360px, 0.5fr);
-    align-items: start;
-    padding-top: clamp(420px, 46vh, 600px);
-    padding-bottom: clamp(3rem, 6vh, 5rem);
-  }
-
-  .program-hero__copy {
-    position: relative;
-    z-index: 2;
-    width: min(100%, 1560px);
-  }
-
   .program-hero h1 {
-    margin: 0 0 1.45rem;
-    /* The lower bound has to stay small: German compounds such as
-       "Bildungsprogramme" are long single tokens that overflow a tablet once
-       the clamp floors out. */
-    font-size: clamp(2.1rem, 5.1vw, 5.6rem);
-    line-height: 1.03;
+    /* German compounds such as "Bildungsprogramme" are long single tokens, so
+       the heading must be allowed to hyphenate rather than overflow. */
     overflow-wrap: break-word;
     word-break: normal;
     hyphens: auto;
@@ -445,22 +424,10 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
 
   .program-hero__headline-rest {
     color: #fff;
-    /* One line only where there is room for it; below that the subtitle wraps
-       rather than pushing the hero wider than the viewport. */
-    white-space: nowrap;
-  }
-
-  @media (max-width: 1100px) {
-    .program-hero__headline-rest {
-      white-space: normal;
-    }
   }
 
   .program-hero p {
-    max-width: 1500px;
     color: rgba(255, 255, 255, 0.84);
-    font-size: clamp(1.1rem, 1.55vw, 1.7rem);
-    line-height: 1.4;
   }
 
   .program-hero__accreditation {
@@ -473,12 +440,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
     margin: 0;
   }
 
-  .program-hero__media {
-    position: absolute;
-    z-index: 1;
-    inset: clamp(120px, 7vw, 150px) calc(var(--container-pad) * -1) 0 47%;
-    pointer-events: none;
-  }
+  /* Box comes from .page-hero__art. */
 
   .program-hero__art {
     position: absolute;
@@ -487,16 +449,23 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
     animation: program-art-drift 11s ease-in-out infinite;
   }
 
+  /* Decorative renders are sized from the hero's HEIGHT, not the viewport
+     width. A vw-sized square overflowed the frame on wide screens, so the
+     shape was sliced off and the space it should have filled read as an empty
+     gap. Height-bounding keeps the whole render inside at every width, which
+     also makes the per-breakpoint width ladders unnecessary. */
   .program-hero__art--large {
-    right: -4%;
-    bottom: 0;
-    width: min(47vw, 810px);
+    left: 60%;
+    top: 54%;
+    max-height: min(82%, 460px);
+    max-width: 66%;
   }
 
   .program-hero__art--small {
-    top: 0;
-    right: min(32vw, 520px);
-    width: min(25vw, 420px);
+    left: 26%;
+    top: 36%;
+    max-height: min(50%, 285px);
+    max-width: 44%;
     opacity: 0.72;
     filter: brightness(0.82);
     animation-delay: -4s;
@@ -527,7 +496,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
 
   .program-benefits h3 {
     margin-bottom: 0.55rem;
-    font-size: clamp(1.08rem, 1.6vw, 1.45rem);
+    font-size: var(--fs-h4);
   }
 
   .program-benefits p,
@@ -557,7 +526,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
 
   .course-group h2 {
     margin-bottom: clamp(2rem, 3vw, 3rem);
-    font-size: clamp(2.15rem, 4vw, 4rem);
+    font-size: var(--fs-h1);
   }
 
   .course-grid {
@@ -581,25 +550,33 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
     justify-content: flex-end;
     isolation: isolate;
     padding: 5rem clamp(1.5rem, 2vw, 2.4rem) clamp(1.65rem, 2vw, 2.2rem);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    background: #111;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-card);
     color: #fff;
     text-decoration: none;
     cursor: pointer;
-    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.18);
-    transition: border-color 220ms ease, background 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+    box-shadow: var(--shadow-card);
+    transition:
+      border-color var(--dur-med) var(--ease-out),
+      background var(--dur-med) var(--ease-out),
+      box-shadow var(--dur-med) var(--ease-out),
+      transform var(--dur-med) var(--ease-out);
   }
 
+  /* Accent rule along the top edge. It has to follow the card's rounding, so it
+     is inset and rounded rather than pinned to a square corner. */
   .course-card::before {
     content: '';
     position: absolute;
     z-index: 2;
-    top: -1px;
-    left: -1px;
+    top: 0;
+    left: clamp(1.5rem, 2vw, 2.4rem);
     width: clamp(72px, 7vw, 128px);
     height: 4px;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
     background: var(--color-accent-surface);
-    transition: width 260ms ease;
+    transition: width 260ms var(--ease-out);
   }
 
   .course-card::after {
@@ -620,8 +597,8 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
   .course-card:focus-visible {
     border-color: var(--color-accent);
     outline: none;
-    background: #1a1a1a;
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.34);
+    background: var(--surface-card-hover);
+    box-shadow: var(--shadow-card), var(--shadow-accent);
     transform: translateY(-5px);
   }
 
@@ -643,7 +620,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
 
   .course-card strong {
     max-width: calc(100% - 48px);
-    font-size: clamp(1.25rem, 1.45vw, 1.65rem);
+    font-size: var(--fs-h4);
     line-height: 1.18;
     text-wrap: balance;
   }
@@ -654,7 +631,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
     left: clamp(1.5rem, 2vw, 2.4rem);
     max-width: calc(100% - 165px);
     color: rgba(255, 255, 255, 0.82);
-    font-size: clamp(0.78rem, 0.85vw, 0.95rem);
+    font-size: var(--fs-sm);
     font-weight: var(--fw-medium);
     line-height: 1.3;
   }
@@ -667,7 +644,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
     padding: 0.62rem 1rem;
     background: #fff;
     color: var(--color-accent);
-    font-size: clamp(0.86rem, 0.85vw, 1rem);
+    font-size: var(--fs-body);
     font-weight: var(--fw-semibold);
     text-align: center;
   }
@@ -698,7 +675,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
   .program-network figcaption {
     max-width: 1120px;
     margin-top: 1.4rem;
-    font-size: 0.95rem;
+    font-size: var(--fs-sm);
   }
 
   .program-dates {
@@ -722,7 +699,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
 
   .date-column h3 {
     margin-bottom: 1rem;
-    font-size: 1.15rem;
+    font-size: var(--fs-body);
   }
 
   .date-column ul {
@@ -737,12 +714,12 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
     gap: 1.2rem;
     border-bottom: 1px solid rgba(255, 11, 0, 0.58);
     color: rgba(255, 255, 255, 0.78);
-    font-size: 1rem;
+    font-size: var(--fs-body);
   }
 
   .date-column strong {
     color: #fff;
-    font-size: 0.76rem;
+    font-size: var(--fs-2xs);
     font-weight: var(--fw-regular);
   }
 
@@ -755,10 +732,10 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
     margin-top: 2rem;
     padding: 0.75rem 1.35rem;
     border: 1px solid var(--color-accent);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     background: var(--color-accent-surface);
     color: #fff;
-    font-size: 0.86rem;
+    font-size: var(--fs-xs);
     font-weight: var(--fw-semibold);
     transition: background var(--dur-fast), color var(--dur-fast), transform var(--dur-fast);
   }
@@ -814,7 +791,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
 
   .program-advice h2 {
     margin-bottom: 0.9rem;
-    font-size: clamp(2.1rem, 3.8vw, 3.8rem);
+    font-size: var(--fs-h1);
   }
 
   .program-form {
@@ -827,7 +804,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
     display: grid;
     gap: 0.35rem;
     color: #fff;
-    font-size: 0.78rem;
+    font-size: var(--fs-2xs);
     line-height: 1.3;
   }
 
@@ -866,7 +843,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
   .program-form__notice {
     margin: 0;
     color: rgba(255, 255, 255, 0.58);
-    font-size: 0.7rem;
+    font-size: var(--fs-2xs);
     line-height: 1.45;
   }
 
@@ -883,7 +860,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
 
   .lead-form__status {
     color: #ff9b96;
-    font-size: 0.82rem;
+    font-size: var(--fs-xs);
   }
 
   .program-future__grid {
@@ -898,14 +875,14 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
      lower so it no longer fills most of the screen (review AK#6). */
   .program-future h2 {
     margin-bottom: 1.4rem;
-    font-size: clamp(1.7rem, 3vw, 2.9rem);
+    font-size: var(--fs-h2);
     line-height: 1.14;
   }
   .program-future__eyebrow {
     display: block;
     margin-bottom: 0.7rem;
     color: var(--color-accent);
-    font-size: 0.8rem;
+    font-size: var(--fs-xs);
     font-weight: var(--fw-semibold);
     letter-spacing: 0.09em;
     text-transform: uppercase;
@@ -953,30 +930,55 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
     list-style: none;
   }
 
+  /* Same card language as the rest of the site: rounded, elevated, gradient
+     surface, with the step number as a badge in the flow. */
   .program-steps__grid li {
     position: relative;
+    display: flex;
     min-height: 145px;
-    padding: 2.45rem 1.4rem 1.3rem;
-    border: 1px solid rgba(255, 255, 255, 0.45);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(0.85rem, 1.1vw, 1.15rem);
+    padding: clamp(1.4rem, 1.8vw, 1.9rem);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-card);
+    box-shadow: var(--shadow-card);
+    transition:
+      transform var(--dur-med) var(--ease-out),
+      border-color var(--dur-med) var(--ease-out),
+      background var(--dur-med) var(--ease-out),
+      box-shadow var(--dur-med) var(--ease-out);
+  }
+
+  .program-steps__grid li:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-accent);
+    background: var(--surface-card-hover);
+    box-shadow: var(--shadow-card), var(--shadow-accent);
   }
 
   .program-steps__grid li > span {
-    position: absolute;
-    top: 0;
-    left: 0;
-    min-width: 44px;
-    padding: 0.35rem 0.55rem;
-    background: #fff;
-    color: var(--color-accent);
-    font-size: 0.9rem;
-    font-weight: var(--fw-bold);
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    flex: 0 0 auto;
+    border-radius: var(--radius-pill);
+    background: var(--color-accent-surface);
+    color: #fff;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    box-shadow: var(--shadow-accent);
   }
 
   .program-steps__grid p {
     color: rgba(255, 255, 255, 0.86);
-    font-size: clamp(1.45rem, 1.65vw, 1.8rem);
-    font-weight: var(--fw-medium);
-    line-height: 1.3;
+    font-size: var(--fs-lead);
+    font-weight: var(--fw-regular);
+    line-height: 1.4;
   }
 
   .program-prep {
@@ -988,25 +990,32 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
 
   .program-prep h3 {
     margin-bottom: 0.65rem;
-    font-size: 1.18rem;
+    font-size: var(--fs-h5);
   }
 
   .program-webinar__grid {
     display: grid;
     grid-template-columns: minmax(0, 0.88fr) minmax(500px, 1.12fr);
     gap: clamp(2rem, 5vw, 5rem);
-    align-items: start;
+    /* Stretch, not start. The copy column is much taller than a capped image
+       plus two buttons, which left a ~180px hole under the media column. */
+    align-items: stretch;
+  }
+
+  .program-webinar__media {
+    display: flex;
+    flex-direction: column;
   }
 
   .program-webinar h2 {
     margin-bottom: 1.5rem;
-    font-size: clamp(2.4rem, 4.8vw, 4.8rem);
+    font-size: var(--fs-display);
   }
 
   .program-webinar h3 {
     margin-bottom: 0.4rem;
     color: var(--color-accent);
-    font-size: 1.18rem;
+    font-size: var(--fs-h5);
   }
 
   .program-webinar ul {
@@ -1021,7 +1030,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
   }
 
   .program-webinar li strong {
-    font-size: 1.05rem;
+    font-size: var(--fs-body);
   }
 
   .program-webinar__closing {
@@ -1029,9 +1038,16 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
   }
 
   .program-webinar__media img {
+    /* Grows to fill whatever height the copy column sets, so the two columns
+       end on the same line instead of leaving a gap. */
+    flex: 1;
     width: 100%;
-    aspect-ratio: 1.15 / 1;
+    height: 100%;
+    min-height: 320px;
     object-fit: cover;
+    object-position: center 30%;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
   }
 
   .program-webinar__actions {
@@ -1045,22 +1061,41 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
     margin-top: 0.85rem;
   }
 
+  /* A calm, centred sheet: soft rounding, one subtle hairline, and depth from
+     the shadow rather than from a hard accent rule across the top. */
   .course-dialog {
-    width: min(1180px, calc(100vw - 48px));
-    max-height: min(88vh, 900px);
+    width: min(820px, calc(100vw - 32px));
+    max-height: min(86vh, 880px);
     margin: auto;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.32);
-    border-top: 4px solid var(--color-accent);
-    border-radius: 4px;
-    background: #131313;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-card);
     color: #fff;
-    box-shadow: 0 34px 100px rgba(0, 0, 0, 0.62);
+    box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(0, 0, 0, 0.4);
+  }
+
+  .course-dialog[open] {
+    animation: course-dialog-in var(--dur-med) var(--ease-out);
+  }
+
+  @keyframes course-dialog-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px) scale(0.98);
+    }
   }
 
   .course-dialog::backdrop {
-    background: rgba(0, 0, 0, 0.82);
-    backdrop-filter: blur(5px);
+    background: rgba(6, 6, 6, 0.72);
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .course-dialog[open] {
+      animation: none;
+    }
   }
 
   .course-dialog__panel {
@@ -1070,20 +1105,22 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
     overscroll-behavior: contain;
     /* Scrollbar stays visible so it is obvious the content scrolls (AK#16). */
     scrollbar-width: thin;
-    scrollbar-color: var(--color-accent-surface) rgba(255, 255, 255, 0.12);
-    padding: clamp(2rem, 4.5vw, 5.5rem);
+    scrollbar-color: rgba(255, 255, 255, 0.28) transparent;
+    padding: clamp(1.75rem, 3.5vw, 3rem);
   }
 
   .course-dialog__panel::-webkit-scrollbar {
-    width: 10px;
+    width: 8px;
   }
   .course-dialog__panel::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.08);
+    background: transparent;
   }
   .course-dialog__panel::-webkit-scrollbar-thumb {
-    background: var(--color-accent-surface);
-    border-radius: 8px;
-    border: 2px solid #131313;
+    background: rgba(255, 255, 255, 0.22);
+    border-radius: var(--radius-pill);
+  }
+  .course-dialog__panel::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.34);
   }
 
   /* Bottom fade + hint, shown only while the panel can still scroll down. */
@@ -1093,13 +1130,14 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
     left: 0;
     right: 10px;
     bottom: 0;
-    height: 64px;
-    background: linear-gradient(transparent, #131313);
+    height: 72px;
+    background: linear-gradient(transparent, #161616);
     opacity: 0;
     pointer-events: none;
     transition: opacity 200ms ease;
   }
   .course-dialog.is-scrollable:not(.is-bottom)::after { opacity: 1; }
+  /* A quiet hint, not a red badge — it is guidance, not a call to action. */
   .course-dialog__scrollhint {
     position: absolute;
     left: 50%;
@@ -1107,33 +1145,46 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
     z-index: 2;
     display: none;
     transform: translateX(-50%);
-    padding: 0.3rem 0.85rem;
-    border-radius: 999px;
-    background: var(--color-accent-surface);
-    color: #fff;
-    font-size: 0.78rem;
-    font-weight: 600;
+    padding: 0.32rem 0.9rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: rgba(255, 255, 255, 0.82);
+    font-size: var(--fs-2xs);
+    font-weight: 500;
+    letter-spacing: 0.02em;
     pointer-events: none;
   }
   .course-dialog.is-scrollable:not(.is-bottom) .course-dialog__scrollhint { display: inline-block; }
 
+  /* Sized for a dialog, not a page hero — the old clamp topped out at 4rem and
+     pushed the actual content below the fold of the sheet. */
+  /* The close button floats right, so the heading needs room to clear it but
+     should still use most of the sheet width rather than wrapping to a column. */
   .course-dialog h2 {
-    max-width: 20ch;
-    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+    max-width: 38ch;
+    margin-bottom: clamp(1.15rem, 2vw, 1.6rem);
     color: #fff;
-    font-size: clamp(2rem, 5vw, 4rem);
+    font-size: var(--fs-h3);
+    line-height: 1.22;
+    text-wrap: balance;
   }
 
   .course-dialog__eyebrow {
-    margin: -1.25rem 0 1.75rem;
+    margin: 0 0 0.6rem;
     color: var(--color-accent);
+    font-size: var(--fs-2xs);
     font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
   }
 
   .course-dialog__content {
     max-width: 82ch;
     color: rgba(255, 255, 255, 0.78);
-    font-size: clamp(1rem, 1vw, 1.12rem);
+    font-size: var(--fs-body);
     line-height: 1.72;
   }
 
@@ -1148,7 +1199,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
   .course-dialog__content h3 {
     padding-top: 1rem;
     color: #fff;
-    font-size: clamp(1.25rem, 1.6vw, 1.65rem);
+    font-size: var(--fs-h4);
     line-height: 1.3;
   }
 
@@ -1166,18 +1217,37 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
     color: var(--color-accent);
   }
 
+  /* Circular, quiet by default, accent on hover — the close control should not
+     compete with the dialog's own call to action. */
   .course-dialog__close {
     position: sticky;
     z-index: 2;
     top: 0;
     float: right;
-    width: 48px;
-    height: 48px;
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    background: #0d0d0d;
-    color: var(--color-accent);
-    font-size: 2rem;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    margin: -0.35rem -0.35rem 0 0.75rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.75);
+    font-size: var(--fs-lead);
     line-height: 1;
+    transition:
+      background var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out);
+  }
+
+  .course-dialog__close:hover,
+  .course-dialog__close:focus-visible {
+    border-color: var(--color-accent);
+    background: rgba(244, 14, 14, 0.14);
+    color: #fff;
+    transform: rotate(90deg);
   }
 
   .course-dialog__actions {
@@ -1353,28 +1423,11 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
   }
 
   @media (max-width: 980px) {
-    .program-hero__layout {
-      grid-template-columns: 1fr;
-      padding-top: 150px;
-    }
-
-    .program-hero__copy {
-      width: min(78%, 720px);
-    }
 
     .program-hero__media {
       inset: 104px calc(var(--container-pad) * -1) 0 46%;
     }
 
-    .program-hero__art--large {
-      right: -7%;
-      width: min(55vw, 570px);
-    }
-
-    .program-hero__art--small {
-      right: min(37vw, 360px);
-      width: min(29vw, 300px);
-    }
 
     .program-hero__accreditation {
       right: 24px;
@@ -1399,23 +1452,10 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
       padding-block: 3.75rem;
     }
 
-    .program-hero {
-      min-height: auto;
-    }
-
     .program-hero__layout {
-      display: flex;
-      min-height: auto;
-      flex-direction: column-reverse;
-      align-items: stretch;
-      gap: 1.25rem;
-      padding-top: 88px;
-      padding-bottom: 3rem;
-    }
-
-    .program-hero__copy {
-      width: 100%;
-    }
+    flex-direction: column-reverse;
+    gap: 1.25rem;
+  }
 
     .program-hero__media {
       position: relative;
@@ -1424,22 +1464,6 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
       margin-inline: calc(var(--container-pad) * -0.45);
     }
 
-    .program-hero__art--large {
-      right: -12%;
-      bottom: 24px;
-      width: min(78vw, 430px);
-    }
-
-    .program-hero__art--small {
-      top: 0;
-      right: 46%;
-      width: min(39vw, 220px);
-    }
-
-    .program-hero h1 {
-      margin-top: 0;
-      font-size: clamp(2.25rem, 9.5vw, 3.35rem);
-    }
 
     .program-hero__headline-rest {
       white-space: normal;
@@ -1486,7 +1510,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
     }
 
     .program-network figcaption {
-      font-size: 0.86rem;
+      font-size: var(--fs-xs);
     }
 
     .program-dates__grid {
@@ -1533,7 +1557,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
 
     .course-dialog h2 {
       padding-right: 1.5rem;
-      font-size: clamp(1.8rem, 9vw, 2.65rem);
+      font-size: var(--fs-h2);
     }
 
     .advice-dialog .course-dialog__panel { padding: 3.75rem 1.25rem 1.25rem; }
@@ -1565,24 +1589,6 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
   @media (max-width: 420px) {
     .program-hero__media {
       min-height: 205px;
-    }
-
-    .program-hero__art--large {
-      right: -18%;
-      width: 82vw;
-    }
-
-    .program-hero__art--small {
-      right: 45%;
-      width: 42vw;
-    }
-
-    .program-hero h1 {
-      font-size: clamp(1.95rem, 9.5vw, 2.15rem);
-    }
-
-    .program-hero p {
-      font-size: 0.95rem;
     }
 
     .program-benefits__grid,

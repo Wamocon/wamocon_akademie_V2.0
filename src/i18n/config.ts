@@ -45,6 +45,14 @@ export const nav: NavLink[] = [
     en: { label: 'Courses', href: '/en/educational-programs/' },
   },
   {
+    // The DiTeLe learning platform is sold as "Online Kurse" — the product
+    // codename meant nothing to a first-time visitor, and burying it last put
+    // the online offer behind everything else.
+    key: 'ditele',
+    de: { label: 'Online Kurse', href: '/ditele-app/' },
+    en: { label: 'Online courses', href: '/en/ditele-app/' },
+  },
+  {
     key: 'about-group',
     de: { label: 'Über uns', href: '/ber-die-akademie/' },
     en: { label: 'About us', href: '/en/about-us/' },
@@ -70,11 +78,6 @@ export const nav: NavLink[] = [
     key: 'certification',
     de: { label: 'ISTQB®-Zertifizierung', href: '/istqb-zertifizierung/' },
     en: { label: 'ISTQB® certification', href: '/en/istqb-certification/' },
-  },
-  {
-    key: 'ditele',
-    de: { label: 'DiTeLe App', href: '/ditele-app/' },
-    en: { label: 'DiTeLe App', href: '/en/ditele-app/' },
   },
 ];
 

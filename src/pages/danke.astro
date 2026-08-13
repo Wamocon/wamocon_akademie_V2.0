@@ -5,19 +5,19 @@ const lang = 'de';
 ---
 
 <BaseLayout title="Danke" description="Vielen Dank für Ihre Anfrage bei WAMOCON Academy." lang={lang} noindex>
-  <section class="thank-you surface-light">
-    <div class="container">
-      <span class="eyebrow">Danke</span>
-      <h1>Danke</h1>
-      <p>Ihre Anfrage wurde gesendet. Wir melden uns schnellstmöglich bei Ihnen.</p>
-      <a href="/">Zur Startseite</a>
+  <section class="thank-you page-hero">
+    <div class="container page-hero__inner">
+      <div class="page-hero__copy">
+        <h1>Danke</h1>
+        <p>Ihre Anfrage wurde gesendet. Wir melden uns schnellstmöglich bei Ihnen.</p>
+        <a href="/">Zur Startseite</a>
+      </div>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .thank-you { min-height: 70vh; padding-block: clamp(6rem, 12vw, 10rem); }
-  .thank-you h1 { margin: 1rem 0; color: var(--color-text-dark); }
-  .thank-you p { max-width: 54ch; color: var(--color-muted-dark); }
+  .thank-you h1 { margin: 0 0 1.25rem; color: var(--color-text); }
+  .thank-you p { max-width: 54ch; color: var(--color-muted); }
   .thank-you a { display: inline-flex; margin-top: 1.5rem; color: var(--color-accent); font-weight: var(--fw-semibold); }
 </style>

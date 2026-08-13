@@ -140,13 +140,15 @@ const copy = pick(lang, {
 ---
 
 <section class="page-hero ditele-hero" aria-labelledby="ditele-title">
-  <div class="ditele-hero__media" aria-hidden="true">
+  <div class="ditele-hero__media page-hero__art" aria-hidden="true">
     <img class="ditele-hero__disc" src={assets.disc} alt="" width="980" height="980" />
     <img class="ditele-hero__sphere" src={assets.sphere} alt="" width="980" height="980" />
   </div>
-  <div class="container ditele-hero__content" data-reveal>
-    <h1 id="ditele-title">DiTeLe App</h1>
-    <p>{copy.hero}</p>
+  <div class="container ditele-hero__content page-hero__inner" data-reveal>
+    <div class="ditele-hero__copy page-hero__copy">
+      <h1 id="ditele-title">DiTeLe App</h1>
+      <p>{copy.hero}</p>
+    </div>
   </div>
 </section>
 
@@ -285,54 +287,35 @@ const copy = pick(lang, {
     color: #fff;
   }
 
-  .ditele-hero {
-    position: relative;
-    min-height: 840px;
-    overflow: hidden;
-  }
-
-  .ditele-hero__content {
-    position: relative;
-    z-index: 2;
-    padding-top: 485px;
-  }
-
-  .ditele-hero h1,
+  /* Hero geometry is owned by .page-hero in global.css. */
   .ditele-section h2 {
     overflow-wrap: normal;
-    font-size: clamp(2rem, 3vw, 3.25rem);
-    line-height: 1.08;
+    font-size: var(--fs-h2);
+    line-height: var(--lh-tight);
   }
 
   .ditele-hero h1 {
     color: #ff0b00;
   }
 
-  .ditele-hero p {
-    max-width: 720px;
-    margin-top: 18px;
-    color: rgba(255, 255, 255, 0.92);
-    font-size: 1.125rem;
-    line-height: 1.38;
-  }
-
+  /* The box itself comes from .page-hero__art; this only sizes the square
+     composition and centres it in that space. */
   .ditele-hero__media {
-    position: absolute;
-    top: 48px;
-    right: clamp(-80px, 1vw, 32px);
-    width: min(52vw, 820px);
-    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
   }
 
-  .ditele-hero__media img {
+  .ditele-hero__media > img {
     position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    max-height: min(84%, 470px);
+    max-width: 70%;
   }
 
   .ditele-hero__disc { transform: rotate(-87deg); animation: ditele-disc-drift 4s ease-in infinite; }
-  .ditele-hero__sphere { width: 64% !important; height: 64% !important; top: 4%; left: -2%; transform: rotate(29deg); animation: ditele-sphere-drift 4s ease-in infinite; }
+  .ditele-hero__sphere { max-height: min(54%, 300px); max-width: 46%; left: 46%; top: 54%; transform: rotate(29deg); animation: ditele-sphere-drift 4s ease-in infinite; }
 
   .ditele-section {
     position: relative;
@@ -341,7 +324,7 @@ const copy = pick(lang, {
   }
 
   .ditele-section p {
-    font-size: 1.125rem;
+    font-size: var(--fs-body);
     line-height: 1.48;
   }
 
@@ -405,14 +388,14 @@ const copy = pick(lang, {
   .ditele-test__video-consent svg path { fill: #fff; }
 
   .ditele-test__video-consent strong {
-    font-size: 1.125rem;
+    font-size: var(--fs-body);
   }
 
   .ditele-test__video-consent p {
     max-width: 470px;
     margin: 8px 0 14px;
     color: rgba(255, 255, 255, 0.78);
-    font-size: 0.95rem;
+    font-size: var(--fs-sm);
   }
 
   .ditele-test__video-consent button {
@@ -420,7 +403,7 @@ const copy = pick(lang, {
     padding: 0 18px;
     background: #ff0b00;
     color: #fff;
-    font-size: 0.9rem;
+    font-size: var(--fs-sm);
     font-weight: 600;
     transition: background 180ms ease, transform 180ms ease;
   }
@@ -438,10 +421,10 @@ const copy = pick(lang, {
     min-height: 38px;
     padding-inline: 14px;
     border: 1px solid rgba(255, 255, 255, 0.82);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     background: rgba(0, 0, 0, 0.82);
     color: #fff;
-    font-size: 13px;
+    font-size: var(--fs-xs);
   }
 
   .ditele-test__content {
@@ -462,7 +445,7 @@ const copy = pick(lang, {
   .ditele-field-label {
     margin-bottom: -5px;
     color: #fff;
-    font-size: 0.9rem;
+    font-size: var(--fs-sm);
     font-weight: 600;
   }
 
@@ -471,11 +454,11 @@ const copy = pick(lang, {
     min-height: 48px;
     padding: 0 15px;
     border: 1px solid #d8d8d8;
-    border-radius: 0;
+    border-radius: var(--radius-sm);
     background: #fff;
     color: #111;
     font-family: inherit;
-    font-size: 1rem;
+    font-size: var(--fs-body);
   }
 
   .ditele-consent {
@@ -484,7 +467,7 @@ const copy = pick(lang, {
     gap: 10px;
     align-items: start;
     color: rgba(255, 255, 255, 0.66);
-    font-size: 0.95rem;
+    font-size: var(--fs-sm);
     line-height: 1.4;
   }
 
@@ -508,7 +491,7 @@ const copy = pick(lang, {
     padding: 0 22px;
     background: #ff0b00;
     color: #fff;
-    font-size: 0.95rem;
+    font-size: var(--fs-sm);
     font-weight: 600;
     transition: background 180ms ease, transform 180ms ease;
   }
@@ -524,7 +507,7 @@ const copy = pick(lang, {
     border: 1px solid rgba(255, 255, 255, 0.28);
     border-radius: 999px;
     color: #fff;
-    font-size: 0.72rem;
+    font-size: var(--fs-2xs);
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -544,7 +527,7 @@ const copy = pick(lang, {
     background: #ff0b00;
     color: #fff;
     font-weight: 600;
-    border-radius: 5px;
+    border-radius: var(--radius-pill);
     transition: background 180ms ease, transform 180ms ease;
   }
   .ditele-test__course-link:hover { background: #e90a00; transform: translateY(-2px); }
@@ -556,7 +539,7 @@ const copy = pick(lang, {
     margin-top: 1.6rem;
     padding: clamp(1.1rem, 2.5vw, 1.6rem);
     border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 14px;
+    border-radius: var(--radius-md);
     background: rgba(255, 255, 255, 0.03);
   }
   .ditele-quiz__top {
@@ -572,7 +555,7 @@ const copy = pick(lang, {
     align-items: center;
     gap: 0.45rem;
     color: #ff5a4d;
-    font-size: 0.78rem;
+    font-size: var(--fs-2xs);
     font-weight: 700;
     letter-spacing: 0.02em;
   }
@@ -587,8 +570,8 @@ const copy = pick(lang, {
     0% { box-shadow: 0 0 0 0 rgba(255, 11, 0, 0.55); }
     100% { box-shadow: 0 0 0 10px rgba(255, 11, 0, 0); }
   }
-  .ditele-quiz__count { color: rgba(255, 255, 255, 0.55); font-size: 0.78rem; font-weight: 600; }
-  .ditele-quiz__q { margin: 0 0 1rem; font-size: clamp(1.1rem, 2vw, 1.35rem); line-height: 1.35; }
+  .ditele-quiz__count { color: rgba(255, 255, 255, 0.55); font-size: var(--fs-2xs); font-weight: 600; }
+  .ditele-quiz__q { margin: 0 0 1rem; font-size: var(--fs-lead); line-height: 1.35; }
   .ditele-quiz__options { list-style: none; display: grid; gap: 0.6rem; margin: 0; padding: 0; }
   .ditele-quiz__option {
     display: flex;
@@ -597,10 +580,10 @@ const copy = pick(lang, {
     width: 100%;
     padding: 0.85rem 1rem;
     border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     background: rgba(255, 255, 255, 0.02);
     color: #fff;
-    font-size: 1rem;
+    font-size: var(--fs-body);
     text-align: left;
     cursor: pointer;
     transition: border-color 160ms ease, background 160ms ease, transform 120ms ease;
@@ -614,18 +597,18 @@ const copy = pick(lang, {
     height: 26px;
     flex: none;
     border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 6px;
-    font-size: 0.8rem;
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-xs);
     font-weight: 700;
   }
   .ditele-quiz__option.is-correct { border-color: #22c55e; background: rgba(34, 197, 94, 0.12); }
   .ditele-quiz__option.is-correct .ditele-quiz__key { border-color: #22c55e; color: #22c55e; }
   .ditele-quiz__option.is-wrong { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
   .ditele-quiz__option.is-wrong .ditele-quiz__key { border-color: #ef4444; color: #ef4444; }
-  .ditele-quiz__feedback { margin: 0.9rem 0 0; font-size: 0.95rem; font-weight: 600; }
+  .ditele-quiz__feedback { margin: 0.9rem 0 0; font-size: var(--fs-sm); font-weight: 600; }
   .ditele-quiz__feedback.is-correct { color: #22c55e; }
   .ditele-quiz__feedback.is-wrong { color: #ff6a5d; }
-  .ditele-quiz__hint { margin: 0.9rem 0 1.1rem; color: rgba(255, 255, 255, 0.62); font-size: 0.9rem; line-height: 1.5; }
+  .ditele-quiz__hint { margin: 0.9rem 0 1.1rem; color: rgba(255, 255, 255, 0.62); font-size: var(--fs-sm); line-height: 1.5; }
   .ditele-quiz__cta {
     display: block;
     width: 100%;
@@ -634,7 +617,7 @@ const copy = pick(lang, {
     color: #fff;
     font-weight: 700;
     text-align: center;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     transition: background 180ms ease, transform 160ms ease, box-shadow 180ms ease;
   }
   .ditele-quiz__cta:hover { background: #e90a00; transform: translateY(-2px); }
@@ -676,13 +659,26 @@ const copy = pick(lang, {
   .ditele-card {
     min-height: 210px;
     padding: clamp(1.6rem, 2.4vw, 2.5rem);
-    background: #303030;
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    transition:
+      transform var(--dur-med) var(--ease-out),
+      border-color var(--dur-med) var(--ease-out),
+      background var(--dur-med) var(--ease-out);
+  }
+
+  .ditele-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-strong);
+    background: var(--surface-card-hover);
   }
 
   .ditele-card h3,
   .ditele-why h3,
   .ditele-advantages h3 {
-    font-size: 1.125rem;
+    font-size: var(--fs-body);
     line-height: 1.25;
   }
 
@@ -690,7 +686,7 @@ const copy = pick(lang, {
     max-width: 54ch;
     margin-top: 14px;
     color: rgba(255, 255, 255, 0.84);
-    font-size: 1.0625rem;
+    font-size: var(--fs-body);
   }
 
   .ditele-platform__outro,
@@ -705,14 +701,32 @@ const copy = pick(lang, {
   }
 
   .ditele-why h2 {
-    font-size: clamp(2.5rem, 3.6vw, 4rem);
+    font-size: var(--fs-h1);
   }
 
   .ditele-why__grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(2rem, 7vw, 8rem);
-    margin-top: 58px;
+    gap: clamp(1rem, 2vw, 1.75rem);
+    margin-top: 48px;
+  }
+
+  .ditele-why article {
+    padding: clamp(1.5rem, 2.2vw, 2.25rem);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-card);
+    box-shadow: var(--shadow-card);
+    transition:
+      transform var(--dur-med) var(--ease-out),
+      border-color var(--dur-med) var(--ease-out),
+      background var(--dur-med) var(--ease-out);
+  }
+
+  .ditele-why article:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-strong);
+    background: var(--surface-card-hover);
   }
 
   .ditele-why article svg {
@@ -730,19 +744,19 @@ const copy = pick(lang, {
     max-width: 54ch;
     margin-top: 12px;
     color: rgba(255, 255, 255, 0.8);
-    font-size: 1.1875rem;
+    font-size: var(--fs-body);
     line-height: 1.55;
   }
 
   .ditele-why h3 {
-    font-size: 1.375rem;
+    font-size: var(--fs-h4);
     line-height: 1.3;
   }
 
   .ditele-why__outro {
     max-width: 1180px;
     margin-top: 54px;
-    font-size: 1.25rem;
+    font-size: var(--fs-lead);
     line-height: 1.55;
   }
 
@@ -755,7 +769,7 @@ const copy = pick(lang, {
   .ditele-card--strong p {
     margin: 0;
     color: #fff;
-    font-size: 1.125rem;
+    font-size: var(--fs-body);
     font-weight: 700;
     line-height: 1.24;
   }
@@ -775,7 +789,7 @@ const copy = pick(lang, {
     max-width: 66ch;
     margin-top: 9px;
     color: rgba(255, 255, 255, 0.78);
-    font-size: 1.0625rem;
+    font-size: var(--fs-body);
   }
 
   .ditele-advantages__media {
@@ -810,9 +824,6 @@ const copy = pick(lang, {
   }
 
   @media (max-width: 900px) {
-    .ditele-hero { min-height: 700px; }
-    .ditele-hero__content { padding-top: 410px; }
-    .ditele-hero__media { top: 55px; right: -70px; width: 650px; max-width: 88vw; }
     .ditele-test__grid,
     .ditele-advantages__grid { grid-template-columns: 1fr; }
     .ditele-test__video { order: 2; }
@@ -821,38 +832,12 @@ const copy = pick(lang, {
   }
 
   @media (max-width: 680px) {
-    .ditele-hero {
-      min-height: 620px;
-    }
-
-    .ditele-hero__content {
-      padding-top: 155px;
-    }
-
-    .ditele-hero h1,
-    .ditele-section h2 {
-      font-size: clamp(1.72rem, 8.4vw, 2.25rem);
-    }
-
-    .ditele-hero p {
-      max-width: 74%;
-      margin-top: 12px;
-      font-size: 0.95rem;
-      line-height: 1.35;
-    }
-
-    .ditele-hero__media {
-      top: 62px;
-      right: -115px;
-      width: 365px;
-      max-width: none;
-    }
 
     .ditele-section {
       padding-block: 4.25rem;
     }
 
-    .ditele-section p { font-size: 1rem; }
+    .ditele-section p { font-size: var(--fs-body); }
 
     .ditele-test__grid { gap: 2rem; }
     .ditele-test__video { order: initial; }
@@ -909,74 +894,9 @@ const copy = pick(lang, {
     .ditele-card { min-height: 240px; }
   }
 
-  /* Reproduce the live 1200 × 600 hero artboard at wide viewport sizes. */
-  @media (min-width: 1200px) {
-    .ditele-hero {
-      width: 100%;
-      min-height: 50vw;
-      height: 50vw;
-    }
-    .ditele-hero__content {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      max-width: none;
-      height: 50vw;
-      padding: 0;
-    }
-    .ditele-hero h1 {
-      position: absolute;
-      top: 32.3333vw;
-      left: 1.6667vw;
-      width: 53.4167vw;
-      font-size: 3.3333vw;
-      line-height: 1.2;
-    }
-    .ditele-hero p {
-      position: absolute;
-      top: 37.1667vw;
-      left: 1.6667vw;
-      width: 57.8333vw;
-      max-width: none;
-      margin: 0;
-      font-size: 1.3333vw;
-      line-height: 1.3;
-    }
-    .ditele-hero__media {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 50vw;
-      aspect-ratio: auto;
-    }
-    .ditele-hero__media img {
-      height: auto;
-      max-width: none;
-    }
-    .ditele-hero__media .ditele-hero__disc {
-      top: 6.1667vw;
-      left: 62.5833vw;
-      width: 41.8333vw;
-    }
-    .ditele-hero__media .ditele-hero__sphere {
-      top: 12.6667vw;
-      left: 65vw;
-      width: 21.5833vw !important;
-      height: auto !important;
-    }
-    @keyframes ditele-disc-drift {
-      0%, 100% { transform: translate3d(0, 0, 0) rotate(-87deg); }
-      50% { transform: translate3d(0.5vw, 0, 0) rotate(-82deg); }
-    }
-    @keyframes ditele-sphere-drift {
-      0%, 100% { transform: translate3d(0, 0, 0) rotate(29deg); }
-      50% { transform: translate3d(0, 0.5vw, 0) rotate(33deg); }
-    }
-  }
 
   @media (max-width: 410px) {
-    .ditele-hero p { max-width: 82%; }
-    .ditele-consent { font-size: 0.875rem; }
+    .ditele-consent { font-size: var(--fs-sm); }
   }
 
   @media (prefers-reduced-motion: reduce) {

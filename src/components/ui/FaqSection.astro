@@ -106,7 +106,7 @@ const faqSchema = {
     max-width: var(--faq-measure);
     margin-inline: 0;
     margin-bottom: 0.75rem;
-    font-size: clamp(1.9rem, 4vw, 2.9rem);
+    font-size: var(--fs-h2);
   }
 
   .faq__intro {
@@ -125,9 +125,18 @@ const faqSchema = {
   }
 
   .faq__item {
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-sm, 6px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
     background: rgb(255 255 255 / 0.03);
+    transition:
+      border-color var(--dur-fast) var(--ease-out),
+      background var(--dur-fast) var(--ease-out);
+  }
+
+  .faq__item:hover,
+  .faq__item[open] {
+    border-color: var(--border-strong);
+    background: rgb(255 255 255 / 0.05);
   }
 
   .faq__item summary {
@@ -148,7 +157,7 @@ const faqSchema = {
     content: '+';
     flex: none;
     color: var(--color-accent);
-    font-size: 1.5rem;
+    font-size: var(--fs-h4);
     line-height: 1;
   }
 
@@ -158,7 +167,7 @@ const faqSchema = {
 
   .faq__item summary h3 {
     margin: 0;
-    font-size: clamp(1rem, 1.6vw, 1.12rem);
+    font-size: var(--fs-body);
     font-weight: var(--fw-semibold);
     line-height: 1.4;
   }
@@ -191,7 +200,7 @@ const faqSchema = {
 
   .faq__byline p {
     margin: 0;
-    font-size: 0.84rem;
+    font-size: var(--fs-xs);
     line-height: 1.55;
     color: var(--color-text-muted);
   }

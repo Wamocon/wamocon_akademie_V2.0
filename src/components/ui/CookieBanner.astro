@@ -100,16 +100,16 @@ const privacyHref = legalNav.privacy[lang].href;
     background: var(--color-accent);
   }
 
-  .consent__eyebrow { margin-bottom: .45rem; color: var(--color-accent); font-size: .7rem; font-weight: var(--fw-semibold); letter-spacing: .1em; text-transform: uppercase; }
-  .consent h2 { margin-bottom: .55rem; font-size: clamp(1.15rem, 2.2vw, 1.4rem); font-weight: var(--fw-semibold); line-height: 1.25; }
-  .consent__text { max-width: 46ch; color: var(--color-muted); font-size: .875rem; line-height: 1.6; }
+  .consent__eyebrow { margin-bottom: .45rem; color: var(--color-accent); font-size: var(--fs-2xs); font-weight: var(--fw-semibold); letter-spacing: .1em; text-transform: uppercase; }
+  .consent h2 { margin-bottom: .55rem; font-size: var(--fs-h4); font-weight: var(--fw-semibold); line-height: 1.25; }
+  .consent__text { max-width: 46ch; color: var(--color-muted); font-size: var(--fs-sm); line-height: 1.6; }
 
   .consent__actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: .625rem; margin-top: 1.4rem; }
   .consent__btn {
     display: inline-flex; align-items: center; justify-content: center;
     min-height: 46px; padding: .6rem 1rem;
     border: 1.5px solid transparent; border-radius: var(--radius-pill);
-    font-size: .875rem; font-weight: var(--fw-semibold); line-height: 1.2;
+    font-size: var(--fs-sm); font-weight: var(--fw-semibold); line-height: 1.2;
     text-align: center; text-wrap: balance;
     transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
   }
@@ -122,7 +122,7 @@ const privacyHref = legalNav.privacy[lang].href;
   .consent__meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1rem; margin-top: 1rem; }
   .consent__quiet {
     display: inline-flex; align-items: center; min-height: 24px;
-    color: var(--color-muted); font-size: .8rem; font-weight: var(--fw-medium);
+    color: var(--color-muted); font-size: var(--fs-xs); font-weight: var(--fw-medium);
     text-decoration: underline; text-underline-offset: .22em; text-decoration-color: rgb(255 255 255 / .3);
     transition: color var(--dur-fast) var(--ease-out), text-decoration-color var(--dur-fast) var(--ease-out);
   }
@@ -130,7 +130,7 @@ const privacyHref = legalNav.privacy[lang].href;
   /* min-height keeps this standalone link at the WCAG 2.2 24px target size. */
   .consent__privacy {
     display: inline-flex; align-items: center; min-height: 24px;
-    color: var(--color-text-subtle); font-size: .8rem;
+    color: var(--color-text-subtle); font-size: var(--fs-xs);
     text-decoration: underline; text-underline-offset: .22em; text-decoration-color: rgb(255 255 255 / .3);
     transition: color var(--dur-fast) var(--ease-out), text-decoration-color var(--dur-fast) var(--ease-out);
   }
@@ -141,9 +141,9 @@ const privacyHref = legalNav.privacy[lang].href;
 
   .consent__option { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: center; padding: 1rem 0; border-top: 1px solid var(--border-subtle); }
   .consent__option--toggle { cursor: pointer; }
-  .consent__optionText strong { display: block; margin-bottom: .25rem; font-size: .875rem; font-weight: var(--fw-semibold); }
-  .consent__optionText p { color: var(--color-muted); font-size: .8rem; line-height: 1.55; }
-  .consent__always { color: var(--color-text-subtle); font-size: .75rem; font-weight: var(--fw-medium); letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+  .consent__optionText strong { display: block; margin-bottom: .25rem; font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
+  .consent__optionText p { color: var(--color-muted); font-size: var(--fs-xs); line-height: 1.55; }
+  .consent__always { color: var(--color-text-subtle); font-size: var(--fs-2xs); font-weight: var(--fw-medium); letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
 
   .consent__switch { position: relative; flex: none; display: inline-grid; place-items: center; width: 46px; height: 28px; }
   .consent__switch input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }

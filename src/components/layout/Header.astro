@@ -128,20 +128,38 @@ const isActive = (item: NavLink) => {
   .site-header {
     /* Single source of truth for the bar height. The mobile menu panel and its
        scroll area are positioned from this, so the logo must never exceed it. */
-    --header-h: 180px;
+    --header-h: var(--header-height);
     position: fixed;
     width: 100%;
     top: 0;
     z-index: var(--z-header);
-    border-bottom: 0;
+    border-bottom: 1px solid transparent;
     background: transparent;
-    transition: background var(--dur-med), border-color var(--dur-med), box-shadow var(--dur-med);
+    transition:
+      background var(--dur-med) var(--ease-out),
+      border-color var(--dur-med) var(--ease-out),
+      backdrop-filter var(--dur-med) var(--ease-out),
+      box-shadow var(--dur-med) var(--ease-out);
   }
 
+  /* Once the page scrolls, the bar earns a surface: a translucent ground with a
+     blur behind it, so content reads through without fighting the nav. */
   .site-header.is-scrolled,
   .site-header.is-menu-open {
-    background: rgba(13, 13, 13, 0.96);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
+    background: rgba(16, 16, 16, 0.72);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border-bottom-color: var(--border-subtle);
+    box-shadow: 0 8px 32px -12px rgba(0, 0, 0, 0.6);
+  }
+
+  /* Safari and Firefox without backdrop-filter fall back to a solid bar rather
+     than an unreadable translucent one. */
+  @supports not (backdrop-filter: blur(4px)) {
+    .site-header.is-scrolled,
+    .site-header.is-menu-open {
+      background: rgba(16, 16, 16, 0.97);
+    }
   }
 
   .site-header__inner {
@@ -157,7 +175,7 @@ const isActive = (item: NavLink) => {
   .site-header__logo {
     display: inline-flex;
     align-items: center;
-    width: 180px;
+    width: 118px;
     flex: 0 0 auto;
   }
 
@@ -198,7 +216,7 @@ const isActive = (item: NavLink) => {
     min-height: 40px;
     padding: 0.2rem 0;
     color: var(--color-muted);
-    font-size: clamp(0.95rem, 0.85vw, 1.05rem);
+    font-size: var(--fs-body);
     font-weight: var(--fw-regular);
     white-space: nowrap;
     transition: color var(--dur-fast) var(--ease-out);
@@ -228,7 +246,7 @@ const isActive = (item: NavLink) => {
     min-width: 235px;
     padding: 0.45rem;
     border: 1px solid var(--color-line);
-    border-radius: 0;
+    border-radius: var(--radius-lg);
     background: rgba(15, 17, 21, 0.98);
     box-shadow: 0 18px 38px rgba(0, 0, 0, 0.28);
     opacity: 0;
@@ -273,12 +291,12 @@ const isActive = (item: NavLink) => {
     gap: 0.4rem;
     min-width: 80px;
     height: 40px;
-    padding: 0 0.75rem;
+    padding: 0 0.85rem;
     border: 1px solid var(--color-line);
-    border-radius: 0;
-    background: #0d0d0d;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.06);
     color: #fff;
-    font-size: clamp(1rem, 0.8vw, 1.12rem);
+    font-size: var(--fs-body);
     font-weight: var(--fw-semibold);
     cursor: pointer;
   }
@@ -297,6 +315,7 @@ const isActive = (item: NavLink) => {
     list-style: none;
     background: rgba(15, 17, 21, 0.98);
     border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
     box-shadow: 0 18px 38px rgba(0, 0, 0, 0.4);
     opacity: 0;
     visibility: hidden;
@@ -314,8 +333,9 @@ const isActive = (item: NavLink) => {
     justify-content: space-between;
     gap: 1rem;
     padding: 0.6rem 0.7rem;
+    border-radius: var(--radius-sm);
     color: var(--color-muted);
-    font-size: 0.98rem;
+    font-size: var(--fs-sm);
   }
   .site-header__langoption:hover { background: rgba(255, 255, 255, 0.07); color: #fff; }
   .site-header__langoption.is-active { color: var(--color-accent); font-weight: var(--fw-semibold); }
@@ -403,7 +423,7 @@ const isActive = (item: NavLink) => {
       width: 100%;
       min-height: 54px;
       padding: 0;
-      font-size: 1.05rem;
+      font-size: var(--fs-body);
     }
 
     .site-header__submenu {
@@ -428,7 +448,7 @@ const isActive = (item: NavLink) => {
     }
 
     /* Three locales widen the label, so keep the control from clipping. */
-    .site-header__lang { min-width: 68px; height: 38px; padding-inline: 0.5rem; font-size: 0.85rem; }
+    .site-header__lang { min-width: 68px; height: 38px; padding-inline: 0.5rem; font-size: var(--fs-xs); }
     .site-header__langmenu { min-width: 150px; }
   }
 

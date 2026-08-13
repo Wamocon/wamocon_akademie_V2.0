@@ -1,4 +1,5 @@
 @import './tokens.css';
+@import './fonts.css';
 
 *,
 *::before,
@@ -23,8 +24,10 @@
   height: 0;
 }
 
+/* Root size stays at the browser default. An earlier clamp() pushed it to
+   18–20px, which scaled every rem-based size on the site up by 12–25% and is
+   the reason headings, padding and controls all read as oversized. */
 html {
-  font-size: clamp(18px, calc(17px + 0.16vw), 20px);
   scroll-behavior: smooth;
   overflow-x: clip;
   -webkit-text-size-adjust: 100%;
@@ -37,13 +40,21 @@ body {
   color: var(--color-text);
   font-family: var(--font-sans);
   font-size: var(--fs-body);
+  /* Regular, not light. Body copy here is white on #101010, and light weights
+     optically thin out against a dark ground — 300 was measurably harder to
+     read at 16px and is the reason running text looked washed out. Headings
+     opt back into their own weights below. */
   font-weight: var(--fw-regular);
   line-height: var(--lh-body);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  /* Open Sans ships proportional figures; tabular keeps stat rows and prices
+     from jittering as digits change. */
+  font-variant-numeric: proportional-nums;
 }
 
-main > :first-child:not(.academy-hero):not(.page-hero):not(.academy-about):not(.reviews-page):not(.contact-page) {
+main > :first-child:not(.academy-hero):not(.page-hero):not(.academy-about):not(.reviews-page):not(.contact-page):not(.legal-page) {
   padding-top: calc(var(--section-gap) + 60px);
 }
 
@@ -77,18 +88,32 @@ ul {
   list-style: none;
 }
 
+/* ---- Headings --------------------------------------------------------------
+   Defaults for the document hierarchy. Components should override the ROLE
+   (e.g. `font-size: var(--fs-display)` on a hero h1), never invent a raw px or
+   rem value — that is what produced ~160 distinct sizes across 21 files.
+   ---------------------------------------------------------------------------- */
 h1,
 h2,
 h3,
-h4 {
+h4,
+h5,
+h6 {
   font-weight: var(--fw-bold);
   line-height: var(--lh-tight);
-  letter-spacing: 0;
-  overflow-wrap: anywhere;
+  letter-spacing: var(--tracking-tight);
+  /* `anywhere` breaks ordinary German compounds mid-word (Bildungs|zentrum) on
+     narrow screens; `break-word` only breaks when a word genuinely cannot fit.
+     No `hyphens: auto` here — it hyphenated headings that had a perfectly good
+     wrap point at the next space ("durch erfah-|rene Dozenten"). Components
+     that set very large type in a narrow column opt into hyphenation locally. */
+  overflow-wrap: break-word;
+  text-wrap: balance;
 }
 
 h1 {
   font-size: var(--fs-h1);
+  letter-spacing: var(--tracking-display);
 }
 
 h2 {
@@ -97,10 +122,84 @@ h2 {
 
 h3 {
   font-size: var(--fs-h3);
+  line-height: var(--lh-snug);
+}
+
+h4 {
+  font-size: var(--fs-h4);
+  line-height: var(--lh-snug);
+}
+
+h5 {
+  font-size: var(--fs-h5);
+  line-height: var(--lh-snug);
+}
+
+h6 {
+  font-size: var(--fs-body);
+  line-height: var(--lh-snug);
 }
 
 p {
+  font-size: inherit;
   line-height: var(--lh-body);
+  /* Stops a paragraph ending on a single orphaned word. */
+  text-wrap: pretty;
+}
+
+/* ---- Type roles -------------------------------------------------------------
+   Reach for these instead of restating sizes in a component's <style> block.
+   ---------------------------------------------------------------------------- */
+.t-hero {
+  font-size: var(--fs-hero);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
+}
+
+.t-display {
+  font-size: var(--fs-display);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
+}
+
+.t-lead {
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-relaxed);
+  color: var(--color-muted);
+}
+
+.t-body {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+
+.t-sm {
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+}
+
+.t-xs {
+  font-size: var(--fs-xs);
+  line-height: var(--lh-snug);
+}
+
+/* The big standalone figures (50+, 5500+, 15+). Tabular figures so a row of
+   them aligns on the digit stems. */
+.t-stat {
+  font-size: var(--fs-stat);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Comfortable measure for running text. Lines longer than ~75 characters cost
+   the reader the return sweep. */
+.t-measure {
+  max-width: 68ch;
 }
 
 :focus-visible {
@@ -125,9 +224,10 @@ p {
   align-items: center;
   gap: 0.55rem;
   color: var(--color-accent);
-  font-size: 0.82rem;
+  font-size: var(--fs-2xs);
   font-weight: var(--fw-semibold);
-  letter-spacing: 0.14em;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
 }
 
@@ -155,11 +255,160 @@ p {
   color: var(--color-text-dark);
 }
 
+/* Card on a light section. The dark-tuned --shadow-card would read as soot on
+   white, so light cards get their own softer elevation. */
 .card {
   border: 1px solid var(--color-line-dark);
   border-radius: var(--radius-md);
   background: #fff;
+  box-shadow: 0 14px 34px -22px rgba(17, 24, 39, 0.45);
+}
+
+/* Card on the dark ground. The gradient surface is what stops panels reading
+   as flat, unstyled boxes. */
+.card-dark {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-card);
   box-shadow: var(--shadow-card);
+  transition:
+    transform var(--dur-med) var(--ease-out),
+    border-color var(--dur-med) var(--ease-out),
+    background var(--dur-med) var(--ease-out);
+}
+
+/* Hover lift. Opt in per component with `.lift`; keep it off anything that is
+   not actually a link or button, so the affordance stays honest. */
+.lift:hover,
+.lift:focus-within {
+  transform: translateY(-4px);
+  border-color: var(--border-strong);
+  background: var(--surface-card-hover);
+}
+
+/* Atmospheric red glow, layered behind a hero or feature block. The element is
+   decorative — always mark it aria-hidden and keep it non-interactive. */
+.glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 50% at 75% 35%, var(--glow-top), transparent 70%),
+    radial-gradient(40% 40% at 100% 60%, var(--glow-side), transparent 70%);
+}
+
+/* ---- Page hero --------------------------------------------------------------
+   The canonical opening block for every page except the home page. Components
+   supply their own decorative art and background; they must NOT restate
+   min-height, vertical alignment, padding-top, copy width or hero type sizes —
+   that divergence is what made each page feel like a different site.
+
+   Astro scopes component styles with a [data-astro-cid-…] attribute, which
+   raises their specificity above a bare class. These rules therefore only hold
+   as long as components leave the geometry alone.
+   ---------------------------------------------------------------------------- */
+.page-hero {
+  position: relative;
+  display: flex;
+  /* Top-aligned, not centred. Centring makes the headline's position depend on
+     how much copy sits under it, so a two-line lead and a five-line lead start
+     the page at different heights — which is exactly the drift being fixed.
+     Anchoring to the top makes every page open on the same line. */
+  align-items: flex-start;
+  min-height: var(--hero-min-h);
+  padding-top: var(--hero-pad-top);
+  padding-bottom: var(--hero-pad-bottom);
+  overflow: hidden;
+}
+
+/* The row that carries the text. Each hero's wrapper — .container, __inner,
+   __layout — is tagged `.page-hero__inner`, and the copy block inside it
+   `.page-hero__copy`, so both stay plain class matches. Tagging beats a
+   `> *` match, which would also catch the absolutely-positioned art. */
+.page-hero__inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.page-hero__copy {
+  position: relative;
+  z-index: 2;
+  width: var(--hero-copy-w);
+}
+
+.page-hero h1 {
+  margin: 0 0 1.25rem;
+  font-size: var(--fs-h1);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-display);
+  text-wrap: balance;
+}
+
+.page-hero p {
+  max-width: var(--hero-measure);
+  color: var(--color-muted);
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-relaxed);
+}
+
+/* Decorative render layers sit behind the copy and never take pointer events.
+
+   The box spans from where the copy column ends to the CONTAINER's right edge
+   — not the viewport's. The copy is capped inside --container-max, so on a wide
+   monitor a viewport-anchored render flew out to the screen edge and left a
+   ~780px void beside the headline while its own far side fell off the frame.
+   Anchoring to the container keeps the artwork in the space it is meant to
+   fill, at every width. */
+.page-hero__art {
+  --hero-gutter: max(0px, (100vw - var(--container-max)) / 2);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--hero-gutter) + var(--container-pad) + var(--hero-copy-w));
+  right: var(--hero-gutter);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Renders centre inside that box. Each page nudges left/top off 50% to keep
+   its own layered composition, and sizes itself with max-width/max-height.
+
+   Both dimensions are capped, and width/height stay `auto`, so the browser
+   scales the render down to fit while preserving its aspect ratio — the
+   contain behaviour. Bounding only the height was not enough: on a ~1200px
+   screen the box is narrow and a height-bounded render still overflowed it
+   sideways, back across the copy. Never set an explicit width AND height on
+   these: that is what stretched the shapes. */
+.page-hero__art > img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Below the two-column breakpoint the copy spans the full width, so the art
+   returns to the whole hero and sits behind the text. */
+@media (max-width: 820px) {
+  .page-hero__art {
+    left: 0;
+    right: 0;
+  }
+}
+
+/* Narrow screens put the copy directly on top of the artwork, so the artwork
+   has to recede or the headline loses contrast against it. Previously each
+   page solved this differently — some pushed the copy down by a hard-coded
+   365px, which is what made the mobile heroes wander. */
+@media (max-width: 820px) {
+  .page-hero__art {
+    opacity: 0.38;
+  }
 }
 
 .skip-link {
@@ -177,22 +426,24 @@ p {
   left: 0;
 }
 
-[data-reveal] {
+/* Scoped to html.js: the hidden start state is only safe where the script that
+   reveals it is guaranteed to run. */
+.js [data-reveal] {
   opacity: 0;
   transform: translate3d(0, 24px, 0);
   transition: opacity 0.72s var(--ease-out), transform 0.72s var(--ease-out);
   will-change: opacity, transform;
 }
 
-[data-reveal='left'] {
+.js [data-reveal='left'] {
   transform: translate3d(-32px, 0, 0);
 }
 
-[data-reveal='right'] {
+.js [data-reveal='right'] {
   transform: translate3d(32px, 0, 0);
 }
 
-[data-reveal='zoom'] {
+.js [data-reveal='zoom'] {
   transform: scale(0.965);
 }
 
@@ -216,9 +467,13 @@ p {
     transition-duration: 0.001ms !important;
   }
 
+  /* Must match the specificity of `.js [data-reveal]` above, or the hidden
+     start state wins here and reduced-motion visitors wait on JavaScript to
+     reveal content that should have been visible from the first paint. */
+  .js [data-reveal],
   [data-reveal] {
-    opacity: 1;
-    transform: none;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
 
@@ -241,6 +496,7 @@ p {
   text-align: center;
   background: #1a1a1a;
   border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
   overflow: hidden;
 }
 
@@ -285,19 +541,20 @@ p {
   margin: 0;
   max-width: 46ch;
   color: rgba(255, 255, 255, 0.85);
-  font-size: clamp(1rem, 1.7vw, 1.12rem);
-  line-height: 1.55;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
 }
 
 .external-media__notice button {
   justify-self: center;
   min-height: 48px;
   padding: 0.7rem 1.7rem;
-  border-radius: 6px;
+  border-radius: var(--radius-pill);
   background: var(--color-accent-surface);
+  box-shadow: var(--shadow-accent);
   color: #fff;
   font-weight: var(--fw-semibold);
-  font-size: 1rem;
+  font-size: var(--fs-body);
 }
 
 .external-media__notice button:hover,
