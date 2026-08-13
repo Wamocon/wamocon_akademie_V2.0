@@ -329,7 +329,7 @@ const videos = [
   .about-support__photo { width: 100%; height: auto; max-height: clamp(400px, 34vw, 560px); aspect-ratio: 4 / 3; object-fit: cover; object-position: center 28%; border-radius: var(--radius-lg); box-shadow: var(--shadow-card); }
   .about-support__copy h2 { max-width: 620px; margin-bottom: 34px; }
   .about-support__copy p { max-width: 700px; margin-bottom: 18px; font-size: var(--fs-body); line-height: 1.5; }
-  .about-support__accent { position: absolute; right: -72px; top: -55px; width: clamp(190px, 16vw, 290px); transform: rotate(-22deg); animation: about-curve-drift 9s ease-in-out infinite alternate; will-change: transform; }
+  .about-support__accent { position: absolute; right: calc(var(--page-gutter) - 72px); top: -55px; width: clamp(190px, 16vw, 290px); transform: rotate(-22deg); animation: about-curve-drift 9s ease-in-out infinite alternate; will-change: transform; }
 
   .about-advantages { padding-block: clamp(120px, 10vw, 180px); }
   .about-advantages h2 { max-width: 900px; margin-bottom: 54px; }
@@ -372,7 +372,7 @@ const videos = [
     transition: background 180ms, transform 180ms;
   }
   .about-booster__cta:hover { background: var(--color-accent-hover, #c81111); transform: translateY(-2px); }
-  .about-booster__accent { position: absolute; right: -80px; bottom: 50px; width: clamp(300px, 24vw, 440px); transform: rotate(20deg); animation: booster-curve-drift 10s ease-in-out infinite alternate; will-change: transform; }
+  .about-booster__accent { position: absolute; right: calc(var(--page-gutter) - 80px); bottom: 50px; width: clamp(300px, 24vw, 440px); transform: rotate(20deg); animation: booster-curve-drift 10s ease-in-out infinite alternate; will-change: transform; }
 
   .about-graduates { padding-block: clamp(120px, 10vw, 180px) 55px; }
   .about-graduates h2 { margin-bottom: 12px; }
@@ -443,7 +443,7 @@ const videos = [
     .about-support { padding-block: 90px 0; }
     .about-support__copy h2, .about-advantages h2 { margin-bottom: 28px; }
     .about-support__copy p { font-size: var(--fs-sm); }
-    .about-support__accent { width: 115px; right: -48px; }
+    .about-support__accent { width: 115px; right: calc(var(--page-gutter) - 48px); }
     .about-advantages { padding-block: 90px; }
     .about-advantages__grid { grid-template-columns: 1fr; gap: 18px; }
     .about-advantages__grid article { min-height: 0; padding: 28px 24px; }
@@ -465,7 +465,7 @@ const videos = [
     .about-booster__grid { gap: 28px; min-height: 868px; }
     .about-booster__copy h2 { font-size: var(--fs-h3); }
     .about-booster__copy p { font-size: var(--fs-sm); }
-    .about-booster__accent { width: 150px; right: -60px; }
+    .about-booster__accent { width: 150px; right: calc(var(--page-gutter) - 60px); }
     .about-graduates { padding-block: 90px 45px; }
     .about-graduates__lead { margin-bottom: 30px; }
     .about-graduates__grid { grid-template-columns: 1fr; gap: 34px; }

@@ -635,7 +635,10 @@ const copy = pick(lang, {
     opacity: 0.78;
   }
 
-  .ditele-curve--test-a { right: -42px; top: 15%; transform: rotate(145deg); animation: ditele-curve-drift-a 8s ease-in-out infinite; }
+  /* Offset from the container edge, not the viewport. The section is
+     full-bleed, so a plain `right: -42px` pinned this to the screen edge and
+     it was clipped off the UI on a wide monitor. */
+  .ditele-curve--test-a { right: calc(var(--page-gutter) - 42px); top: 15%; transform: rotate(145deg); animation: ditele-curve-drift-a 8s ease-in-out infinite; }
   .ditele-curve--test-b { right: 35%; bottom: -6%; transform: rotate(-20deg); animation: ditele-curve-drift-b 9s ease-in-out infinite; }
 
   .ditele-platform h2,

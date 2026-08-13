@@ -129,6 +129,12 @@
   /* ---- Space and measure ---------------------------------------------------- */
   --container-max: 1680px;
   --container-pad: clamp(1rem, 3vw, 3rem);
+  /* Distance from the viewport edge to the container edge. Decorative art in a
+     full-bleed section must offset from THIS, not from the viewport: content is
+     capped at --container-max, so a viewport-anchored accent drifts further
+     from the copy the wider the screen gets (640px away at 3745px) and ends up
+     hanging off the edge. Zero once the viewport is narrower than the cap. */
+  --page-gutter: max(0px, (100vw - var(--container-max)) / 2);
   --section-gap: clamp(4rem, 9vw, 8rem);
 
   --space-xs: 0.5rem;
@@ -149,7 +155,10 @@
   /* Clears the fixed header (--header-height) with breathing room under it. */
   --hero-pad-top: clamp(150px, 18vh, 230px);
   --hero-pad-bottom: clamp(3rem, 6vw, 5.5rem);
-  /* Copy column. Caps the measure so the lead never runs the full 1680px. */
+  /* Copy column. Caps the measure so the lead never runs the full 1680px.
+     Widening this to give long German headlines more room was measured and
+     reverted: it fills a long headline but leaves a SHORT one adrift in a
+     wider box ("Was sagen unsere Teilnehmer?" fell from 75% to 66% fill). */
   --hero-copy-w: min(100%, 46rem);
   --hero-measure: 58ch;
 

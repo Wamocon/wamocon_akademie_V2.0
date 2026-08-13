@@ -106,9 +106,13 @@ h6 {
      narrow screens; `break-word` only breaks when a word genuinely cannot fit.
      No `hyphens: auto` here — it hyphenated headings that had a perfectly good
      wrap point at the next space ("durch erfah-|rene Dozenten"). Components
-     that set very large type in a narrow column opt into hyphenation locally. */
+     that set very large type in a narrow column opt into hyphenation locally.
+
+     No `text-wrap: balance` either. It equalises line lengths rather than
+     filling them, so a headline wrapped early and left a gap down the right
+     side of its column — measured at 63% fill on the ISTQB page. Headings now
+     run to the end of the line and wrap only when they must. */
   overflow-wrap: break-word;
-  text-wrap: balance;
 }
 
 h1 {
@@ -338,11 +342,16 @@ p {
 }
 
 .page-hero h1 {
+  /* Fills the copy column. A heading and a paragraph want different measures:
+     the column is sized so long German compounds ("Werde zum zertifizierten |
+     Softwaretester") have room, while --hero-measure keeps the lead paragraph
+     at a readable line length inside it. */
+  width: 100%;
+  max-width: none;
   margin: 0 0 1.25rem;
   font-size: var(--fs-h1);
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-display);
-  text-wrap: balance;
 }
 
 .page-hero p {
