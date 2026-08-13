@@ -1,4 +1,13 @@
 ---
+/**
+ * Legal / statutory text page (Datenschutz, Impressum, Barrierefreiheit).
+ *
+ * Layout matches the WAMOCON group site (wamocon.com) so the legal documents
+ * read the same across both properties: one narrow prose column, plain
+ * headings and paragraphs, and a muted "last updated" line under the title.
+ * The card-per-section treatment this used to have made the same documents
+ * look like a different site.
+ */
 import { legal } from '../../data/academy';
 import type { Lang } from '../../i18n/config';
 
@@ -12,11 +21,32 @@ const page = legal[kind][lang];
 // Courtesy translations carry a precedence notice pointing at the binding
 // German original; the German and English pages have none.
 const notice = 'notice' in page ? (page.notice as { text: string; linkLabel: string; href: string }) : null;
+
+// The opening block of a policy starts with its revision date, which belongs in
+// the muted "updated" line rather than as a section heading. Matched on the
+// date wording itself: a "first block is not numbered" rule demoted the
+// Impressum's real first heading ("Angaben gemäß § 5 DDG"), because that
+// document does not number its sections at all.
+const UPDATED_LINE = /^(Stand|Last updated|As at)\b/i;
+const blocks = page.blocks.map((block) => {
+  const [first, ...rest] = block.split('\n');
+  return { first, rest };
+});
+const lead = blocks[0] && UPDATED_LINE.test(blocks[0].first.trim()) ? blocks[0] : null;
+const sections = lead ? blocks.slice(1) : blocks;
 ---
 
-<section class="legal-page">
+<section class="section legal-page">
   <div class="container legal-page__inner">
     <h1>{page.title}</h1>
+
+    {lead && (
+      <>
+        <p class="legal-page__updated">{lead.first}</p>
+        {lead.rest.map((line) => <p>{line}</p>)}
+      </>
+    )}
+
     {notice && (
       <aside class="legal-page__notice" role="note">
         <p>
@@ -25,21 +55,21 @@ const notice = 'notice' in page ? (page.notice as { text: string; linkLabel: str
         </p>
       </aside>
     )}
-    <div class="legal-page__blocks">
-      {
-        page.blocks.map((block) => (
-          <article>
-            {block.split('\n').map((line, index) => index === 0 ? <h2>{line}</h2> : <p>{line}</p>)}
-          </article>
-        ))
-      }
+
+    <div class="legal-page__body">
+      {sections.map((block) => (
+        <>
+          <h2>{block.first}</h2>
+          {block.rest.map((line) => <p>{line}</p>)}
+        </>
+      ))}
     </div>
   </div>
 </section>
 
 <style>
-  /* Dark theme like the rest of the site — the header logo and links are white,
-     so a light background left them invisible (review AK#23). */
+  /* Dark ground like the rest of the site — the header logo and links are
+     white, so a light background left them invisible (review AK#23). */
   .legal-page {
     min-height: 70vh;
     /* Same opening line as every other page — the hero token owns the offset
@@ -50,27 +80,53 @@ const notice = 'notice' in page ? (page.notice as { text: string; linkLabel: str
     color: var(--color-text);
   }
 
+  /* One narrow prose column, as on wamocon.com. Statutory text set to the full
+     1680px container ran ~130 characters per line, about double a comfortable
+     measure. */
   .legal-page__inner {
-    max-width: var(--container-max);
+    max-width: 820px;
   }
 
   .legal-page h1 {
-    margin: 0 0 2rem;
+    margin: 0 0 1rem;
     color: var(--color-text);
   }
 
-  .legal-page__blocks {
-    display: grid;
-    gap: 1.25rem;
-    /* A ch-based cap, not 1100px. Statutory text set 1100px wide runs ~130
-       characters per line, roughly double a comfortable measure. */
-    max-width: 78ch;
+  .legal-page__updated {
+    margin-bottom: 0.75rem;
+    color: var(--color-text-subtle);
+    font-size: var(--fs-sm);
+  }
+
+  .legal-page__body h2 {
+    margin: 2.5rem 0 0.75rem;
+    color: var(--color-text);
+    font-size: var(--fs-h4);
+    /* Statutory names and German compounds are long single tokens that would
+       otherwise push the column past a narrow viewport. */
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  .legal-page p {
+    margin-bottom: 1rem;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    /* Source blocks keep their own line breaks (addresses, lists of purposes). */
+    white-space: pre-line;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  .legal-page a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
   }
 
   /* Precedence notice on courtesy translations of the binding German text. */
   .legal-page__notice {
-    max-width: 1100px;
-    margin-bottom: 1.75rem;
+    margin: 1.5rem 0 0;
     padding: 1rem 1.25rem;
     border: 1px solid rgba(255, 11, 0, 0.38);
     border-left-width: 4px;
@@ -83,42 +139,5 @@ const notice = 'notice' in page ? (page.notice as { text: string; linkLabel: str
     color: var(--color-text);
     font-size: var(--fs-sm);
     line-height: 1.55;
-  }
-
-  .legal-page article {
-    /* Grid items default to min-width: auto, so a long token (an e-mail address
-       or a German authority name) sets the card's floor width and pushes it off
-       a narrow screen. min-width: 0 lets it shrink and wrap instead. */
-    min-width: 0;
-    padding: 1.5rem;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-md);
-    background: var(--surface-card);
-  }
-
-  .legal-page h2 {
-    margin-bottom: 0.7rem;
-    color: var(--color-text);
-    font-size: var(--fs-h4);
-  }
-
-  .legal-page p {
-    color: var(--color-muted);
-    white-space: pre-line;
-    /* Statutory names, e-mail addresses and German compounds are long single
-       tokens that otherwise push the card past a narrow viewport. */
-    overflow-wrap: break-word;
-    hyphens: auto;
-  }
-
-  .legal-page h2 {
-    overflow-wrap: break-word;
-    hyphens: auto;
-  }
-
-  .legal-page a {
-    color: var(--color-accent);
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
   }
 </style>

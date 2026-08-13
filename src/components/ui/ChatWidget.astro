@@ -495,14 +495,18 @@ const privacyHref = legalNav.privacy[lang].href;
   }
   .cw__x:hover { background: rgba(255, 255, 255, 0.09); color: #fff; }
 
+  /* AI Act Art. 50(5) requires this disclosure to be clear and to meet
+     accessibility requirements. At --color-text-subtle/12px it measured
+     4.50:1 — exactly on the WCAG AA boundary for small text. Raised to
+     --color-muted at 13px, which measures ~8:1. */
   .cw__note {
     margin: 0;
-    padding: 0.6rem 0.95rem;
+    padding: 0.65rem 0.95rem;
     background: rgba(255, 255, 255, 0.03);
     border-bottom: 1px solid var(--cw-line);
-    color: var(--color-text-subtle);
-    font-size: var(--fs-2xs);
-    line-height: 1.5;
+    color: var(--color-muted);
+    font-size: var(--fs-xs);
+    line-height: 1.55;
   }
   .cw__note a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 0.2em; }
 

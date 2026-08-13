@@ -128,11 +128,29 @@ for (const group of localeRoutes) {
   }
 }
 
+// Hero player source: the component's <script> is bundled to an external
+// module, so playback wiring is asserted here rather than in the HTML.
+const heroSource = await readFile(new URL('../src/components/sections/AcademyHome.astro', import.meta.url), 'utf8');
+
 for (const route of ['/', '/en/']) {
   const file = route === '/' ? join(dist, 'index.html') : join(dist, route, 'index.html');
   const html = await readFile(file, 'utf8');
   assert(html.includes('<video') && html.includes('/media/hero-background.mp4'), `${route}: homepage background video is missing`);
-  assert(/<video\b[^>]*\sautoplay\b[^>]*\smuted\b[^>]*\sloop\b/i.test(html), `${route}: homepage background video is not configured for continuous muted playback`);
+  // Continuous muted playback, under either mechanism. The hero video is now
+  // lazy-loaded — the source is attached and play() called from JS after load,
+  // so the `autoplay` attribute is deliberately absent. `muted` and `loop` are
+  // still required as attributes, and the lazy form must carry the hook plus
+  // the deferred source, so the check still proves the video actually plays.
+  const videoTag = (html.match(/<video\b[^>]*>/i) || [''])[0];
+  const mutedLoop = /\smuted\b/i.test(videoTag) && /\sloop\b/i.test(videoTag);
+  const eagerPlay = /\sautoplay\b/i.test(videoTag);
+  // The player lives in the component's <script>, which Astro bundles to an
+  // external module — so it is asserted against the source, not the HTML.
+  const lazyPlay = /\sdata-hero-video\b/i.test(videoTag)
+    && /\sdata-src="[^"]*hero-background\.mp4"/i.test(videoTag)
+    && /video\.muted\s*=\s*true/.test(heroSource)
+    && /video\.play\(\)/.test(heroSource);
+  assert(mutedLoop && (eagerPlay || lazyPlay), `${route}: homepage background video is not configured for continuous muted playback`);
   assert(!html.includes('data-hero-media-toggle'), `${route}: obsolete homepage video toggle remains`);
   assert(html.includes('class="office-tour'), `${route}: 360-degree tour section is missing`);
   assert(html.includes('map_action=pano'), `${route}: 360-degree tour link is missing`);
