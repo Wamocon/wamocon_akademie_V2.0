@@ -263,8 +263,8 @@ const successStories = pick(lang, { en: [
 
 const trainers = [
   ['Daniel Moretz', 'team-daniel.jpg'],
-  ['Waleri Moretz', 'tild3830-3230-4130-b766-636531363562__img68.jpg'],
-  ['Nikolaj Schefner', 'tild3732-3031-4537-a430-356132326434__img80.jpg'],
+  ['Waleri Moretz', 'team-waleri.webp'],
+  ['Nikolaj Schefner', 'team-nikolaj.webp'],
 ] as const;
 
 const faqs = pick(lang, { en: [
@@ -520,13 +520,13 @@ const registrationCopy = pick(lang, {
       </div>
     </div>
     <div class="istqb-comparison" data-reveal>
-      <article>
+      <article class="istqb-comparison__panel istqb-comparison__panel--without">
         <h3>{copy.without}</h3>
         <ul class="istqb-list istqb-list--negative">
           {copy.withoutItems.map((item) => <li>{item}</li>)}
         </ul>
       </article>
-      <article>
+      <article class="istqb-comparison__panel">
         <h3>{copy.with}</h3>
         <ul class="istqb-list istqb-list--positive">
           {copy.withItems.map((item) => <li>{item}</li>)}
@@ -730,15 +730,11 @@ const registrationCopy = pick(lang, {
       <a class="istqb-button" href={webinarHash} data-open-modal="istqb-webinar-modal">{copy.webinarCta}</a>
     </div>
     <div class="istqb-faq__items">
-      {[faqs.slice(0, Math.ceil(faqs.length / 2)), faqs.slice(Math.ceil(faqs.length / 2))].map((group) => (
-        <div class="istqb-faq__col">
-          {group.map(([question, answer]) => (
-            <details data-reveal>
-              <summary>{question}<span aria-hidden="true">+</span></summary>
-              <p>{answer}</p>
-            </details>
-          ))}
-        </div>
+      {faqs.map(([question, answer]) => (
+        <details data-reveal>
+          <summary><h3>{question}</h3></summary>
+          <p>{answer}</p>
+        </details>
       ))}
     </div>
   </div>
@@ -911,6 +907,10 @@ const registrationCopy = pick(lang, {
     color: var(--color-accent);
   }
 
+  /* `.page-hero p` carries no bottom margin, so the CTA sets its own offset —
+     same 1.75rem the DiTeLe hero uses, so both heroes breathe alike. */
+  .istqb-hero__copy > .istqb-button { margin-top: 1.75rem; }
+
   /* Decorative renders are sized from the hero's HEIGHT, not the viewport
      width. A vw-sized square overflowed the frame on wide screens, so the
      shape was sliced off and the space it should have filled read as an empty
@@ -944,19 +944,61 @@ const registrationCopy = pick(lang, {
   .istqb-certificate__document { position: absolute; width: 180px; left: -54px; bottom: -20px; filter: drop-shadow(0 18px 30px rgba(0,0,0,.45)); }
   .istqb-certificate p { margin-top: 1.4rem; }
 
+  /* Mirrors the home page comparison (AcademyHome `.compare-panel`): the two
+     sides share a shape and differ only in weight — "without" stays recessive,
+     "with" is elevated and carries the accent. */
   .istqb-comparison {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 2px;
+    gap: clamp(40px, 4.5vw, 82px);
     margin-top: clamp(56px, 7vw, 96px);
   }
-  .istqb-comparison article { padding: clamp(28px, 4vw, 54px); background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); }
-  .istqb-comparison h3 { margin-bottom: 1.5rem; }
-  .istqb-list { display: grid; gap: 1rem; color: var(--color-muted); }
-  .istqb-list li { position: relative; padding-left: 1.8rem; }
-  .istqb-list li::before { position: absolute; left: 0; font-weight: 700; }
-  .istqb-list--negative li::before { content: '—'; color: #ff7670; }
-  .istqb-list--positive li::before { content: '+'; color: #56d990; }
+  .istqb-comparison__panel {
+    min-height: 178px;
+    padding: clamp(28px, 2.3vw, 38px) clamp(30px, 2.8vw, 44px);
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+  }
+  .istqb-comparison__panel--without {
+    background: rgba(255, 255, 255, 0.035);
+    box-shadow: none;
+  }
+  .istqb-comparison h3 { margin-bottom: 16px; color: #fff; font-size: var(--fs-h4); }
+  .istqb-list { display: grid; gap: 0; color: #fff; }
+  .istqb-list li {
+    position: relative;
+    padding-left: 26px;
+    margin-bottom: 11px;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+  }
+  .istqb-list li:last-child { margin-bottom: 0; }
+  .istqb-list li::before {
+    position: absolute;
+    left: 0;
+    top: 0.05em;
+    display: grid;
+    width: 18px;
+    height: 18px;
+    place-items: center;
+    border-radius: var(--radius-pill);
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-bold);
+    line-height: 1;
+  }
+  .istqb-list--negative { color: var(--color-muted); }
+  .istqb-list--negative li::before {
+    content: '–';
+    background: rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .istqb-list--positive li::before {
+    content: '+';
+    background: var(--color-accent-surface);
+    color: #fff;
+  }
 
   .istqb-career__grid {
     display: grid;
@@ -1095,17 +1137,24 @@ const registrationCopy = pick(lang, {
   .istqb-faq__intro > div { max-width: 1200px; }
   .istqb-faq__intro p { max-width: 1100px; margin-top: 1rem; font-size: var(--fs-lead); }
   .istqb-faq__intro > .istqb-button { min-width: clamp(190px, 13vw, 250px); justify-self: end; margin-bottom: 4px; }
-  /* min() keeps the track from demanding 340px inside a narrower viewport,
-     which would push the column past the screen edge. */
-  .istqb-faq__items { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 0 clamp(40px, 5vw, 80px); }
-  .istqb-faq__col { min-width: 0; }
-  .istqb-faq__items details { border-top: 1px solid rgba(255, 11, 0, .72); }
-  .istqb-faq__col details:last-child { border-bottom: 1px solid rgba(255, 11, 0, .72); }
-  .istqb-faq__items summary { display: flex; justify-content: space-between; gap: 24px; padding: clamp(22px, 1.8vw, 30px) 0; color: #fff; font-size: var(--fs-lead); font-weight: 600; cursor: pointer; list-style: none; }
+  /* Mirrors ui/FaqSection.astro so both FAQ blocks read as one component:
+     single column, card per question, + / − marker. */
+  .istqb-faq__items { display: grid; gap: 0.75rem; }
+  .istqb-faq__items details {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: rgb(255 255 255 / 0.03);
+    transition: border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+  }
+  .istqb-faq__items details:hover,
+  .istqb-faq__items details[open] { border-color: var(--border-strong); background: rgb(255 255 255 / 0.05); }
+  .istqb-faq__items summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.05rem 1.25rem; color: #fff; cursor: pointer; list-style: none; }
   .istqb-faq__items summary::-webkit-details-marker { display: none; }
-  .istqb-faq__items summary span { color: var(--color-accent); font-size: var(--fs-lead); transition: transform .18s ease; }
-  .istqb-faq__items details[open] summary span { transform: rotate(45deg); }
-  .istqb-faq__items details p { max-width: none; padding: 0 0 24px; }
+  .istqb-faq__items summary::after { content: '+'; flex: none; color: var(--color-accent); font-size: var(--fs-h4); line-height: 1; }
+  .istqb-faq__items details[open] summary::after { content: '\2212'; }
+  .istqb-faq__items summary h3 { margin: 0; font-size: var(--fs-body); font-weight: var(--fw-semibold); line-height: 1.4; }
+  .istqb-faq__items summary:hover h3, .istqb-faq__items summary:focus-visible h3 { color: var(--color-accent); }
+  .istqb-faq__items details p { margin: 0; max-width: none; padding: 0 1.25rem 1.25rem; color: var(--color-text-muted); line-height: 1.7; }
 
   @keyframes istqb-cone-back-drift {
     0%, 100% { transform: translate3d(0, 0, 0) rotate(-4deg); }
@@ -1235,7 +1284,8 @@ const registrationCopy = pick(lang, {
        min-width: auto, so their longest word sets the floor and the card
        overruns the screen. */
     .istqb-comparison, .istqb-career__grid, .istqb-benefits__grid, .istqb-participation__steps, .istqb-testimonials__grid, .istqb-trainers__grid { grid-template-columns: minmax(0, 1fr); }
-    .istqb-comparison article { min-width: 0; overflow-wrap: break-word; }
+    .istqb-comparison { gap: 30px; }
+    .istqb-comparison article { min-width: 0; min-height: 0; overflow-wrap: break-word; }
     .istqb-career__grid article { min-height: 0; }
     .istqb-benefits__grid { gap: 30px; }
     .istqb-experience__media > img:first-child { min-height: 360px; }
@@ -1269,7 +1319,7 @@ const registrationCopy = pick(lang, {
     }
 
     .istqb-button,
-    .istqb-faq__items summary span {
+    .istqb-faq__items details {
       transition-duration: 0.01ms;
     }
   }

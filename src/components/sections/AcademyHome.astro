@@ -80,9 +80,18 @@ const c = pick(lang, {
 
 <section class="academy-hero" data-hero-media>
   <div class="academy-hero__media" aria-hidden="true">
-    <video autoplay muted loop playsinline preload="auto" poster={assets.hero}>
-      <source src="/media/hero-background.mp4" type="video/mp4" />
-    </video>
+    {/* The background clip is 10.7 MB. With preload="auto" it downloaded on
+        first paint and starved the hero image and fonts of bandwidth, so the
+        source is attached from JS after load — see the hero-video script
+        below. The poster carries the first frame in the meantime. */}
+    <video
+      muted
+      loop
+      playsinline
+      preload="none"
+      poster={assets.hero}
+      data-hero-video
+      data-src="/media/hero-background.mp4"></video>
   </div>
   <div class="academy-hero__overlay"></div>
   <div class="academy-hero__inner container">
@@ -900,6 +909,27 @@ const c = pick(lang, {
         video.muted = true;
         void video.play().catch(() => undefined);
       };
+
+      // Attach the source only once the page has settled, and only where the
+      // clip is worth its bytes: a data saver, a 2g/3g link or reduced-motion
+      // keeps the poster instead. Without this the 10.7 MB download competes
+      // with the hero image and fonts for bandwidth on first paint.
+      const src = video.dataset.src;
+      if (src && !video.currentSrc) {
+        const conn = (navigator as any).connection;
+        const slow = conn && (conn.saveData || /^(slow-)?2g$|^3g$/.test(conn.effectiveType || ''));
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!slow && !reduced) {
+          const attach = () => {
+            video.src = src;
+            video.load();
+          };
+          const idle = (window as any).requestIdleCallback;
+          const schedule = () => (idle ? idle(attach, { timeout: 2500 }) : setTimeout(attach, 400));
+          if (document.readyState === 'complete') schedule();
+          else window.addEventListener('load', schedule, { once: true });
+        }
+      }
 
       if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) play();
       else video.addEventListener('loadeddata', play, { once: true });
