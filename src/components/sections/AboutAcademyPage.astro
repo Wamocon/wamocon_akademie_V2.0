@@ -20,7 +20,7 @@ const copy = {
   de: {
     heroLead: 'Der Weg zum Erfolg',
     heroRest: 'beginnt mit der WAMOCON Academy',
-    heroText: 'Unser Bildungszentrum bietet mehr als nur Kurse. Es ist Ihre Startrampe für eine erfolgreiche IT-Karriere. Hier verwandeln wir Lernende in IT-Profis, die bereit sind, die Herausforderungen der heutigen digitalen Welt zu meistern.',
+    heroText: 'Unser Bildungszentrum bietet mehr als nur Kurse. Es ist deine Startrampe für eine erfolgreiche IT-Karriere. Hier verwandeln wir Lernende in IT-Profis, die bereit sind, die Herausforderungen der heutigen digitalen Welt zu meistern.',
     supportLead: 'Unterstützung',
     supportRest: 'durch erfahrene Dozenten',
     supportParagraphs: [
@@ -41,7 +41,7 @@ const copy = {
     wmcTitle: 'WMC-Methode +',
     wmcParagraphs: [
       'Die IT-Welt war noch nie so komplex wie heute, besonders durch den rasanten Fortschritt der künstlichen Intelligenz. Hier kommt die WMC-Methode ins Spiel, die auf über 50 Jahren gebündelter Praxiserfahrung unseres Teams im IT-Qualitätsmanagement aufbaut.',
-      'Diese bewährte Methode sorgt dafür, dass auch zukünftige IT-Projekte erfolgreich umgesetzt werden. Vertrauen Sie auf die WMC-Methode, Ihren stabilen Anker in der sich ständig wandelnden IT-Welt.',
+      'Diese bewährte Methode sorgt dafür, dass auch zukünftige IT-Projekte erfolgreich umgesetzt werden. Vertrau auf die WMC-Methode, deinen stabilen Anker in der sich ständig wandelnden IT-Welt.',
     ],
     methodIntro: 'IT-Projekte können manchmal kompliziert sein, aber die WMC-Methode hilft, alles einfacher zu machen. Hier sind die drei wichtigsten Dinge, die du wissen musst:',
     methodColumns: [
@@ -70,19 +70,23 @@ const copy = {
     graduatesTitle: 'Das sagen erfolgreiche Absolventen',
     graduatesText: 'Wir begleiten dich Schritt für Schritt bei deinem Einstieg in der IT-Branche.',
     participant: 'Teilnehmende der WAMOCON Academy',
-    magazineTitle: 'Erfahren Sie mehr über uns',
-    magazineText: 'Entdecken Sie unser Magazin mit spannenden Projekten, Schulungen und unserer Unternehmenskultur.',
+    magazineTitle: 'Erfahre mehr über uns',
+    magazineText: 'Entdecke unser Magazin mit spannenden Projekten, Schulungen und unserer Unternehmenskultur.',
     magazineCta: 'Magazin herunterladen',
     adviceTitle: 'Beratung erhalten',
-    adviceText: 'Rufen Sie uns an +49 (0) 6196 5838312, oder hinterlassen Sie unten Ihre Kontaktdaten, damit wir Sie erreichen und Ihre Fragen beantworten können.',
+    adviceText: 'Ruf uns an unter +49 (0) 6196 5838312, oder hinterlasse unten deine Kontaktdaten, damit wir dich erreichen und deine Fragen beantworten können.',
     loadVideo: 'YouTube-Video laden',
-    videoConsent: 'Erst nach Ihrer Auswahl wird eine Verbindung zu YouTube hergestellt.',
+    videoConsent: 'Erst nach deiner Auswahl wird eine Verbindung zu YouTube hergestellt.',
     contactTitle: 'Kontakt',
     location: 'Standort',
     phone: 'Telefon',
     hours: 'Öffnungszeiten',
-    follow: 'Folgen Sie uns auf sozialen Medien',
+    follow: 'Folge uns auf sozialen Medien',
     imageAlt: 'WAMOCON Academy Team',
+    wmcImageAlt: 'Softwaretesterin analysiert Programmcode auf zwei Bildschirmen',
+    boosterImageAlt: 'Grafik des 360° Booster Systems mit seinen sechs Karriereschritten',
+    magazineCoverAlt: 'Titelseite des WAMOCON Academy Magazins',
+    badgeAlt: 'Auszeichnung Unternehmen der Zukunft',
     boosterCta: 'Zum 360° Booster System',
     closeVideo: 'Video schließen',
   },
@@ -152,6 +156,10 @@ const copy = {
     hours: 'Opening hours',
     follow: 'Follow us on social media',
     imageAlt: 'WAMOCON Academy team',
+    wmcImageAlt: 'Software tester analysing program code on two screens',
+    boosterImageAlt: 'Diagram of the 360° Booster System with its six career steps',
+    magazineCoverAlt: 'Cover of the WAMOCON Academy magazine',
+    badgeAlt: 'Company of the Future award',
     boosterCta: 'To the 360° Booster System',
     closeVideo: 'Close video',
   },
@@ -217,7 +225,7 @@ const videos = [
         <h2>{c.wmcTitle}</h2>
         {c.wmcParagraphs.map((paragraph) => <p>{paragraph}</p>)}
       </div>
-      <img src="/images/academy/tild3865-3537-4134-a135-643966323539__close-up-programmer-.jpg" alt="" width="1680" height="1120" loading="lazy" />
+      <img src="/images/academy/tild3865-3537-4134-a135-643966323539__close-up-programmer-.jpg" alt={c.wmcImageAlt} width="1680" height="1120" loading="lazy" />
     </div>
     <div class="about-container about-wmc__method">
       <h3>{c.methodIntro}</h3>
@@ -237,7 +245,7 @@ const videos = [
   <section class="about-booster">
     <img class="about-booster__accent" src="/images/academy/tild3730-6132-4863-b462-623032303533__group_11.png" alt="" aria-hidden="true" />
     <div class="about-container about-booster__grid">
-      <img class="about-booster__image" src={boosterImage} alt="360° Booster System" width="900" height="900" loading="lazy" />
+      <img class="about-booster__image" src={boosterImage} alt={c.boosterImageAlt} width="900" height="900" loading="lazy" />
       <div class="about-booster__copy" data-reveal>
         <h2><span>{c.boosterLead}</span> {c.boosterRest}</h2>
         {c.boosterParagraphs.map((paragraph) => <p>{paragraph}</p>)}
@@ -273,13 +281,13 @@ const videos = [
 
   <section class="about-magazine">
     <div class="about-container about-magazine__panel">
-      <img class="about-magazine__cover" src="/images/academy/tild6438-6631-4663-a338-633332663664____2024-12-05__163323.png" alt="WAMOCON Academy Magazin" width="1200" height="1600" loading="lazy" />
+      <img class="about-magazine__cover" src="/images/academy/tild6438-6631-4663-a338-633332663664____2024-12-05__163323.png" alt={c.magazineCoverAlt} width="1200" height="1600" loading="lazy" />
       <div class="about-magazine__copy">
         <h2>{c.magazineTitle}</h2>
         <p>{c.magazineText}</p>
         <a class="about-button about-button--magazine" href={magazineUrl} target="_blank" rel="noopener">{c.magazineCta}</a>
       </div>
-      <img class="about-magazine__badge" src="/images/badge-zukunft.webp" alt="Unternehmen der Zukunft" width="1052" height="1524" loading="lazy" />
+      <img class="about-magazine__badge" src="/images/badge-zukunft.webp" alt={c.badgeAlt} width="1052" height="1524" loading="lazy" />
     </div>
   </section>
 

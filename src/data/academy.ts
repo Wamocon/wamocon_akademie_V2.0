@@ -45,7 +45,7 @@ export const home = {
   hero: {
     title: 'WAMOCON Academy',
     de:
-      'Unser IT-Bildungszentrum in Eschborn bietet Ihnen praxisnahe Ausbildungsmöglichkeiten im Softwaretesting',
+      'Unser IT-Bildungszentrum in Eschborn bietet dir praxisnahe Ausbildungsmöglichkeiten im Softwaretesting',
     en:
       'Our IT training center in Eschborn offers practical software-testing education',
     cta: { de: 'Beratung erhalten', en: 'Receive advice' },
@@ -62,8 +62,8 @@ export const home = {
     },
     paragraphs: {
       de: [
-        'Die WAMOCON Academy ist Ihr Sprungbrett in die Welt des Softwaretestings. Die WAMOCON Academy GmbH ist bei ISTQB® als akkreditierter Trainingsanbieter für deutschsprachige CTFL 4.0- und Agile Tester 1.0-Trainingsmaterialien gelistet. Unsere praxisnahen Kurse bereiten auf die jeweilige Zertifizierungsprüfung vor.',
-        'Egal, ob Sie Berufseinsteiger, Quereinsteiger oder erfahrener Profi sind: Bei uns finden Sie die passende Weiterbildung! Erweitern Sie Ihre Fähigkeiten im Testmanagement und heben Sie sich mit einer zusätzlichen Qualifikation gemäß dem ISTQB®-Lehrplan von der Masse ab. Starten Sie jetzt Ihre Erfolgsgeschichte mit der WAMOCON Academy!',
+        'Die WAMOCON Academy ist dein Sprungbrett in die Welt des Softwaretestings. Die WAMOCON Academy GmbH ist bei ISTQB® als akkreditierter Trainingsanbieter für deutschsprachige CTFL 4.0- und Agile Tester 1.0-Trainingsmaterialien gelistet. Unsere praxisnahen Kurse bereiten auf die jeweilige Zertifizierungsprüfung vor.',
+        'Egal, ob du Berufseinsteiger, Quereinsteiger oder erfahrener Profi bist: Bei uns findest du die passende Weiterbildung! Erweitere deine Fähigkeiten im Testmanagement und hebe dich mit einer zusätzlichen Qualifikation gemäß dem ISTQB®-Lehrplan von der Masse ab. Starte jetzt deine Erfolgsgeschichte mit der WAMOCON Academy!',
       ],
       en: [
         'WAMOCON Academy is your springboard into software testing. WAMOCON Academy GmbH is listed by ISTQB® as an accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 training materials. Our practical courses prepare participants for the relevant certification examination.',
@@ -77,12 +77,12 @@ export const home = {
   },
   success: {
     heading: {
-      de: 'Starten Sie Ihre Erfolgsgeschichte mit der WAMOCON Academy',
+      de: 'Starte deine Erfolgsgeschichte mit der WAMOCON Academy',
       en: 'Start your success story with the WAMOCON Academy',
     },
     text: {
       de:
-        'Die WAMOCON Academy ist mehr als nur ein Ausbildungsort. Sie ist Ihre strategische Plattform für die Entwicklung entscheidender Fähigkeiten und die Beschleunigung Ihrer Karriere im IT-Bereich. Ob durch maßgeschneiderte Einzelkurse oder dynamische Teamkurse, wir bieten Ihnen einzigartige Chancen für den erfolgreichen Berufseinstieg und die Erreichung neuer Karriereziele. Lassen Sie sich von uns auf Ihrem Weg zur nächsten Entwicklungsstufe begleiten und profitieren Sie von unserem umfassenden Know-how und Netzwerk.',
+        'Die WAMOCON Academy ist mehr als nur ein Ausbildungsort. Sie ist deine strategische Plattform für die Entwicklung entscheidender Fähigkeiten und die Beschleunigung deiner Karriere im IT-Bereich. Ob durch maßgeschneiderte Einzelkurse oder dynamische Teamkurse, wir bieten dir einzigartige Chancen für den erfolgreichen Berufseinstieg und die Erreichung neuer Karriereziele. Lass dich von uns auf deinem Weg zur nächsten Entwicklungsstufe begleiten und profitiere von unserem umfassenden Know-how und Netzwerk.',
       en:
         'The WAMOCON Academy is more than just a training venue. It is your strategic platform for developing critical skills and accelerating your career in IT. Whether through customized individual courses or dynamic team courses, we offer you unique opportunities to successfully launch your career and achieve new career goals. Let us accompany you on your way to the next level of development and profit from our extensive know-how and network.',
     },
@@ -114,7 +114,7 @@ export const home = {
       items: {
         de: [
           'Überdurchschnittliches Gehalt',
-          'Arbeit an Projekten, die Ihnen gefallen',
+          'Arbeit an Projekten, die dir gefallen',
           'Hohe Entwicklungsmöglichkeiten dank ISTQB®-Zertifizierung',
           'Fachwissen von erfahrenen Mentoren',
         ],
@@ -130,12 +130,12 @@ export const home = {
   istqb: {
     title: 'ISTQB® Certified Tester',
     de:
-      'Entdecken Sie die Welt des Softwaretestings mit unseren umfassenden Kursen, die Ihnen nicht nur tiefgehendes theoretisches Wissen über Testverfahren, Testmodelle und Testwerkzeuge vermitteln, sondern auch praxisnahe Einblicke bieten.',
+      'Entdecke die Welt des Softwaretestings mit unseren umfassenden Kursen, die dir nicht nur tiefgehendes theoretisches Wissen über Testverfahren, Testmodelle und Testwerkzeuge vermitteln, sondern auch praxisnahe Einblicke bieten.',
     en:
       'Discover the world of software testing with our comprehensive courses, which not only provide you with in-depth theoretical knowledge of test procedures, test models and test tools, but also offer practical insights.',
     closing: {
       de:
-        'Unsere realitätsnahen Anwendungsfälle verdeutlichen, wie Sie theoretische Konzepte in erfolgreichen IT-Projekten umsetzen können. Mit unserer Unterstützung sind Sie bestens gerüstet, um die komplexen Herausforderungen moderner IT-Projekte zu meistern und Ihre Karriere als Softwaretester voranzutreiben.',
+        'Unsere realitätsnahen Anwendungsfälle verdeutlichen, wie du theoretische Konzepte in erfolgreichen IT-Projekten umsetzen kannst. Mit unserer Unterstützung bist du bestens gerüstet, um die komplexen Herausforderungen moderner IT-Projekte zu meistern und deine Karriere als Softwaretester voranzutreiben.',
       en:
         'Our realistic use cases illustrate how you can implement theoretical concepts in successful IT projects. With our support, you are ideally equipped to master the complex challenges of modern IT projects and advance your career as a software tester.',
     },
@@ -259,14 +259,14 @@ export const pages = {
           items: ['Umfassende Ausbildung', 'Karriereförderung', 'Praxisorientierte Inhalte'],
         },
         {
-          title: 'Mit Bildung in die Zukunft: Werden Sie ISTQB® Softwaretester bei WAMOCON Academy',
+          title: 'Mit Bildung in die Zukunft: Werde ISTQB® Softwaretester bei WAMOCON Academy',
           text:
             'WAMOCON bietet Seminare im Testmanagement für Einsteiger und Quereinsteiger mit intensiven Praxisinhalten und Vorbereitung auf die jeweilige Zertifizierungsprüfung.',
         },
         {
           title: 'Wo soll ich zuerst anfangen?',
           text:
-            'Nehmen Sie an Ihrem ersten kostenlosen Webinar teil, um zu erfahren, wie Sie Ihre Karriere als Softwaretester effektiv starten oder vorantreiben können. Es bietet die Möglichkeit, Fragen zu stellen und Antworten von Experten zu erhalten, die Ihnen dabei helfen, Ihren beruflichen Weg zu verbessern.',
+            'Nimm an deinem ersten kostenlosen Webinar teil, um zu erfahren, wie du deine Karriere als Softwaretester effektiv starten oder vorantreiben kannst. Es bietet die Möglichkeit, Fragen zu stellen und Antworten von Experten zu erhalten, die dir dabei helfen, deinen beruflichen Weg zu verbessern.',
           items: [
             'Einstieg ins SOFTWARETESTING: Zielgruppe und Nutzen des Webinars.',
             'Was verdient ein zertifizierter Softwaretester 2023? Einblick in Gehaltsstrukturen und Karriereaussichten.',
@@ -315,7 +315,7 @@ export const pages = {
       title: 'Der Weg zum Erfolg beginnt mit der WAMOCON Academy',
       eyebrow: 'Über die Academy',
       lead:
-        'Unser Bildungszentrum bietet mehr als nur Kurse. Es ist Ihre Startrampe für eine erfolgreiche IT-Karriere. Hier verwandeln wir Lernende in IT-Profis, die bereit sind, die Herausforderungen der heutigen digitalen Welt zu meistern.',
+        'Unser Bildungszentrum bietet mehr als nur Kurse. Es ist deine Startrampe für eine erfolgreiche IT-Karriere. Hier verwandeln wir Lernende in IT-Profis, die bereit sind, die Herausforderungen der heutigen digitalen Welt zu meistern.',
       sections: [
         {
           title: 'Unterstützung durch erfahrene Dozenten',
@@ -456,12 +456,12 @@ export const pages = {
       title: 'ISTQB® Zertifizierung',
       eyebrow: 'ISTQB® Certified Tester',
       lead:
-        'Werden Sie zum Qualitätsexperten: ISTQB® Certified Tester Foundation Level (CTFL). Qualitätssicherung ist der Schlüssel zum Erfolg jedes Softwareprojekts.',
+        'Werde zum Qualitätsexperten: ISTQB® Certified Tester Foundation Level (CTFL). Qualitätssicherung ist der Schlüssel zum Erfolg jedes Softwareprojekts.',
       sections: [
         {
-          title: 'Was Sie im ISTQB® CTFL Training lernen',
+          title: 'Was du im ISTQB® CTFL Training lernst',
           text:
-            'Unser umfassendes Training bereitet Sie optimal auf die offizielle ISTQB®-Zertifizierung vor und vermittelt Ihnen praxisnahe Kenntnisse, die sofort in der täglichen Arbeit einsetzbar sind.',
+            'Unser umfassendes Training bereitet dich optimal auf die offizielle ISTQB®-Zertifizierung vor und vermittelt dir praxisnahe Kenntnisse, die sofort in der täglichen Arbeit einsetzbar sind.',
           items: [
             'Grundlagen des Softwaretestens',
             'Testen im Softwareentwicklungszyklus',
@@ -474,8 +474,8 @@ export const pages = {
         {
           title: 'Warum ist die ISTQB® Zertifizierung wertvoll?',
           text:
-            'Die ISTQB®-Zertifizierung ist weltweit anerkannt und gilt als Qualitätssiegel für Testexperten. Sie steigert Ihre Karrierechancen und bietet sofortigen Nutzen für Unternehmen.',
-          items: ['Globale Anerkennung', 'Steigern Sie Ihre Karrierechancen', 'Sofortiger Nutzen für Unternehmen'],
+            'Die ISTQB®-Zertifizierung ist weltweit anerkannt und gilt als Qualitätssiegel für Testexperten. Sie steigert deine Karrierechancen und bietet sofortigen Nutzen für Unternehmen.',
+          items: ['Globale Anerkennung', 'Steigere deine Karrierechancen', 'Sofortiger Nutzen für Unternehmen'],
         },
       ],
     },
@@ -518,12 +518,12 @@ export const pages = {
         {
           title: 'Praxis in realitätsnahen Anwendungsfällen',
           text:
-            'Unsere realitätsnahen Anwendungsfälle verdeutlichen, wie Sie theoretische Konzepte in erfolgreichen IT-Projekten umsetzen können.',
+            'Unsere realitätsnahen Anwendungsfälle verdeutlichen, wie du theoretische Konzepte in erfolgreichen IT-Projekten umsetzen kannst.',
         },
         {
           title: 'Optimal vorbereitet',
           text:
-            'Mit unserer Unterstützung sind Sie bestens gerüstet, um die komplexen Herausforderungen moderner IT-Projekte zu meistern und Ihre Karriere als Softwaretester voranzutreiben.',
+            'Mit unserer Unterstützung bist du bestens gerüstet, um die komplexen Herausforderungen moderner IT-Projekte zu meistern und deine Karriere als Softwaretester voranzutreiben.',
         },
       ],
     },

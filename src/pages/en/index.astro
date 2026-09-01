@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import AcademyHome from '../../components/sections/AcademyHome.astro';
 import { pageMeta } from '../../data/academy';
 import { academyFaq } from '../../data/faq';
+import { courseInstancesFor, offersFor } from '../../data/catalog';
 import FaqSection from '../../components/ui/FaqSection.astro';
 
 const lang = 'en';
@@ -31,12 +32,13 @@ const courseSchema = [
     inLanguage: 'en-GB',
     educationalCredentialAwarded: 'ISTQB Certified Tester Foundation Level 4.0',
     teaches: ['Software testing fundamentals', 'Test design techniques', 'Test management', 'Test tools'],
-    hasCourseInstance: {
+    ...(offersFor('ctfl40', origin) ? { offers: offersFor('ctfl40', origin) } : {}),
+    hasCourseInstance: courseInstancesFor('ctfl40', {
       '@type': 'CourseInstance',
       courseMode: ['onsite', 'online'],
       courseWorkload: 'P3D',
       location,
-    },
+    }),
   },
   {
     '@type': 'Course',
@@ -47,25 +49,27 @@ const courseSchema = [
     inLanguage: 'en-GB',
     educationalCredentialAwarded: 'ISTQB Certified Tester Agile Tester',
     teaches: ['Agile testing', 'Testing in Scrum', 'Agile test techniques'],
-    hasCourseInstance: {
+    ...(offersFor('agileTester10', origin) ? { offers: offersFor('agileTester10', origin) } : {}),
+    hasCourseInstance: courseInstancesFor('agileTester10', {
       '@type': 'CourseInstance',
       courseMode: ['onsite', 'online'],
       location,
-    },
+    }),
   },
   {
     '@type': 'Course',
     name: '360-degree Booster System',
     description:
-      'Structured career-entry programme for software testers. Combines ISTQB certification preparation with practical project readiness and mentoring from trainers working on live IT projects.',
+      'Structured career-entry programme for software testers. Combines ISTQB certification preparation with practical project readiness and mentoring from practising test managers.',
     provider: { '@id': `${origin}/#organization` },
     inLanguage: 'en-GB',
     teaches: ['Software testing career entry', 'Test design', 'Defect management'],
-    hasCourseInstance: {
+    ...(offersFor('booster360', origin) ? { offers: offersFor('booster360', origin) } : {}),
+    hasCourseInstance: courseInstancesFor('booster360', {
       '@type': 'CourseInstance',
       courseMode: ['onsite', 'online'],
       location,
-    },
+    }),
   },
 ];
 ---

@@ -3,6 +3,7 @@
 import { legalNav, nav, thanksHref, type Lang } from '../../i18n/config';
 import { pick } from '../../i18n/utils';
 import VideoEmbed from '../ui/VideoEmbed.astro';
+import ReferralField from '../ui/ReferralField.astro';
 
 interface Props {
   lang?: Lang;
@@ -182,8 +183,8 @@ const webinarTopics = pick(lang, { en: [
 ], de: [
   ['Einstieg ins SOFTWARETESTING', 'Zielgruppe und Nutzen des Webinars.'],
   ['Was verdient ein zertifizierter Softwaretester?', 'Einblick in Gehaltsstrukturen und Karriereaussichten.'],
-  ['Vorwelchen typischen Herausforderungen steht ein Tester?', 'Diskussion der gängigen Probleme und Hürden im Testmanagement.'],
-  ['Staatliches Förderprogramm: Bildungsgutschein', 'Eine Förderung kann im Einzelfall möglich sein. Über Voraussetzungen, förderfähige Kosten und Bewilligung entscheiden die zuständige Agentur für Arbeit oder das Jobcenter. Bitte lassen Sie die Förderung vor einer Anmeldung schriftlich bestätigen.'],
+  ['Vor welchen typischen Herausforderungen steht ein Tester?', 'Diskussion der gängigen Probleme und Hürden im Testmanagement.'],
+  ['Staatliches Förderprogramm: Bildungsgutschein', 'Eine Förderung kann im Einzelfall möglich sein. Über Voraussetzungen, förderfähige Kosten und Bewilligung entscheiden die zuständige Agentur für Arbeit oder das Jobcenter. Lass dir die Förderung vor einer Anmeldung bitte schriftlich bestätigen.'],
   ['Was zeichnet einen erfolgreichen Softwaretester aus?', 'Wichtige Fähigkeiten und Eigenschaften eines erfolgreichen Testers.'],
 ] } as const);
 
@@ -279,7 +280,7 @@ const faqs = pick(lang, { en: [
   ['Career opportunities as a software tester?', 'As a software tester, all doors are open to you for your IT career! The software tester combines an extraordinary number of topics in IT without going too deep. With the knowledge and skills of a software tester, you build the best basis for your IT career with enormous development potential!'],
 ], de: [
   ['Weshalb benötige ich das ISTQB® Zertifikat?', 'Das ISTQB® Certified Tester Zertifikat stellt die wichtigste Basis für einen Softwaretester dar. Mit dem Zertifikat zeigst du Kompetenz, weckst Vertrauen und erhältst einen Boost für deine IT-Karriere!'],
-  ['Was passiert mit meinen Daten?', 'Wir behandeln Ihre bereitgestellten Daten gemäß den Anforderungen der DSGVO und nutzen sie ausschließlich, um Sie über unsere kommenden Webinare zum Thema Softwaretest zu informieren und den Kontakt aufrechtzuerhalten. Du hast jederzeit das Recht dir eine Auskunft über die von dir gespeicherten Daten anzufragen, sie berichtigen zu lassen oder die Löschung zu verlangen.'],
+  ['Was passiert mit meinen Daten?', 'Wir behandeln deine bereitgestellten Daten gemäß den Anforderungen der DSGVO und nutzen sie ausschließlich, um dich über unsere kommenden Webinare zum Thema Softwaretest zu informieren und den Kontakt aufrechtzuerhalten. Du hast jederzeit das Recht, dir eine Auskunft über die von dir gespeicherten Daten anzufragen, sie berichtigen zu lassen oder die Löschung zu verlangen.'],
   ['Versicherung und Schadenersatz', 'Unsere Arbeit in diesem Tätigkeitsbereich umfasst: Rechtsstreitigkeiten, recherchen und Rechtsgutachten, friedliche Siedlungen.'],
   ['Worum handelt es sich im Webinar?', 'Das Webinar ist deine Möglichkeit einen Überblick zum Beruf des Softwaretesters zu erhalten und die Chance einen ersten Schritt in deine IT-Karriere zu machen.'],
   ['Wann findet das Webinar statt?', 'Die Webinare finden in der Regel Donnerstagabend statt. Mit der Anmeldung zum Webinar erhältst du von uns die Einladung zum Webinar so wie die genaue Uhrzeit und das Datum, wann das nächste Webinar stattfinde. Nutze deine Chance und melde dich jetzt an!'],
@@ -343,22 +344,28 @@ const copy = pick(lang, { en: {
   closeVideo: 'Close video',
   close: 'Close',
   comparisonSub: 'Certification holders by region, as of 2024.',
+  altCertificatePhoto: 'Participants working through exercises in a software-testing course',
+  altAccreditation: 'Accreditation certificate: ISTQB Accredited Training Provider',
+  altTrainerTeam: 'The WAMOCON Academy training team',
+  altAccreditationBadge: 'Seal: ISTQB Accredited Training Provider',
+  altWorkplace: 'Software tester at their workstation with test cases on screen',
+  altTrainerPortrait: 'Trainer at WAMOCON Academy',
 }, de: {
   heroLead: 'Lerne die Schritte, um erfolgreich als Softwaretester zu arbeiten. Gemeinsam bereiten wir dich optimal auf die ISTQB® Zertifizierung vor.',
   heroKicker: 'ISTQB® Zertifizierung',
   heroTitle: 'Werde zum zertifizierten Softwaretester',
   video: 'Video ANSCHAUEN',
   careerTitleAccent: 'ISTQB® Zertifizierung:',
-  careerTitle: 'Ihr Karrieresprung',
+  careerTitle: 'Dein Karrieresprung',
   careerSub: 'Neue Chancen im Softwaretesting entdecken',
-  careerText: 'Die ISTQB® Zertifizierung ist ein weltweit anerkanntes Gütesiegel für Softwaretester. Sie öffnet Türen zu neuen Karrieremöglichkeiten und hilft Ihnen, sich in einem wettbewerbsintensiven Markt zu behaupten. Entdecken Sie, wie diese Zertifizierung Ihre berufliche Laufbahn positiv beeinflussen kann.',
+  careerText: 'Die ISTQB® Zertifizierung ist ein weltweit anerkanntes Gütesiegel für Softwaretester. Sie öffnet Türen zu neuen Karrieremöglichkeiten und hilft dir, dich in einem wettbewerbsintensiven Markt zu behaupten. Entdecke, wie diese Zertifizierung deine berufliche Laufbahn positiv beeinflussen kann.',
   certificateAccent: 'Das ISTQB® Zertifikat',
   certificateTitle: 'gepaart mit Softwaretesting',
   certificateText: 'Als Softwaretester hast du nicht nur einen zukunftssicheren Beruf. Das ISTQB® Zertifikat ist der Schlüssel in der IT-Branche. Dort erwirbst du theoretisches Fachwissen und fundierte Praxis. In unserem Webinar stellen wir dir als Bildungsträger das ISTQB® ausführlich vor und sind eine Stütze für dich in deinem beruflichen IT-Leben.',
   without: 'Ohne die WAMOCON Academy',
   withoutItems: ['Niedriges Gehalt', 'Ablehnung der Bewerbung um eine Stelle', 'Geringe Aufstiegsmöglichkeiten', 'Mangelndes Fachwissen im Bereich Testmanagement'],
   with: 'Mit der WAMOCON Academy',
-  withItems: ['Überdurchschnittliches Gehalt', 'Arbeit an Projekten, die Ihnen gefallen', 'Hohe Entwicklungsmöglichkeiten dank ISTQB®-Zertifizierung', 'Fachwissen von erfahrenen Mentoren'],
+  withItems: ['Überdurchschnittliches Gehalt', 'Arbeit an Projekten, die dir gefallen', 'Hohe Entwicklungsmöglichkeiten dank ISTQB®-Zertifizierung', 'Fachwissen von erfahrenen Mentoren'],
   futureAccent: 'Starte in eine sichere Zukunft',
   futureTitle: 'mit den besten Vorteilen für dich',
   quote: '“Eine Karriere als Softwaretester bietet eine stabile, gefragte Perspektive mit vielen Möglichkeiten zur Weiterentwicklung und Spezialisierung”',
@@ -392,11 +399,17 @@ const copy = pick(lang, { en: {
   faqTitle: 'Fragen und Antworten',
   faqText1: 'Wir verstehen, dass die Entscheidung für den Karriereweg einige Fragen aufwirft. In unserem Webinar erhältst du die Möglichkeit, mit unseren Referenten deine wichtigsten Anliegen live zu besprechen.',
   faqText2: 'Trage dich deshalb für das Webinar ein und lasse dir all deine Fragen in Echtzeit beantworten.',
-  videoNotice: 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.',
+  videoNotice: 'Dieses Video wird erst nach deiner Zustimmung von YouTube geladen.',
   videoLoad: 'YouTube-Video laden',
   closeVideo: 'Video schließen',
   close: 'Schließen',
   comparisonSub: 'Zertifikatsinhaber nach Region, Stand 2024.',
+  altCertificatePhoto: 'Teilnehmende bearbeiten Übungen in einem Softwaretesting-Kurs',
+  altAccreditation: 'Akkreditierungsurkunde: ISTQB Accredited Training Provider',
+  altTrainerTeam: 'Das Trainerteam der WAMOCON Academy',
+  altAccreditationBadge: 'Siegel: ISTQB Accredited Training Provider',
+  altWorkplace: 'Softwaretester am Arbeitsplatz mit Testfällen auf dem Bildschirm',
+  altTrainerPortrait: 'Trainerin oder Trainer der WAMOCON Academy',
 } } as const);
 
 const webinarHash = pick(lang, {
@@ -442,14 +455,14 @@ const voucherCopy = pick(lang, {
     },
   de: {
       title: 'Bildungsgutschein vom Arbeitsamt: Voraussetzungen und Beantragung',
-      lead: 'Ein Bildungsgutschein kann Ihnen helfen, eine berufliche Weiterbildung Hier sind die wichtigsten Informationen zu den',
+      lead: 'Ein Bildungsgutschein kann dir helfen, eine berufliche Weiterbildung Hier sind die wichtigsten Informationen zu den',
       process: 'Voraussetzungen und dem Beantragungsprozess:',
       prerequisites: 'Voraussetzungen',
       items: [
-        ['Arbeitslosigkeit oder drohende Arbeitslosigkeit:', 'Sie müssen arbeitslos sein oder von Arbeitslosigkeit bedroht sein.'],
-        ['Notwendigkeit der Weiterbildung:', 'Die Weiterbildung muss notwendig sein, um Ihre Chancen auf dem Arbeitsmarkt zu verbessern.'],
-        ['Beratungsgespräch:', 'Ein persönliches Beratungsgespräch bei der Agentur für Arbeit ist erforderlich, um Ihren individuellen Weiterbildungsbedarf zu ermitteln.'],
-        ['Zielgerichtete Maßnahme:', 'Die Weiterbildung muss auf einen anerkannten Berufsabschluss oder eine Erweiterung Ihrer beruflichen Qualifikationen abzielen.'],
+        ['Arbeitslosigkeit oder drohende Arbeitslosigkeit:', 'Du musst arbeitslos sein oder von Arbeitslosigkeit bedroht sein.'],
+        ['Notwendigkeit der Weiterbildung:', 'Die Weiterbildung muss notwendig sein, um deine Chancen auf dem Arbeitsmarkt zu verbessern.'],
+        ['Beratungsgespräch:', 'Ein persönliches Beratungsgespräch bei der Agentur für Arbeit ist erforderlich, um deinen individuellen Weiterbildungsbedarf zu ermitteln.'],
+        ['Zielgerichtete Maßnahme:', 'Die Weiterbildung muss auf einen anerkannten Berufsabschluss oder eine Erweiterung deiner beruflichen Qualifikationen abzielen.'],
       ],
       link: 'Über den Gutschein',
     },
@@ -468,9 +481,9 @@ const registrationCopy = pick(lang, {
     },
   de: {
       title: 'Webinar Anmeldung',
-      name: 'Ihr Name',
+      name: 'Dein Name',
       email: 'E-Mail',
-      consentPre: 'Informationen zur Verarbeitung Ihrer Anfrage finden Sie in der ',
+      consentPre: 'Informationen zur Verarbeitung deiner Anfrage findest du in der ',
       consentLink: 'Datenschutzerklärung',
       consentPost: '.',
       inquiry: 'Dies ist eine unverbindliche Anfrage und kein Kauf.',
@@ -500,7 +513,7 @@ const registrationCopy = pick(lang, {
       <img src={asset('tild6435-3037-4261-b437-346164326231__vadsv.png')} alt="" />
     </div>
     <div data-reveal>
-      <h2><span>{copy.careerTitleAccent}</span><br />{copy.careerTitle}</h2>
+      <h2><span>{copy.careerTitleAccent}{" "}</span><br />{copy.careerTitle}</h2>
       <h3>{copy.careerSub}</h3>
       <p>{copy.careerText}</p>
     </div>
@@ -511,12 +524,12 @@ const registrationCopy = pick(lang, {
   <div class="istqb-shell">
     <div class="istqb-split istqb-split--media">
       <div data-reveal>
-        <h2><span>{copy.certificateAccent}</span><br />{copy.certificateTitle}</h2>
+        <h2><span>{copy.certificateAccent}{" "}</span><br />{copy.certificateTitle}</h2>
         <p>{copy.certificateText}</p>
       </div>
       <div class="istqb-certificate__media" data-reveal>
-        <img class="istqb-certificate__photo" src={asset('tild3464-3762-4433-b130-323731353237__img52.jpg')} alt="Teilnehmende beim Softwaretesting-Training" />
-        <img class="istqb-certificate__document" src={asset('tild3833-6665-4535-b865-613661646166__wma_akkreditierung_i.png')} alt="ISTQB® Akkreditierung" />
+        <img class="istqb-certificate__photo" src={asset('tild3464-3762-4433-b130-323731353237__img52.jpg')} alt={copy.altCertificatePhoto} />
+        <img class="istqb-certificate__document" src={asset('tild3833-6665-4535-b865-613661646166__wma_akkreditierung_i.png')} alt={copy.altAccreditation} />
       </div>
     </div>
     <div class="istqb-comparison" data-reveal>
@@ -589,8 +602,8 @@ const registrationCopy = pick(lang, {
       <a class="istqb-button" href={webinarHash} data-open-modal="istqb-webinar-modal">{copy.webinarCta}</a>
     </div>
     <div class="istqb-experience__media" data-reveal>
-      <img src={asset('tild3565-3164-4633-b961-376633653466__photo_2021-09-11_22-.png')} alt="Die Trainer der WAMOCON Academy" />
-      <img class="istqb-experience__badge" src={asset('tild3438-3437-4465-b730-646339663633__frame_929519.png')} alt="" />
+      <img src={asset('tild3565-3164-4633-b961-376633653466__photo_2021-09-11_22-.png')} alt={copy.altTrainerTeam} />
+      <img class="istqb-experience__badge" src={asset('tild3438-3437-4465-b730-646339663633__frame_929519.png')} alt={copy.altAccreditationBadge} />
     </div>
   </div>
 </section>
@@ -623,7 +636,7 @@ const registrationCopy = pick(lang, {
         <p class="istqb-webinar__final">{copy.expectFinal}</p>
       </div>
       <a class="istqb-webinar__media" href="#zeropopup" data-open-modal="istqb-video-modal" data-youtube-id="Q_0mtjo8GAU" data-reveal>
-        <img src={asset('tild6633-6566-4234-a339-386662643565__site-expert-coding-r.jpg')} alt="Softwaretester am Arbeitsplatz" />
+        <img src={asset('tild6633-6566-4234-a339-386662643565__site-expert-coding-r.jpg')} alt={copy.altWorkplace} />
         <span>{copy.video}</span>
       </a>
     </div>
@@ -677,7 +690,7 @@ const registrationCopy = pick(lang, {
 <section class="istqb-section istqb-success">
   <div class="istqb-shell">
     <header class="istqb-heading" data-reveal>
-      <h2><a href={reviewsHref}>{copy.successTitle}<br /><span>{copy.successAccent}</span></a></h2>
+      <h2><a href={reviewsHref}>{copy.successTitle}{" "}<br /><span>{copy.successAccent}</span></a></h2>
       <p>{copy.successLead}</p>
     </header>
     <div class="istqb-success__grid">
@@ -711,7 +724,7 @@ const registrationCopy = pick(lang, {
     <div class="istqb-trainers__grid">
       {trainers.map(([name, image]) => (
         <figure data-reveal>
-          <img src={asset(image)} alt={name} loading="lazy" />
+          <img src={asset(image)} alt={copy.altTrainerPortrait} loading="lazy" />
           <figcaption>{name}</figcaption>
         </figure>
       ))}
@@ -808,6 +821,7 @@ const registrationCopy = pick(lang, {
       <span>{registrationCopy.email}</span>
       <input type="email" name="email" placeholder={registrationCopy.email} required />
     </label>
+    <ReferralField lang={lang} id="referral-istqb-webinar" />
     <p class="istqb-registration-form__consent">
       <span>{registrationCopy.consentPre}<a href={privacyHref}>{registrationCopy.consentLink}</a>{registrationCopy.consentPost}</span>
     </p>

@@ -2,6 +2,7 @@
 import { assets } from '../../data/academy';
 import { legalNav, thanksHref, ui, type Lang } from '../../i18n/config';
 import { pick } from '../../i18n/utils';
+import ReferralField from '../ui/ReferralField.astro';
 
 interface Props {
   lang: Lang;
@@ -22,14 +23,16 @@ const t = (key: keyof (typeof ui)['de']) => ui[lang][key];
 const redirect = thanksHref[lang];
 const privacyHref = legalNav.privacy[lang].href;
 const displayTitle = title ?? t('form.title');
+// Eindeutig je Formular: LeadForm rendert pro Seite zweimal (Abschnitt + Footer-Modal).
+const referralId = `referral-${type}-${anchorId ?? 'modal'}`;
 const privacyNotice = pick(lang, {
-  de: 'Mit dem Absenden senden Sie eine unverbindliche Anfrage an die WAMOCON Academy GmbH. Wir verwenden Ihre Angaben nur zur Beantwortung Ihrer Anfrage. Weitere Informationen finden Sie in der ',
+  de: 'Mit dem Absenden sendest du eine unverbindliche Anfrage an die WAMOCON Academy GmbH. Wir verwenden deine Angaben nur zur Beantwortung deiner Anfrage. Weitere Informationen findest du in der ',
   en: 'By submitting, you send a non-binding inquiry to WAMOCON Academy GmbH. We use your details only to answer your inquiry. More information is available in the ',
 });
 
 // Named person accountable for enquiries submitted through this form.
 const responsiblePerson = pick(lang, {
-  de: 'Ihre Anfrage wird bearbeitet von Dipl.-Ing. Waleri Moretz, Geschäftsführer der WAMOCON Academy GmbH.',
+  de: 'Deine Anfrage wird bearbeitet von Dipl.-Ing. Waleri Moretz, Geschäftsführer der WAMOCON Academy GmbH.',
   en: 'Your enquiry is handled by Dipl.-Ing. Waleri Moretz, Managing Director of WAMOCON Academy GmbH.',
 });
 
@@ -66,6 +69,7 @@ const consultationAlt = pick(lang, {
         <span>{t('form.email')}</span>
         <input type="email" name="email" placeholder={t('form.email')} autocomplete="email" required aria-describedby="lead-contact-hint" />
       </label>
+      <ReferralField lang={lang} id={referralId} />
       <p id="lead-contact-hint" class="lead-form__consent">
         <span>
           {complianceMode ? privacyNotice : t('form.consent.pre')}

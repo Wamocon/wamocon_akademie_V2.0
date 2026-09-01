@@ -5,7 +5,9 @@ import { pick } from '../../i18n/utils';
 import VideoEmbed from '../ui/VideoEmbed.astro';
 import { coursePopupActions, coursePopupBlocks, coursePopupCategory } from '../../data/coursePopup';
 import RichText from '../ui/RichText.astro';
+import ReferralField from '../ui/ReferralField.astro';
 import { programAssets, programContent, programCourses } from '../../data/programs';
+import { scheduleByMonth } from '../../data/catalog';
 
 interface Props {
   lang: Lang;
@@ -53,13 +55,18 @@ const c = pick(lang, {
   de: {
     privacyLabel: 'Datenschutzerklärung',
     formNoticeStart:
-      'Ihre Anfrage an die WAMOCON Academy GmbH ist unverbindlich und stellt keinen Kauf dar. Informationen zur Verarbeitung Ihrer Daten finden Sie in der ',
+      'Deine Anfrage an die WAMOCON Academy GmbH ist unverbindlich und stellt keinen Kauf dar. Informationen zur Verarbeitung deiner Daten findest du in der ',
     scheduleMonths: [['In Planung', ['Neue Kurstermine werden bekannt gegeben.']]],
     consultationAlt: 'Persönliche Beratung bei der WAMOCON Academy',
+    accreditationStrip: 'Logos: Land Hessen, ISTQB Accredited Training Provider und International Software Testing Qualifications Board',
+    network: 'Übersicht der ISTQB-Lern- und Teamkurse der WAMOCON Academy',
+    diploma: 'Abschlusskappe und Zertifikat als Sinnbild für den Kursabschluss',
+    certification: 'Logo: ISTQB Accredited Training Provider',
+    webinar: 'Softwaretester bei der Arbeit an einem Testfall',
     scrollHint: 'Nach unten scrollen ↓',
     askQuestion: 'Eine Frage stellen',
-    yourQuestion: 'Ihre Frage',
-    videoNotice: 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.',
+    yourQuestion: 'Deine Frage',
+    videoNotice: 'Dieses Video wird erst nach deiner Zustimmung von YouTube geladen.',
     videoLoad: 'YouTube-Video laden',
   },
   en: {
@@ -68,6 +75,11 @@ const c = pick(lang, {
       'Your inquiry to WAMOCON Academy GmbH is non-binding and does not constitute a purchase. Information about the processing of your data can be found in the ',
     scheduleMonths: [['Planned', ['New course dates will be announced.']]],
     consultationAlt: 'Personal consultation at WAMOCON Academy',
+    accreditationStrip: 'Logos: State of Hesse, ISTQB Accredited Training Provider and International Software Testing Qualifications Board',
+    network: 'Overview of the ISTQB individual and team courses at WAMOCON Academy',
+    diploma: 'Graduation cap and certificate representing course completion',
+    certification: 'Logo: ISTQB Accredited Training Provider',
+    webinar: 'Software tester working on a test case',
     scrollHint: 'Scroll down ↓',
     askQuestion: 'Ask a question',
     yourQuestion: 'Your question',
@@ -77,7 +89,13 @@ const c = pick(lang, {
 });
 const privacyLabel = c.privacyLabel;
 const formNoticeStart = c.formNoticeStart;
-const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
+// Aufgabe 9: sobald in src/data/catalog.ts Kurstermine hinterlegt sind, ersetzen
+// sie hier den "In Planung"-Platzhalter — im Text und in den strukturierten Daten.
+const schedule = scheduleByMonth(lang);
+const courseDates = schedule ?? content.dates;
+const scheduleMonths: Array<[string, string[]]> = schedule
+  ? schedule.map((month) => [month.month, month.rows.map(([day]) => day)])
+  : (c.scheduleMonths as Array<[string, string[]]>);
 ---
 
 <section class="page-hero program-hero">
@@ -85,7 +103,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
     <img
         class="program-hero__accreditation"
         src={programAssets.accreditation}
-        alt="Hessen, ISTQB Accredited Training Provider und International Software Testing Qualifications Board"
+        alt={c.accreditationStrip}
         width="1400"
         height="450"
       />
@@ -96,7 +114,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
     <div class="program-hero__copy page-hero__copy" data-reveal>
       <h1>
         <span class="program-hero__headline-accent">
-          {heroAccentLines.map((line) => <span class="program-hero__headline-line">{line}</span>)}
+          {heroAccentLines.map((line) => <span class="program-hero__headline-line">{line}{" "}</span>)}
         </span>
         <span class="program-hero__headline-rest">{content.heroRest}</span>
       </h1>
@@ -163,7 +181,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
     </div>
 
     <figure class="program-network" data-reveal>
-      <img src={programAssets.network} alt="ISTQB Lern- und Teamkurse im Überblick" width="1440" height="715" loading="lazy" />
+      <img src={programAssets.network} alt={c.network} width="1440" height="715" loading="lazy" />
       <figcaption>{content.networkText}</figcaption>
     </figure>
   </div>
@@ -172,8 +190,8 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
 <section class="program-section program-dates">
   <div class="program-shell">
     <h2>{content.datesTitle}</h2>
-    <div class:list={['program-dates__grid', { 'program-dates__grid--single': content.dates.length === 1 }]}>
-      {content.dates.map((date) => (
+    <div class:list={['program-dates__grid', { 'program-dates__grid--single': courseDates.length === 1 }]}>
+      {courseDates.map((date) => (
         <article class="date-column" data-reveal>
           <h3>{date.month}</h3>
           <ul>
@@ -203,6 +221,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
           <label><span>{content.form.name}</span><input type="text" name="name" placeholder={content.form.name} autocomplete="name" required /></label>
           <label><span>{content.form.phone}</span><input type="tel" name="phone" placeholder={content.form.phone} autocomplete="tel" /></label>
           <label><span>{content.form.email}</span><input type="email" name="email" placeholder={content.form.email} autocomplete="email" required /></label>
+          <ReferralField lang={lang} id="referral-courses-advice" />
           <p class="program-form__notice">{formNoticeStart}<a href={privacyHref}>{privacyLabel}</a>.</p>
           <p class="lead-form__status" role="alert" aria-live="assertive" hidden></p>
           <button class="program-button" type="submit">{content.form.submit}</button>
@@ -215,13 +234,13 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
 <section class="program-section program-future">
   <div class="program-shell program-future__grid">
     <div class="program-future__copy" data-reveal>
-      <h2><a href={certificationHref}><span class="program-future__eyebrow">{content.futureTitleAccent}</span>{content.futureTitleRest}</a></h2>
+      <h2><a href={certificationHref}><span class="program-future__eyebrow">{content.futureTitleAccent}{" "}</span>{content.futureTitleRest}</a></h2>
       <p>{content.futureIntro}</p>
       <p>{content.futureText}</p>
     </div>
     <div class="program-future__media" data-reveal>
-      <img class="program-future__diploma" src={programAssets.diploma} alt="Abschlusskappe und Zertifikat" width="1280" height="1280" loading="lazy" />
-      <img class="program-future__certification" src={programAssets.certification} alt="ISTQB Accredited Training Provider" width="726" height="450" loading="lazy" />
+      <img class="program-future__diploma" src={programAssets.diploma} alt={c.diploma} width="1280" height="1280" loading="lazy" />
+      <img class="program-future__certification" src={programAssets.certification} alt={c.certification} width="726" height="450" loading="lazy" />
     </div>
   </div>
 </section>
@@ -265,7 +284,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
       <p class="program-webinar__closing">{content.webinarClosing}</p>
     </div>
     <div class="program-webinar__media" data-reveal>
-      <img src={programAssets.webinar} alt="Softwaretester bei der Arbeit" width="1680" height="1118" loading="lazy" />
+      <img src={programAssets.webinar} alt={c.webinar} width="1680" height="1118" loading="lazy" />
       <div class="program-webinar__actions">
         <a class="program-button" href={certificationHref}>{content.moreDetails}</a>
         <a class="program-button program-button--outline" href="#zeropopup" data-dialog-hook="program-video-popup">{content.video}</a>
@@ -315,6 +334,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
       <label><span>{content.form.name}</span><input type="text" name="name" placeholder={content.form.name} autocomplete="name" required /></label>
       <label><span>{content.form.email}</span><input type="email" name="email" placeholder={content.form.email} autocomplete="email" required /></label>
       <label><span>{c.yourQuestion}</span><textarea name="message" placeholder={c.yourQuestion} rows="5" required></textarea></label>
+      <ReferralField lang={lang} id="referral-question-dialog" />
       <p class="program-form__notice">{formNoticeStart}<a href={privacyHref}>{privacyLabel}</a>.</p>
       <p class="lead-form__status" role="alert" aria-live="assertive" hidden></p>
       <button class="program-button" type="submit">{content.form.submit}</button>
@@ -335,6 +355,7 @@ const scheduleMonths = c.scheduleMonths as Array<[string, string[]]>;
           <label><span>{content.form.name}</span><input type="text" name="name" placeholder={content.form.name} autocomplete="name" required /></label>
           <label><span>{content.form.phone}</span><input type="tel" name="phone" placeholder={content.form.phone} autocomplete="tel" /></label>
           <label><span>{content.form.email}</span><input type="email" name="email" placeholder={content.form.email} autocomplete="email" required /></label>
+          <ReferralField lang={lang} id="referral-courses-dialog" />
           <p class="program-form__notice">{formNoticeStart}<a href={privacyHref}>{privacyLabel}</a>.</p>
           <p class="lead-form__status" role="alert" aria-live="assertive" hidden></p>
           <button class="program-button" type="submit">{content.form.submit}</button>

@@ -7,9 +7,9 @@ interface Props { lang: Lang; }
 const { lang } = Astro.props;
 const copy = pick(lang, {
   de: {
-    close: 'Schließen', title: 'Senden Sie Ihre Bewertung', name: 'Name', namePlaceholder: 'Ihr Name',
+    close: 'Schließen', title: 'Sende deine Bewertung', name: 'Name', namePlaceholder: 'Dein Name',
     review: 'Bewertung', comments: 'Kommentare/Link zur Datei', submit: 'Anfrage senden',
-    privacyPre: 'Informationen zur Verarbeitung finden Sie in der ', privacyLink: 'Datenschutzerklärung',
+    privacyPre: 'Informationen zur Verarbeitung findest du in der ', privacyLink: 'Datenschutzerklärung',
     publication: 'Optional: Ich willige ein, dass meine Bewertung zusammen mit meinem Namen als Teilnehmerstimme auf den Websites und in den Social-Media-Kanälen der WAMOCON Academy GmbH veröffentlicht werden darf. Die Einwilligung ist freiwillig und jederzeit mit Wirkung für die Zukunft widerrufbar.',
     notice: 'Ohne diese freiwillige Einwilligung wird die Bewertung nicht veröffentlicht. Dies ist kein Kauf.',
   },

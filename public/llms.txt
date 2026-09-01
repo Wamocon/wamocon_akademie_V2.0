@@ -10,7 +10,6 @@
 - Commercial register: Amtsgericht Frankfurt am Main, HRB 123666
 - VAT identification number: DE344930486
 - Accreditation: listed by ISTQB as an accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 training materials
-- Combined practical experience of the training team: around 40 years
 - Languages served: German and English
 - Parent organisation: WAMOCON GmbH, an IT test-management and quality-assurance company
 
@@ -21,7 +20,7 @@
 - The 360-degree Booster System, a structured career-entry programme for software testers
 - Educational programmes for software testers, including career-changer tracks
 - Individual and team training formats
-- Practical mentoring by trainers working on live IT projects
+- Practical mentoring by practising test managers
 
 ## Who the training is for
 

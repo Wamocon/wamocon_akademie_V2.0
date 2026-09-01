@@ -28,7 +28,7 @@ Employers value ISTQB certification because it removes ambiguity about what a te
 
 ## What makes WAMOCON Academy different from other training providers?
 
-WAMOCON Academy is operated alongside WAMOCON GmbH, an IT test-management company that delivers testing for large German enterprises. Trainers teach from live project work rather than from theory alone, and the combined practical experience of the training team is around 40 years. The academy is listed by ISTQB as an accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 materials. Participants therefore learn the same methods the parent company applies in enterprise projects.
+WAMOCON Academy is operated alongside WAMOCON GmbH, an IT test-management company that delivers testing for large German enterprises. Your work is assessed by practising test managers. The academy is listed by ISTQB as an accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 materials. Participants therefore learn the same methods the parent company applies in enterprise projects.
 
 ## What results do participants report?
 

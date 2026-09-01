@@ -5,8 +5,11 @@ import { pages } from '../../data/academy';
 
 const lang = 'en';
 const page = pages.courses[lang];
+// Own meta description: the page lead is too long for search results.
+const metaDescription =
+  'All ISTQB® courses at WAMOCON Academy: CTFL 4.0 and Agile Tester 1.0, as individual or team training in Eschborn and online.';
 ---
 
-<BaseLayout title={page.title} description={page.lead} lang={lang} image={pages.courses.image}>
+<BaseLayout title={page.title} description={metaDescription} lang={lang} image={pages.courses.image}>
   <SoftwareTesterProgramsPage lang={lang} />
 </BaseLayout>

@@ -34,6 +34,28 @@ function cap(value, max) {
   return String(value || '').trim().slice(0, max);
 }
 
+// Aufgabe 11: freiwillige Selbstauskunft zur Herkunft der Anfrage.
+// Der Wert kommt als stabiler Schluessel aus der Auswahlliste; bei "other"
+// zaehlt die Freitexteingabe. Unbekannte Schluessel werden verworfen, damit
+// nichts Beliebiges in die Benachrichtigung geraet.
+const REFERRAL_LABELS = {
+  google: 'Google-Suche',
+  recommendation: 'Empfehlung',
+  instagram: 'Instagram',
+  directory: 'Bildungsportal oder Verzeichnis',
+  agency: 'Arbeitsagentur oder Jobcenter',
+  known: 'Wir kennen uns bereits',
+};
+
+function referralLabel(body) {
+  const key = cap(body.referral, 40);
+  if (key === 'other') {
+    const free = cap(body.referralOther, 120);
+    return free ? `Sonstiges: ${free}` : 'Sonstiges';
+  }
+  return Object.hasOwn(REFERRAL_LABELS, key) ? REFERRAL_LABELS[key] : '';
+}
+
 function escapeHtml(value) {
   return String(value)
     .replace(/&/g, '&amp;')
@@ -174,17 +196,18 @@ const EMAIL_COPY = {
     page: 'Seite',
     phone: 'Telefon',
     message: 'Nachricht',
+    referral: 'Aufmerksam geworden über',
     publicationAllowed: 'Veröffentlichung erlaubt',
     yes: 'Ja',
     no: 'Nein',
     internalTitle: 'Neue Anfrage über die Academy-Website',
     internalBody: 'Eine neue Anfrage wurde übermittelt.',
     internalSubject: (name) => `Neue Academy-Anfrage von ${name}`,
-    confirmTitle: 'Vielen Dank für Ihre Anfrage',
+    confirmTitle: 'Vielen Dank für deine Anfrage',
     greeting: 'Hallo',
     confirmBody:
-      'vielen Dank für Ihre Anfrage bei der WAMOCON Academy. Wir haben Ihre Daten erhalten und melden uns schnellstmöglich bei Ihnen.',
-    confirmSubject: 'Vielen Dank für Ihre Anfrage bei WAMOCON Academy',
+      'vielen Dank für deine Anfrage bei der WAMOCON Academy. Wir haben deine Daten erhalten und melden uns schnellstmöglich bei dir.',
+    confirmSubject: 'Vielen Dank für deine Anfrage bei WAMOCON Academy',
   },
   en: {
     footer: 'This email was sent automatically via the WAMOCON Academy website.',
@@ -192,6 +215,7 @@ const EMAIL_COPY = {
     page: 'Page',
     phone: 'Phone',
     message: 'Message',
+    referral: 'Heard about us via',
     publicationAllowed: 'Publication allowed',
     yes: 'Yes',
     no: 'No',
@@ -242,6 +266,7 @@ function details(submission, lang) {
     [t.phone, submission.phone || '-'],
     ['E-Mail', submission.email],
     [t.message, submission.comment || '-'],
+    [t.referral, submission.referral || '-'],
     ...(submission.type === 'review'
       ? [[t.publicationAllowed, submission.publicationConsent ? t.yes : t.no]]
       : []),
@@ -337,6 +362,9 @@ export default async function handler(req, res) {
     email: cap(body.email, 320),
     comment: cap(body.comment, 5_000),
     publicationConsent: body.publicationConsent === true || body.publicationConsent === 'true' || body.publicationConsent === 'on',
+    // Freiwillige Selbstauskunft zur Herkunft. Kein Pflichtfeld, daher keine
+    // Validierung, die eine Absendung verhindern koennte.
+    referral: referralLabel(body),
   };
   if (!submission.name || !submission.email) {
     return res.status(400).json({ ok: false, error: 'Missing required fields' });

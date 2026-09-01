@@ -24,9 +24,9 @@ const c = pick(lang, {
     experienceLead: 'über 50 Jahre gebündelte',
     experienceRest: 'Praxiserfahrung unseres Teams',
     mission: 'UNSERE MISSION',
-    videoNotice: 'Dieses Video wird erst nach Ihrer Zustimmung von YouTube geladen.',
+    videoNotice: 'Dieses Video wird erst nach deiner Zustimmung von YouTube geladen.',
     videoLoad: 'YouTube-Video laden',
-    successLead: 'Starten Sie Ihre',
+    successLead: 'Starte deine',
     successLeadTwo: 'Erfolgsgeschichte mit',
     successRest: 'der WAMOCON Academy',
     certification: 'Zertifizierung',
@@ -34,12 +34,12 @@ const c = pick(lang, {
     stepsLead: 'Von der Bewerbung bis zum IT-Projekt:',
     stepsRest: '6 Schritte zum gefragten Softwaretester',
     stepsClosing:
-      'Entdecken Sie jetzt, wie diese sechs entscheidenden Schritte Ihre Karriere verändern können. Melden Sie sich noch heute an!',
+      'Entdecke jetzt, wie diese sechs entscheidenden Schritte deine Karriere verändern können. Melde dich noch heute an!',
     onlineEyebrow: 'Online Kurse',
     onlineLead: 'Lerne Softwaretesten.',
     onlineRest: 'Nicht nur Folien.',
     onlineText:
-      'Unser Online-Kurs deckt alle sechs Kapitel des ISTQB® CTFL 4.0 Lehrplans ab und verbindet die Theorie direkt mit der Praxis: In der Lernplattform DiTeLe üben Sie das Gelernte an interaktiven Aufgaben und simulieren die Prüfung. Sie lernen ortsunabhängig und teilen sich Ihr Tempo selbst ein.',
+      'Unser Online-Kurs deckt alle sechs Kapitel des ISTQB® CTFL 4.0 Lehrplans ab und verbindet die Theorie direkt mit der Praxis: In der Lernplattform DiTeLe übst du das Gelernte an interaktiven Aufgaben und simulierst die Prüfung. Du lernst ortsunabhängig und teilst dir dein Tempo selbst ein.',
     onlineFacts: [
       ['128', 'strukturierte Lerneinheiten mit über 7 Stunden Video'],
       ['45+', 'interaktive Übungen und über 300 Übungsfragen in DiTeLe'],
@@ -47,6 +47,7 @@ const c = pick(lang, {
     ],
     onlineCta: 'Zu den Online Kursen',
     diteleCta: 'DiTeLe App ansehen',
+    altAccreditation: 'Akkreditierungsurkunde: ISTQB Accredited Training Provider',
   },
   en: {
     experienceLead: 'over 50 years of combined',
@@ -74,6 +75,7 @@ const c = pick(lang, {
     ],
     onlineCta: 'Go to the online courses',
     diteleCta: 'Explore the DiTeLe app',
+    altAccreditation: 'Accreditation certificate: ISTQB Accredited Training Provider',
   },
 });
 ---
@@ -112,7 +114,7 @@ const c = pick(lang, {
   <div class="container experience__top">
     <div class="experience__copy" data-reveal>
       <h2>
-        <span>{c.experienceLead}</span><br />{c.experienceRest}
+        <span>{c.experienceLead}{" "}</span><br />{c.experienceRest}
       </h2>
       {h.intro.paragraphs[lang].map((p) => <p>{p}</p>)}
     </div>
@@ -133,7 +135,7 @@ const c = pick(lang, {
     />
     <div class="success-story__copy" data-reveal>
       <h2>
-        <span>{c.successLead}{c.successLeadTwo && <><br />{c.successLeadTwo}</>}</span><br />{c.successRest}
+        <span>{c.successLead}{" "}{c.successLeadTwo && <><br />{c.successLeadTwo}{" "}</>}</span><br />{c.successRest}
       </h2>
       <p>{h.success.text[lang]}</p>
       <img src={assets.accentCurve} alt="" width="320" height="320" loading="lazy" aria-hidden="true" />
@@ -159,7 +161,7 @@ const c = pick(lang, {
       <Button href={istqbHref}>{c.istqbCta}</Button>
     </div>
     <figure class="istqb__certificate" data-reveal>
-      <img src={assets.certificate} alt="ISTQB Accredited Training Provider" width="960" height="1358" loading="lazy" />
+      <img src={assets.certificate} alt={c.altAccreditation} width="960" height="1358" loading="lazy" />
     </figure>
   </div>
 </section>

@@ -5,8 +5,11 @@ import { pages } from '../data/academy';
 
 const lang = 'de';
 const page = pages.courses[lang];
+// Eigene Meta-Beschreibung: der Seiten-Lead ist mit 213 Zeichen zu lang fuer die Suchergebnisse.
+const metaDescription =
+  'Alle ISTQB®-Kurse der WAMOCON Academy im Überblick: CTFL 4.0 und Agile Tester 1.0, als Einzel- oder Teamtraining in Eschborn und online.';
 ---
 
-<BaseLayout title={page.title} description={page.lead} lang={lang} image={pages.courses.image}>
+<BaseLayout title={page.title} description={metaDescription} lang={lang} image={pages.courses.image}>
   <SoftwareTesterProgramsPage lang={lang} />
 </BaseLayout>

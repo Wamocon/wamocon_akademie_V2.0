@@ -5,6 +5,7 @@ import Footer from '../components/layout/Footer.astro';
 import CookieBanner from '../components/ui/CookieBanner.astro';
 import ChatWidget from '../components/ui/ChatWidget.astro';
 import { assets } from '../data/academy';
+import { aggregateRating } from '../data/catalog';
 import { getAlternateLangUrls, pick } from '../i18n/utils';
 import { company, langCodes, localeTags, ogLocales, thanksHref, type Lang } from '../i18n/config';
 
@@ -112,6 +113,9 @@ const organization = {
     'https://www.facebook.com/WAMOCONACADEMY/',
     'https://www.instagram.com/bildungszentrum_wma/',
   ],
+  // Aufgabe 10: erscheint erst, sobald in src/data/catalog.ts belegbare Werte
+  // aus den oeffentlich sichtbaren Bewertungen eingetragen sind.
+  ...(aggregateRating() ? { aggregateRating: aggregateRating() } : {}),
   contactPoint: [
     {
       '@type': 'ContactPoint',
@@ -360,8 +364,8 @@ const structuredData = {
       // Form status messages, per locale. Falls back to German for unknown values.
       const FORM_MESSAGES = {
         de: {
-          captcha: 'Bitte bestätigen Sie die Sicherheitsprüfung.',
-          failed: 'Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es erneut oder rufen Sie uns an.',
+          captcha: 'Bitte bestätige die Sicherheitsprüfung.',
+          failed: 'Die Anfrage konnte nicht gesendet werden. Bitte versuche es erneut oder ruf uns an.',
         },
         en: {
           captcha: 'Please complete the security check.',
@@ -444,6 +448,9 @@ const structuredData = {
             email: String(data.get('email') || ''),
             comment: String(data.get('comment') || data.get('message') || ''),
             publicationConsent: data.get('publicationConsent') === 'on',
+            // Freiwillige Selbstauskunft zur Herkunft (Aufgabe 11).
+            referral: String(data.get('referral') || ''),
+            referralOther: String(data.get('referralOther') || ''),
             company: String(data.get('company') || ''),
             'cf-turnstile-response': String(data.get('cf-turnstile-response') || ''),
           };

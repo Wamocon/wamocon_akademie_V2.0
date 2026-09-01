@@ -84,7 +84,7 @@ export const coursePopupBlocks = (
         /^ISTQB® Certified Tester Foundation Level\b/i.test(line) ||
         /^\d+\.\s*Etappe\b/i.test(line) ||
         /^(?:Stage\s+\d+|\d+(?:st|nd|rd|th)\s+stage)\s*:/i.test(line) ||
-        /^(?:Ihre Vorteile auf dem Arbeitsmarkt|Your (?:team’s |team's )?advantages (?:in|on) the job market)$/i.test(line);
+        /^(?:Deine Vorteile auf dem Arbeitsmarkt|Your (?:team’s |team's )?advantages (?:in|on) the job market)$/i.test(line);
       if (isHeading) {
         flushParagraph();
         flushList();

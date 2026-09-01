@@ -4,9 +4,11 @@ import AboutAcademyPage from '../components/sections/AboutAcademyPage.astro';
 import { pages } from '../data/academy';
 
 const lang = 'de';
-const page = pages.about[lang];
+// Eigene Meta-Beschreibung: der Seiten-Lead ist mit 230 Zeichen zu lang fuer die Suchergebnisse.
+const metaDescription =
+  'Bei ISTQB akkreditiertes IT-Bildungszentrum in Eschborn. Wir bilden dich zum Softwaretester aus – von den Grundlagen bis zur ISTQB®-Zertifizierung.';
 ---
 
-<BaseLayout title="Über die Akademie" description={page.lead} lang={lang} image={pages.about.image}>
+<BaseLayout title="Über die Academy" description={metaDescription} lang={lang} image={pages.about.image}>
   <AboutAcademyPage lang={lang} />
 </BaseLayout>
