@@ -20,7 +20,12 @@ No Tilda or legacy standalone HTML source is used by the build.
 
 ## Local development
 
-Requires Node.js 22.12 or newer.
+Requires Node.js 22.12 or newer; `.nvmrc` pins the version the build is verified
+against. On Windows, install or update Node from the 22 LTS line:
+
+```powershell
+winget upgrade --id OpenJS.NodeJS.22   # or: winget install --id OpenJS.NodeJS.22
+```
 
 ```bash
 npm install
