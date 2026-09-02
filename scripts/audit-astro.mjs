@@ -172,7 +172,14 @@ try {
 const vercel = JSON.parse(await readFile(join(root, 'vercel.json'), 'utf8'));
 const redirects = vercel.redirects ?? [];
 assert(redirects.some((entry) => entry.source === '/page53378373.html' && entry.destination === '/'), 'Legacy homepage redirect is missing');
-assert(redirects.some((entry) => entry.source === '/Impressum' && entry.destination === '/impressum'), 'Legacy Impressum redirect is missing');
+// Compared without the trailing slash: under `trailingSlash: true` the source must
+// read '/Impressum/', otherwise Vercel normalises the request before the rule can match.
+const sameRoute = (left, right) =>
+  left.replace(/\/+$/, '').toLowerCase() === right.replace(/\/+$/, '').toLowerCase();
+assert(
+  redirects.some((entry) => sameRoute(entry.source, '/Impressum') && sameRoute(entry.destination, '/impressum')),
+  'Legacy Impressum redirect is missing',
+);
 
 if (failures.length) {
   console.error(`Astro production audit failed (${failures.length}):`);

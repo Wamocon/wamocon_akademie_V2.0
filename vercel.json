@@ -3,20 +3,9 @@
   "framework": "astro",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "cleanUrls": true,
+  "cleanUrls": false,
   "trailingSlash": true,
   "redirects": [
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.test-it-academy.com"
-        }
-      ],
-      "destination": "https://test-it-academy.com/:path*",
-      "permanent": true
-    },
     {
       "source": "/page53378373.html",
       "destination": "/",
@@ -118,7 +107,7 @@
       "permanent": true
     },
     {
-      "source": "/Impressum",
+      "source": "/Impressum/",
       "destination": "/impressum/",
       "permanent": true
     }
