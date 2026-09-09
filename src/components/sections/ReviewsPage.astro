@@ -93,6 +93,32 @@ const copy = pick(lang, {
       consentPre: 'I hereby confirm that I have read the ', consentLink: 'privacy policy',
       consentPost: ' and agree that WAMOCON Academy GmbH may store and process my data, including personal data.',
     },
+  kk: {
+      title: 'Тыңдаушыларымыз не дейді?',
+      intro: 'Тыңдаушыларымыз өз тәжірибесімен және бізден алған нақты пайдасымен бөліседі.',
+      // Pflichtangabe nach § 5b Abs. 3 UWG.
+      authenticity: 'Пікірлеріміздің шынайылығы туралы: мұнда жарияланған барлық пікір мен тыңдаушы лебізі WAMOCON Academy бағдарламасын шын мәнінде аяқтаған адамдардан алынған. Жариялау алдында әр пікірді қатысу құжаттарымен салыстырып тексереміз. Пікірлер сатып алынбайды және қандай да бір өтемақының орнына жиналмайды; біз оларды мақтау немесе сын екеніне қарамастан өзгеріссіз жариялаймыз.',
+      sendEvaluation: 'Пікіріңізді жіберіңіз',
+      storiesLabel: 'Табыс тарихтары',
+      testimonialsLabel: 'Тыңдаушы лебіздері',
+      challenge: 'Қиындық', goal: 'Мақсат', result: 'Нәтиже', onYouTube: 'YouTube-те көру', interview: 'сұхбатта',
+      playVideo: 'Бейнені қосу', closeVideo: 'Бейнені жабу',
+      // Published reviews stay in the language they were given in, so the
+      // Kazakh page shows the original German wording of the stories.
+      stories: originalStories,
+      graduates: [
+        { name: 'Natalie', role: 'WAMOCON Academy тыңдаушысы', videoId: 'Y530fsyTCe4' },
+        { name: 'Artur', role: 'WAMOCON Academy тыңдаушысы', videoId: 'GIzxhk4tzmM' },
+        { name: 'Alexander', role: 'WAMOCON Academy тыңдаушысы', videoId: 'Nun-eNkeeY0' },
+        { name: 'Olga', role: 'WAMOCON Academy тыңдаушысы', videoId: 'YI6Jf9-T3_c' },
+        { name: 'Jonathan', role: 'WAMOCON Academy тыңдаушысы', videoId: 'C6jFQwt6E0o' },
+      ],
+      adviceTitle: 'Кеңес алу',
+      adviceText: 'Бізге +49 (0) 6196 5838312 нөмірі бойынша қоңырау шалыңыз немесе төменде байланыс деректеріңізді қалдырыңыз, біз сізбен хабарласып, сұрақтарыңызға жауап береміз.',
+      name: 'Атыңыз', phone: 'Телефон', email: 'Электрондық пошта', submit: 'Сұранысты жіберу',
+      consentPre: 'Осымен ', consentLink: 'құпиялылық саясатымен',
+      consentPost: ' танысқанымды және WAMOCON Academy GmbH компаниясының деректерімді, оның ішінде дербес деректерімді сақтауына әрі өңдеуіне келісім беретінімді растаймын.',
+    },
 });
 
 const stories = copy.stories;
@@ -105,6 +131,10 @@ const videoCopy = pick(lang, {
   en: {
     notice: 'This video loads from YouTube only after your consent.',
     load: 'Load YouTube video',
+  },
+  kk: {
+    notice: 'Бұл бейне тек сіздің келісіміңізден кейін YouTube арқылы жүктеледі.',
+    load: 'YouTube бейнесін жүктеу',
   },
 });
 

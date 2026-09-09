@@ -66,6 +66,7 @@ assert(!/seit zwanzig Jahren|for twenty years/i.test(combined), 'Outdated WMC-me
 assert(!/Schulung komplett kostenfrei durch das Arbeitsamt|training completely free of charge through the employment office/i.test(combined), 'Unqualified employment-office funding promise remains');
 assert(combined.includes('Einzelne grafische Elemente dieser Website'), 'German AI transparency notice missing');
 assert(combined.includes('Some graphical elements on this website'), 'English AI transparency notice missing');
+assert(combined.includes('Осы сайттың жекелеген графикалық элементтері'), 'Kazakh AI transparency notice missing');
 
 // Published participant reviews must stay in the language they were given in.
 assert(
@@ -87,4 +88,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`Compliance audit passed: ${pages.length} rendered pages, shared header/footer, consent controls, tracker blocking, current dates and bilingual AI notice.`);
+console.log(`Compliance audit passed: ${pages.length} rendered pages, shared header/footer, consent controls, tracker blocking, current dates and the AI notice in all three locales.`);

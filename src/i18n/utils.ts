@@ -39,7 +39,7 @@ type RouteGroup = Record<Lang, string>;
 
 function flattenNav(items: NavLink[]): RouteGroup[] {
   return items.flatMap((item) => [
-    { de: item.de.href, en: item.en.href },
+    { de: item.de.href, en: item.en.href, kk: item.kk.href },
     ...(item.children ? flattenNav(item.children) : []),
   ]);
 }
@@ -53,8 +53,9 @@ export const routeGroups: RouteGroup[] = [
   ...Object.values(legalNav).map((item) => ({
     de: item.de.href,
     en: item.en.href,
+    kk: item.kk.href,
   })),
-  { de: thanksHref.de, en: thanksHref.en },
+  { de: thanksHref.de, en: thanksHref.en, kk: thanksHref.kk },
 ];
 
 /** Home page of a locale — the fallback when a route has no translated sibling. */

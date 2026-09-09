@@ -61,7 +61,7 @@ const MAX_CONTEXT_CHUNKS = 6;
 // additionally warm it when the visitor opens the chat panel (see `warm` below).
 const KEEP_ALIVE = process.env.AI_KEEP_ALIVE || '2h';
 
-const LANGS = ['de', 'en'];
+const LANGS = ['de', 'en', 'kk'];
 
 /* ------------------------------------------------------------------ *
  * Language handling
@@ -72,11 +72,12 @@ const LANGS = ['de', 'en'];
 // the signal is weak we fall back to the language of the page.
 function detectLanguage(text) {
   const t = ' ' + text.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, ' ').replace(/\s+/g, ' ') + ' ';
-  const score = { de: 0, en: 0 };
+  const score = { de: 0, en: 0, kk: 0 };
 
   const words = {
     de: ['der','die','das','und','ist','wie','was','ihr','sie','wir','nicht','ein','eine','mit','für','auf','von','haben','kann','wer','wo','warum','welche','bitte','ich','mir','euch','uns','kurs','kurse','ausbildung','kosten','preis','zertifizierung','pruefung','prüfung','termin','anmeldung'],
     en: ['the','and','is','what','how','you','your','we','do','does','are','can','who','where','why','which','please','with','for','from','about','have','course','courses','training','cost','price','certification','exam','date','register'],
+    kk: ['және','бұл','не','қалай','қандай','неше','қанша','сіз','сіздің','біз','мен','емес','бар','жоқ','үшін','туралы','бойынша','керек','болады','қайда','неге','өтінемін','курс','курстар','оқу','оқыту','баға','құны','сертификаттау','сертификат','емтихан','тіркелу','тестілеу'],
   };
   for (const lang of LANGS) {
     for (const w of words[lang]) {
@@ -85,8 +86,13 @@ function detectLanguage(text) {
   }
   // Characters unique to German carry strong evidence.
   if (/[äöüß]/.test(t)) score.de += 3;
+  // Cyrillic rules out German and English outright; the letters below exist in
+  // Kazakh but not in Russian, so a Kazakh question is not answered in German
+  // just because it shares few stopwords with the list above.
+  if (/[а-яёәғқңөұүһі]/.test(t)) score.kk += 3;
+  if (/[әғқңөұүһі]/.test(t)) score.kk += 4;
 
-  const best = score.de >= score.en ? 'de' : 'en';
+  const best = LANGS.reduce((a, b) => (score[b] > score[a] ? b : a));
   return score[best] >= 2 ? best : null;
 }
 
@@ -192,6 +198,7 @@ function refusalFor(lang) {
   return {
     de: `Ich bin der Assistent der WAMOCON Academy und beantworte ausschließlich Fragen zur Academy und den Inhalten dieser Website. Für alles andere wenden Sie sich bitte an ${CONTACT_MAIL}.`,
     en: `I am the WAMOCON Academy assistant and only answer questions about the Academy and the content of this website. For anything else, please contact ${CONTACT_MAIL}.`,
+    kk: `Мен WAMOCON Academy көмекшісімін және тек академия мен осы сайттың мазмұны туралы сұрақтарға жауап беремін. Өзге мәселелер бойынша ${CONTACT_MAIL} мекенжайына жазыңыз.`,
   }[lang];
 }
 
@@ -199,6 +206,7 @@ function noContextFor(lang) {
   return {
     de: `Dazu steht auf dieser Website nichts. Schreiben Sie uns gerne an ${CONTACT_MAIL} oder rufen Sie an: ${CONTACT_PHONE}.`,
     en: `This website does not cover that. Please write to ${CONTACT_MAIL} or call ${CONTACT_PHONE}.`,
+    kk: `Бұл сайтта ол туралы мәлімет жоқ. ${CONTACT_MAIL} мекенжайына жазыңыз немесе ${CONTACT_PHONE} нөміріне қоңырау шалыңыз.`,
   }[lang];
 }
 
@@ -206,10 +214,11 @@ function errorFor(lang) {
   return {
     de: `Der Assistent ist gerade nicht erreichbar. Bitte versuchen Sie es später erneut oder schreiben Sie an ${CONTACT_MAIL}.`,
     en: `The assistant is currently unavailable. Please try again later or write to ${CONTACT_MAIL}.`,
+    kk: `Көмекші қазір қолжетімсіз. Кейінірек қайталап көріңіз немесе ${CONTACT_MAIL} мекенжайына жазыңыз.`,
   }[lang];
 }
 
-const LANG_NAME = { de: 'German (Deutsch)', en: 'English' };
+const LANG_NAME = { de: 'German (Deutsch)', en: 'English', kk: 'Kazakh (қазақша, Cyrillic script)' };
 
 function buildSystemPrompt(replyLang, context) {
   return [

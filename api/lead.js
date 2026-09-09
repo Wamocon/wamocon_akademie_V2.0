@@ -189,6 +189,8 @@ async function graphSendMail(accessToken, message) {
 }
 
 // Email copy per locale. German is the fallback for anything unrecognised.
+const LEAD_LANGS = ['de', 'en', 'kk'];
+
 const EMAIL_COPY = {
   de: {
     footer: 'Diese E-Mail wurde automatisch über die Website der WAMOCON Academy versendet.',
@@ -227,6 +229,25 @@ const EMAIL_COPY = {
     confirmBody:
       'thank you for your request to WAMOCON Academy. We have received your details and will get back to you as soon as possible.',
     confirmSubject: 'Thank you for your request to WAMOCON Academy',
+  },
+  kk: {
+    footer: 'Бұл хат WAMOCON Academy сайты арқылы автоматты түрде жіберілді.',
+    form: 'Форма',
+    page: 'Бет',
+    phone: 'Телефон',
+    message: 'Хабарлама',
+    referral: 'Біз туралы қайдан білді',
+    publicationAllowed: 'Жариялауға рұқсат берілді',
+    yes: 'Иә',
+    no: 'Жоқ',
+    internalTitle: 'Academy сайты арқылы жаңа сұраныс',
+    internalBody: 'Жаңа сұраныс жіберілді.',
+    internalSubject: (name) => `${name} жіберген жаңа Academy сұранысы`,
+    confirmTitle: 'Сұранысыңыз үшін рахмет',
+    greeting: 'Сәлеметсіз бе',
+    confirmBody:
+      'WAMOCON Academy-ге жолдаған сұранысыңыз үшін рахмет. Деректеріңізді алдық, жақын арада сізбен хабарласамыз.',
+    confirmSubject: 'WAMOCON Academy: сұранысыңыз үшін рахмет',
   },
 };
 
@@ -356,7 +377,7 @@ export default async function handler(req, res) {
     type: cap(body.type || 'lead', 200),
     source: cap(body.source || '/', 300),
     formId: cap(body.formId, 200),
-    lang: cap(body.lang || 'de', 5) === 'en' ? 'en' : 'de',
+    lang: LEAD_LANGS.includes(cap(body.lang || 'de', 5)) ? cap(body.lang, 5) : 'de',
     name: cap(body.name, 200),
     phone: cap(body.phone, 60),
     email: cap(body.email, 320),

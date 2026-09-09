@@ -7,10 +7,10 @@ import devApi from './scripts/dev-api.mjs';
 export default defineConfig({
   site: 'https://test-it-academy.com',
   // German is the default language and is served from the site root (/).
-  // English is served from the /en/ sub-path.
+  // English lives under /en/, Kazakh under /kk/.
   i18n: {
     defaultLocale: 'de',
-    locales: ['de', 'en'],
+    locales: ['de', 'en', 'kk'],
     routing: {
       prefixDefaultLocale: false,
     },
@@ -27,7 +27,7 @@ export default defineConfig({
     // Generates /sitemap-index.xml + /sitemap-0.xml at build time for SEO.
     sitemap({
       filter: (page) =>
-        !['/404/', '/danke/', '/thanks/'].includes(new URL(page).pathname),
+        !['/404/', '/danke/', '/thanks/', '/kk/rahmet/'].includes(new URL(page).pathname),
     }),
     // Dev only: serves the Vercel functions in api/ so `npm run dev` can talk
     // to the chat assistant. Does nothing during `astro build`.

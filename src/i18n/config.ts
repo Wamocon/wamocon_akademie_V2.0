@@ -1,6 +1,7 @@
 export const languages = {
   de: 'Deutsch',
   en: 'English',
+  kk: 'Қазақша',
 } as const;
 
 export type Lang = keyof typeof languages;
@@ -17,11 +18,13 @@ export const prefixedLangs = langCodes.filter((code) => code !== defaultLang);
 export const localeTags = {
   de: 'de-DE',
   en: 'en-GB',
+  kk: 'kk-KZ',
 } as const satisfies Record<Lang, string>;
 
 export const ogLocales = {
   de: 'de_DE',
   en: 'en_GB',
+  kk: 'kk_KZ',
 } as const satisfies Record<Lang, string>;
 
 export type LocalizedLink = { label: string; href: string };
@@ -30,6 +33,7 @@ export type NavLink = {
   key: string;
   de: LocalizedLink;
   en: LocalizedLink;
+  kk: LocalizedLink;
   children?: NavLink[];
 };
 
@@ -38,11 +42,13 @@ export const nav: NavLink[] = [
     key: 'home',
     de: { label: 'Startseite', href: '/' },
     en: { label: 'Start page', href: '/en/' },
+    kk: { label: 'Басты бет', href: '/kk/' },
   },
   {
     key: 'courses',
     de: { label: 'Kurse', href: '/bildungsprogramme-fr-softwaretester/' },
     en: { label: 'Courses', href: '/en/educational-programs/' },
+    kk: { label: 'Курстар', href: '/kk/oqu-kurstary/' },
   },
   {
     // The DiTeLe learning platform is sold as "Online Kurse" — the product
@@ -51,26 +57,31 @@ export const nav: NavLink[] = [
     key: 'ditele',
     de: { label: 'Online Kurse', href: '/ditele-app/' },
     en: { label: 'Online courses', href: '/en/ditele-app/' },
+    kk: { label: 'Онлайн курстар', href: '/kk/ditele-app/' },
   },
   {
     key: 'about-group',
     de: { label: 'Über uns', href: '/ber-die-akademie/' },
     en: { label: 'About us', href: '/en/about-us/' },
+    kk: { label: 'Біз туралы', href: '/kk/akademiya-turaly/' },
     children: [
       {
         key: 'about',
         de: { label: 'Über die Academy', href: '/ber-die-akademie/' },
         en: { label: 'About the Academy', href: '/en/about-us/' },
+        kk: { label: 'Академия туралы', href: '/kk/akademiya-turaly/' },
       },
       {
         key: 'booster',
         de: { label: '360° Booster System', href: '/360-booster-system/' },
         en: { label: '360° Booster System', href: '/en/360-booster-system/' },
+        kk: { label: '360° Booster System', href: '/kk/360-booster-system/' },
       },
       {
         key: 'reviews',
         de: { label: 'Bewertungen', href: '/bewertungen/' },
         en: { label: 'Reviews', href: '/en/reviews/' },
+        kk: { label: 'Пікірлер', href: '/kk/pikirler/' },
       },
     ],
   },
@@ -78,6 +89,7 @@ export const nav: NavLink[] = [
     key: 'certification',
     de: { label: 'ISTQB®-Zertifizierung', href: '/istqb-zertifizierung/' },
     en: { label: 'ISTQB® certification', href: '/en/istqb-certification/' },
+    kk: { label: 'ISTQB® сертификаттауы', href: '/kk/istqb-sertifikattau/' },
   },
 ];
 
@@ -85,14 +97,17 @@ export const legalNav = {
   privacy: {
     de: { label: 'Datenschutz', href: '/datenschutz/' },
     en: { label: 'Privacy policy', href: '/privacy-policy/' },
+    kk: { label: 'Құпиялылық саясаты', href: '/kk/qupiyalylyq-sayasaty/' },
   },
   imprint: {
     de: { label: 'Impressum', href: '/impressum/' },
     en: { label: 'Imprint', href: '/imprint/' },
+    kk: { label: 'Заңды мәліметтер', href: '/kk/zandy-malimetter/' },
   },
   accessibility: {
     de: { label: 'Barrierefreiheit', href: '/barrierefreiheit/' },
     en: { label: 'Accessibility', href: '/accessibility/' },
+    kk: { label: 'Қолжетімділік', href: '/kk/qolzhetimdilik/' },
   },
 } satisfies Record<string, Record<Lang, LocalizedLink>>;
 
@@ -100,6 +115,7 @@ export const legalNav = {
 export const thanksHref = {
   de: '/danke/',
   en: '/thanks/',
+  kk: '/kk/rahmet/',
 } as const satisfies Record<Lang, string>;
 
 export const ui = {
@@ -147,6 +163,29 @@ export const ui = {
     'form.consent.link': 'privacy policy',
     'form.consent.post': '. Submitting this form does not create a paid contract.',
   },
+  kk: {
+    'lang.switch': 'DE',
+    'lang.label': 'Тілді ауыстыру',
+    'nav.menu': 'Мәзір',
+    'nav.close': 'Жабу',
+    'cookie.text': 'Сыртқы медиа тек сіздің келісіміңізбен жүктеледі.',
+    'cookie.accept': 'Барлығын қабылдау',
+    'footer.rights': 'Барлық құқықтар қорғалған.',
+    'nav.main': 'Негізгі мәзір',
+    'footer.navigation': 'Навигация',
+    'footer.follow': 'Бізді әлеуметтік желілерден қараңыз',
+    'form.title': 'Кеңес алу',
+    'form.text':
+      'Бізге +49 (0) 6196 5838312 нөмірі бойынша қоңырау шалыңыз немесе төменде байланыс деректеріңізді қалдырыңыз, біз сізбен хабарласып, сұрақтарыңызға жауап береміз.',
+    'form.name': 'Атыңыз',
+    'form.phone': 'Телефон',
+    'form.email': 'Электрондық пошта',
+    'form.message': 'Сұрағыңыз',
+    'form.submit': 'Сұранысты жіберу',
+    'form.consent.pre': 'Сұранысыңыздың қалай өңделетіні туралы ақпарат ',
+    'form.consent.link': 'құпиялылық саясатында',
+    'form.consent.post': ' берілген. Сұранысты жіберу ақылы шарт жасасуды білдірмейді.',
+  },
 } as const satisfies Record<Lang, Record<string, string>>;
 
 export const company = {
@@ -160,6 +199,7 @@ export const company = {
   hours: {
     de: ['Montag bis Freitag: 9:00 bis 18:00 Uhr', 'Samstag: 10:00 bis 14:00 Uhr'],
     en: ['Monday to Friday: 9:00 am to 6:00 pm', 'Saturday: 10:00 am to 2:00 pm'],
+    kk: ['Дүйсенбіден жұмаға дейін: 9:00-ден 18:00-ге дейін', 'Сенбі: 10:00-нан 14:00-ке дейін'],
   },
   social: {
     youtube: 'https://www.youtube.com/@WAMOCONACADEMY',

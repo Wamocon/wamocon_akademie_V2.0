@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import IstqbCertificationPage from '../../components/sections/IstqbCertificationPage.astro';
+import { pages } from '../../data/academy';
+
+const lang = 'kk';
+const page = pages.certification[lang];
+---
+
+<BaseLayout title={page.title} description={page.lead} lang={lang} image={pages.certification.image}>
+  <IstqbCertificationPage lang={lang} />
+</BaseLayout>

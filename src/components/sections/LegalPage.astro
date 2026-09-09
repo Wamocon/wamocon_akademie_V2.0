@@ -27,7 +27,7 @@ const notice = 'notice' in page ? (page.notice as { text: string; linkLabel: str
 // date wording itself: a "first block is not numbered" rule demoted the
 // Impressum's real first heading ("Angaben gemäß § 5 DDG"), because that
 // document does not number its sections at all.
-const UPDATED_LINE = /^(Stand|Last updated|As at)\b/i;
+const UPDATED_LINE = /^(?:Stand|Last updated|As at)\b|^Жаңартылған/i;
 const blocks = page.blocks.map((block) => {
   const [first, ...rest] = block.split('\n');
   return { first, rest };

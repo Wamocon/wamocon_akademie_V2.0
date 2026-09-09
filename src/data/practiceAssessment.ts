@@ -43,10 +43,12 @@ const SENTENCE: Record<Exclude<PracticeAssessmentMode, 'off'>, Record<Lang, stri
   testLab: {
     de: 'Deine Arbeit im Testlabor wird von praktizierenden Testmanagern bewertet.',
     en: 'Your work in the test lab is assessed by practising test managers.',
+    kk: 'Тест зертханасындағы жұмысыңызды тәжірибеде істеп жүрген тестілеу менеджерлері бағалайды.',
   },
   noTestLab: {
     de: 'Deine Arbeit wird von praktizierenden Testmanagern bewertet.',
     en: 'Your work is assessed by practising test managers.',
+    kk: 'Жұмысыңызды тәжірибеде істеп жүрген тестілеу менеджерлері бағалайды.',
   },
 };
 

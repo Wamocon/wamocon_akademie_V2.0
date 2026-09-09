@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LegalPage from '../../components/sections/LegalPage.astro';
+import { legal } from '../../data/academy';
+
+const lang = 'kk';
+---
+
+<BaseLayout title={legal.privacy[lang].title} description="WAMOCON Academy GmbH құпиялылық саясаты." lang={lang}>
+  <LegalPage lang={lang} kind="privacy" />
+</BaseLayout>

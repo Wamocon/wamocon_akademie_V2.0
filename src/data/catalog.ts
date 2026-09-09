@@ -125,11 +125,14 @@ export function aggregateRating() {
   };
 }
 
+/** Intl locale per site language, for prices and course dates. */
+const intlLocales: Record<Lang, string> = { de: 'de-DE', en: 'en-GB', kk: 'kk-KZ' };
+
 /** Preis als Fließtext für die Seite, z. B. „1.890 €". Leer, solange offen. */
 export function priceLabel(key: CourseKey, lang: Lang): string | null {
   const { price, priceCurrency } = courseCatalog[key];
   if (price === null) return null;
-  return new Intl.NumberFormat(lang === 'de' ? 'de-DE' : 'en-GB', {
+  return new Intl.NumberFormat(intlLocales[lang], {
     style: 'currency',
     currency: priceCurrency,
     maximumFractionDigits: 0,
@@ -144,8 +147,8 @@ export function priceLabel(key: CourseKey, lang: Lang): string | null {
 export function scheduleByMonth(
   lang: Lang,
 ): Array<{ month: string; rows: Array<[string, string]> }> | null {
-  const locale = lang === 'de' ? 'de-DE' : 'en-GB';
-  const label = lang === 'de' ? 'Plätze verfügbar' : 'Places available';
+  const locale = intlLocales[lang];
+  const label = { de: 'Plätze verfügbar', en: 'Places available', kk: 'Орындар бар' }[lang];
   const all = (Object.keys(courseCatalog) as CourseKey[])
     .flatMap((key) => courseCatalog[key].startDates.map((date) => ({ key, date })))
     .sort((a, b) => a.date.localeCompare(b.date));

@@ -39,6 +39,11 @@ export const pageMeta = {
     description:
       'IT training center for software testing, ISTQB® certification and practical education in Eschborn.',
   },
+  kk: {
+    title: 'ISTQB® курстары және тестілеуші мамандығы | WAMOCON Academy',
+    description:
+      'Эшборндағы IT білім беру орталығы: бағдарламалық қамтамасыз етуді тестілеу, ISTQB® сертификаттауы және тәжірибеге негізделген біліктілік арттыру.',
+  },
 } satisfies Record<Lang, { title: string; description: string }>;
 
 export const home = {
@@ -48,17 +53,20 @@ export const home = {
       'Unser IT-Bildungszentrum in Eschborn bietet dir praxisnahe Ausbildungsmöglichkeiten im Softwaretesting',
     en:
       'Our IT training center in Eschborn offers practical software-testing education',
-    cta: { de: 'Beratung erhalten', en: 'Receive advice' },
+    kk:
+      'Эшборндағы IT білім беру орталығымыз бағдарламалық қамтамасыз етуді тестілеу саласында тәжірибеге негізделген оқу мүмкіндіктерін ұсынады',
+    cta: { de: 'Beratung erhalten', en: 'Receive advice', kk: 'Кеңес алу' },
     stats: [
-      { value: '50+', de: 'IT-Projekte', en: 'IT projects' },
-      { value: '5500+', de: 'Projekttage', en: 'Project days' },
-      { value: '15+', de: 'Softwaretester', en: 'Software tester' },
+      { value: '50+', de: 'IT-Projekte', en: 'IT projects', kk: 'IT жобасы' },
+      { value: '5500+', de: 'Projekttage', en: 'Project days', kk: 'жоба күні' },
+      { value: '15+', de: 'Softwaretester', en: 'Software tester', kk: 'тестілеуші маман' },
     ],
   },
   intro: {
     heading: {
       de: 'über 50 Jahre gebündelte Praxiserfahrung unseres Teams',
       en: 'over 50 years of combined practical experience within our team',
+      kk: 'командамыздың 50 жылдан асатын жинақталған тәжірибесі',
     },
     paragraphs: {
       de: [
@@ -69,27 +77,36 @@ export const home = {
         'WAMOCON Academy is your springboard into software testing. WAMOCON Academy GmbH is listed by ISTQB® as an accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 training materials. Our practical courses prepare participants for the relevant certification examination.',
         'Whether you are a career starter, lateral entrant or experienced professional, we have the right training for you! Expand your test management skills and stand out from the crowd with an additional qualification in accordance with the ISTQB® curriculum. Start your success story now with the WAMOCON Academy!',
       ],
+      kk: [
+        'WAMOCON Academy сізге бағдарламалық қамтамасыз етуді тестілеу әлеміне сенімді қадам жасауға көмектеседі. WAMOCON Academy GmbH компаниясы ISTQB тізімінде неміс тіліндегі CTFL 4.0 және Agile Tester 1.0 оқу материалдары бойынша аккредиттелген оқыту провайдері ретінде тіркелген. Тәжірибеге негізделген курстарымыз тиісті сертификаттау емтиханына дайындайды.',
+        'Мансабын жаңа бастаған болсаңыз да, басқа саладан ауысып келсеңіз де, тәжірибелі маман болсаңыз да, өзіңізге қажет бағдарламаны бізден табасыз. Тестілеуді басқару саласындағы біліктілігіңізді кеңейтіп, ISTQB® оқу бағдарламасына сай қосымша біліктілікпен көпшіліктің арасынан ерекшеленіңіз. Табысты мансабыңызды бүгін WAMOCON Academy-мен бастаңыз.',
+      ],
     },
     mission: {
       de: 'Die WAMOCON Academy stärkt die IT-Branche durch gezielte Expertenschulung im Testmanagement.',
       en: 'The WAMOCON Academy strengthens the IT industry through targeted expert training in test management.',
+      kk: 'WAMOCON Academy тестілеуді басқару саласындағы мақсатты сарапшылық даярлық арқылы IT саласын күшейтеді.',
     },
   },
   success: {
     heading: {
       de: 'Starte deine Erfolgsgeschichte mit der WAMOCON Academy',
       en: 'Start your success story with the WAMOCON Academy',
+      kk: 'Табысты мансабыңызды WAMOCON Academy-мен бастаңыз',
     },
     text: {
       de:
         'Die WAMOCON Academy ist mehr als nur ein Ausbildungsort. Sie ist deine strategische Plattform für die Entwicklung entscheidender Fähigkeiten und die Beschleunigung deiner Karriere im IT-Bereich. Ob durch maßgeschneiderte Einzelkurse oder dynamische Teamkurse, wir bieten dir einzigartige Chancen für den erfolgreichen Berufseinstieg und die Erreichung neuer Karriereziele. Lass dich von uns auf deinem Weg zur nächsten Entwicklungsstufe begleiten und profitiere von unserem umfassenden Know-how und Netzwerk.',
       en:
         'The WAMOCON Academy is more than just a training venue. It is your strategic platform for developing critical skills and accelerating your career in IT. Whether through customized individual courses or dynamic team courses, we offer you unique opportunities to successfully launch your career and achieve new career goals. Let us accompany you on your way to the next level of development and profit from our extensive know-how and network.',
+      kk:
+        'WAMOCON Academy жай ғана оқу орны емес. Бұл IT саласындағы мансабыңызды жеделдетуге және шешуші дағдыларды дамытуға арналған стратегиялық алаңыңыз. Жеке қажеттілікке бейімделген курстар арқылы да, серпінді командалық курстар арқылы да біз сізге кәсіби жолды сәтті бастауға және жаңа мансаптық мақсаттарға жетуге нақты мүмкіндік ашамыз. Келесі даму сатысына бет алғанда бізбен бірге болыңыз, ауқымды тәжірибеміз бен кәсіби байланыс желімізді пайдаланыңыз.',
     },
     without: {
       title: {
         de: 'Ohne die WAMOCON Academy',
         en: 'Without the WAMOCON Academy',
+        kk: 'WAMOCON Academy болмаса',
       },
       items: {
         de: [
@@ -104,12 +121,19 @@ export const home = {
           'Few opportunities for advancement',
           'Lack of expertise in the area of test management',
         ],
+        kk: [
+          'Төмен жалақы',
+          'Жұмысқа өтінішіңізден бас тарту',
+          'Қызметте өсу мүмкіндігінің аздығы',
+          'Тестілеуді басқару саласындағы білімнің жеткіліксіздігі',
+        ],
       },
     },
     with: {
       title: {
         de: 'Mit der WAMOCON Academy',
         en: 'With the WAMOCON Academy',
+        kk: 'WAMOCON Academy-мен бірге',
       },
       items: {
         de: [
@@ -124,6 +148,12 @@ export const home = {
           'High development opportunities thanks to ISTQB® certification',
           'Expert knowledge from experienced mentors',
         ],
+        kk: [
+          'Орташадан жоғары жалақы',
+          'Өзіңізге ұнайтын жобалардағы жұмыс',
+          'ISTQB® сертификаты ашатын кең өсу мүмкіндігі',
+          'Тәжірибелі тәлімгерлердің кәсіби білімі',
+        ],
       },
     },
   },
@@ -133,69 +163,73 @@ export const home = {
       'Entdecke die Welt des Softwaretestings mit unseren umfassenden Kursen, die dir nicht nur tiefgehendes theoretisches Wissen über Testverfahren, Testmodelle und Testwerkzeuge vermitteln, sondern auch praxisnahe Einblicke bieten.',
     en:
       'Discover the world of software testing with our comprehensive courses, which not only provide you with in-depth theoretical knowledge of test procedures, test models and test tools, but also offer practical insights.',
+    kk:
+      'Тестілеу әдістері, тестілеу модельдері мен құралдары туралы терең теориялық білім берумен қатар нақты тәжірибені де көрсететін кешенді курстарымызбен бағдарламалық қамтамасыз етуді тестілеу әлемін ашыңыз.',
     closing: {
       de:
         'Unsere realitätsnahen Anwendungsfälle verdeutlichen, wie du theoretische Konzepte in erfolgreichen IT-Projekten umsetzen kannst. Mit unserer Unterstützung bist du bestens gerüstet, um die komplexen Herausforderungen moderner IT-Projekte zu meistern und deine Karriere als Softwaretester voranzutreiben.',
       en:
         'Our realistic use cases illustrate how you can implement theoretical concepts in successful IT projects. With our support, you are ideally equipped to master the complex challenges of modern IT projects and advance your career as a software tester.',
+      kk:
+        'Өмірден алынған мысалдарымыз теориялық ұғымдарды табысты IT жобаларында қалай қолдануға болатынын нақты көрсетеді. Біздің қолдауымызбен сіз заманауи IT жобаларының күрделі міндеттерін шешуге және тестілеуші ретіндегі мансабыңызды алға жылжытуға толық дайын боласыз.',
     },
   },
 };
 
 export const courses = [
   {
-    type: { de: 'Einzelkurse', en: 'Individual courses' },
-    title: { de: 'ISTQB® CTFL Softwaretester (E-Learning)', en: 'ISTQB® CTFL software tester (e-learning)' },
-    duration: { de: '3 Tage', en: '3 days' },
-    format: { de: 'im Präsenz-Kurs + Online-Kurs', en: 'in classroom course + online course' },
+    type: { de: 'Einzelkurse', en: 'Individual courses', kk: 'Жеке курстар' },
+    title: { de: 'ISTQB® CTFL Softwaretester (E-Learning)', en: 'ISTQB® CTFL software tester (e-learning)', kk: 'ISTQB® CTFL тестілеуші (электрондық оқыту)' },
+    duration: { de: '3 Tage', en: '3 days', kk: '3 күн' },
+    format: { de: 'im Präsenz-Kurs + Online-Kurs', en: 'in classroom course + online course', kk: 'аудиториялық курс және онлайн курс' },
   },
   {
-    type: { de: 'Einzelkurse', en: 'Individual courses' },
-    title: { de: 'ISTQB® CTFL + Praxistraining (E-Learning)', en: 'ISTQB® CTFL + practical training (e-learning)' },
-    duration: { de: '45 Tage', en: '45 days' },
-    format: { de: 'im Präsenz-Kurs + Online-Kurs', en: 'in classroom course + online course' },
+    type: { de: 'Einzelkurse', en: 'Individual courses', kk: 'Жеке курстар' },
+    title: { de: 'ISTQB® CTFL + Praxistraining (E-Learning)', en: 'ISTQB® CTFL + practical training (e-learning)', kk: 'ISTQB® CTFL және тәжірибелік тренинг (электрондық оқыту)' },
+    duration: { de: '45 Tage', en: '45 days', kk: '45 күн' },
+    format: { de: 'im Präsenz-Kurs + Online-Kurs', en: 'in classroom course + online course', kk: 'аудиториялық курс және онлайн курс' },
   },
   {
-    type: { de: 'Einzelkurse', en: 'Individual courses' },
-    title: { de: 'ISTQB® CTFL Softwaretester', en: 'ISTQB® CTFL software tester' },
-    duration: { de: '3 Tage', en: '3 days' },
-    format: { de: 'im Präsenz-Kurs + Online-Kurs', en: 'in classroom course + online course' },
+    type: { de: 'Einzelkurse', en: 'Individual courses', kk: 'Жеке курстар' },
+    title: { de: 'ISTQB® CTFL Softwaretester', en: 'ISTQB® CTFL software tester', kk: 'ISTQB® CTFL тестілеуші' },
+    duration: { de: '3 Tage', en: '3 days', kk: '3 күн' },
+    format: { de: 'im Präsenz-Kurs + Online-Kurs', en: 'in classroom course + online course', kk: 'аудиториялық курс және онлайн курс' },
   },
   {
-    type: { de: 'Einzelkurse', en: 'Individual courses' },
-    title: { de: 'ISTQB® CTFL + Praxistraining', en: 'ISTQB® CTFL + Practical training' },
-    duration: { de: '45 Tage', en: '45 days' },
-    format: { de: 'im Präsenz-Kurs + Online-Kurs', en: 'in classroom course + online course' },
+    type: { de: 'Einzelkurse', en: 'Individual courses', kk: 'Жеке курстар' },
+    title: { de: 'ISTQB® CTFL + Praxistraining', en: 'ISTQB® CTFL + Practical training', kk: 'ISTQB® CTFL және тәжірибелік тренинг' },
+    duration: { de: '45 Tage', en: '45 days', kk: '45 күн' },
+    format: { de: 'im Präsenz-Kurs + Online-Kurs', en: 'in classroom course + online course', kk: 'аудиториялық курс және онлайн курс' },
   },
   {
-    type: { de: 'Teamkurse', en: 'Team courses' },
-    title: { de: 'Testautomatisierung', en: 'Test automation' },
-    duration: { de: '5 Tage', en: '5 days' },
-    format: { de: 'im Präsenz-Kurs + Online-Kurs', en: 'in classroom course + online course' },
+    type: { de: 'Teamkurse', en: 'Team courses', kk: 'Командалық курстар' },
+    title: { de: 'Testautomatisierung', en: 'Test automation', kk: 'Тестілеуді автоматтандыру' },
+    duration: { de: '5 Tage', en: '5 days', kk: '5 күн' },
+    format: { de: 'im Präsenz-Kurs + Online-Kurs', en: 'in classroom course + online course', kk: 'аудиториялық курс және онлайн курс' },
   },
   {
-    type: { de: 'Teamkurse', en: 'Team courses' },
-    title: { de: 'Praktisches Projektmanagement nach SCRUM', en: 'Practical project management according to SCRUM' },
-    duration: { de: '5 Tage', en: '5 days' },
-    format: { de: 'im Präsenz-Kurs + Online-Kurs', en: 'in classroom course + online course' },
+    type: { de: 'Teamkurse', en: 'Team courses', kk: 'Командалық курстар' },
+    title: { de: 'Praktisches Projektmanagement nach SCRUM', en: 'Practical project management according to SCRUM', kk: 'SCRUM бойынша тәжірибелік жоба басқару' },
+    duration: { de: '5 Tage', en: '5 days', kk: '5 күн' },
+    format: { de: 'im Präsenz-Kurs + Online-Kurs', en: 'in classroom course + online course', kk: 'аудиториялық курс және онлайн курс' },
   },
   {
-    type: { de: 'Teamkurse', en: 'Team courses' },
-    title: { de: 'Individuelles Coaching (1:1)', en: 'Individual coaching (1:1)' },
-    duration: { de: 'individuell', en: 'individual' },
-    format: { de: 'im Präsenz-Kurs + Online-Kurs', en: 'in classroom course + online course' },
+    type: { de: 'Teamkurse', en: 'Team courses', kk: 'Командалық курстар' },
+    title: { de: 'Individuelles Coaching (1:1)', en: 'Individual coaching (1:1)', kk: 'Жеке коучинг (1:1)' },
+    duration: { de: 'individuell', en: 'individual', kk: 'жеке келісім бойынша' },
+    format: { de: 'im Präsenz-Kurs + Online-Kurs', en: 'in classroom course + online course', kk: 'аудиториялық курс және онлайн курс' },
   },
   {
-    type: { de: 'Teamkurse', en: 'Team courses' },
-    title: { de: 'Team Coaching (1:n)', en: 'Team Coaching (1:n)' },
-    duration: { de: '1 Tag', en: '1 day' },
-    format: { de: 'im Präsenz-Kurs + Online-Kurs', en: 'in classroom course + online course' },
+    type: { de: 'Teamkurse', en: 'Team courses', kk: 'Командалық курстар' },
+    title: { de: 'Team Coaching (1:n)', en: 'Team Coaching (1:n)', kk: 'Командалық коучинг (1:n)' },
+    duration: { de: '1 Tag', en: '1 day', kk: '1 күн' },
+    format: { de: 'im Präsenz-Kurs + Online-Kurs', en: 'in classroom course + online course', kk: 'аудиториялық курс және онлайн курс' },
   },
   {
-    type: { de: 'Teamkurse', en: 'Team courses' },
-    title: { de: 'Potenzialanalyse (Power Booster)', en: 'Potential analysis (Power Booster)' },
-    duration: { de: '1 Tag', en: '1 day' },
-    format: { de: 'im Präsenz-Kurs + Online-Kurs', en: 'in classroom course + online course' },
+    type: { de: 'Teamkurse', en: 'Team courses', kk: 'Командалық курстар' },
+    title: { de: 'Potenzialanalyse (Power Booster)', en: 'Potential analysis (Power Booster)', kk: 'Әлеуетті бағалау (Power Booster)' },
+    duration: { de: '1 Tag', en: '1 day', kk: '1 күн' },
+    format: { de: 'im Präsenz-Kurs + Online-Kurs', en: 'in classroom course + online course', kk: 'аудиториялық курс және онлайн курс' },
   },
 ];
 
@@ -215,6 +249,14 @@ export const steps = {
     '(Optional) Repetition of the contents of the seminar',
     'Certification ISTQB® Certified Tester Foundation Level',
     'New job / Successful IT project',
+  ],
+  kk: [
+    'Өтініш беру',
+    'Семинарға дайындық',
+    'Семинарға қатысу',
+    '(Қосымша) Семинар материалын қайталау',
+    'ISTQB® Certified Tester Foundation Level сертификаттауы',
+    'Жаңа жұмыс немесе табысты IT жоба',
   ],
 } satisfies Record<Lang, string[]>;
 
@@ -237,6 +279,17 @@ export const dates = {
         month: 'Planned',
         rows: [
           ['New dates', 'Planned'],
+        ],
+      },
+    ],
+  },
+  kk: {
+    title: 'Курс кестесі',
+    groups: [
+      {
+        month: 'Жоспарлануда',
+        rows: [
+          ['Жаңа күндер', 'Жоспарлануда'],
         ],
       },
     ],
@@ -304,6 +357,37 @@ export const pages = {
             'What typical challenges does a tester face? Discussion of common problems and hurdles in test management.',
             'Bildungsgutschein: funding may be possible in individual cases. The responsible employment agency or job centre decides eligibility, scope and approval.',
             'What distinguishes a successful software tester? Important skills and characteristics of a successful tester.',
+          ],
+        },
+      ],
+    },
+    kk: {
+      title: 'Тестілеушілерге арналған білім беру бағдарламалары: семинарларға шолу',
+      eyebrow: 'Курстар',
+      lead:
+        'WAMOCON Academy GmbH компаниясы неміс тіліндегі CTFL 4.0 және Agile Tester 1.0 оқу материалдары бойынша ISTQB® ресми провайдерлер тізімінде тіркелген. Курстар бағдарламалық қамтамасыз етуді тестілеудің теориясы мен тәжірибесін біріктіреді.',
+      sections: [
+        {
+          title: 'Курстарымыздың артықшылықтары',
+          text:
+            'Толыққанды даярлық, мансаптық өсу және тәжірибеге бағытталған мазмұн тестілеудің негіздері мен озық әдістерін нақты мысалдар әрі жаттығулармен ұштастырады.',
+          items: ['Толыққанды даярлық', 'Мансаптық өсу', 'Тәжірибеге бағытталған мазмұн'],
+        },
+        {
+          title: 'Біліммен болашаққа: WAMOCON Academy-де ISTQB® тестілеушісі болыңыз',
+          text:
+            'WAMOCON тестілеуді басқару бойынша семинарларды жаңадан бастаушыларға және басқа саладан ауысқандарға ұсынады. Онда тәжірибелік мазмұн басым, сонымен қатар тиісті сертификаттау емтиханына дайындық жүреді.',
+        },
+        {
+          title: 'Ең алдымен неден бастаған жөн?',
+          text:
+            'Алғашқы тегін вебинарымызға қатысып, тестілеуші ретіндегі мансабыңызды қалай тиімді бастауға немесе алға жылжытуға болатынын біліңіз. Онда сұрақ қоюға және кәсіби жолыңызды жақсартуға көмектесетін сарапшылардан жауап алуға мүмкіндік бар.',
+          items: [
+            'БАҒДАРЛАМАЛЫҚ ҚАМТАМАСЫЗ ЕТУДІ ТЕСТІЛЕУГЕ кіріспе: вебинардың мақсатты аудиториясы мен пайдасы.',
+            'Сертификатталған тестілеуші қанша табыс табады? Жалақы құрылымы мен мансаптық болашаққа шолу.',
+            'Тестілеуші қандай қиындықтарға жиі тап болады? Тестілеуді басқарудағы кең тараған мәселелерді талқылау.',
+            'Bildungsgutschein білім беру ваучері: қаржыландыру жекелеген жағдайда ғана мүмкін. Шарттарды, көлемді және мақұлдауды жұмыспен қамту агенттігі немесе Jobcenter шешеді.',
+            'Табысты тестілеушіні не ерекшелейді? Табысты маманның басты дағдылары мен қасиеттері.',
           ],
         },
       ],
@@ -395,6 +479,48 @@ export const pages = {
         },
       ],
     },
+    kk: {
+      title: 'Табысқа апарар жол WAMOCON Academy-ден басталады',
+      eyebrow: 'Академия туралы',
+      lead:
+        'Білім беру орталығымыз курстардан әлдеқайда көбін ұсынады. Бұл табысты IT мансабыңызға арналған ұшу алаңы. Мұнда біз оқушыларды бүгінгі цифрлық әлемнің сын-қатерлерін жеңуге дайын IT мамандарына айналдырамыз.',
+      sections: [
+        {
+          title: 'Тәжірибелі оқытушылардың қолдауы',
+          text:
+            'Теориялық сабақтар түсінікті тілмен беріледі, ал сала сарапшылары ұсынатын жаттығулар мен нақты мысалдар тестілеушінің күнделікті міндеттерін тез әрі оңай меңгеруге көмектеседі.',
+        },
+        {
+          title: 'Академия ұсынатын басты артықшылықтар',
+          text:
+            'Осы артықшылықтардың арқасында WAMOCON Academy мамандарға жедел өзгеретін технология әлемінде жеке және кәсіби мақсаттарына жетуге мүмкіндік беретін кешенді әрі сапалы білім ұсынады.',
+          items: [
+            'Халықаралық сапа стандарттарына сай оқыту',
+            'Оқу бағдарламаларының кең спектрі',
+            'Заманауи білім беру технологиялары мен әдістері',
+            'Оқытудың жеке тәсілі',
+            'Тәжірибеге бағдарлану',
+            'Қолдау және тәлімгерлік',
+          ],
+        },
+        {
+          title: 'WMC әдісі +',
+          text:
+            'IT әлемі бүгінгідей күрделі болып көрген емес, әсіресе жасанды интеллекттің қарқынды дамуы себебінен. Дәл осы жерде командамыздың тестілеу және сапаны басқару саласындағы 50 жылдан асатын жинақталған тәжірибесіне сүйенетін WMC әдісі көмекке келеді.',
+          items: [
+            'Басымдық белгілеу',
+            'Тәуекелді бағалау',
+            'Уақытты басқару',
+            'Стратегиялық бағдар',
+            'Мүдделі тараптармен жұмыс',
+            'Ресурстарды бөлу',
+            'Жедел әрекет ету',
+            'Тәуекелді азайту',
+            'Тұрақты мониторинг',
+          ],
+        },
+      ],
+    },
   },
   booster: {
     image: assets.boosterHero,
@@ -434,6 +560,24 @@ export const pages = {
         },
       ],
     },
+    kk: {
+      title: '360° Booster System сіздің IT мансабыңыз үшін',
+      eyebrow: '360° Booster System',
+      lead:
+        'WAMOCON IT тестілеу жобаларындағы жұмыстың барлық қырын қамтитын кешенді тәсіл әзірледі.',
+      sections: [
+        {
+          title: 'IT саласына арналған 360° мансап жүйесі',
+          text:
+            'Мансапты табысты дамытуға арналған бұл 360 градустық жүйе бірқатар қадамнан тұрады және қиындықтарды жеңіп, табысқа апарар жолды барынша тиімді өтуге мүмкіндік береді.',
+        },
+        {
+          title: 'WAMOCON командасы осы жүйемен жұмыс істейді',
+          text:
+            'WAMOCON командасы әр қызметкердің жұмыс сапасын арттыру, тестілеуді сәтті жүргізу және IT жобаларын нәтижелі аяқтау үшін осы жүйені пайдаланады.',
+        },
+      ],
+    },
   },
   reviews: {
     image: assets.trainerGroup,
@@ -447,6 +591,12 @@ export const pages = {
       title: 'What successful graduates say',
       eyebrow: 'Reviews',
       lead: 'We guide you step by step as you enter the IT industry.',
+      sections: [],
+    },
+    kk: {
+      title: 'Табысты түлектер не дейді',
+      eyebrow: 'Пікірлер',
+      lead: 'IT саласына кіргенде біз сізді әр қадамда қолдап отырамыз.',
       sections: [],
     },
   },
@@ -506,6 +656,33 @@ export const pages = {
         },
       ],
     },
+    kk: {
+      title: 'ISTQB® сертификаттауы',
+      eyebrow: 'ISTQB® Certified Tester',
+      lead:
+        'Сапа жөніндегі сарапшы болыңыз: ISTQB® Certified Tester Foundation Level (CTFL). Сапаны қамтамасыз ету кез келген бағдарламалық жоба табысының кілті.',
+      sections: [
+        {
+          title: 'ISTQB® CTFL тренингінде не үйренесіз',
+          text:
+            'Кешенді тренингіміз сізді ресми ISTQB® сертификаттауына мұқият дайындайды және күнделікті жұмыста бірден қолдануға болатын тәжірибелік білім береді.',
+          items: [
+            'Бағдарламалық қамтамасыз етуді тестілеу негіздері',
+            'Әзірлеу циклындағы тестілеу',
+            'Статикалық тестілеу және шолулар',
+            'Тест жобалау әдістері',
+            'Тестілеуді басқару',
+            'Тестілеу құралдары',
+          ],
+        },
+        {
+          title: 'ISTQB® сертификаттауы неге құнды?',
+          text:
+            'ISTQB® сертификаты бүкіл әлемде танылған және тестілеу сарапшылары үшін сапа белгісі саналады. Ол мансаптық мүмкіндіктеріңізді арттырады әрі компанияларға бірден пайда әкеледі.',
+          items: ['Әлемдік мойындау', 'Мансаптық мүмкіндіктердің артуы', 'Компанияларға бірден пайда'],
+        },
+      ],
+    },
   },
   ditele: {
     image: assets.diteleHero,
@@ -545,6 +722,24 @@ export const pages = {
         },
       ],
     },
+    kk: {
+      title: 'DiTeLe қосымшасы',
+      eyebrow: 'Цифрлық оқу және тестілеу ортасы',
+      lead:
+        'DiTeLe тестілеушілерге тәжірибеге негізделген оқуды, жаттығуларды және нақты қолданыс сценарийлерін ұсынады.',
+      sections: [
+        {
+          title: 'Өмірден алынған жағдайлардағы тәжірибе',
+          text:
+            'Нақты мысалдарымыз теориялық ұғымдарды табысты IT жобаларында қалай қолдануға болатынын көрсетеді.',
+        },
+        {
+          title: 'Толық дайындық',
+          text:
+            'Біздің қолдауымызбен сіз заманауи IT жобаларының күрделі міндеттерін шешуге және тестілеуші ретіндегі мансабыңызды алға жылжытуға толық дайын боласыз.',
+        },
+      ],
+    },
   },
 } as const;
 
@@ -559,12 +754,15 @@ export const testimonials = [
   role: {
     de: 'Teilnehmerin WAMOCON Academy',
     en: 'Participant WAMOCON Academy',
+    kk: 'WAMOCON Academy тыңдаушысы',
   },
   text: {
     de:
       'Die WAMOCON Academy begleitet Teilnehmer Schritt für Schritt beim Einstieg in die IT-Branche.',
     en:
       'The WAMOCON Academy guides participants step by step as they enter the IT industry.',
+    kk:
+      'WAMOCON Academy тыңдаушыларын IT саласына кірігудің әр қадамында қолдап отырады.',
   },
 }));
 
@@ -594,6 +792,25 @@ export const legal = {
         'Preparation of this statement\nThis statement was prepared on 21 July 2026 following an internal review of the website against WCAG 2.1 level AA. We review it regularly and update it whenever functions or the state of accessibility change.',
       ],
     },
+    kk: {
+      title: 'Қолжетімділік туралы мәлімдеме',
+      // Courtesy translation. The German document remains the binding version,
+      // so the page carries a precedence notice pointing at it.
+      notice: {
+        text: 'Бұл қазақ тіліндегі мәтін ыңғайлылық үшін жасалған аударма. Заңды күші бар нұсқа ретінде тек неміс тіліндегі түпнұсқа қолданылады:',
+        linkLabel: 'неміс тіліндегі түпнұсқа',
+        href: '/barrierefreiheit/',
+      },
+      blocks: [
+        'Жаңартылған күні: 2026 жылғы 21 шілде\nWAMOCON Academy GmbH өз сайтын Германияның қолжетімділікті күшейту туралы заңына (Barrierefreiheitsstärkungsgesetz, BFSG) сәйкес қолжетімді етуге ұмтылады.',
+        'Талаптарға сәйкестік жағдайы\nӨлшем ретінде біз EN 301 549 стандартын қолданамыз, ол Web Content Accessibility Guidelines (WCAG) 2.1 нұсқасының AA сәйкестік деңгейіне сілтейді. Бұл сайт аталған талаптарға ішінара сәйкес келеді. Төменде санамаланған тармақтар бізге белгілі және қазір пысықталуда.',
+        'Қолжетімсіз мазмұн\nКейбір бейне материалдарда толық субтитрлер немесе транскрипт әлі жоқ (WCAG 1.2.2, 1.2.3).\nҮшінші тараптардың ендірілген мазмұны, әсіресе YouTube пен Google Maps, біздің бақылауымызда емес. Ол мазмұнның қолжетімділігіне тиісті провайдер жауапты.\nЖекелеген сәндік анимациялар мен қозғалыс әсерлері қазір тексерілуде. Операциялық жүйесінде қозғалысты азайту режимін қосқан пайдаланушылар қазірдің өзінде жеңілдетілген көріністі алады (WCAG 2.3.3).',
+        'Балама жолдар және байланыс\nЕгер қандай да бір мазмұн сізге қолжетімсіз болса, бізге хабарласыңыз. Қажетті ақпаратты басқа жолмен, мысалы телефон немесе электрондық пошта арқылы ұсынамыз.',
+        'Кері байланыс және байланыс деректері\nОсы сайттағы кедергілер туралы кез келген уақытта хабарлап, қолжетімді балама сұрай аласыз:\nWAMOCON Academy GmbH, Mergenthalerallee 79–81, 65760 Eschborn, Германия\nТелефон: +49 (0) 6196 5838312\nЭлектрондық пошта: info@test-it-academy.com\nХабарламаңыздың келіп түскенін жедел растаймыз және алты апта ішінде мазмұны бойынша жауап береміз.',
+        'Мәжбүрлеу рәсімі\nЕгер жауабымызға көңіліңіз толмаса немесе жауап алмасаңыз, өнімдер мен қызметтердің қолжетімділігі жөніндегі федералдық жерлердің нарықтық қадағалау органына (MLBF) жүгіне аласыз.\nMarktüberwachungsstelle der Länder für die Barrierefreiheit von Produkten und Dienstleistungen, Anstalt öffentlichen Rechts (MLBF AöR)\nCarl-Miller-Straße 6, 39112 Magdeburg, Германия\nТелефон: +49 391 289 230 23\nЭлектрондық пошта: kontakt@mlbf-barrierefrei.de\nВеб-сайт: mlbf-barrierefrei.de',
+        'Осы мәлімдеменің дайындалуы\nБұл мәлімдеме 2026 жылғы 21 шілдеде дайындалды. Негіз ретінде сайттың WCAG 2.1 AA деңгейі бойынша ішкі тексерісі алынды. Мәлімдемені тұрақты қайта қарап отырамыз және функциялар не қолжетімділік жағдайы өзгерген сайын жаңартамыз.',
+      ],
+    },
   },
   imprint: {
     de: {
@@ -616,6 +833,24 @@ export const legal = {
         'Consumer dispute resolution\nWAMOCON Academy GmbH is neither willing nor obliged to participate in dispute resolution proceedings before a consumer arbitration board.',
         'Editorial responsibility pursuant to section 18(2) MStV\nDipl.-Ing. Waleri Moretz\nMergenthalerallee 79–81\n65760 Eschborn',
         'Liability for links\nOur website contains links to external third-party websites over whose content we have no influence. The respective provider is responsible for linked content. We remove affected links promptly when we become aware of a specific infringement.',
+      ],
+    },
+    kk: {
+      title: 'Заңды мәліметтер',
+      // Courtesy translation. The German document remains the binding version,
+      // so the page carries a precedence notice pointing at it.
+      notice: {
+        text: 'Бұл қазақ тіліндегі мәтін ыңғайлылық үшін жасалған аударма. Заңды күші бар нұсқа ретінде тек неміс тіліндегі түпнұсқа қолданылады:',
+        linkLabel: 'неміс тіліндегі түпнұсқа',
+        href: '/impressum/',
+      },
+      blocks: [
+        '§ 5 DDG талаптарына сай мәліметтер\nWAMOCON Academy GmbH\nMergenthalerallee 79–81\n65760 Eschborn\nГермания',
+        'Байланыс\nТелефон: +49 (0) 6196 5838312\nЭлектрондық пошта: info@test-it-academy.com',
+        'Өкілдік және тіркеу\nАтқарушы директор: Dipl.-Ing. Waleri Moretz\nКомпанияның орналасқан жері: Eschborn\nТіркеу соты: Amtsgericht Frankfurt am Main\nСауда тізілімінің нөмірі: HRB 123666\n§ 27a UStG бойынша қосылған құн салығының сәйкестендіру нөмірі: DE344930486',
+        'Тұтынушылық дауларды шешу\nWAMOCON Academy GmbH тұтынушылық татуластыру органындағы дауды шешу рәсіміне қатысуға дайын емес және қатысуға міндетті емес.',
+        '§ 18 абз. 2 MStV бойынша редакциялық жауапты тұлға\nDipl.-Ing. Waleri Moretz\nMergenthalerallee 79–81\n65760 Eschborn',
+        'Сілтемелер үшін жауапкершілік\nСайтымызда үшінші тараптардың сыртқы сайттарына сілтемелер бар. Олардың мазмұнына біздің ықпалымыз жүрмейді. Сілтеме берілген беттердің мазмұнына тиісті провайдер жауап береді. Нақты құқық бұзушылық белгілі болған жағдайда тиісті сілтемелерді дереу жоямыз.',
       ],
     },
   },
@@ -652,6 +887,30 @@ export const legal = {
         '9. Recipients and international transfers\nRecipients may include Vercel, Microsoft and, when a form is used, Cloudflare. Google/YouTube receives data only after consent. Where providers process data outside the European Economic Area, they state that they rely on an adequacy decision, especially the EU-US Data Privacy Framework, or safeguards such as EU Standard Contractual Clauses. An Article 28 GDPR agreement is required where a provider acts as a processor.',
         '10. Your rights\nSubject to the GDPR, you have rights of access, rectification, erasure, restriction, data portability and objection. You may withdraw consent at any time for the future. Contact info@test-it-academy.com. You may also complain to a supervisory authority; in particular, the Hessian Commissioner for Data Protection and Freedom of Information, datenschutz.hessen.de.',
         '11. Security and updates\nWe protect the website using TLS encryption, security headers, access controls and other appropriate technical and organisational measures. We update this policy when functions, providers or legal requirements change.',
+      ],
+    },
+    kk: {
+      title: 'Құпиялылық саясаты',
+      // Courtesy translation. The German document remains the binding version,
+      // so the page carries a precedence notice pointing at it.
+      notice: {
+        text: 'Бұл қазақ тіліндегі мәтін ыңғайлылық үшін жасалған аударма. Заңды күші бар нұсқа ретінде тек неміс тіліндегі түпнұсқа қолданылады:',
+        linkLabel: 'неміс тіліндегі түпнұсқа',
+        href: '/datenschutz/',
+      },
+      blocks: [
+        'Жаңартылған күні: 2026 жылғы 21 шілде\nБұл құпиялылық саясаты test-it-academy.com сайтындағы дербес деректерді өңдеуді сипаттайды.',
+        '1. Деректерді өңдеуші\nWAMOCON Academy GmbH\nMergenthalerallee 79–81\n65760 Eschborn, Германия\nТелефон: +49 (0) 6196 5838312\nДеректерді қорғау сұрақтары бойынша электрондық пошта: info@test-it-academy.com\nАтқарушы директор: Dipl.-Ing. Waleri Moretz\nДеректерді қорғау жөніндегі уәкіл тағайындалмаған.',
+        '2. Хостинг және сервер журналдары\nAstro негізіндегі сайт Vercel Inc. арқылы ұсынылады. Сайтқа кірген кезде техникалық тұрғыда қажет байланыс деректері өңделеді: IP мекенжайы, уақыты, сұралған URL, referrer, браузер және операциялық жүйе. Мақсаты: сайттың қауіпсіз әрі тұрақты жұмысы. Құқықтық негізі: GDPR 6-бабы 1-тармағының f тармақшасы. Журналдар пайдалану, қауіпсіздік және қателерді талдау үшін қажет мерзімде ғана сақталады. Провайдер туралы ақпарат: vercel.com/legal/privacy-notice.',
+        '3. Байланыс және курс сұраныстары\nФормалар тек міндеттеме жүктемейтін сұраныстарға арналған және ақылы шарт тудырмайды. Аты-жөніңіз, электрондық пошта мекенжайыңыз, қалауыңыз бойынша телефон нөміріңіз және өзіңіз енгізген мәтін өңделеді. Құқықтық негіздері: шарт жасасу алдындағы әрекеттер үшін GDPR 6-бабы 1-тармағының b тармақшасы, өзге сұраныстар үшін сол баптың f тармақшасы. Жіберу және ішкі поштамен жеткізу Vercel және Microsoft 365 (Microsoft Graph) арқылы жүзеге асады. Сұраныс толық өңделгеннен кейін, заңды сақтау мерзімдері немесе кейінгі шарттық қатынас кедергі болмаса, деректер жойылады.',
+        '4. Формаларды Cloudflare Turnstile арқылы қорғау\nФорманы белсенді пайдаланған кезде Cloudflare, Inc. компаниясының Cloudflare Turnstile қызметі жүктеледі. Turnstile автоматтандырылған енгізу мен теріс пайдалануды анықтау үшін техникалық байланыс, браузер және өзара әрекет деректерін өңдейді. Құқықтық негізі: GDPR 6-бабы 1-тармағының f тармақшасы. Техникалық тұрғыда қажет жад қатынасы сіз сұраған қорғалған форма функциясына қызмет етеді. Turnstile сервер жағында тексеріледі. Ақпарат: cloudflare.com/privacypolicy.',
+        '5. Келісімді басқару және сыртқы медиа\nСайт сыртқы медиаға қатысты таңдауыңызды браузеріңізде „wamocon-academy-consent-v1“ кілтімен жергілікті сақтайды. Бұл таңдауыңызды басқару үшін қажет. YouTube бейнелері мен Google Maps тек сіз „Сыртқы медиа“ рұқсатын бергенде жүктеледі. Сол кезде IP мекенжайы, браузер деректері, ашылған бет және жағдайға қарай аккаунт деректері Google Ireland Limited компаниясына немесе онымен байланысты компанияларға берілуі мүмкін. Құқықтық негіздері: GDPR 6-бабы 1-тармағының a тармақшасы және TDDDG 25-бабының 1-тармағы. Келісімді кез келген уақытта сайттың төменгі бөлігіндегі „Құпиялылық параметрлері“ арқылы кері қайтара аласыз. Ақпарат: policies.google.com/privacy.',
+        '6. Пікірлер және тыңдаушы лебіздері\nПікірлер бетінде өз пікіріңізді ерікті түрде қалдыра аласыз. Аты-жөніңіз, бағаңыз және өзіңіз енгізген мәтін өңделеді. Пікіріңізді аты-жөніңізбен бірге WAMOCON Academy GmbH сайттарында және әлеуметтік желі арналарында тыңдаушы лебізі ретінде жариялау тек GDPR 6-бабы 1-тармағының a тармақшасына сай бөлек берілген ерікті келісіміңіз негізінде жүзеге асады. Мұндай келісімсіз пікіріңіз жарияланбайды, ал пікір қалдыру бағдарламаларымызға қатысудың шарты емес. Келісімді кез келген уақытта болашаққа қатысты info@test-it-academy.com арқылы кері қайтара аласыз. Ол жағдайда жарияланымды сайттарымыздан дереу аламыз; үшінші тұлғалар немесе әлеуметтік желі платформалары бұрын көшіріп алған мазмұнды әрқашан қайтара алмаймыз. Келісім кері қайтарылған немесе жариялау мақсаты жойылған сәтте пікірлер өшіріледі.',
+        '7. Жасанды интеллект чат көмекшісі\nБұл сайтта чат көмекшісі жұмыс істейді. Ол адам емес, жасанды интеллект жүйесі. Оның жауаптары автоматты түрде жасалады, тек осы сайттың мазмұнына сүйенеді және қате қамтуы мүмкін; олар заңгерлік немесе шарттық кеңес болып саналмайды.\nЕнгізген мәтініңіз біздің серверлік функциямызға жіберіледі, ол жерден WAMOCON тобының серверлерінде жұмыс істейтін тілдік модельге беріледі. Сыртқы жасанды интеллект провайдеріне ешқандай беру жүрмейді. Енгізген мәтініңіз модельді оқыту үшін пайдаланылмайды.\nХабарламаларыңыздың мазмұны сақталмайды және журналға жазылмайды. Тек дербес деректерге қатысы жоқ техникалық көрсеткіштер тіркеледі: сұраныс тілі, таңба саны, пайдаланылған сайт бөлімдерінің саны. Әңгіме тарихы тек браузеріңіздің жадында тұрады және бетті жапқанда жойылады.\nҚұқықтық негізі: сұраныстарға тиімді жауап берудегі заңды мүддеміз (GDPR 6-бабы 1-тармағының f тармақшасы). Чатқа дербес деректердің ерекше санаттарын немесе құпия ақпаратты енгізбеңіз; жеке мәселелер бойынша info@test-it-academy.com мекенжайын пайдаланыңыз.',
+        '8. Аудиторияны өлшеу және жарнама жүргізілмейді\nБұл Astro сайтында Yandex Metrica (Webvisor қоса), Google Analytics, Google AdSense және reCAPTCHA пайдаланылмайды. Аталған қызметтер арқылы аудиторияны өлшеу де, дербестендірілген жарнама да жүргізілмейді. Google Fonts қаріптері Google серверлерінен жүктелмейді.',
+        '9. Алушылар және үшінші елдерге беру\nАлушылар қатарында Vercel, Microsoft, ал форманы пайдаланғанда Cloudflare болуы мүмкін. Google және YouTube деректерді тек сіздің келісіміңізден кейін алады. Провайдерлер деректерді Еуропалық экономикалық аймақтан тыс өңдейтін болса, олар өз мәлімдемесі бойынша бұл берілімді жеткіліктілік туралы шешімге, әсіресе EU-US Data Privacy Framework шеңберіне, немесе ЕО стандартты шарттық ережелері сияқты тиісті кепілдіктерге негіздейді. Провайдер өңдеуші ретінде әрекет еткен жағдайда GDPR 28-бабына сай келісім қажет.',
+        '10. Сіздің құқықтарыңыз\nGDPR талаптарына сай сізде ақпарат алу, түзету, жою, өңдеуді шектеу, деректерді тасымалдау және қарсылық білдіру құқықтары бар. Келісімді кез келген уақытта болашаққа қатысты кері қайтара аласыз. Сұраныстарды info@test-it-academy.com мекенжайына жіберіңіз. Сонымен қатар деректерді қорғау жөніндегі қадағалау органына шағымдана аласыз; бұл орган, атап айтқанда, Гессен жері бойынша деректерді қорғау және ақпарат еркіндігі жөніндегі уәкіл, datenschutz.hessen.de.',
+        '11. Қауіпсіздік және жаңарту\nСайтты TLS шифрлауымен, қауіпсіздік тақырыптарымен, қатынасты шектеумен және басқа да тиісті техникалық әрі ұйымдастырушылық шаралармен қорғаймыз. Функциялар, қызмет көрсетушілер немесе құқықтық жағдай өзгергенде осы саясат жаңартылады.',
       ],
     },
   },

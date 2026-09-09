@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ReviewsPage from '../../components/sections/ReviewsPage.astro';
+
+const lang = 'kk';
+---
+
+<BaseLayout
+  title="Тыңдаушыларымыздың ISTQB курстары туралы пікірі"
+  description="Тыңдаушыларымыз өз тәжірибесімен және бізден алған нақты пайдасымен бөліседі."
+  lang={lang}
+>
+  <ReviewsPage lang={lang} />
+</BaseLayout>

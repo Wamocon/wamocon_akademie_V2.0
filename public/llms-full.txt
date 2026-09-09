@@ -38,9 +38,9 @@ Participants report passing the ISTQB Certified Tester examination, in several d
 
 WAMOCON Academy is connected to WAMOCON GmbH, an active IT test-management company, which gives participants visibility of how enterprise testing projects are staffed and run. The 360-degree Booster System is explicitly designed around career entry rather than certification alone. Participants should treat the programme as structured preparation and networking rather than a guaranteed placement.
 
-## Are courses available in English?
+## In which languages is WAMOCON Academy available?
 
-Yes. WAMOCON Academy publishes its full course information in German and English, and the website is available in both languages. The ISTQB accreditation held by the academy covers German-language CTFL 4.0 and Agile Tester 1.0 training materials. Prospective participants who need English-language delivery should confirm the arrangement directly with the academy.
+WAMOCON Academy publishes its full course information in German, English and Kazakh, and the website is available in all three languages: German at the site root, English under /en/ and Kazakh under /kk/. The ISTQB accreditation held by the academy covers German-language CTFL 4.0 and Agile Tester 1.0 training materials. The language of the website is therefore not the same as the language a course is taught in. Prospective participants who need English-language or Kazakh-language delivery should confirm the arrangement directly with the academy on +49 6196 5838312 or at info@test-it-academy.com.
 
 ## Where is WAMOCON Academy and how do I contact it?
 
