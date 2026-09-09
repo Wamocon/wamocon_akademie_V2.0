@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const lang = 'kk';
+---
+
+<BaseLayout title="Рахмет" description="WAMOCON Academy-ге жолдаған сұранысыңыз үшін рахмет." lang={lang} noindex>
+  <section class="thank-you page-hero">
+    <div class="container page-hero__inner">
+      <div class="page-hero__copy">
+        <h1>Рахмет</h1>
+        <p>Сұранысыңыз жіберілді. Жақын арада сізбен хабарласамыз.</p>
+        <a href="/kk/">Басты бетке</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .thank-you h1 { margin: 0 0 1.25rem; color: var(--color-text); }
+  .thank-you p { max-width: 54ch; color: var(--color-muted); }
+  /* Body-size text, so it needs the AA-safe accent token. */
+  .thank-you a { display: inline-flex; margin-top: 1.5rem; color: var(--color-accent-text); font-weight: var(--fw-semibold); }
+</style>

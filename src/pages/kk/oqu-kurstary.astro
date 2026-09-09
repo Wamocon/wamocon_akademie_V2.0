@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SoftwareTesterProgramsPage from '../../components/sections/SoftwareTesterProgramsPage.astro';
+import { pages } from '../../data/academy';
+
+const lang = 'kk';
+const page = pages.courses[lang];
+// Own meta description: the page lead is too long for search results.
+const metaDescription =
+  'WAMOCON Academy-дің барлық ISTQB® курсы: CTFL 4.0 және Agile Tester 1.0, Эшборнда әрі онлайн, жеке немесе командалық тренинг ретінде.';
+---
+
+<BaseLayout title={page.title} description={metaDescription} lang={lang} image={pages.courses.image}>
+  <SoftwareTesterProgramsPage lang={lang} />
+</BaseLayout>

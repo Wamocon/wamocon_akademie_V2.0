@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AboutAcademyPage from '../../components/sections/AboutAcademyPage.astro';
+import { pages } from '../../data/academy';
+
+const lang = 'kk';
+// Own meta description: the page lead is too long for search results.
+const metaDescription =
+  'Эшборндағы ISTQB аккредиттеген IT білім беру орталығы. Негізден бастап ISTQB® сертификаттауына дейін тестілеуші мамандығына даярлаймыз.';
+---
+
+<BaseLayout title="Академия туралы" description={metaDescription} lang={lang} image={pages.about.image}>
+  <AboutAcademyPage lang={lang} />
+</BaseLayout>

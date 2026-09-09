@@ -1,10 +1,12 @@
 # WAMOCON Academy V2
 
-Bilingual Astro implementation of [test-it-academy.com](https://test-it-academy.com/) for German and English visitors.
+Multilingual Astro implementation of [test-it-academy.com](https://test-it-academy.com/) for German, English and Kazakh visitors.
 
-German is the default locale and is served from the site root, English from `/en/`. Locale routing, navigation labels, legal-page URLs and the shared UI strings all live in `src/i18n/config.ts`; `src/i18n/utils.ts` maps a path onto its sibling for the language switcher and the `hreflang` tags, and exposes `pick(lang, {...})` for per-locale copy with a German fallback.
+German is the default locale and is served from the site root, English from `/en/` and Kazakh from `/kk/`. Locale routing, navigation labels, legal-page URLs and the shared UI strings all live in `src/i18n/config.ts`; `src/i18n/utils.ts` maps a path onto its sibling for the language switcher and the `hreflang` tags, and exposes `pick(lang, {...})` for per-locale copy with a German fallback.
 
-Participant reviews are published unedited in the language they were given in (German).
+The Kazakh edition uses Cyrillic script and the formal address (`Сіз`), which is what professional adult education is expected to use in Kazakhstan; the German and English editions keep their informal address. Kazakh legal pages are courtesy translations and carry a notice pointing at the binding German original.
+
+Participant reviews are published unedited in the language they were given in (German), so the English and Kazakh review pages show the original German wording and translate only the surrounding chrome.
 
 ## Architecture
 

@@ -28,17 +28,20 @@ const referralId = `referral-${type}-${anchorId ?? 'modal'}`;
 const privacyNotice = pick(lang, {
   de: 'Mit dem Absenden sendest du eine unverbindliche Anfrage an die WAMOCON Academy GmbH. Wir verwenden deine Angaben nur zur Beantwortung deiner Anfrage. Weitere Informationen findest du in der ',
   en: 'By submitting, you send a non-binding inquiry to WAMOCON Academy GmbH. We use your details only to answer your inquiry. More information is available in the ',
+  kk: 'Жіберу арқылы сіз WAMOCON Academy GmbH компаниясына міндеттеме жүктемейтін сұраныс жолдайсыз. Деректеріңізді тек сұранысыңызға жауап беру үшін пайдаланамыз. Қосымша ақпарат ',
 });
 
 // Named person accountable for enquiries submitted through this form.
 const responsiblePerson = pick(lang, {
   de: 'Deine Anfrage wird bearbeitet von Dipl.-Ing. Waleri Moretz, Geschäftsführer der WAMOCON Academy GmbH.',
   en: 'Your enquiry is handled by Dipl.-Ing. Waleri Moretz, Managing Director of WAMOCON Academy GmbH.',
+  kk: 'Сұранысыңызды WAMOCON Academy GmbH компаниясының атқарушы директоры Dipl.-Ing. Waleri Moretz қарайды.',
 });
 
 const consultationAlt = pick(lang, {
   de: 'Persönliche Beratung bei der WAMOCON Academy',
   en: 'Personal consultation at WAMOCON Academy',
+  kk: 'WAMOCON Academy-дегі жеке кеңес беру',
 });
 ---
 

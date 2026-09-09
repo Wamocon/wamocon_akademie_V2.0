@@ -7,6 +7,8 @@
  * generative engines quote most reliably. The component also emits FAQPage
  * JSON-LD so the same content is machine-readable.
  */
+import type { Lang } from '../../i18n/config';
+
 export interface FaqItem {
   question: string;
   answer: string;
@@ -23,7 +25,7 @@ interface Props {
   bylineRole?: string;
   /** ISO date the answers were last checked by that person. */
   lastReviewed?: string;
-  lang?: 'de' | 'en';
+  lang?: Lang;
 }
 
 const {
@@ -40,6 +42,7 @@ const {
 const reviewedFormats = {
   de: { locale: 'de-DE', label: (date: string) => `Zuletzt fachlich geprüft am ${date}` },
   en: { locale: 'en-GB', label: (date: string) => `Last reviewed on ${date}` },
+  kk: { locale: 'kk-KZ', label: (date: string) => `Соңғы кәсіби тексеру күні: ${date}` },
 } as const;
 
 const reviewedFormat = reviewedFormats[lang] ?? reviewedFormats.de;

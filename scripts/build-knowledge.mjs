@@ -19,7 +19,7 @@ const DIST = join(ROOT, 'dist');
 const OUT = join(ROOT, 'api', '_knowledge.json');
 
 /** Pages that carry no useful answer material. */
-const SKIP = ['/404/', '/404.html', '/danke/', '/thanks/'];
+const SKIP = ['/404/', '/404.html', '/danke/', '/thanks/', '/kk/rahmet/'];
 
 function walk(dir, acc = []) {
   for (const entry of readdirSync(dir)) {
@@ -77,7 +77,9 @@ function titleOf(html) {
 function langOf(html, url) {
   const m = html.match(/<html[^>]*\blang="([a-z]{2})"/i);
   if (m) return m[1];
-  return url.startsWith('/en/') ? 'en' : 'de';
+  if (url.startsWith('/en/')) return 'en';
+  if (url.startsWith('/kk/')) return 'kk';
+  return 'de';
 }
 
 /**

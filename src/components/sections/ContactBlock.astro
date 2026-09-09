@@ -6,8 +6,8 @@
  */
 import { company, type Lang } from '../../i18n/config';
 interface Props {
-  /** LEGACY component: unreachable from any route, still German/English only. */
-  lang: "de" | "en";
+  /** LEGACY component: unreachable from any route, kept in sync with the locales. */
+  lang: Lang;
 }
 const { lang } = Astro.props;
 
@@ -37,6 +37,16 @@ const labels = {
     follow: 'Follow us on social media',
     imgAlt: 'WAMOCON team in the office',
     ratingLabel: 'Google rating 5.0',
+  },
+  kk: {
+    phone: 'Телефон',
+    contactPerson: 'Байланыс тұлғасы',
+    contactPersonName: 'Dipl.-Ing. Waleri Moretz, WAMOCON Academy GmbH атқарушы директоры',
+    hours: 'Жұмыс уақыты',
+    location: 'Мекенжай',
+    follow: 'Бізді әлеуметтік желілерден қараңыз',
+    imgAlt: 'Кеңседегі WAMOCON командасы',
+    ratingLabel: 'Google бағасы 5,0',
   },
 }[lang];
 ---

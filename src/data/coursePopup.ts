@@ -22,7 +22,7 @@ export const cleanCoursePopupDescription = (description: string) =>
     .replace(/[​‌‍﻿]/g, '')
     .replace(/\(\s+/g, '(')
     .replace(/\s+\)/g, ')')
-    .replace(/\s*(Eine Frage stellen|Ask a question)\s*$/, '');
+    .replace(/\s*(Eine Frage stellen|Ask a question|Сұрақ қою)\s*$/, '');
 
 const linkify = (text: string, links: CoursePopupLink[]): CoursePopupInline[] => {
   const parts: CoursePopupInline[] = [];
@@ -84,7 +84,8 @@ export const coursePopupBlocks = (
         /^ISTQB® Certified Tester Foundation Level\b/i.test(line) ||
         /^\d+\.\s*Etappe\b/i.test(line) ||
         /^(?:Stage\s+\d+|\d+(?:st|nd|rd|th)\s+stage)\s*:/i.test(line) ||
-        /^(?:Deine Vorteile auf dem Arbeitsmarkt|Your (?:team’s |team's )?advantages (?:in|on) the job market)$/i.test(line);
+        /^\d+\.\s*кезең/i.test(line) ||
+        /^(?:Deine Vorteile auf dem Arbeitsmarkt|Your (?:team’s |team's )?advantages (?:in|on) the job market|Еңбек нарығындағы артықшылықтарыңыз)$/i.test(line);
       if (isHeading) {
         flushParagraph();
         flushList();
@@ -111,10 +112,11 @@ export const coursePopupBlocks = (
 const popupCategories = {
   de: { team: 'Teamkurse', individual: 'Einzelkurse' },
   en: { team: 'Team courses', individual: 'Individual courses' },
+  kk: { team: 'Командалық курстар', individual: 'Жеке курстар' },
 } satisfies Record<Lang, { team: string; individual: string }>;
 
 export const coursePopupCategory = (hook: string, lang: Lang) => {
-  const isTeamCourse = /-2-(?:de|en)$/.test(hook);
+  const isTeamCourse = /-2-(?:de|en|kk)$/.test(hook);
   const labels = popupCategories[lang] ?? popupCategories.de;
   return isTeamCourse ? labels.team : labels.individual;
 };

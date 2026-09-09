@@ -60,6 +60,7 @@ const organization = {
   description: pick(lang, {
     de: 'IT-Bildungszentrum in Eschborn für Softwaretesting und Testmanagement. Von ISTQB als akkreditierter Trainingsanbieter für deutschsprachige CTFL 4.0- und Agile-Tester-1.0-Materialien gelistet.',
     en: 'IT training centre in Eschborn for software testing and test management. Listed by ISTQB as an accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 materials.',
+    kk: 'Эшборн қаласындағы бағдарламалық қамтамасыз етуді тестілеу және тестілеуді басқару жөніндегі IT білім беру орталығы. ISTQB тізімінде неміс тіліндегі CTFL 4.0 және Agile Tester 1.0 материалдары бойынша аккредиттелген оқыту провайдері ретінде тіркелген.',
   }),
   telephone: company.phone,
   email: company.email,
@@ -80,7 +81,7 @@ const organization = {
     { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Saturday', opens: '10:00', closes: '14:00' },
   ],
   areaServed: ['Germany', 'Austria', 'Switzerland', 'European Union'],
-  knowsLanguage: ['de', 'en'],
+  knowsLanguage: ['de', 'en', 'kk'],
   hasCredential: {
     '@type': 'EducationalOccupationalCredential',
     name: 'ISTQB Accredited Training Provider',
@@ -122,7 +123,7 @@ const organization = {
       telephone: company.phone,
       email: company.email,
       contactType: 'admissions',
-      availableLanguage: ['German', 'English'],
+      availableLanguage: ['German', 'English', 'Kazakh'],
       areaServed: 'EU',
     },
   ],
@@ -138,11 +139,11 @@ const website = {
   publisher: { '@id': `${origin}/#organization` },
 };
 
-const isHome = ['/', '/en/', '/tr/'].includes(Astro.url.pathname);
+const isHome = ['/', '/en/', '/kk/'].includes(Astro.url.pathname);
 const trail = [
   {
-    name: pick(lang, { de: 'Startseite', en: 'Home' }),
-    path: pick(lang, { de: '/', en: '/en/' }),
+    name: pick(lang, { de: 'Startseite', en: 'Home', kk: 'Басты бет' }),
+    path: pick(lang, { de: '/', en: '/en/', kk: '/kk/' }),
   },
   ...breadcrumbs,
   // A breadcrumb that never names the current page conveys no position and is
@@ -194,14 +195,16 @@ const expert = {
   jobTitle: pick(lang, {
     de: 'Geschäftsführer und Trainer',
     en: 'Managing Director and Trainer',
+    kk: 'Атқарушы директор және тренер',
   }),
   description: pick(lang, {
     de: 'Diplom-Ingenieur, Geschäftsführer der WAMOCON Academy GmbH und der WAMOCON GmbH. Leitet seit 2015 Testmanagement-Projekte für Konzerne und unterrichtet ISTQB-Lehrpläne.',
     en: 'Graduate engineer, managing director of WAMOCON Academy GmbH and WAMOCON GmbH. Has led enterprise test-management projects since 2015 and teaches the ISTQB syllabi.',
+    kk: 'Дипломды инженер, WAMOCON Academy GmbH және WAMOCON GmbH компанияларының атқарушы директоры. 2015 жылдан бері ірі компанияларға арналған тестілеуді басқару жобаларын жетекшілік етеді және ISTQB оқу бағдарламалары бойынша сабақ береді.',
   }),
   worksFor: { '@id': `${origin}/#organization` },
   knowsAbout: ['Software testing', 'Test management', 'ISTQB Certified Tester', 'Quality assurance'],
-  knowsLanguage: ['de', 'en'],
+  knowsLanguage: ['de', 'en', 'kk'],
   url: `${origin}/`,
   // Resolves this Person to the same human on the sister site.
   sameAs: ['https://www.wamocon.com/#waleri-moretz'],
@@ -279,7 +282,7 @@ const structuredData = {
   </head>
   <body>
     <a class="skip-link" href="#main">
-      {pick(lang, { de: 'Zum Inhalt springen', en: 'Skip to content' })}
+      {pick(lang, { de: 'Zum Inhalt springen', en: 'Skip to content', kk: 'Мазмұнға өту' })}
     </a>
     <Header lang={lang} />
     <main id="main"><slot /></main>
@@ -370,6 +373,10 @@ const structuredData = {
         en: {
           captcha: 'Please complete the security check.',
           failed: 'The request could not be sent. Please try again or call us.',
+        },
+        kk: {
+          captcha: 'Қауіпсіздік тексерісінен өтіңіз.',
+          failed: 'Сұранысты жіберу мүмкін болмады. Қайталап көріңіз немесе бізге қоңырау шалыңыз.',
         },
       };
       const messagesFor = (code) => FORM_MESSAGES[code] || FORM_MESSAGES.de;

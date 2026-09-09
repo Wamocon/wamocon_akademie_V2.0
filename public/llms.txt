@@ -10,7 +10,7 @@
 - Commercial register: Amtsgericht Frankfurt am Main, HRB 123666
 - VAT identification number: DE344930486
 - Accreditation: listed by ISTQB as an accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 training materials
-- Languages served: German and English
+- Languages served: German, English and Kazakh (website); ISTQB accreditation covers German-language training materials
 - Parent organisation: WAMOCON GmbH, an IT test-management and quality-assurance company
 
 ## What WAMOCON Academy offers
@@ -48,6 +48,16 @@
 - [About us (EN)](https://test-it-academy.com/en/about-us/): Academy profile in English.
 - [Reviews (EN)](https://test-it-academy.com/en/reviews/): Participant reviews in English.
 - [DiTele app (EN)](https://test-it-academy.com/en/ditele-app/): Digital learning application in English.
+
+## Kazakh pages
+
+- [Home (KK)](https://test-it-academy.com/kk/): Kazakh overview of the academy.
+- [ISTQB certification (KK)](https://test-it-academy.com/kk/istqb-sertifikattau/): ISTQB courses described in Kazakh.
+- [Educational programmes (KK)](https://test-it-academy.com/kk/oqu-kurstary/): Training catalogue in Kazakh.
+- [360-degree Booster System (KK)](https://test-it-academy.com/kk/360-booster-system/): Career-entry programme in Kazakh.
+- [About the academy (KK)](https://test-it-academy.com/kk/akademiya-turaly/): Academy profile in Kazakh.
+- [Reviews (KK)](https://test-it-academy.com/kk/pikirler/): Participant reviews page in Kazakh.
+- [DiTele app (KK)](https://test-it-academy.com/kk/ditele-app/): Digital learning application in Kazakh.
 
 
 ## Contact

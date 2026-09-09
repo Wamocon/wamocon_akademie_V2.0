@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DitelePage from '../../components/sections/DitelePage.astro';
+
+const lang = 'kk';
+const title = 'DiTeLe: ISTQB емтиханына дайындалуға арналған оқу платформасы';
+const description = 'WAMOCON Academy цифрлық оқу платформасы DiTeLe арқылы толыққанды курстарды ыңғайлы әрі тиімді аяқтаудың жаңа жолын ұсынады.';
+---
+
+<BaseLayout title={title} description={description} lang={lang} image="/images/social/ditele-app.jpg">
+  <DitelePage lang={lang} />
+</BaseLayout>

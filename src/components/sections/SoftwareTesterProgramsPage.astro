@@ -26,6 +26,7 @@ const courses = programCourses[lang];
 const heroAccentLines = pick(lang, {
   de: ['Bildungsprogramme', 'für Softwaretester:'],
   en: ['Educational programs', 'for software testers:'],
+  kk: ['Тестілеушілерге арналған', 'білім беру бағдарламалары:'],
 });
 const coursePopups = (coursePopupCopy as PopupRecord[]).filter((popup) => popup.hook.endsWith(`-${lang}`));
 const popupId = (hook: string) => `course-${hook.replace('#popup:', '').replace(/[^a-z0-9-]+/gi, '-').toLowerCase()}`;
@@ -33,14 +34,17 @@ const redirect = thanksHref[lang];
 const questionHook = pick(lang, {
   de: '#popup:eine-Frage-stellen',
   en: '#popup:eine-Frage-stellen-en',
+  kk: '#popup:eine-Frage-stellen-kk',
 });
 const registrationHook = pick(lang, {
   de: '#popup:myform',
   en: '#popup:myform-en',
+  kk: '#popup:myform-kk',
 });
 const scheduleHook = pick(lang, {
   de: '#popup:Termine',
   en: '#popup:Termine-en',
+  kk: '#popup:Termine-kk',
 });
 const normalizePopupHref = (href: string) => {
   if (href === '#order') return registrationHook;
@@ -85,6 +89,23 @@ const c = pick(lang, {
     yourQuestion: 'Your question',
     videoNotice: 'This video loads from YouTube only after your consent.',
     videoLoad: 'Load YouTube video',
+  },
+  kk: {
+    privacyLabel: 'құпиялылық саясатында',
+    formNoticeStart:
+      'WAMOCON Academy GmbH компаниясына жіберген сұранысыңыз міндеттеме жүктемейді және сатып алу болып саналмайды. Деректеріңіздің қалай өңделетіні туралы ақпарат ',
+    scheduleMonths: [['Жоспарлануда', ['Жаңа курс күндері жарияланады.']]],
+    consultationAlt: 'WAMOCON Academy-дегі жеке кеңес беру',
+    accreditationStrip: 'Логотиптер: Гессен жері, ISTQB Accredited Training Provider және International Software Testing Qualifications Board',
+    network: 'WAMOCON Academy-дің ISTQB жеке және командалық курстарына шолу',
+    diploma: 'Курсты аяқтаудың нышаны ретіндегі академиялық бас киім мен сертификат',
+    certification: 'Логотип: ISTQB Accredited Training Provider',
+    webinar: 'Тест-кейс үстінде жұмыс істеп отырған тестілеуші',
+    scrollHint: 'Төмен айналдырыңыз ↓',
+    askQuestion: 'Сұрақ қою',
+    yourQuestion: 'Сұрағыңыз',
+    videoNotice: 'Бұл бейне тек сіздің келісіміңізден кейін YouTube арқылы жүктеледі.',
+    videoLoad: 'YouTube бейнесін жүктеу',
   },
 });
 const privacyLabel = c.privacyLabel;

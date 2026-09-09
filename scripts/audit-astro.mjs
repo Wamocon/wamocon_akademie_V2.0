@@ -6,33 +6,33 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const dist = join(root, 'dist');
 
 // Every route the site publishes, grouped by locale. German is served from the
-// root and English from /en/.
+// root, English from /en/ and Kazakh from /kk/.
 const localeRoutes = [
-  { de: '/', en: '/en/' },
-  { de: '/bildungsprogramme-fr-softwaretester/', en: '/en/educational-programs/' },
-  { de: '/ber-die-akademie/', en: '/en/about-us/' },
-  { de: '/360-booster-system/', en: '/en/360-booster-system/' },
-  { de: '/bewertungen/', en: '/en/reviews/' },
-  { de: '/istqb-zertifizierung/', en: '/en/istqb-certification/' },
-  { de: '/ditele-app/', en: '/en/ditele-app/' },
-  { de: '/datenschutz/', en: '/privacy-policy/' },
-  { de: '/impressum/', en: '/imprint/' },
-  { de: '/barrierefreiheit/', en: '/accessibility/' },
-  { de: '/danke/', en: '/thanks/' },
+  { de: '/', en: '/en/', kk: '/kk/' },
+  { de: '/bildungsprogramme-fr-softwaretester/', en: '/en/educational-programs/', kk: '/kk/oqu-kurstary/' },
+  { de: '/ber-die-akademie/', en: '/en/about-us/', kk: '/kk/akademiya-turaly/' },
+  { de: '/360-booster-system/', en: '/en/360-booster-system/', kk: '/kk/360-booster-system/' },
+  { de: '/bewertungen/', en: '/en/reviews/', kk: '/kk/pikirler/' },
+  { de: '/istqb-zertifizierung/', en: '/en/istqb-certification/', kk: '/kk/istqb-sertifikattau/' },
+  { de: '/ditele-app/', en: '/en/ditele-app/', kk: '/kk/ditele-app/' },
+  { de: '/datenschutz/', en: '/privacy-policy/', kk: '/kk/qupiyalylyq-sayasaty/' },
+  { de: '/impressum/', en: '/imprint/', kk: '/kk/zandy-malimetter/' },
+  { de: '/barrierefreiheit/', en: '/accessibility/', kk: '/kk/qolzhetimdilik/' },
+  { de: '/danke/', en: '/thanks/', kk: '/kk/rahmet/' },
 ];
 
-const locales = ['de', 'en'];
+const locales = ['de', 'en', 'kk'];
 const routes = localeRoutes.flatMap((group) => locales.map((code) => group[code]));
 // Confirmation pages render with noindex and therefore emit no canonical or
 // hreflang tags.
-const noindexRoutes = new Set(['/danke/', '/thanks/']);
+const noindexRoutes = new Set(['/danke/', '/thanks/', '/kk/rahmet/']);
 
 const failures = [];
 const nonNavigationRoutes = new Set([
-  '/danke/', '/thanks/',
-  '/datenschutz/', '/privacy-policy/',
-  '/impressum/', '/imprint/',
-  '/barrierefreiheit/', '/accessibility/',
+  '/danke/', '/thanks/', '/kk/rahmet/',
+  '/datenschutz/', '/privacy-policy/', '/kk/qupiyalylyq-sayasaty/',
+  '/impressum/', '/imprint/', '/kk/zandy-malimetter/',
+  '/barrierefreiheit/', '/accessibility/', '/kk/qolzhetimdilik/',
 ]);
 const normalizeRoute = (pathname) => pathname === '/' ? '/' : `${pathname.replace(/\/+$/, '')}/`;
 const knownRoutes = new Set(routes.map(normalizeRoute));
@@ -132,7 +132,7 @@ for (const group of localeRoutes) {
 // module, so playback wiring is asserted here rather than in the HTML.
 const heroSource = await readFile(new URL('../src/components/sections/AcademyHome.astro', import.meta.url), 'utf8');
 
-for (const route of ['/', '/en/']) {
+for (const route of ['/', '/en/', '/kk/']) {
   const file = route === '/' ? join(dist, 'index.html') : join(dist, route, 'index.html');
   const html = await readFile(file, 'utf8');
   assert(html.includes('<video') && html.includes('/media/hero-background.mp4'), `${route}: homepage background video is missing`);
@@ -156,7 +156,7 @@ for (const route of ['/', '/en/']) {
   assert(html.includes('map_action=pano'), `${route}: 360-degree tour link is missing`);
 }
 
-for (const route of ['/bewertungen/', '/en/reviews/']) {
+for (const route of ['/bewertungen/', '/en/reviews/', '/kk/pikirler/']) {
   const html = renderedPages.get(route) ?? '';
   assert(html.includes('data-review-video-id') && html.includes('data-reviews-video-dialog'), `${route}: reviews do not provide in-page video playback`);
   assert(!html.includes('https://i.ytimg.com/'), `${route}: review posters still depend on third-party thumbnail requests`);
@@ -186,5 +186,5 @@ if (failures.length) {
   failures.forEach((failure) => console.error(`- ${failure}`));
   process.exitCode = 1;
 } else {
-  console.log(`Astro production audit passed: ${routes.length} routes, ${localeRoutes.length} bilingual groups (${locales.join('/')}), internal links, button hooks, accessible images, form security, video and 360-degree tour.`);
+  console.log(`Astro production audit passed: ${routes.length} routes, ${localeRoutes.length} localised groups (${locales.join('/')}), internal links, button hooks, accessible images, form security, video and 360-degree tour.`);
 }
