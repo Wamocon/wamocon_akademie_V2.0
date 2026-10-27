@@ -41,6 +41,10 @@
   --color-accent-surface: #d40000;
   --color-accent-surface-hover: #b80000;
   --color-accent-hover: var(--color-accent-surface-hover);
+  /* Red for TEXT on dark surfaces. #f40e0e is dark enough that thin glyph
+     edges look jagged on black; #ff3d3d keeps the brand hue with more
+     luminance (5.4:1 on #101010 instead of 4.5:1). */
+  --color-accent-on-dark: #ff3d3d;
   /* ISTQB / certification accent, Academy-only. */
   --color-blue: #1d4f91;
   /* Signal orange for "new" highlights on the AZAV page (team request 10/2026).

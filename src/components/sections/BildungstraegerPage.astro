@@ -1136,6 +1136,16 @@ const sparks = (radius: number, count: number) =>
     const angle = ((360 / count) * i * Math.PI) / 180;
     return { cx: Math.round(500 + Math.cos(angle) * radius), cy: Math.round(400 + Math.sin(angle) * radius) };
   });
+// Floor grid in perspective: rays from a vanishing point above the centre
+// and horizontals that get denser towards the horizon. Drawn flat (no 3D
+// transform), so the text above it keeps its full sharpness.
+const floorLines: Array<[number, number, number, number]> = [
+  ...Array.from({ length: 41 }, (_, i): [number, number, number, number] => [800, -260, -2400 + i * 160, 480]),
+  ...Array.from({ length: 12 }, (_, i): [number, number, number, number] => {
+    const y = Math.round(480 * Math.pow((i + 1) / 12, 1.9));
+    return [0, y, 1600, y];
+  }),
+];
 const sectorStats: Array<[number, string, string]> = [
   [15, '+', c.sectorsStats[0]],
   [allRefs.length, '', c.sectorsStats[1]],
@@ -1840,7 +1850,9 @@ const faq = pick(lang, {
 
   <!-- ============================================================ SECTORS -->
   <section class="section bt-sectors" aria-labelledby="bt-sectors-title" data-sectors>
-    <div class="bt-sectors__floor" aria-hidden="true"></div>
+    <svg class="bt-sectors__floor" viewBox="0 0 1600 480" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      {floorLines.map((line) => <line x1={line[0]} y1={line[1]} x2={line[2]} y2={line[3]} vector-effect="non-scaling-stroke" />)}
+    </svg>
     <div class="container bt-sectors__inner">
       <div class="bt-sectors__head">
         <div class="bt-head" data-reveal="left">
@@ -2083,7 +2095,11 @@ const faq = pick(lang, {
      the About page and the course catalogue. This page carries more motion
      than the others on purpose (team feedback); every animation is transform
      or opacity based and switches off under prefers-reduced-motion. */
-  .bt-page { position: relative; background: var(--color-bg); overflow: hidden; }
+  /* Crisp text: Chrome renders text that sits above a constantly animated,
+     composited layer without subpixel smoothing, which makes red glyphs look
+     pixelated. So nothing behind text animates via transform here, and red
+     text uses the brighter on-dark red. */
+  .bt-page { --color-accent: var(--color-accent-on-dark); position: relative; background: var(--color-bg); overflow: hidden; }
   .bt-page ol { list-style: none; }
   /* Alternating section surface, set per section in the markup. */
   .bt-alt { background: var(--color-bg-elevated); }
@@ -2133,17 +2149,16 @@ const faq = pick(lang, {
     height: 60vmax;
     border-radius: 50%;
     background: radial-gradient(circle, var(--glow-top), transparent 62%);
-    animation: bt-drift 22s ease-in-out infinite alternate;
   }
   .bt-aurora span:first-child { top: -30%; left: -20%; }
-  .bt-aurora span:last-child { right: -25%; bottom: -35%; background: radial-gradient(circle, var(--glow-side), transparent 60%); animation-duration: 28s; animation-direction: alternate-reverse; }
+  .bt-aurora span:last-child { right: -25%; bottom: -35%; background: radial-gradient(circle, var(--glow-side), transparent 60%); }
 
   /* ---- Hero (pattern: AcademyHome full-bleed hero) -------------------------- */
   /* minmax(0, 1fr): without it the long word "Softwaretester" sets the grid
      column's minimum width and pushes the whole copy past a phone screen. */
   .bt-hero { position: relative; display: grid; min-height: 100svh; grid-template-columns: minmax(0, 1fr); align-items: end; overflow: hidden; }
   .bt-hero__media, .bt-hero__overlay { position: absolute; inset: 0; }
-  .bt-hero__media img { width: 100%; height: 100%; object-fit: cover; animation: bt-kenburns 26s ease-in-out infinite alternate; }
+  .bt-hero__media img { width: 100%; height: 100%; object-fit: cover; animation: bt-kenburns 9s var(--ease-out) both; }
   .bt-hero__overlay {
     background:
       linear-gradient(90deg, rgba(0, 0, 0, 0.84) 0%, rgba(0, 0, 0, 0.58) 55%, rgba(0, 0, 0, 0.36) 100%),
@@ -2297,19 +2312,8 @@ const faq = pick(lang, {
   .bt-formats { position: relative; overflow: hidden; }
   .bt-formats .container { position: relative; z-index: 1; }
   .bt-formats__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 2.5vw, 40px); }
-  .bt-format { position: relative; overflow: hidden; padding: 2px; border-radius: var(--radius-lg); background: var(--border-subtle); box-shadow: var(--shadow-card); }
-  .bt-format::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 200%;
-    aspect-ratio: 1;
-    background: conic-gradient(from 0deg, transparent 0deg 250deg, var(--color-accent) 320deg, transparent 360deg);
-    translate: -50% -50%;
-    animation: bt-spin 6s linear infinite;
-  }
-  .bt-format:nth-child(2)::before { animation-delay: -3s; }
+  .bt-format { position: relative; overflow: hidden; padding: 2px; border-radius: var(--radius-lg); background: conic-gradient(from var(--bt-angle), var(--border-subtle) 0deg 250deg, var(--color-accent) 320deg, var(--border-subtle) 360deg); box-shadow: var(--shadow-card); animation: bt-angle 6s linear infinite; }
+  .bt-format:nth-child(2) { animation-delay: -3s; }
   .bt-format__inner { position: relative; height: 100%; padding: clamp(28px, 3vw, 48px); border-radius: calc(var(--radius-lg) - 2px); background: var(--surface-card); transition: background var(--dur-med) var(--ease-out); }
   .bt-format:hover .bt-format__inner { background: var(--surface-card-hover); }
   .bt-format__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-xs); }
@@ -2422,16 +2426,14 @@ const faq = pick(lang, {
   .bt-sectors { position: relative; overflow: hidden; background: radial-gradient(60% 50% at 30% 55%, var(--glow-top), transparent 70%), var(--color-bg); }
   .bt-sectors__floor {
     position: absolute;
-    left: -30%;
-    right: -30%;
-    bottom: -20%;
-    height: 70%;
-    background-image: linear-gradient(rgba(244, 14, 14, 0.24) 1px, transparent 1px), linear-gradient(90deg, rgba(244, 14, 14, 0.24) 1px, transparent 1px);
-    background-size: 72px 72px;
-    transform: perspective(520px) rotateX(64deg);
-    transform-origin: center bottom;
-    mask-image: linear-gradient(to top, #000 5%, transparent 80%);
-    animation: bt-floor 5s linear infinite;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 48%;
+    stroke: rgba(244, 14, 14, 0.3);
+    stroke-width: 1;
+    mask-image: linear-gradient(to top, #000 10%, transparent 90%);
     pointer-events: none;
   }
   .bt-sectors__inner { position: relative; z-index: 1; }
@@ -2750,13 +2752,11 @@ const faq = pick(lang, {
   @keyframes bt-stage { 0%, 26%, 100% { border-color: var(--border-subtle); box-shadow: none; } 6%, 20% { border-color: var(--color-accent); box-shadow: 0 0 0 1px var(--color-accent), var(--shadow-accent); } }
   @keyframes bt-ping { 0% { box-shadow: 0 0 0 0 rgba(244, 14, 14, 0.6); } 100% { box-shadow: 0 0 0 12px rgba(244, 14, 14, 0); } }
   @keyframes bt-grid { to { background-position: 280px 140px; } }
-  @keyframes bt-floor { to { background-position: 0 72px; } }
   @keyframes bt-fill { to { transform: scaleX(1); } }
   @keyframes bt-sheen { 0%, 75% { background-position: 100% 0; } 100% { background-position: -150% 0; } }
   @keyframes bt-flow { to { background-position: -200% 0; } }
   @keyframes bt-pop { from { opacity: 0; transform: translateY(8px); } }
-  @keyframes bt-kenburns { from { transform: scale(1.04); } to { transform: scale(1.14) translate3d(-1.5%, -1%, 0); } }
-  @keyframes bt-drift { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(12%, 8%, 0) scale(1.15); } }
+  @keyframes bt-kenburns { from { transform: scale(1.14) translate(1.2%, 0.8%); } to { transform: scale(1.04); } }
   @keyframes bt-pulse { 0%, 100% { box-shadow: var(--shadow-accent); } 50% { box-shadow: 0 0 0 6px rgba(244, 14, 14, 0.18), var(--shadow-accent); } }
   @keyframes bt-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
   @keyframes bt-spin { to { rotate: 360deg; } }
@@ -2835,7 +2835,7 @@ const faq = pick(lang, {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .bt-new, .bt-aurora span, .bt-hero__media img, .bt-format::before, .bt-refs__track ul, .bt-calendar__pending span,
+    .bt-new, .bt-aurora span, .bt-hero__media img, .bt-format, .bt-refs__track ul, .bt-calendar__pending span,
     .bt-dot, .bt-showcase__panel, .bt-signal, .bt-signal::after, .bt-stages li, .bt-stages li::after, .bt-proof__seal::after, .is-open .bt-fund__check, .bt-hero::after, .bt-hero h1 span,
     .bt-quiz__result, .bt-trainer__body, .bt-sectors__floor, .bt-medal__ring, .bt-orbit__ring--outer, .bt-orbit__spin, .bt-orbit__beam.is-active,
     .bt-orbit__core, .bt-orbit__node.is-active .bt-orbit__dot { animation: none; }
