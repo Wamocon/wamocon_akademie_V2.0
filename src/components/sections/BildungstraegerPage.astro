@@ -59,8 +59,133 @@ const trainerImages: Record<string, { src: string; size: number }> = {
 };
 const trainerSource = 'https://www.wamocon.com/ueber-uns/';
 
-// Industries and clients: www.wamocon.com and the home-page FAQ of this site.
-const clients = ['Deutsche Telekom', 'Deutsche Bank', 'Deutsche Bahn', 'Intel', 'EnBW', 'Daimler'];
+// Industries and references: www.wamocon.com, start page ("Wer sind unsere
+// Kunden?", the SAP projects and the FAQ "Für welche Branchen und Kunden
+// arbeitet WAMOCON?"), retrieved 27.10.2026. All 24 named references appear
+// exactly once; the grouping into industries is ours. Dated project examples
+// come from the WAMOCON project history.
+type Text = Record<Lang, string>;
+interface Sector {
+  key: string;
+  icon: string;
+  name: Text;
+  refs: string[];
+  project?: { year?: Text; text: Text };
+}
+const sectors: Sector[] = [
+  {
+    key: 'energie',
+    icon: 'energy',
+    name: { de: 'Energie', en: 'Energy', kk: 'Энергетика' },
+    refs: ['50Hertz Transmission', 'EnBW', 'BRUNATA-METRONA'],
+    project: {
+      year: { de: '2010', en: '2010', kk: '2010' },
+      text: { de: 'Unternehmensverzeichnis für einen deutschen Energieversorger', en: 'Company directory for a German energy supplier', kk: 'Неміс энергия жеткізушісіне арналған компания анықтамалығы' },
+    },
+  },
+  {
+    key: 'banken',
+    icon: 'bank',
+    name: { de: 'Banken und Finanzen', en: 'Banking and finance', kk: 'Банктер және қаржы' },
+    refs: ['Deutsche Bank', 'DZ Bank', 'iBS Innovative Banking Solutions'],
+    project: {
+      year: { de: 'seit 2018', en: 'since 2018', kk: '2018 жылдан бері' },
+      text: { de: 'Einführung des Systems SAP BASS-SPAREN bei der iBS AG, ein SAP-Programm für Bausparkassen', en: 'Introduction of SAP BASS-SPAREN at iBS AG, an SAP programme for building societies', kk: 'iBS AG-де SAP BASS-SPAREN жүйесін енгізу, құрылыс жинақ кассаларына арналған SAP бағдарламасы' },
+    },
+  },
+  {
+    key: 'telekom',
+    icon: 'signal',
+    name: { de: 'Telekommunikation', en: 'Telecommunications', kk: 'Телекоммуникация' },
+    refs: ['Deutsche Telekom', 'Telefónica Germany'],
+    project: {
+      year: { de: '2023', en: '2023', kk: '2023' },
+      text: { de: 'Testmanagement für einen europäischen Mobilfunkanbieter', en: 'Test management for a European mobile network operator', kk: 'Еуропалық мобильді байланыс операторы үшін тестілеуді басқару' },
+    },
+  },
+  {
+    key: 'versicherungen',
+    icon: 'shield',
+    name: { de: 'Versicherungen', en: 'Insurance', kk: 'Сақтандыру' },
+    refs: ['R+V Versicherung'],
+    project: {
+      year: { de: '2016', en: '2016', kk: '2016' },
+      text: { de: 'SAP-HANA-Integration bei einem Versicherungsunternehmen', en: 'SAP HANA integration at an insurance company', kk: 'Сақтандыру компаниясында SAP HANA интеграциясы' },
+    },
+  },
+  {
+    key: 'automobil',
+    icon: 'car',
+    name: { de: 'Automobil', en: 'Automotive', kk: 'Автомобиль' },
+    refs: ['Daimler', 'Mercedes-Benz Bank'],
+    project: {
+      year: { de: '2013', en: '2013', kk: '2013' },
+      text: { de: 'Testmanagement für das Bankensystem einer Automobilbank', en: 'Test management for the core banking system of an automotive bank', kk: 'Автомобиль банкінің банк жүйесі үшін тестілеуді басқару' },
+    },
+  },
+  {
+    key: 'industrie',
+    icon: 'chip',
+    name: { de: 'Industrie und Technologie', en: 'Industry and technology', kk: 'Өнеркәсіп және технология' },
+    refs: ['Intel', 'Samsung Electronics', 'Hewlett-Packard', 'Phoenix Contact', 'KraussMaffei'],
+    project: {
+      text: { de: 'Einführung eines SAP-ERP-Systems in 50 Ländern bei Phoenix Contact', en: 'Rollout of an SAP ERP system in 50 countries at Phoenix Contact', kk: 'Phoenix Contact компаниясында 50 елде SAP ERP жүйесін енгізу' },
+    },
+  },
+  {
+    key: 'logistik',
+    icon: 'truck',
+    name: { de: 'Verkehr und Logistik', en: 'Transport and logistics', kk: 'Көлік және логистика' },
+    refs: ['Deutsche Bahn', 'VGF', 'Lekkerland'],
+    project: {
+      text: { de: 'Einführung von SAP ERP und SAP CRM bei Lekkerland', en: 'Introduction of SAP ERP and SAP CRM at Lekkerland', kk: 'Lekkerland компаниясында SAP ERP және SAP CRM енгізу' },
+    },
+  },
+  {
+    key: 'handel',
+    icon: 'cart',
+    name: { de: 'Handel', en: 'Retail', kk: 'Сауда' },
+    refs: ['Quelle'],
+  },
+  {
+    key: 'pharma',
+    icon: 'pill',
+    name: { de: 'Pharma und Gesundheit', en: 'Pharma and healthcare', kk: 'Фармацевтика және денсаулық' },
+    refs: ['Roche Diagnostics'],
+    project: {
+      year: { de: '2015', en: '2015', kk: '2015' },
+      text: { de: 'SAP-Rollout bei einem internationalen Pharmaunternehmen', en: 'SAP rollout at an international pharmaceutical company', kk: 'Халықаралық фармацевтика компаниясында SAP енгізу' },
+    },
+  },
+  {
+    key: 'verwaltung',
+    icon: 'landmark',
+    name: { de: 'Öffentliche Verwaltung', en: 'Public sector', kk: 'Мемлекеттік басқару' },
+    refs: ['Bundesagentur für Arbeit'],
+  },
+  {
+    key: 'beratung',
+    icon: 'briefcase',
+    name: { de: 'Beratung', en: 'Consulting', kk: 'Консалтинг' },
+    refs: ['Capgemini', 'PwC'],
+  },
+];
+// 24 x 24 line icons, drawn with currentColor.
+const sectorIcons: Record<string, string> = {
+  energy: '<path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/>',
+  bank: '<path d="M12 3 3 8h18l-9-5zM5 10v7M9.5 10v7M14.5 10v7M19 10v7M3 20h18"/>',
+  signal: '<path d="M12 13v8M9 21h6M8.5 9.5a5 5 0 0 1 7 0M5.6 6.6a9 9 0 0 1 12.8 0"/><circle cx="12" cy="12" r="1.4"/>',
+  shield: '<path d="M12 3 20 6v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><path d="m9 12 2 2 4-4"/>',
+  car: '<path d="M5 17H3v-5l2-5h14l2 5v5h-2M9 17h6M3 12h18"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>',
+  chip: '<rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M10 3v4M14 3v4M10 17v4M14 17v4M3 10h4M3 14h4M17 10h4M17 14h4"/>',
+  truck: '<path d="M2 6h12v10H2zM14 9h4l4 4v3h-8"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/>',
+  cart: '<path d="M3 4h2l2.4 11h11l2-8H6.2"/><circle cx="9" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/>',
+  pill: '<path d="M10.5 3.5a5 5 0 0 1 7 7l-7 7a5 5 0 0 1-7-7l7-7zM7 10l7 7"/>',
+  landmark: '<path d="M4 21V9l8-5 8 5v12M3 21h18M9 21v-6h6v6M9 11h.01M15 11h.01"/>',
+  briefcase: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/>',
+};
+const allRefs = sectors.flatMap((sector) => sector.refs);
+const pad2 = (n: number) => String(n).padStart(2, '0');
 
 const copy = {
   de: {
@@ -238,16 +363,27 @@ const copy = {
 
     whyLead: 'Warum',
     whyRest: 'die WAMOCON Academy',
-    whyText: 'Hinter der Academy steht die WAMOCON GmbH, ein Unternehmen für IT-Testmanagement. Diese Branchen kennen wir aus eigenen Projekten.',
-    industriesLabel: 'Branchen aus unseren Projekten',
-    industries: ['Mobilfunk', 'Banken', 'Versicherungen', 'Energie', 'Automobil', 'Verkehr und Logistik', 'Pharma'],
-    clientsLabel: 'Projekte unter anderem für',
+    whyText: 'Hinter der Academy steht die WAMOCON GmbH, ein Unternehmen für IT-Testmanagement. Was deine Trainer dort jeden Tag in Kundenprojekten erleben, fließt direkt in den Unterricht ein.',
     whyFacts: [
       ['ISTQB®', 'Akkreditierter Trainingsanbieter für deutschsprachige CTFL 4.0- und Agile Tester 1.0-Materialien'],
       ['AZAV', `Zugelassener Bildungsträger, geprüft durch die ${bt.fachkundigeStelle.name}`],
       ['DiTeLe', 'Eigene Lernplattform mit über 300 Übungsfragen'],
       ['1:1', 'Mentoring durch Trainer, die selbst Projekte leiten'],
     ],
+
+    sectorsEyebrow: 'Branchenerfahrung',
+    sectorsLead: 'Ein Team.',
+    sectorsRest: (n: number) => `${n} Branchen.`,
+    sectorsText: 'Von der Bank über den Energieversorger bis zur Bundesagentur für Arbeit: Seit 2007 testet die WAMOCON Software in ganz unterschiedlichen Branchen. Genau diese Erfahrung bringen deine Trainer ins Seminar.',
+    // Kennzahlen 100+ Kunden und 50+ neue KI-Apps: Startseite wamocon.com.
+    sectorsStats: ['Branchen', 'Referenzkunden, namentlich genannt', 'Kunden weltweit', 'neue KI-Apps'],
+    sectorsHint: 'Wähle eine Branche und sieh, für wen wir dort gearbeitet haben.',
+    sectorsTabsLabel: 'Branchen der WAMOCON',
+    sectorsCore: 'seit 2007',
+    refsLabel: 'Referenzen',
+    projectLabel: 'Projektbeispiel',
+    refsMarquee: 'Referenzen der WAMOCON GmbH',
+    sectorsSource: 'Quelle: wamocon.com, Stand Oktober 2026',
 
     proofEyebrow: 'Qualitätssiegel und Fakten für Vermittlungsfachkräfte',
     proofLead: 'Geprüft.',
@@ -332,21 +468,6 @@ const copy = {
     quizResultLabel: 'Deine Einschätzung',
     quizBack: 'Antworten ändern',
     quizNote: 'Unverbindliche Orientierung. Deine Antworten bleiben in deinem Browser. Über die Förderung entscheidet die Agentur für Arbeit.',
-
-    timelineLead: 'Projekte',
-    timelineRest: 'seit 2007',
-    timelineText: 'Ein Auszug aus der Projektgeschichte der WAMOCON. Diese Erfahrung bringen deine Trainer ins Seminar mit.',
-    timeline: [
-      ['2007', 'Start im IT-Test und Qualitätsmanagement'],
-      ['2010', 'Unternehmensverzeichnis für einen deutschen Energieversorger'],
-      ['2013', 'Testmanagement für ein Bankensystem einer Automobilbank'],
-      ['2015', 'SAP-Rollout bei einem internationalen Pharmaunternehmen'],
-      ['2016', 'SAP-HANA-Integration bei einem Versicherungsunternehmen'],
-      ['2017', 'Systeme für ein deutsches Logistikunternehmen'],
-      ['2021', 'Aufbau der WAMOCON Academy und Start der Lernplattform DiTeLe'],
-      ['2023', 'Testmanagement für einen europäischen Mobilfunkanbieter'],
-      ['2026', 'Über 50 KI-Produktlösungen, jede mit LLM-as-a-Judge getestet'],
-    ],
 
     faqHeading: 'Häufige Fragen zu Förderung und Zulassung',
     faqIntro: 'Hier findest du Antworten auf die Fragen, die uns zum Bildungsgutschein und zum 45-Tage-Seminar am häufigsten gestellt werden.',
@@ -519,16 +640,26 @@ const copy = {
 
     whyLead: 'Why',
     whyRest: 'WAMOCON Academy',
-    whyText: 'The academy is backed by WAMOCON GmbH, an IT test-management company. We know these industries from our own projects.',
-    industriesLabel: 'Industries from our projects',
-    industries: ['Mobile networks', 'Banking', 'Insurance', 'Energy', 'Automotive', 'Transport and logistics', 'Pharma'],
-    clientsLabel: 'Projects include work for',
+    whyText: 'The academy is backed by WAMOCON GmbH, an IT test-management company. What your trainers experience there every day in client projects goes straight into the classroom.',
     whyFacts: [
       ['ISTQB®', 'Accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 materials'],
       ['AZAV', `Approved education provider, reviewed by ${bt.fachkundigeStelle.name}`],
       ['DiTeLe', 'Our own learning platform with more than 300 practice questions'],
       ['1:1', 'Mentoring by trainers who lead projects themselves'],
     ],
+
+    sectorsEyebrow: 'Industry experience',
+    sectorsLead: 'One team.',
+    sectorsRest: (n: number) => `${n} industries.`,
+    sectorsText: 'From banks and energy suppliers to the German Federal Employment Agency: since 2007 WAMOCON has been testing software across very different industries. That is exactly the experience your trainers bring into the seminar.',
+    sectorsStats: ['industries', 'clients named as references', 'clients worldwide', 'new AI apps'],
+    sectorsHint: 'Pick an industry and see who we have worked for there.',
+    sectorsTabsLabel: 'WAMOCON industries',
+    sectorsCore: 'since 2007',
+    refsLabel: 'References',
+    projectLabel: 'Project example',
+    refsMarquee: 'WAMOCON GmbH references',
+    sectorsSource: 'Source: wamocon.com, as of October 2026',
 
     proofEyebrow: 'Quality seal and facts for employment advisers',
     proofLead: 'Reviewed.',
@@ -610,21 +741,6 @@ const copy = {
     quizResultLabel: 'Your assessment',
     quizBack: 'Change answers',
     quizNote: 'Non-binding guidance. Your answers stay in your browser. The Agentur für Arbeit decides on funding.',
-
-    timelineLead: 'Projects',
-    timelineRest: 'since 2007',
-    timelineText: 'Highlights from the WAMOCON project history. This is the experience your trainers bring into the seminar.',
-    timeline: [
-      ['2007', 'Start in IT testing and quality management'],
-      ['2010', 'Company directory for a German energy supplier'],
-      ['2013', 'Test management for an automotive bank core system'],
-      ['2015', 'SAP rollout at an international pharmaceutical company'],
-      ['2016', 'SAP HANA integration at an insurance company'],
-      ['2017', 'Systems for a German logistics company'],
-      ['2021', 'WAMOCON Academy founded, DiTeLe learning platform launched'],
-      ['2023', 'Test management for a European mobile network operator'],
-      ['2026', 'Over 50 AI product solutions, each tested with LLM-as-a-Judge'],
-    ],
 
     faqHeading: 'Frequently asked questions about funding and approval',
     faqIntro: 'Answers to the questions we hear most often about the Bildungsgutschein and the 45-day seminar.',
@@ -797,16 +913,26 @@ const copy = {
 
     whyLead: 'Неге',
     whyRest: 'WAMOCON Academy',
-    whyText: 'Академияның артында IT тестілеуді басқару компаниясы WAMOCON GmbH тұр. Бұл салаларды өз жобаларымыздан білеміз.',
-    industriesLabel: 'Жобаларымыздағы салалар',
-    industries: ['Мобильді байланыс', 'Банктер', 'Сақтандыру', 'Энергетика', 'Автомобиль', 'Көлік және логистика', 'Фармацевтика'],
-    clientsLabel: 'Жобалар, оның ішінде',
+    whyText: 'Академияның артында IT тестілеуді басқару компаниясы WAMOCON GmbH тұр. Тренерлеріңіз клиент жобаларында күн сайын көретін тәжірибе сабаққа тікелей енеді.',
     whyFacts: [
       ['ISTQB®', 'Неміс тіліндегі CTFL 4.0 және Agile Tester 1.0 материалдары бойынша аккредиттелген оқыту провайдері'],
       ['AZAV', `${bt.fachkundigeStelle.name} тексерген, рұқсаты бар білім беру ұйымы`],
       ['DiTeLe', '300-ден астам сұрағы бар өз оқу платформамыз'],
       ['1:1', 'Жобаларды өздері басқаратын тренерлердің тәлімгерлігі'],
     ],
+
+    sectorsEyebrow: 'Салалық тәжірибе',
+    sectorsLead: 'Бір команда.',
+    sectorsRest: (n: number) => `${n} сала.`,
+    sectorsText: 'Банктер мен энергия жеткізушілерден бастап Германияның Федералдық жұмыспен қамту агенттігіне дейін: WAMOCON 2007 жылдан бері әртүрлі салаларда бағдарламаларды тестілеп келеді. Тренерлеріңіз семинарға дәл осы тәжірибені әкеледі.',
+    sectorsStats: ['сала', 'атаулы референс-клиент', 'әлем бойынша клиент', 'жаңа KI қосымшасы'],
+    sectorsHint: 'Саланы таңдап, онда кімдермен жұмыс істегенімізді көріңіз.',
+    sectorsTabsLabel: 'WAMOCON салалары',
+    sectorsCore: '2007 жылдан бері',
+    refsLabel: 'Референстер',
+    projectLabel: 'Жоба мысалы',
+    refsMarquee: 'WAMOCON GmbH референстері',
+    sectorsSource: 'Дереккөз: wamocon.com, 2026 жылғы қазан',
 
     proofEyebrow: 'Сапа белгісі және кеңесшілерге арналған деректер',
     proofLead: 'Тексерілді.',
@@ -889,21 +1015,6 @@ const copy = {
     quizBack: 'Жауаптарды өзгерту',
     quizNote: 'Міндеттемесіз бағдар. Жауаптарыңыз браузеріңізде қалады. Қаржыландыру туралы шешімді Agentur für Arbeit қабылдайды.',
 
-    timelineLead: 'Жобалар',
-    timelineRest: '2007 жылдан бері',
-    timelineText: 'WAMOCON жоба тарихынан үзінді. Тренерлеріңіз семинарға осы тәжірибені әкеледі.',
-    timeline: [
-      ['2007', 'IT тестілеу және сапа менеджментіндегі бастама'],
-      ['2010', 'Неміс энергия жеткізушісіне арналған компания анықтамалығы'],
-      ['2013', 'Автомобиль банкінің банк жүйесі үшін тестілеуді басқару'],
-      ['2015', 'Халықаралық фармацевтика компаниясында SAP енгізу'],
-      ['2016', 'Сақтандыру компаниясында SAP HANA интеграциясы'],
-      ['2017', 'Неміс логистика компаниясына арналған жүйелер'],
-      ['2021', 'WAMOCON Academy қалыптасып, DiTeLe платформасы іске қосылды'],
-      ['2023', 'Еуропалық мобильді байланыс операторы үшін тестілеуді басқару'],
-      ['2026', '50-ден астам KI өнім шешімі, әрқайсысы LLM-as-a-Judge арқылы тестіленген'],
-    ],
-
     faqHeading: 'Қаржыландыру мен рұқсат туралы жиі қойылатын сұрақтар',
     faqIntro: 'Bildungsgutschein және 45 күндік семинар туралы бізге ең жиі қойылатын сұрақтардың жауаптары.',
     bylineRole: 'WAMOCON Academy GmbH атқарушы директоры',
@@ -942,11 +1053,34 @@ const calendarMonths = (startSet ? [ns.datum.slice(0, 7)] : ns.kalenderMonate).m
   };
 });
 
-// Industry network: one centre node and the industries on an ellipse.
-const netNodes = c.industries.map((label, i, all) => {
+// Industry orbit: the stage and its SVG share a 1000 x 800 grid, so node
+// positions in percent line up with the SVG beams. Labels sit outside the
+// ring, on the side the node faces.
+const orbitNodes = sectors.map((sector, i, all) => {
   const angle = (-90 + (360 / all.length) * i) * (Math.PI / 180);
-  return { label, x: Math.round(320 + Math.cos(angle) * 220), y: Math.round(215 + Math.sin(angle) * 150) };
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
+  const side = cos > 0.3 ? 'r' : cos < -0.3 ? 'l' : sin < 0 ? 't' : 'b';
+  return {
+    ...sector,
+    side,
+    sx: Math.round(500 + cos * 300),
+    sy: Math.round(400 + sin * 320),
+    x: (50 + cos * 30).toFixed(2),
+    y: (50 + sin * 40).toFixed(2),
+  };
 });
+const sparks = (radius: number, count: number) =>
+  Array.from({ length: count }, (_, i) => {
+    const angle = ((360 / count) * i * Math.PI) / 180;
+    return { cx: Math.round(500 + Math.cos(angle) * radius), cy: Math.round(400 + Math.sin(angle) * radius) };
+  });
+const sectorStats: Array<[number, string, string]> = [
+  [sectors.length, '', c.sectorsStats[0]],
+  [allRefs.length, '', c.sectorsStats[1]],
+  [100, '+', c.sectorsStats[2]],
+  [50, '+', c.sectorsStats[3]],
+];
 
 const validity =
   bt.gueltigVon && bt.gueltigBis ? c.validityRange(formatDate(bt.gueltigVon), formatDate(bt.gueltigBis)) : '';
@@ -968,6 +1102,7 @@ const certificateHasSize = bt.zertifikatBreite !== null && bt.zertifikatHoehe !=
 // FAQ. Each answer stands on its own, names the subject in full and carries
 // its date, following the pattern of the home-page FAQ (src/data/faq.ts).
 // ---------------------------------------------------------------------------
+const listFormat = new Intl.ListFormat(intlLocale, { style: 'long', type: 'conjunction' });
 const approvedNames = bt.massnahmen.map((m) => `${m.name} (${m.massnahmenummer})`).join(', ');
 const plannedName = bt.massnahmenGeplant[0]?.name ?? '';
 const faq = pick(lang, {
@@ -1020,6 +1155,11 @@ const faq = pick(lang, {
     {
       question: 'Was passiert nach der Prüfung?',
       answer: `Die WAMOCON Academy lässt dich nach der Prüfung nicht allein (${c.stand}). Wir unterstützen dich bei deinen Bewerbungen. Mit deinem Zertifikat wirst du Teil der WAMOCON Community und kannst dich mit anderen Absolventen austauschen. Nach Kursende sowie nach drei und sechs Monaten melden wir uns und fragen, wie es beruflich für dich weitergeht. Eine Stelle können wir dir nicht versprechen. Beim Einstieg unterstützen wir dich aber.`,
+    },
+    {
+      question: 'In welchen Branchen hat WAMOCON Erfahrung?',
+      // Quelle: wamocon.com, Startseite (Referenzen und FAQ).
+      answer: `Die WAMOCON GmbH, die Schwestergesellschaft der WAMOCON Academy, testet seit 2007 Software in ${sectors.length} Branchen (${c.stand}): ${listFormat.format(sectors.map((sector) => sector.name.de))}. Auf wamocon.com sind ${allRefs.length} Referenzkunden namentlich genannt, darunter Deutsche Bank, Deutsche Telekom, Deutsche Bahn, EnBW und die Bundesagentur für Arbeit. Die Trainer des 45-Tage-Seminars bringen Fälle aus diesen Projekten in den Unterricht ein.`,
     },
     {
       question: 'Wer hat die WAMOCON Academy geprüft?',
@@ -1077,6 +1217,10 @@ const faq = pick(lang, {
       answer: `WAMOCON Academy does not leave you on your own after the exam (${c.stand}). We support you with your applications. With your certificate you join the WAMOCON community and can connect with other graduates. At the end of the course and after three and six months we get in touch to ask how your career is going. We cannot promise you a job, but we do support you in getting started.`,
     },
     {
+      question: 'Which industries does WAMOCON have experience in?',
+      answer: `WAMOCON GmbH, the sister company of WAMOCON Academy, has been testing software in ${sectors.length} industries since 2007 (${c.stand}): ${listFormat.format(sectors.map((sector) => sector.name.en.toLowerCase()))}. wamocon.com names ${allRefs.length} reference clients, including Deutsche Bank, Deutsche Telekom, Deutsche Bahn, EnBW and the German Federal Employment Agency. The trainers of the 45-day seminar bring cases from these projects into the classroom.`,
+    },
+    {
       question: 'Who reviewed WAMOCON Academy?',
       answer: `We were reviewed by ${bt.fachkundigeStelle.name} from ${bt.fachkundigeStelle.ort} (${c.stand}). It is a fachkundige Stelle, an accredited certification body that approves education providers and courses for employment promotion in Germany. The review took place in ${reviewMonth}. WAMOCON Academy GmbH then received its initial approval as a provider under ${bt.paragraf}. The approved field is field ${bt.fachbereich.nummer}, vocational further training.`,
     },
@@ -1130,6 +1274,10 @@ const faq = pick(lang, {
     {
       question: 'Емтиханнан кейін не болады?',
       answer: `WAMOCON Academy емтиханнан кейін де сізді жалғыз қалдырмайды (${c.stand}). Өтініштеріңізді дайындауға көмектесеміз. Сертификат алған соң WAMOCON қауымдастығына қосылып, басқа түлектермен пікір алмаса аласыз. Курс аяқталғанда, сондай-ақ үш және алты айдан кейін хабарласып, жұмысыңыз қалай екенін сұраймыз. Жұмыс орнына уәде бере алмаймыз, бірақ бастауыңызға көмектесеміз.`,
+    },
+    {
+      question: 'WAMOCON қандай салаларда тәжірибе жинады?',
+      answer: `WAMOCON Academy-дің бауырлас компаниясы WAMOCON GmbH 2007 жылдан бері ${sectors.length} салада бағдарламаларды тестілеп келеді (${c.stand}): ${listFormat.format(sectors.map((sector) => sector.name.kk))}. wamocon.com сайтында ${allRefs.length} референс-клиент атап көрсетілген, олардың ішінде Deutsche Bank, Deutsche Telekom, Deutsche Bahn, EnBW және Германияның Федералдық жұмыспен қамту агенттігі бар. 45 күндік семинар тренерлері осы жобалардағы жағдайларды сабаққа әкеледі.`,
     },
     {
       question: 'WAMOCON Academy-ді кім тексерді?',
@@ -1206,40 +1354,40 @@ const faq = pick(lang, {
     <div class="container">
       <article class="bt-showcase__panel" data-reveal>
         <div class="bt-aurora" aria-hidden="true"><span></span><span></span></div>
-        <div class="bt-showcase__intro">
-          <p class="bt-showcase__eyebrow"><span class="bt-new">{c.showcaseEyebrow}</span></p>
-          <p class="bt-showcase__days"><strong>{bt.seminar.tage}</strong> <span>{c.showcaseDays}</span></p>
-          <h2 id="bt-showcase-title">{bt.seminar.titel}</h2>
-          <p class="bt-showcase__sub">{c.showcaseSub}</p>
-          <p class="bt-showcase__text">{c.showcaseText}</p>
-          <p class="bt-showcase__status">{approved ? c.showcaseStatusApproved : c.showcaseStatusPlanned}</p>
-          <div class="bt-showcase__actions">
-            <Button href={`#${formAnchor}`}>{cta}</Button>
+        <div class="bt-showcase__top">
+          <div class="bt-showcase__intro">
+            <p class="bt-showcase__eyebrow"><span class="bt-new">{c.showcaseEyebrow}</span></p>
+            <p class="bt-showcase__days"><strong>{bt.seminar.tage}</strong> <span>{c.showcaseDays}</span></p>
+            <h2 id="bt-showcase-title">{bt.seminar.titel}</h2>
+            <p class="bt-showcase__sub">{c.showcaseSub}</p>
+            <p class="bt-showcase__text">{c.showcaseText}</p>
           </div>
-        </div>
-        <div class="bt-showcase__side">
           <div class="bt-glance">
             <h3>{c.glanceLabel}</h3>
             <dl>
               {c.glance.map(([term, value]) => <div><dt>{term}</dt><dd>{value}</dd></div>)}
             </dl>
           </div>
-          <div class="bt-stages">
+        </div>
+        <div class="bt-stages">
+          <div class="bt-stages__head">
             <h3>{c.showcaseStagesLabel}</h3>
             <p class="bt-stages__intro">{c.showcaseStagesIntro}</p>
-            <ol>
-              {bt.seminar.etappen.map(([from, to], index) => (
-                <li>
-                  <span class="bt-num">{String(index + 1).padStart(2, '0')}</span>
-                  <div>
-                    <p class="bt-stages__range">{c.stageRange(from, to)}</p>
-                    <h4>{c.showcaseStages[index][0]}</h4>
-                    <p>{c.showcaseStages[index][1]}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
           </div>
+          <ol>
+            {bt.seminar.etappen.map(([from, to], index) => (
+              <li>
+                <span class="bt-num">{String(index + 1).padStart(2, '0')}</span>
+                <p class="bt-stages__range">{c.stageRange(from, to)}</p>
+                <h4>{c.showcaseStages[index][0]}</h4>
+                <p>{c.showcaseStages[index][1]}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <div class="bt-showcase__foot">
+          <p class="bt-showcase__status">{approved ? c.showcaseStatusApproved : c.showcaseStatusPlanned}</p>
+          <Button href={`#${formAnchor}`}>{cta}</Button>
         </div>
       </article>
     </div>
@@ -1359,13 +1507,6 @@ const faq = pick(lang, {
             <p>{text}</p>
           </article>
         ))}
-      </div>
-      <div class="bt-clients">
-        <p>{c.clientsLabel}</p>
-        <div class="bt-clients__track">
-          <ul>{clients.map((name) => <li>{name}</li>)}</ul>
-          <ul aria-hidden="true">{clients.map((name) => <li>{name}</li>)}</ul>
-        </div>
       </div>
     </div>
   </section>
@@ -1538,46 +1679,118 @@ const faq = pick(lang, {
       <div class="bt-why__copy" data-reveal="left">
         <h2 id="bt-why-title"><span>{c.whyLead}</span> {c.whyRest}</h2>
         <p>{c.whyText}</p>
-        <dl class="bt-why__facts">
-          {c.whyFacts.map(([value, label]) => <div><dt>{value}</dt><dd>{label}</dd></div>)}
-        </dl>
       </div>
-      <figure class="bt-net" data-reveal="right">
-        <svg viewBox="0 0 640 430" role="img" aria-labelledby="bt-net-title">
-          <title id="bt-net-title">{c.industriesLabel}: {c.industries.join(', ')}</title>
-          {netNodes.map((node, i) => (
-            <line class="bt-net__line" x1="320" y1="215" x2={node.x} y2={node.y} style={`--i:${i}`} />
-          ))}
-          {netNodes.map((node, i) => (
-            <g class="bt-net__node" style={`--i:${i}`}>
-              <circle class="bt-net__pulse" cx={node.x} cy={node.y} r="10" />
-              <circle class="bt-net__dot" cx={node.x} cy={node.y} r="8" />
-              <text x={node.x} y={node.y + (node.y > 215 ? 36 : -22)} text-anchor="middle">{node.label}</text>
-            </g>
-          ))}
-          <circle class="bt-net__core-ring" cx="320" cy="215" r="64" />
-          <circle class="bt-net__core" cx="320" cy="215" r="54" />
-          <text class="bt-net__core-text" x="320" y="221" text-anchor="middle">WAMOCON</text>
-        </svg>
-        <figcaption>
-          <span>{c.industriesLabel}</span>
-          <ul>{c.industries.map((industry) => <li>{industry}</li>)}</ul>
-        </figcaption>
-      </figure>
+      <dl class="bt-why__facts" data-reveal="right">
+        {c.whyFacts.map(([value, label]) => <div class="bt-spot"><dt>{value}</dt><dd>{label}</dd></div>)}
+      </dl>
     </div>
-    <div class="container bt-timeline">
-      <div class="bt-head" data-reveal>
-        <h3><span>{c.timelineLead}</span> {c.timelineRest}</h3>
-        <p>{c.timelineText}</p>
+  </section>
+
+  <!-- ============================================================ SECTORS -->
+  <section class="section bt-sectors" aria-labelledby="bt-sectors-title" data-sectors>
+    <div class="bt-sectors__floor" aria-hidden="true"></div>
+    <div class="container bt-sectors__inner">
+      <div class="bt-sectors__head">
+        <div class="bt-head" data-reveal="left">
+          <p class="eyebrow">{c.sectorsEyebrow}</p>
+          <h2 id="bt-sectors-title"><span>{c.sectorsLead}</span> {c.sectorsRest(sectors.length)}</h2>
+          <p>{c.sectorsText}</p>
+        </div>
+        <ul class="bt-sectors__stats" data-reveal="right">
+          {sectorStats.map(([value, suffix, label]) => (
+            <li>
+              <strong data-count-to={value} data-count-suffix={suffix}>{value}{suffix}</strong>
+              <span>{label}</span>
+            </li>
+          ))}
+        </ul>
       </div>
-      <ol class="bt-timeline__list" data-bt-timeline>
-        {c.timeline.map(([year, text]) => (
-          <li data-reveal>
-            <span class="bt-timeline__year">{year}</span>
-            <p>{text}</p>
-          </li>
-        ))}
-      </ol>
+
+      <div class="bt-explorer" data-reveal>
+        <div class="bt-orbit" data-orbit>
+          <svg class="bt-orbit__svg" viewBox="0 0 1000 800" aria-hidden="true" focusable="false">
+            <ellipse class="bt-orbit__ring bt-orbit__ring--outer" cx="500" cy="400" rx="300" ry="320" />
+            <circle class="bt-orbit__ring bt-orbit__ring--mid" cx="500" cy="400" r="220" />
+            <circle class="bt-orbit__ring bt-orbit__ring--inner" cx="500" cy="400" r="140" />
+            <g class="bt-orbit__spin">{sparks(220, 5).map((dot) => <circle class="bt-orbit__spark" cx={dot.cx} cy={dot.cy} r="4" />)}</g>
+            <g class="bt-orbit__spin bt-orbit__spin--rev">{sparks(140, 3).map((dot) => <circle class="bt-orbit__spark" cx={dot.cx} cy={dot.cy} r="3" />)}</g>
+            {orbitNodes.map((node, i) => (
+              <line class:list={['bt-orbit__beam', { 'is-active': i === 0 }]} x1="500" y1="400" x2={node.sx} y2={node.sy} data-sector-beam />
+            ))}
+          </svg>
+          <div class="bt-orbit__core" aria-hidden="true">
+            <strong>WAMOCON</strong>
+            <span>{c.sectorsCore}</span>
+          </div>
+          <div class="bt-orbit__nodes" role="tablist" aria-label={c.sectorsTabsLabel}>
+            {orbitNodes.map((node, i) => (
+              <button
+                type="button"
+                role="tab"
+                id={`bt-sector-tab-${node.key}`}
+                aria-controls={`bt-sector-${node.key}`}
+                aria-selected={i === 0 ? 'true' : 'false'}
+                tabindex={i === 0 ? 0 : -1}
+                class:list={['bt-orbit__node', `is-${node.side}`, { 'is-active': i === 0 }]}
+                style={`--x:${node.x}%;--y:${node.y}%;--i:${i}`}
+                data-sector-tab
+              >
+                <span class="bt-orbit__dot" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" set:html={sectorIcons[node.icon]} />
+                </span>
+                <span class="bt-orbit__label">{node.name[lang]}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div class="bt-explorer__side">
+          <p class="bt-explorer__hint">{c.sectorsHint}</p>
+          <div class="bt-explorer__stack">
+            {sectors.map((sector, i) => (
+              <article
+                role="tabpanel"
+                id={`bt-sector-${sector.key}`}
+                aria-labelledby={`bt-sector-tab-${sector.key}`}
+                class:list={['bt-sector', { 'is-active': i === 0 }]}
+                tabindex="0"
+                data-sector-panel
+              >
+                <div class="bt-sector__top">
+                  <span class="bt-sector__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" set:html={sectorIcons[sector.icon]} />
+                  </span>
+                  <span class="bt-sector__count">{pad2(i + 1)} / {pad2(sectors.length)}</span>
+                </div>
+                <svg class="bt-sector__mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" set:html={sectorIcons[sector.icon]} />
+                <h3>{sector.name[lang]}</h3>
+                <p class="bt-sector__label">{c.refsLabel}</p>
+                <ul class="bt-sector__refs">{sector.refs.map((ref) => <li>{ref}</li>)}</ul>
+                {sector.project && (
+                  <div class="bt-sector__project">
+                    <p class="bt-sector__label">{c.projectLabel}{sector.project.year ? ` · ${sector.project.year[lang]}` : ''}</p>
+                    <p>{sector.project.text[lang]}</p>
+                  </div>
+                )}
+              </article>
+            ))}
+          </div>
+          <div class="bt-explorer__progress" aria-hidden="true"><span data-sector-progress></span></div>
+        </div>
+      </div>
+
+      <div class="bt-refs" data-reveal>
+        <p class="bt-refs__label">{c.refsMarquee}</p>
+        <div class="bt-refs__track">
+          <ul>{allRefs.map((name) => <li>{name}</li>)}</ul>
+          <ul aria-hidden="true">{allRefs.map((name) => <li>{name}</li>)}</ul>
+        </div>
+        <div class="bt-refs__track bt-refs__track--rev" aria-hidden="true">
+          <ul>{[...allRefs].reverse().map((name) => <li>{name}</li>)}</ul>
+          <ul>{[...allRefs].reverse().map((name) => <li>{name}</li>)}</ul>
+        </div>
+        <p class="bt-refs__source">{c.sectorsSource}</p>
+      </div>
     </div>
   </section>
 
@@ -1828,8 +2041,7 @@ const faq = pick(lang, {
   .bt-showcase__panel {
     position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: clamp(2rem, 5vw, 5rem);
+    gap: clamp(28px, 3.5vw, 56px);
     overflow: hidden;
     padding: clamp(28px, 4vw, 64px);
     border: 1px solid var(--color-accent-surface);
@@ -1837,7 +2049,8 @@ const faq = pick(lang, {
     background: var(--surface-card);
     box-shadow: var(--shadow-card), var(--shadow-accent);
   }
-  .bt-showcase__intro, .bt-showcase__side { position: relative; z-index: 1; }
+  .bt-showcase__top, .bt-stages, .bt-showcase__foot { position: relative; z-index: 1; }
+  .bt-showcase__top { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(2rem, 5vw, 5rem); align-items: stretch; }
   .bt-showcase__eyebrow { display: flex; }
   .bt-showcase__eyebrow .bt-new { padding: 0.45rem 1rem; font-size: var(--fs-xs); }
   .bt-showcase__days { display: flex; align-items: baseline; gap: var(--space-xs); margin-top: var(--space-sm); }
@@ -1846,23 +2059,28 @@ const faq = pick(lang, {
   .bt-showcase h2 { margin-top: var(--space-xs); font-size: var(--fs-h2); }
   .bt-showcase__sub { margin-top: var(--space-sm); font-size: var(--fs-lead); line-height: var(--lh-snug); }
   .bt-showcase__text { max-width: 62ch; margin-top: var(--space-sm); color: var(--color-muted); }
-  .bt-showcase__status { margin-top: var(--space-md); padding-left: var(--space-sm); border-left: 2px solid var(--color-accent); font-size: var(--fs-sm); }
-  .bt-showcase__actions { margin-top: var(--space-md); }
-  .bt-showcase__side { display: grid; align-content: start; gap: var(--space-md); }
-  .bt-glance, .bt-stages { padding: clamp(20px, 2.2vw, 32px); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: rgba(255, 255, 255, 0.035); }
-  .bt-glance h3, .bt-stages h3 { margin-bottom: var(--space-sm); color: var(--color-accent); font-size: var(--fs-2xs); font-weight: var(--fw-semibold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
-  .bt-glance dl { display: grid; }
-  .bt-glance div { display: grid; grid-template-columns: minmax(120px, 0.45fr) minmax(0, 1fr); gap: var(--space-sm); padding-block: 0.6rem; border-top: 1px solid var(--border-subtle); }
-  .bt-glance div:first-child { padding-top: 0; border-top: 0; }
+  /* The glance box stretches to the intro's height; its rows spread evenly. */
+  .bt-glance { display: flex; flex-direction: column; padding: clamp(20px, 2.2vw, 32px); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: rgba(255, 255, 255, 0.035); }
+  .bt-glance h3, .bt-stages h3 { color: var(--color-accent); font-size: var(--fs-2xs); font-weight: var(--fw-semibold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+  .bt-glance h3 { margin-bottom: var(--space-sm); }
+  .bt-glance dl { display: grid; flex: 1; align-content: space-evenly; }
+  .bt-glance div { display: grid; grid-template-columns: minmax(120px, 0.45fr) minmax(0, 1fr); gap: var(--space-sm); padding-block: 0.75rem; border-top: 1px solid var(--border-subtle); }
+  .bt-glance div:first-child { border-top: 0; }
   .bt-glance dt { color: var(--color-muted); font-size: var(--fs-sm); }
   .bt-glance dd { font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
-  .bt-stages ol { display: grid; gap: var(--space-sm); }
-  .bt-stages__intro { margin: calc(var(--space-xs) * -0.5) 0 var(--space-sm); color: var(--color-muted); font-size: var(--fs-sm); line-height: var(--lh-snug); }
-  .bt-stages li { display: flex; align-items: flex-start; gap: var(--space-sm); }
-  .bt-stages li + li { padding-top: var(--space-sm); border-top: 1px solid var(--border-subtle); }
+  .bt-stages__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px var(--space-md); margin-bottom: var(--space-sm); }
+  .bt-stages__intro { max-width: 70ch; color: var(--color-muted); font-size: var(--fs-sm); line-height: var(--lh-snug); }
+  .bt-stages ol { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-sm); }
+  .bt-stages li { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: clamp(18px, 1.6vw, 24px); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: rgba(255, 255, 255, 0.035); transition: transform var(--dur-med) var(--ease-out), border-color var(--dur-med) var(--ease-out); }
+  .bt-stages li:hover { transform: translateY(-4px); border-color: var(--color-accent); }
+  /* A short connector bridges the gap to the next stage, level with the number. */
+  .bt-stages li:not(:last-child)::after { content: ''; position: absolute; top: calc(clamp(18px, 1.6vw, 24px) + clamp(21px, 1.3vw, 26px)); left: 100%; width: var(--space-sm); height: 2px; background: var(--color-accent); }
+  .bt-stages .bt-num { margin-bottom: 4px; }
   .bt-stages p { color: var(--color-muted); font-size: var(--fs-sm); line-height: var(--lh-snug); }
   .bt-stages .bt-stages__range { color: var(--color-accent); font-size: var(--fs-2xs); font-weight: var(--fw-semibold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
-  .bt-stages h4 { margin-block: 2px; font-size: var(--fs-h5); }
+  .bt-stages h4 { font-size: var(--fs-h4); }
+  .bt-showcase__foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-sm) var(--space-md); padding-top: clamp(20px, 2vw, 32px); border-top: 1px solid var(--border-subtle); }
+  .bt-showcase__status { max-width: 72ch; padding-left: var(--space-sm); border-left: 2px solid var(--color-accent); font-size: var(--fs-sm); }
 
   /* ---- Calendar --------------------------------------------------------------- */
   .bt-calendar { background: var(--color-bg-elevated); }
@@ -1933,11 +2151,6 @@ const faq = pick(lang, {
   .bt-tile:hover { transform: translateY(-4px); border-color: var(--color-accent); background: var(--surface-card-hover); }
   .bt-tile h3 { margin-block: var(--space-sm) var(--space-xs); font-size: var(--fs-h4); line-height: var(--lh-snug); }
   .bt-tile p { color: var(--color-muted); }
-  .bt-clients { margin-top: clamp(40px, 4vw, 72px); }
-  .bt-clients > p { margin-bottom: var(--space-sm); color: var(--color-muted); font-size: var(--fs-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
-  .bt-clients__track { display: flex; overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
-  .bt-clients__track ul { display: flex; flex: 0 0 auto; gap: clamp(40px, 5vw, 96px); padding-right: clamp(40px, 5vw, 96px); animation: bt-marquee 26s linear infinite; }
-  .bt-clients__track li { font-size: var(--fs-h3); font-weight: var(--fw-bold); white-space: nowrap; opacity: 0.85; }
 
   /* ---- Funding --------------------------------------------------------------- */
   .bt-fund__grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
@@ -2005,24 +2218,142 @@ const faq = pick(lang, {
 
   /* ---- Why + industry network --------------------------------------------------- */
   .bt-why { background: var(--color-bg-elevated); }
-  .bt-why__grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
+  .bt-why__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
   .bt-why__copy h2 { font-size: var(--fs-h1); line-height: var(--lh-tight); }
   .bt-why__copy h2 span { display: block; color: var(--color-accent); }
   .bt-why__copy > p { max-width: 56ch; margin-top: 1.2rem; color: var(--color-muted); font-size: var(--fs-lead); line-height: var(--lh-relaxed); }
-  .bt-why__facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm); margin-top: var(--space-md); }
-  .bt-why__facts div { padding: var(--space-sm); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-card); }
+  .bt-why__facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm); }
+  .bt-why__facts div { padding: clamp(18px, 1.8vw, 28px); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-card); transition: border-color var(--dur-med) var(--ease-out); }
+  .bt-why__facts div:hover { border-color: var(--color-accent); }
   .bt-why__facts dt { color: var(--color-accent); font-size: var(--fs-h3); font-weight: var(--fw-bold); line-height: 1.1; }
   .bt-why__facts dd { margin-top: 4px; color: var(--color-muted); font-size: var(--fs-sm); line-height: var(--lh-snug); }
-  .bt-net { margin: 0; }
-  .bt-net svg { width: 100%; height: auto; overflow: visible; }
-  .bt-net__line { stroke: var(--color-accent); stroke-width: 2; stroke-dasharray: 6 10; opacity: 0.7; animation: bt-dash 2.4s linear infinite; animation-delay: calc(var(--i) * -0.4s); }
-  .bt-net__dot { fill: var(--color-accent-surface); }
-  .bt-net__pulse { fill: none; stroke: var(--color-accent); stroke-width: 2; transform-box: fill-box; transform-origin: center; animation: bt-ring 2.8s var(--ease-out) infinite; animation-delay: calc(var(--i) * 0.45s); }
-  .bt-net__node text { fill: var(--color-text); font-family: var(--font-sans); font-size: 19px; font-weight: var(--fw-semibold); }
-  .bt-net__core { fill: var(--color-accent-surface); }
-  .bt-net__core-ring { fill: none; stroke: var(--color-accent); stroke-width: 2; opacity: 0.5; transform-box: fill-box; transform-origin: center; animation: bt-ring 3.4s var(--ease-out) infinite; }
-  .bt-net__core-text { fill: var(--color-text); font-family: var(--font-sans); font-size: 17px; font-weight: var(--fw-bold); letter-spacing: 0.06em; }
-  .bt-net figcaption { display: none; }
+
+  /* ---- Industry explorer: the "wow" block ------------------------------------------
+     A perspective grid moves under the section, rings and sparks circle the
+     WAMOCON core and a beam points at the selected industry. */
+  .bt-sectors { position: relative; overflow: hidden; background: radial-gradient(60% 50% at 30% 55%, var(--glow-top), transparent 70%), var(--color-bg); }
+  .bt-sectors__floor {
+    position: absolute;
+    left: -30%;
+    right: -30%;
+    bottom: -20%;
+    height: 70%;
+    background-image: linear-gradient(rgba(244, 14, 14, 0.24) 1px, transparent 1px), linear-gradient(90deg, rgba(244, 14, 14, 0.24) 1px, transparent 1px);
+    background-size: 72px 72px;
+    transform: perspective(520px) rotateX(64deg);
+    transform-origin: center bottom;
+    mask-image: linear-gradient(to top, #000 5%, transparent 80%);
+    animation: bt-floor 5s linear infinite;
+    pointer-events: none;
+  }
+  .bt-sectors__inner { position: relative; z-index: 1; }
+  .bt-sectors__head { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: clamp(2rem, 4vw, 4rem); align-items: end; margin-bottom: clamp(24px, 3vw, 48px); }
+  .bt-sectors__head .bt-head { margin-bottom: 0; }
+  .bt-sectors__head h2 { font-size: var(--fs-display); line-height: var(--lh-display); letter-spacing: var(--tracking-display); }
+  .bt-sectors__stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm); }
+  .bt-sectors__stats li { padding: clamp(16px, 1.6vw, 24px); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-card); backdrop-filter: blur(6px); }
+  .bt-sectors__stats strong { display: block; color: var(--color-accent); font-size: var(--fs-h2); font-weight: var(--fw-bold); line-height: 1; font-variant-numeric: tabular-nums; }
+  .bt-sectors__stats span { display: block; margin-top: 6px; color: var(--color-muted); font-size: var(--fs-sm); line-height: var(--lh-snug); }
+
+  .bt-explorer { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); gap: clamp(1.5rem, 3vw, 3rem); align-items: center; }
+  .bt-orbit { position: relative; aspect-ratio: 5 / 4; margin-block: 40px; transform: perspective(1400px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform 0.4s var(--ease-out); }
+  .bt-orbit__svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .bt-orbit__ring { fill: none; stroke: var(--color-accent); }
+  .bt-orbit__ring--outer { stroke-width: 2; stroke-dasharray: 2 12; opacity: 0.55; animation: bt-dash 3s linear infinite; }
+  .bt-orbit__ring--mid { stroke-width: 1; stroke-dasharray: 1 10; opacity: 0.35; }
+  .bt-orbit__ring--inner { stroke-width: 1; opacity: 0.2; }
+  .bt-orbit__spin { transform-box: view-box; transform-origin: 500px 400px; animation: bt-spin 26s linear infinite; }
+  .bt-orbit__spin--rev { animation-duration: 18s; animation-direction: reverse; }
+  .bt-orbit__spark { fill: var(--color-accent); filter: drop-shadow(0 0 6px var(--color-accent)); }
+  .bt-orbit__beam { stroke: var(--color-accent); stroke-width: 1.5; stroke-dasharray: 3 9; opacity: 0.18; transition: opacity var(--dur-med) var(--ease-out); }
+  .bt-orbit__beam.is-active { stroke-width: 3; opacity: 1; filter: drop-shadow(0 0 8px var(--color-accent)); animation: bt-dash 1.2s linear infinite; }
+  .bt-orbit__core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    width: 22%;
+    aspect-ratio: 1;
+    place-content: center;
+    justify-items: center;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--color-accent), var(--color-accent-surface) 60%, #5c0505 100%);
+    box-shadow: 0 0 0 10px rgba(244, 14, 14, 0.12), 0 0 80px rgba(244, 14, 14, 0.55);
+    text-align: center;
+    translate: -50% -50%;
+    animation: bt-pulse 3.2s var(--ease-out) infinite;
+  }
+  .bt-orbit__core strong { font-size: clamp(0.8rem, 1.3vw, 1.15rem); font-weight: var(--fw-extrabold); letter-spacing: 0.08em; }
+  .bt-orbit__core span { color: rgba(255, 255, 255, 0.85); font-size: var(--fs-2xs); }
+  .bt-orbit__nodes { position: absolute; inset: 0; }
+  .bt-orbit__node { position: absolute; top: var(--y); left: var(--x); width: 52px; height: 52px; margin: -26px 0 0 -26px; padding: 0; border-radius: 50%; color: var(--color-text); cursor: pointer; }
+  .bt-orbit__dot { display: grid; width: 100%; height: 100%; place-items: center; border: 1px solid var(--border-strong); border-radius: 50%; background: var(--color-bg-elevated); color: var(--color-muted); box-shadow: var(--shadow-card); transition: transform var(--dur-med) var(--ease-out), background var(--dur-med) var(--ease-out), color var(--dur-med) var(--ease-out), border-color var(--dur-med) var(--ease-out); }
+  .bt-orbit__dot svg { width: 24px; height: 24px; }
+  .bt-orbit__label { position: absolute; width: max-content; max-width: 132px; color: var(--color-muted); font-size: var(--fs-xs); font-weight: var(--fw-semibold); line-height: var(--lh-snug); transition: color var(--dur-med) var(--ease-out); }
+  .bt-orbit__node.is-r .bt-orbit__label { top: 50%; left: calc(100% + 10px); translate: 0 -50%; text-align: left; }
+  .bt-orbit__node.is-l .bt-orbit__label { top: 50%; right: calc(100% + 10px); translate: 0 -50%; text-align: right; }
+  .bt-orbit__node.is-t .bt-orbit__label { bottom: calc(100% + 8px); left: 50%; translate: -50% 0; text-align: center; }
+  .bt-orbit__node.is-b .bt-orbit__label { top: calc(100% + 8px); left: 50%; translate: -50% 0; text-align: center; }
+  .bt-orbit__node:hover .bt-orbit__dot { border-color: var(--color-accent); color: var(--color-text); transform: scale(1.08); }
+  .bt-orbit__node:hover .bt-orbit__label { color: var(--color-text); }
+  .bt-orbit__node:focus-visible { outline: none; }
+  .bt-orbit__node:focus-visible .bt-orbit__dot { outline: 2px solid var(--color-accent); outline-offset: 4px; }
+  .bt-orbit__node.is-active .bt-orbit__dot { border-color: var(--color-accent-surface); background: var(--color-accent-surface); color: var(--color-text); transform: scale(1.2); animation: bt-pulse 2.4s var(--ease-out) infinite; }
+  .bt-orbit__node.is-active .bt-orbit__label { color: var(--color-text); }
+
+  .bt-explorer__side { display: grid; gap: var(--space-sm); }
+  .bt-explorer__hint { color: var(--color-muted); font-size: var(--fs-sm); }
+  /* All panels share one grid cell: the box is as tall as the longest panel,
+     so switching industries never moves the page. */
+  .bt-explorer__stack { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .bt-sector {
+    position: relative;
+    overflow: hidden;
+    grid-area: 1 / 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: clamp(24px, 2.6vw, 40px);
+    border: 1px solid var(--color-accent-surface);
+    border-radius: var(--radius-lg);
+    background: radial-gradient(90% 80% at 100% 0%, var(--glow-top), transparent 70%), var(--surface-card);
+    box-shadow: var(--shadow-card), var(--shadow-accent);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(14px) scale(0.98);
+    transition: opacity var(--dur-med) var(--ease-out), transform var(--dur-med) var(--ease-out), visibility var(--dur-med) var(--ease-out);
+  }
+  .bt-sector.is-active { opacity: 1; visibility: visible; transform: none; }
+  /* A large faded copy of the industry icon fills the lower corner. */
+  .bt-sector__mark { position: absolute; right: -24px; bottom: -24px; width: clamp(140px, 14vw, 210px); height: auto; color: var(--color-text); opacity: 0.06; pointer-events: none; }
+  .bt-sector > :not(.bt-sector__mark) { position: relative; }
+  .bt-sector:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+  .bt-sector__top { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-xs); }
+  .bt-sector__icon { display: grid; width: 56px; height: 56px; place-items: center; border-radius: var(--radius-md); background: var(--color-accent-surface); box-shadow: var(--shadow-accent); }
+  .bt-sector__icon svg { width: 28px; height: 28px; }
+  .bt-sector__count { color: var(--color-muted); font-size: var(--fs-sm); font-weight: var(--fw-semibold); font-variant-numeric: tabular-nums; letter-spacing: 0.08em; }
+  .bt-sector h3 { font-size: var(--fs-h2); line-height: var(--lh-tight); }
+  .bt-sector__label { margin-top: var(--space-xs); color: var(--color-accent); font-size: var(--fs-2xs); font-weight: var(--fw-semibold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+  .bt-sector__refs { display: flex; flex-wrap: wrap; gap: 8px; }
+  .bt-sector__refs li { overflow-wrap: anywhere; padding: 0.45rem 0.9rem; border: 1px solid var(--border-strong); border-radius: var(--radius-pill); background: rgba(255, 255, 255, 0.04); font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
+  .bt-sector__project { margin-top: var(--space-xs); padding-left: var(--space-sm); border-left: 2px solid var(--color-accent); }
+  .bt-sector__project .bt-sector__label { margin-top: 0; }
+  .bt-sector__project p:last-child { margin-top: 4px; color: var(--color-text); line-height: var(--lh-snug); }
+  .bt-explorer__progress { height: 3px; overflow: hidden; border-radius: var(--radius-pill); background: var(--border-subtle); opacity: 0; transition: opacity var(--dur-med) var(--ease-out); }
+  .bt-explorer__progress span { display: block; width: 100%; height: 100%; background: var(--color-accent); transform: scaleX(0); transform-origin: left; }
+  .is-playing .bt-explorer__progress { opacity: 1; }
+  .is-playing .bt-explorer__progress span { animation: bt-fill 5s linear forwards; }
+
+  .bt-refs { margin-top: clamp(40px, 5vw, 80px); }
+  .bt-refs__label { margin-bottom: var(--space-sm); color: var(--color-muted); font-size: var(--fs-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+  .bt-refs__track { display: flex; overflow: hidden; padding-block: 6px; mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+  .bt-refs__track ul { display: flex; flex: 0 0 auto; gap: clamp(32px, 4vw, 72px); padding-right: clamp(32px, 4vw, 72px); animation: bt-marquee 60s linear infinite; }
+  .bt-refs__track--rev ul { animation-direction: reverse; animation-duration: 70s; }
+  .bt-refs__track li { font-size: var(--fs-h3); font-weight: var(--fw-bold); white-space: nowrap; opacity: 0.9; }
+  .bt-refs__track--rev li { color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.45); }
+  .bt-refs__track:hover ul { animation-play-state: paused; }
+  .bt-refs__source { margin-top: var(--space-sm); color: var(--color-text-subtle); font-size: var(--fs-xs); }
 
   /* ---- Proof: quality seal on a light surface ---------------------------------- */
   .bt-proof__grid { display: grid; grid-template-columns: minmax(240px, 0.5fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); align-items: start; }
@@ -2179,38 +2510,10 @@ const faq = pick(lang, {
   .bt-quiz__back { color: var(--color-muted); font-size: var(--fs-sm); font-weight: var(--fw-semibold); text-decoration: underline; text-underline-offset: 0.25em; transition: color var(--dur-fast) var(--ease-out); }
   .bt-quiz__back:hover { color: var(--color-text); }
 
-  /* ---- Timeline --------------------------------------------------------------------- */
-  .bt-timeline { margin-top: clamp(48px, 6vw, 96px); }
-  .bt-timeline .bt-head h3 { font-size: var(--fs-h2); line-height: var(--lh-tight); }
-  .bt-timeline .bt-head h3 span { color: var(--color-accent); }
-  .bt-timeline__list {
-    position: relative;
-    display: grid;
-    grid-auto-columns: minmax(200px, 1fr);
-    grid-auto-flow: column;
-    gap: var(--space-sm);
-    overflow-x: auto;
-    padding: 28px 2px 8px;
-    scroll-snap-type: x mandatory;
-  }
-  .bt-timeline__list::before {
-    content: '';
-    position: absolute;
-    top: 10px;
-    left: 0;
-    width: max(100%, calc(var(--n, 9) * 212px));
-    height: 2px;
-    background: linear-gradient(90deg, var(--color-accent-surface), var(--color-accent) 50%, var(--color-accent-surface));
-    background-size: 200% 100%;
-    animation: bt-flow 6s linear infinite;
-  }
-  .bt-timeline__list li { position: relative; scroll-snap-align: start; padding: var(--space-sm); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-card); }
-  .bt-timeline__list li::before { content: ''; position: absolute; top: -24px; left: var(--space-sm); width: 12px; height: 12px; border-radius: 50%; background: var(--color-accent-surface); box-shadow: 0 0 0 4px rgba(244, 14, 14, 0.18); }
-  .bt-timeline__year { display: block; color: var(--color-accent); font-size: var(--fs-h3); font-weight: var(--fw-bold); line-height: 1; font-variant-numeric: tabular-nums; }
-  .bt-timeline__list p { margin-top: var(--space-xs); color: var(--color-muted); font-size: var(--fs-sm); line-height: var(--lh-snug); overflow-wrap: break-word; hyphens: auto; }
-
   /* ---- Motion ------------------------------------------------------------------ */
   @keyframes bt-grid { to { background-position: 280px 140px; } }
+  @keyframes bt-floor { to { background-position: 0 72px; } }
+  @keyframes bt-fill { to { transform: scaleX(1); } }
   @keyframes bt-sheen { 0%, 75% { background-position: 100% 0; } 100% { background-position: -150% 0; } }
   @keyframes bt-flow { to { background-position: -200% 0; } }
   @keyframes bt-pop { from { opacity: 0; transform: translateY(8px); } }
@@ -2236,14 +2539,30 @@ const faq = pick(lang, {
     .bt-tiles > .bt-tile, .bt-tiles > .bt-tile:nth-child(n + 4), .bt-cards > .bt-card, .bt-cards > .bt-card:nth-child(4), .bt-cards > .bt-card:nth-child(5) { grid-column: auto; }
     .bt-tiles > .bt-tile:last-child, .bt-cards > .bt-card:nth-child(5), .bt-cards > .bt-card--feature { grid-column: 1 / -1; }
     .bt-quiz { grid-template-columns: minmax(0, 1fr); }
+    .bt-stages ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .bt-stages li::after { display: none; }
+    .bt-explorer, .bt-sectors__head { grid-template-columns: minmax(0, 1fr); }
+    .bt-orbit { width: min(100%, 720px); }
   }
   @media (max-width: 900px) {
-    .bt-showcase__panel, .bt-calendar__grid, .bt-formats__grid, .bt-fund__grid, .bt-trainers__grid,
+    .bt-showcase__top, .bt-calendar__grid, .bt-formats__grid, .bt-fund__grid, .bt-trainers__grid,
     .bt-why__grid, .bt-proof__grid, .bt-proof__grid.has-certificate, .bt-groups__grid, .bt-approved__grid, .bt-entry__grid {
       grid-template-columns: minmax(0, 1fr);
     }
     .bt-proof__seal-wrap { position: static; justify-items: start; }
     .bt-proof__seal { width: 220px; }
+    /* The orbit needs room for its labels; on narrower screens the industries
+       become a wrap of chips above the panel. */
+    .bt-orbit { width: auto; aspect-ratio: auto; margin-block: 0; transform: none; }
+    .bt-orbit__svg, .bt-orbit__core { display: none; }
+    .bt-orbit__nodes { position: static; display: flex; flex-wrap: wrap; gap: 8px; }
+    .bt-orbit__node { position: static; display: inline-flex; align-items: center; gap: 8px; width: auto; height: auto; margin: 0; padding: 4px 14px 4px 4px; border: 1px solid var(--border-strong); border-radius: var(--radius-pill); }
+    .bt-orbit__dot { width: 32px; height: 32px; border: 0; box-shadow: none; }
+    .bt-orbit__dot svg { width: 18px; height: 18px; }
+    .bt-orbit__node .bt-orbit__label, .bt-orbit__node.is-r .bt-orbit__label, .bt-orbit__node.is-l .bt-orbit__label,
+    .bt-orbit__node.is-t .bt-orbit__label, .bt-orbit__node.is-b .bt-orbit__label { position: static; max-width: none; translate: none; text-align: left; }
+    .bt-orbit__node.is-active { border-color: var(--color-accent-surface); background: rgba(244, 14, 14, 0.12); }
+    .bt-orbit__node.is-active .bt-orbit__dot { transform: none; animation: none; }
   }
   @media (max-width: 620px) {
     .bt-hero__inner { padding-top: 120px; }
@@ -2260,12 +2579,10 @@ const faq = pick(lang, {
     }
     .bt-steps__list li:last-child::after { content: none; }
     .bt-glance div, .bt-proof__list div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
-    .bt-net svg { display: none; }
-    .bt-net figcaption { display: block; }
-    .bt-net figcaption span { color: var(--color-muted); font-size: var(--fs-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
-    .bt-net figcaption ul { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-top: var(--space-xs); }
-    .bt-net figcaption li { padding: 0.4rem 0.9rem; border: 1px solid var(--color-accent-surface); border-radius: var(--radius-pill); font-size: var(--fs-sm); }
-    .bt-clients__track li { font-size: var(--fs-h4); }
+    .bt-stages ol { grid-template-columns: minmax(0, 1fr); }
+    .bt-showcase__foot { align-items: flex-start; }
+    .bt-sectors__head h2 { font-size: var(--fs-h1); }
+    .bt-refs__track li { font-size: var(--fs-h4); }
     /* Long labels wrap on a phone; the button's line-height of 1 would stack
        the two lines on top of each other. */
     .bt-page :global(.btn) { width: 100%; padding-block: var(--space-xs); line-height: var(--lh-snug); text-align: center; }
@@ -2275,10 +2592,11 @@ const faq = pick(lang, {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .bt-new, .bt-aurora span, .bt-hero__media img, .bt-format::before, .bt-clients__track ul, .bt-net__line,
-    .bt-net__pulse, .bt-net__core-ring, .bt-calendar__pending span, .bt-calendar__facts li, .bt-proof__seal::after,
-    .is-open .bt-fund__check, .bt-hero::after, .bt-hero h1 span, .bt-timeline__list::before, .bt-quiz__result, .bt-trainer__body { animation: none; }
-    .bt-net__pulse { opacity: 0; }
+    .bt-new, .bt-aurora span, .bt-hero__media img, .bt-format::before, .bt-refs__track ul, .bt-calendar__pending span,
+    .bt-calendar__facts li, .bt-proof__seal::after, .is-open .bt-fund__check, .bt-hero::after, .bt-hero h1 span,
+    .bt-quiz__result, .bt-trainer__body, .bt-sectors__floor, .bt-orbit__ring--outer, .bt-orbit__spin, .bt-orbit__beam.is-active,
+    .bt-orbit__core, .bt-orbit__node.is-active .bt-orbit__dot { animation: none; }
+    .bt-orbit { transform: none; }
   }
 </style>
 
@@ -2340,6 +2658,94 @@ const faq = pick(lang, {
         card.style.setProperty('--my', `${event.clientY - rect.top}px`);
       });
     });
+  }
+
+  // Industry explorer. The orbit nodes are tabs; one panel shows at a time.
+  // It advances on its own while in view, pauses while a panel is hovered or
+  // focused, and stops for good once the visitor picks an industry.
+  const sectorRoot = document.querySelector<HTMLElement>('[data-sectors]');
+  if (sectorRoot) {
+    const tabs = Array.from(sectorRoot.querySelectorAll<HTMLButtonElement>('[data-sector-tab]'));
+    const panels = Array.from(sectorRoot.querySelectorAll<HTMLElement>('[data-sector-panel]'));
+    const beams = Array.from(sectorRoot.querySelectorAll<SVGLineElement>('[data-sector-beam]'));
+    const side = sectorRoot.querySelector<HTMLElement>('.bt-explorer__side');
+    const bar = sectorRoot.querySelector<HTMLElement>('[data-sector-progress]');
+    const orbit = sectorRoot.querySelector<HTMLElement>('[data-orbit]');
+    const interval = 5000;
+    let current = 0;
+    let timer = 0;
+    let autoplay = !reduced;
+    let visible = false;
+    let paused = false;
+    const restartBar = () => {
+      if (!bar) return;
+      bar.style.animation = 'none';
+      void bar.offsetWidth;
+      bar.style.animation = '';
+    };
+    const show = (index: number, focus = false) => {
+      current = (index + tabs.length) % tabs.length;
+      tabs.forEach((tab, i) => {
+        const on = i === current;
+        tab.classList.toggle('is-active', on);
+        tab.setAttribute('aria-selected', String(on));
+        tab.tabIndex = on ? 0 : -1;
+      });
+      panels.forEach((panel, i) => panel.classList.toggle('is-active', i === current));
+      beams.forEach((beam, i) => beam.classList.toggle('is-active', i === current));
+      if (focus) tabs[current].focus();
+      restartBar();
+    };
+    const sync = () => {
+      window.clearInterval(timer);
+      timer = 0;
+      if (autoplay && visible && !paused) {
+        timer = window.setInterval(() => show(current + 1), interval);
+        restartBar();
+      }
+      sectorRoot.classList.toggle('is-playing', timer !== 0);
+    };
+    const pick = (index: number, focus = false) => {
+      autoplay = false;
+      sync();
+      show(index, focus);
+    };
+    tabs.forEach((tab, i) => tab.addEventListener('click', () => pick(i)));
+    sectorRoot.querySelector('[role="tablist"]')?.addEventListener('keydown', (event) => {
+      const key = (event as KeyboardEvent).key;
+      const moves: Record<string, number> = { ArrowRight: current + 1, ArrowDown: current + 1, ArrowLeft: current - 1, ArrowUp: current - 1, Home: 0, End: tabs.length - 1 };
+      if (!(key in moves)) return;
+      event.preventDefault();
+      pick(moves[key], true);
+    });
+    side?.addEventListener('pointerenter', () => { paused = true; sync(); });
+    side?.addEventListener('pointerleave', () => { paused = false; sync(); });
+    sectorRoot.addEventListener('focusin', () => { paused = true; sync(); });
+    sectorRoot.addEventListener('focusout', (event) => {
+      if (sectorRoot.contains(event.relatedTarget as Node | null)) return;
+      paused = false;
+      sync();
+    });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        visible = entries[0].isIntersecting;
+        sync();
+      }, { threshold: 0.35 }).observe(sectorRoot);
+    }
+    // A gentle 3D tilt of the orbit follows the pointer.
+    if (orbit && !reduced && window.matchMedia('(hover: hover)').matches) {
+      orbit.addEventListener('pointermove', (event) => {
+        const rect = orbit.getBoundingClientRect();
+        const dx = (event.clientX - rect.left) / rect.width - 0.5;
+        const dy = (event.clientY - rect.top) / rect.height - 0.5;
+        orbit.style.setProperty('--ry', `${(dx * 10).toFixed(2)}deg`);
+        orbit.style.setProperty('--rx', `${(-dy * 8).toFixed(2)}deg`);
+      });
+      orbit.addEventListener('pointerleave', () => {
+        orbit.style.removeProperty('--rx');
+        orbit.style.removeProperty('--ry');
+      });
+    }
   }
 
   // Funding check. Pure orientation, nothing is sent or stored.
