@@ -1128,11 +1128,6 @@ const orbitNodes = sectors.map((sector, i, all) => {
     y: (50 + sin * 40).toFixed(2),
   };
 });
-const sparks = (radius: number, count: number) =>
-  Array.from({ length: count }, (_, i) => {
-    const angle = ((360 / count) * i * Math.PI) / 180;
-    return { cx: Math.round(500 + Math.cos(angle) * radius), cy: Math.round(400 + Math.sin(angle) * radius) };
-  });
 // Floor grid in perspective: rays from a vanishing point above the centre
 // and horizontals that get denser towards the horizon. Drawn flat (no 3D
 // transform), so the text above it keeps its full sharpness.
@@ -1864,8 +1859,8 @@ const faq = pick(lang, {
             <ellipse class="bt-orbit__ring bt-orbit__ring--outer" cx="500" cy="400" rx="300" ry="320" />
             <circle class="bt-orbit__ring bt-orbit__ring--mid" cx="500" cy="400" r="220" />
             <circle class="bt-orbit__ring bt-orbit__ring--inner" cx="500" cy="400" r="140" />
-            <g class="bt-orbit__spin">{sparks(220, 5).map((dot) => <circle class="bt-orbit__spark" cx={dot.cx} cy={dot.cy} r="4" />)}</g>
-            <g class="bt-orbit__spin bt-orbit__spin--rev">{sparks(140, 3).map((dot) => <circle class="bt-orbit__spark" cx={dot.cx} cy={dot.cy} r="3" />)}</g>
+            <circle class="bt-orbit__sparks" cx="500" cy="400" r="220" />
+            <circle class="bt-orbit__sparks bt-orbit__sparks--inner" cx="500" cy="400" r="140" />
             {orbitNodes.map((node, i) => (
               <line class:list={['bt-orbit__beam', { 'is-active': i === 0 }]} x1="500" y1="400" x2={node.sx} y2={node.sy} data-sector-beam />
             ))}
@@ -2279,7 +2274,7 @@ const faq = pick(lang, {
   .bt-cal td.is-start { background: var(--color-accent-surface); font-weight: var(--fw-bold); box-shadow: var(--shadow-accent); }
   .is-pending .bt-cal { opacity: 0.35; filter: grayscale(1); }
   .bt-calendar__pending { position: absolute; inset: 0; display: grid; place-items: center; padding: var(--space-sm); pointer-events: none; }
-  .bt-calendar__pending span { padding: 0.7rem 1.4rem; border: 1px solid var(--color-accent-surface); border-radius: var(--radius-pill); background: var(--color-bg); font-weight: var(--fw-semibold); text-align: center; box-shadow: var(--shadow-accent); animation: bt-float 4s ease-in-out infinite; }
+  .bt-calendar__pending span { padding: 0.7rem 1.4rem; border: 1px solid var(--color-accent-surface); border-radius: var(--radius-pill); background: var(--color-bg); font-weight: var(--fw-semibold); text-align: center; box-shadow: var(--shadow-accent); animation: bt-pulse 2.6s var(--ease-out) infinite; }
 
   /* ---- Formats: the "wow" block. A light beam runs around each card border. */
   .bt-formats { position: relative; overflow: hidden; }
@@ -2327,7 +2322,7 @@ const faq = pick(lang, {
   .bt-fund__tile { display: flex; gap: var(--space-sm); padding: clamp(22px, 2.2vw, 32px); border: 1px solid var(--color-accent-surface); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow-card); }
   .bt-fund__tile.is-open { border-color: var(--border-strong); background: rgba(255, 255, 255, 0.035); }
   .bt-fund__check { display: grid; flex: 0 0 auto; width: 48px; height: 48px; place-items: center; border-radius: var(--radius-pill); background: var(--color-accent-surface); font-size: var(--fs-h4); font-weight: var(--fw-bold); box-shadow: var(--shadow-accent); }
-  .is-open .bt-fund__check { border: 2px dashed var(--color-accent); background: transparent; box-shadow: none; animation: bt-spin 8s linear infinite; }
+  .is-open .bt-fund__check { border: 2px dashed var(--color-accent); background: transparent; box-shadow: none; }
   .bt-fund__status { color: var(--color-accent); font-size: var(--fs-2xs); font-weight: var(--fw-semibold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
   .bt-fund__tile h3 { margin-top: 4px; font-size: var(--fs-h4); }
   .bt-fund__tile p:last-child { color: var(--color-muted); font-size: var(--fs-sm); }
@@ -2434,9 +2429,10 @@ const faq = pick(lang, {
   .bt-orbit__ring--outer { stroke-width: 2; stroke-dasharray: 2 12; opacity: 0.55; animation: bt-dash 3s linear infinite; }
   .bt-orbit__ring--mid { stroke-width: 1; stroke-dasharray: 1 10; opacity: 0.35; }
   .bt-orbit__ring--inner { stroke-width: 1; opacity: 0.2; }
-  .bt-orbit__spin { transform-box: view-box; transform-origin: 500px 400px; animation: bt-spin 26s linear infinite; }
-  .bt-orbit__spin--rev { animation-duration: 18s; animation-direction: reverse; }
-  .bt-orbit__spark { fill: var(--color-accent); filter: drop-shadow(0 0 6px var(--color-accent)); }
+  /* Sparks: tiny round dashes on the rings, moved by dash offset (painted, no layer).
+     Ring lengths: 2 * PI * 220 = 1382, 2 * PI * 140 = 880. */
+  .bt-orbit__sparks { fill: none; stroke: var(--color-accent); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 0.1 276.3; animation: bt-sparks-outer 26s linear infinite; }
+  .bt-orbit__sparks--inner { stroke-width: 6; stroke-dasharray: 0.1 293.2; animation: bt-sparks-inner 18s linear infinite; }
   .bt-orbit__beam { stroke: var(--color-accent); stroke-width: 1.5; stroke-dasharray: 3 9; opacity: 0.18; transition: opacity var(--dur-med) var(--ease-out); }
   .bt-orbit__beam.is-active { stroke-width: 3; opacity: 1; filter: drop-shadow(0 0 8px var(--color-accent)); animation: bt-dash 1.2s linear infinite; }
   .bt-orbit__core {
@@ -2491,12 +2487,9 @@ const faq = pick(lang, {
     border-radius: var(--radius-lg);
     background: radial-gradient(90% 80% at 100% 0%, var(--glow-top), transparent 70%), var(--surface-card);
     box-shadow: var(--shadow-card), var(--shadow-accent);
-    opacity: 0;
     visibility: hidden;
-    transform: translateY(14px) scale(0.98);
-    transition: opacity var(--dur-med) var(--ease-out), transform var(--dur-med) var(--ease-out), visibility var(--dur-med) var(--ease-out);
   }
-  .bt-sector.is-active { opacity: 1; visibility: visible; transform: none; }
+  .bt-sector.is-active { visibility: visible; animation: bt-flash 0.9s var(--ease-out); }
   /* A large faded copy of the industry icon fills the lower corner. */
   .bt-sector__mark { position: absolute; right: -24px; bottom: -24px; width: clamp(140px, 14vw, 210px); height: auto; color: var(--color-text); opacity: 0.06; pointer-events: none; }
   .bt-sector > :not(.bt-sector__mark) { position: relative; }
@@ -2513,15 +2506,18 @@ const faq = pick(lang, {
   .bt-sector__project .bt-sector__label { margin-top: 0; }
   .bt-sector__project p:last-child { margin-top: 4px; color: var(--color-text); line-height: var(--lh-snug); }
   .bt-explorer__progress { height: 3px; overflow: hidden; border-radius: var(--radius-pill); background: var(--border-subtle); opacity: 0; transition: opacity var(--dur-med) var(--ease-out); }
-  .bt-explorer__progress span { display: block; width: 100%; height: 100%; background: var(--color-accent); transform: scaleX(0); transform-origin: left; }
+  .bt-explorer__progress span { display: block; width: 0; height: 100%; background: var(--color-accent); }
   .is-playing .bt-explorer__progress { opacity: 1; }
   .is-playing .bt-explorer__progress span { animation: bt-fill 5s linear forwards; }
 
   .bt-refs { margin-top: clamp(40px, 5vw, 80px); }
   .bt-refs__label { margin-bottom: var(--space-sm); color: var(--color-muted); font-size: var(--fs-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
   .bt-refs__track { display: flex; overflow: hidden; padding-block: 6px; mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
-  .bt-refs__track ul { display: flex; flex: 0 0 auto; gap: clamp(32px, 4vw, 72px); padding-right: clamp(32px, 4vw, 72px); animation: bt-marquee 60s linear infinite; }
-  .bt-refs__track--rev ul { animation-direction: reverse; animation-duration: 70s; }
+  .bt-refs__track ul { display: flex; flex: 0 0 auto; gap: clamp(32px, 4vw, 72px); padding-right: clamp(32px, 4vw, 72px); }
+  /* Moved by margin (layout), not transform, so no layer forces the text
+     around it out of subpixel smoothing. --shift is set by the script. */
+  .bt-refs__track ul:first-child { animation: bt-marquee-ml 60s linear infinite; }
+  .bt-refs__track--rev ul:first-child { animation-direction: reverse; animation-duration: 70s; }
   .bt-refs__track li { font-size: var(--fs-h3); font-weight: var(--fw-bold); white-space: nowrap; opacity: 0.9; }
   .bt-refs__track--rev li { color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.45); }
   .bt-refs__track:hover ul { animation-play-state: paused; }
@@ -2567,7 +2563,7 @@ const faq = pick(lang, {
     text-align: center;
     box-shadow: 0 24px 48px -24px rgba(17, 24, 39, 0.45);
   }
-  .bt-proof__seal::after { content: ''; position: absolute; inset: 14px; border: 1px dashed var(--color-accent-surface); border-radius: 50%; animation: bt-spin 40s linear infinite; }
+  .bt-proof__seal::after { content: ''; position: absolute; inset: 14px; border: 1px dashed var(--color-accent-surface); border-radius: 50%; }
   .bt-proof__seal span:first-child { color: var(--color-accent-surface); font-size: var(--fs-h2); font-weight: var(--fw-extrabold); letter-spacing: var(--tracking-wide); }
   .bt-proof__seal strong { display: grid; width: 48px; height: 48px; place-items: center; border-radius: 50%; background: var(--color-accent-surface); color: var(--color-text); font-size: var(--fs-h4); }
   .bt-proof__seal span:nth-of-type(2) { font-size: var(--fs-xs); font-weight: var(--fw-bold); line-height: var(--lh-snug); letter-spacing: 0.08em; text-transform: uppercase; }
@@ -2629,19 +2625,6 @@ const faq = pick(lang, {
     mask-image: linear-gradient(90deg, #000, transparent 70%);
     animation: bt-grid 30s linear infinite;
     pointer-events: none;
-  }
-  .bt-hero h1 span {
-    /* background-clip: text only paints inside the box. The padding gives
-       descenders such as the "g" in "Tagen" room; the negative margin keeps
-       the line spacing unchanged. */
-    padding-bottom: 0.14em;
-    margin-bottom: -0.14em;
-    background: linear-gradient(100deg, var(--color-accent) 0%, var(--color-accent) 42%, rgba(255, 255, 255, 0.7) 50%, var(--color-accent) 58%, var(--color-accent) 100%);
-    background-size: 250% 100%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    animation: bt-sheen 18s ease-in-out infinite;
   }
 
   /* ---- Why software testing ------------------------------------------------------ */
@@ -2725,17 +2708,16 @@ const faq = pick(lang, {
   @keyframes bt-stage { 0%, 26%, 100% { border-color: var(--border-subtle); box-shadow: none; } 6%, 20% { border-color: var(--color-accent); box-shadow: 0 0 0 1px var(--color-accent), var(--shadow-accent); } }
   @keyframes bt-ping { 0% { box-shadow: 0 0 0 0 rgba(244, 14, 14, 0.6); } 100% { box-shadow: 0 0 0 12px rgba(244, 14, 14, 0); } }
   @keyframes bt-grid { to { background-position: 280px 140px; } }
-  @keyframes bt-fill { to { transform: scaleX(1); } }
-  @keyframes bt-sheen { 0%, 75% { background-position: 100% 0; } 100% { background-position: -150% 0; } }
+  @keyframes bt-fill { to { width: 100%; } }
   @keyframes bt-flow { to { background-position: -200% 0; } }
   @keyframes bt-pop { from { opacity: 0; transform: translateY(8px); } }
   @keyframes bt-kenburns { from { transform: scale(1.14) translate(1.2%, 0.8%); } to { transform: scale(1.04); } }
   @keyframes bt-pulse { 0%, 100% { box-shadow: var(--shadow-accent); } 50% { box-shadow: 0 0 0 6px rgba(244, 14, 14, 0.18), var(--shadow-accent); } }
-  @keyframes bt-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-  @keyframes bt-spin { to { rotate: 360deg; } }
-  @keyframes bt-marquee { to { transform: translateX(-100%); } }
+  @keyframes bt-marquee-ml { to { margin-left: calc(-1 * var(--shift, 0px)); } }
+  @keyframes bt-sparks-outer { to { stroke-dashoffset: -1382; } }
+  @keyframes bt-sparks-inner { to { stroke-dashoffset: 880; } }
+  @keyframes bt-flash { from { border-color: var(--color-signal); box-shadow: 0 0 0 3px rgba(255, 138, 31, 0.35), var(--shadow-card); } }
   @keyframes bt-dash { to { stroke-dashoffset: -32; } }
-  @keyframes bt-ring { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(2.4); opacity: 0; } }
 
   /* ---- Breakpoints (site ladder: 1200, 1050, 900, 620, 479) --------------------- */
   @media (max-width: 1200px) {
@@ -2810,7 +2792,7 @@ const faq = pick(lang, {
   @media (prefers-reduced-motion: reduce) {
     .bt-new, .bt-aurora span, .bt-hero__media img, .bt-format, .bt-refs__track ul, .bt-calendar__pending span,
     .bt-dot, .bt-showcase__panel, .bt-signal, .bt-signal::after, .bt-stages li, .bt-stages li::after, .bt-proof__seal::after, .is-open .bt-fund__check, .bt-hero::after, .bt-hero h1 span,
-    .bt-quiz__result, .bt-trainer__body, .bt-sectors__floor, .bt-orbit__ring--outer, .bt-orbit__spin, .bt-orbit__beam.is-active,
+    .bt-quiz__result, .bt-trainer__body, .bt-sectors__floor, .bt-orbit__ring--outer, .bt-orbit__sparks, .bt-orbit__beam.is-active,
     .bt-orbit__core, .bt-orbit__node.is-active .bt-orbit__dot { animation: none; }
     .bt-orbit { transform: none; }
   }
@@ -2965,6 +2947,15 @@ const faq = pick(lang, {
       });
     }
   }
+
+  // Reference marquee: the first list moves left by exactly its own width.
+  document.querySelectorAll<HTMLElement>('.bt-refs__track').forEach((track) => {
+    const first = track.querySelector<HTMLElement>('ul');
+    if (!first) return;
+    const measure = () => track.style.setProperty('--shift', `${first.offsetWidth}px`);
+    measure();
+    window.addEventListener('resize', measure, { passive: true });
+  });
 
   // Funding check. Pure orientation, nothing is sent or stored.
   const quiz = document.querySelector<HTMLFormElement>('[data-bt-quiz]');
