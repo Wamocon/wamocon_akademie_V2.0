@@ -49,6 +49,19 @@ export type MassnahmeGeplant = {
   format: MassnahmeFormat;
 };
 
+/**
+ * Das 45-Tage-Seminar, das als geplante Maßnahme zugelassen werden soll. Es
+ * erscheint als Werbeschild direkt unter dem Hero. Titel, Dauer und Etappen
+ * stammen aus dem bestehenden Kurs „ISTQB® CTFL + Praxistraining“ auf
+ * /bildungsprogramme-fr-softwaretester/ (audit/course-popup-copy.json).
+ */
+export type Seminar = {
+  titel: string;
+  tage: number;
+  /** Etappen als [erster Tag, letzter Tag]. */
+  etappen: Array<[number, number]>;
+};
+
 export const bildungstraeger: {
   fachkundigeStelle: { name: string; ort: string; url: string; urlLabel: string };
   zulassungsart: string;
@@ -70,6 +83,7 @@ export const bildungstraeger: {
   pruefer: string;
   massnahmen: Massnahme[];
   massnahmenGeplant: MassnahmeGeplant[];
+  seminar: Seminar;
 } = {
   fachkundigeStelle: {
     name: 'GZQ GmbH',
@@ -117,6 +131,13 @@ export const bildungstraeger: {
     { name: 'Abschluss Softwaretester:in ISTQB® Zertifikat, Weiterbildung', format: 'praesenz' },
     { name: 'Abschluss Softwaretester:in ISTQB® Zertifikat, Weiterbildung', format: 'online' },
   ],
+
+  // Das Seminar hinter der geplanten Maßnahme (Werbeschild unter dem Hero).
+  seminar: {
+    titel: 'ISTQB® CTFL + Praxistraining',
+    tage: 45,
+    etappen: [[1, 14], [15, 28], [29, 42], [43, 45]],
+  },
 };
 
 // ---------------------------------------------------------------------------
