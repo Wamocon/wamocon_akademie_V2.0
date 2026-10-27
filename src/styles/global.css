@@ -54,7 +54,7 @@ body {
   font-variant-numeric: proportional-nums;
 }
 
-main > :first-child:not(.academy-hero):not(.page-hero):not(.academy-about):not(.reviews-page):not(.contact-page):not(.legal-page) {
+main > :first-child:not(.academy-hero):not(.page-hero):not(.academy-about):not(.reviews-page):not(.contact-page):not(.legal-page):not(.bt-page) {
   padding-top: calc(var(--section-gap) + 60px);
 }
 

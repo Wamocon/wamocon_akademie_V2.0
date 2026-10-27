@@ -1,23 +1,21 @@
 ---
 /**
  * AZAV provider page (/bildungstraeger/, /en/education-provider/,
- * /kk/bilim-beru-uyymy/).
+ * /kk/bilim-beru-uyymy/), built around the new 45-day seminar.
  *
- * Every fact comes from src/data/bildungstraeger.ts and the page adapts to its
- * state: no certificate number keeps the page hidden (handled by the route
- * files and the nav), no approved measure shows the planned courses with the
- * "not yet fundable" notice, and the GZQ mark only appears once the file and
- * its usage rules are both in place.
+ * Every fact comes from src/data/bildungstraeger.ts, from other pages of this
+ * site or from wamocon.com (trainer profiles, industries, client names). The
+ * page adapts to the data: no approved measure keeps the "approval in
+ * preparation" wording and the planned format cards; the GZQ mark and any seal
+ * only appear once their files are in place.
  *
- * Legal statements are taken only from official sources. Each one carries its
- * source as a comment next to the copy:
+ * Legal statements come only from official sources, noted next to the copy:
  *   SGB III: https://www.gesetze-im-internet.de/sgb_3/ (§§ 81, 83, 176, 178, 179)
  *   Bundesagentur für Arbeit: https://www.arbeitsagentur.de/karriere-und-weiterbildung/bildungsgutschein
  *
  * Kazakh copy is marked "Muttersprachliche Prüfung offen" until a native
  * speaker has reviewed it.
  */
-import { assets, home } from '../../data/academy';
 import {
   bildungstraeger as bt,
   hatZugelasseneMassnahmen,
@@ -25,10 +23,11 @@ import {
   zertifikatIstPdf,
   type MassnahmeFormat,
 } from '../../data/bildungstraeger';
-import { company, type Lang } from '../../i18n/config';
+import { company, nav, type Lang } from '../../i18n/config';
 import { pick } from '../../i18n/utils';
 import Button from '../ui/Button.astro';
 import FaqSection from '../ui/FaqSection.astro';
+import VideoEmbed from '../ui/VideoEmbed.astro';
 import LeadForm from './LeadForm.astro';
 
 interface Props {
@@ -39,41 +38,78 @@ const { lang } = Astro.props;
 const approved = hatZugelasseneMassnahmen();
 const showMark = zeigeZeichen();
 const formAnchor = 'anfrage';
-const coursesAnchor = 'kurse';
+const seminarAnchor = 'seminar';
+const ns = bt.naechsterStart;
+const reviewsHref = nav
+  .find((item) => item.key === 'about-group')!
+  .children!.find((child) => child.key === 'reviews')![lang].href;
 
 const intlLocale = { de: 'de-DE', en: 'en-GB', kk: 'kk-KZ' }[lang];
 const formatDate = (iso: string) =>
   new Intl.DateTimeFormat(intlLocale, { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' }).format(
     new Date(`${iso}T00:00:00Z`),
   );
-const joinWord = pick(lang, { de: 'und', en: 'and', kk: 'және' });
-const auditDates = bt.auditTermine.map(formatDate).join(` ${joinWord} `);
+const reviewMonth = new Intl.DateTimeFormat(intlLocale, { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(
+  new Date(`${bt.auditTermine[bt.auditTermine.length - 1]}T00:00:00Z`),
+);
+
+// The hero uses a real photo from a WAMOCON Academy seminar room.
+const heroImage = '/images/academy/tild3464-3762-4433-b130-323731353237__img52.jpg';
+
+// Trainer facts: www.wamocon.com/ueber-uns/ (retrieved 27.10.2026).
+const trainerImages: Record<string, string> = { waleri: '/images/team-waleri.png', daniel: '/images/team-daniel.png' };
+
+// Industries and clients: www.wamocon.com and the home-page FAQ of this site.
+const clients = ['Deutsche Telekom', 'Deutsche Bank', 'Intel', 'EnBW', 'Daimler'];
+
+// Testimonials from earlier WAMOCON Academy courses (same videos as /ber-die-akademie/).
+const testimonials = [
+  ['Natalie', 'Y530fsyTCe4', '/images/academy/testimonial-natalie.jpg'],
+  ['Artur', 'GIzxhk4tzmM', '/images/academy/testimonial-artur.jpg'],
+  ['Alexander', 'Nun-eNkeeY0', '/images/academy/testimonial-alexander.jpg'],
+] as const;
 
 const copy = {
   de: {
     stand: 'Stand: Oktober 2026',
+    newBadge: 'Neu',
     markText: `Zugelassen durch die ${bt.fachkundigeStelle.name}`,
     markAlt: `Zeichen der fachkundigen Stelle ${bt.fachkundigeStelle.name}`,
-    heroLead: 'Zugelassener Bildungsträger',
-    heroRest: 'nach AZAV',
-    heroText:
-      'Die WAMOCON Academy GmbH ist als Bildungsträger nach AZAV zugelassen. Als Nächstes folgt die Zulassung für unser 45-Tage-Seminar. Danach kann die Agentur für Arbeit deine Teilnahme mit einem Bildungsgutschein fördern.',
+    heroKicker: 'Zugelassener Bildungsträger nach AZAV',
+    heroLead: 'In 45 Tagen zum',
+    heroRest: 'ISTQB® Softwaretester',
+    heroText: 'Unser neues Seminar in Präsenz oder live online. Mit Bildungsgutschein kostenfrei für dich.*',
+    // Quelle: § 83 Abs. 1 SGB III (Lehrgangskosten).
+    heroNote: '* Sobald die Maßnahmenzulassung vorliegt. Wird dein Bildungsgutschein bewilligt, übernimmt die Agentur für Arbeit die Lehrgangskosten.',
+    heroStats: [['45', 'Tage Praxis-Seminar'], ['50+', 'Jahre Projekterfahrung im Team'], [`${ns.plaetzeVorOrt}+`, 'Plätze vor Ort']],
     ctaPlanned: 'Beratung und Vormerkung anfragen',
     ctaApproved: 'Förderberatung anfragen',
-    ctaCourses: 'Zum Seminar',
+    ctaSeminar: 'Zum Seminar',
+
+    sealsLabel: 'Zulassungen und Auszeichnungen',
+    sealAzav: ['AZAV-zugelassen', `${bt.fachkundigeStelle.name}, Fachbereich ${bt.fachbereich.nummer}`],
+    sealIstqb: ['ISTQB® Accredited Training Provider', 'CTFL 4.0 und Agile Tester 1.0 (deutsch)'],
 
     // Werbeschild. Inhalte aus dem Kurs "ISTQB® CTFL + Praxistraining"
-    // (audit/course-popup-copy.json, #popup:ISTQB-CTFL-Praxistraining-1-de).
-    showcaseEyebrow: 'Unser Seminar',
+    // (audit/course-popup-copy.json) und den Trainingsunterlagen des Seminars.
+    showcaseEyebrow: 'Neu im Programm',
     showcaseDays: 'Tage',
-    showcaseSub: 'Dein Weg zum Abschluss Softwaretester:in mit ISTQB® Zertifikat. In Präsenz oder online.',
+    showcaseSub: 'Die Weiterbildung zum Abschluss Softwaretester:in mit ISTQB® Zertifikat.',
     showcaseText:
-      'Du lernst den Stoff des ISTQB® Certified Tester Foundation Level Schritt für Schritt. Jeden Tag setzt du das Gelernte in Übungen um, auch in unserer Lernplattform DiTeLe. In den letzten Tagen bereiten wir dich gezielt auf die Prüfung vor.',
+      'Du lernst den kompletten Stoff des ISTQB® Certified Tester Foundation Level. Nicht im Schnelldurchlauf, sondern in 45 Tagen mit täglicher Praxis. So gehst du gut vorbereitet in die Prüfung und in deinen ersten Job.',
+    glanceLabel: 'Auf einen Blick',
+    glance: [
+      ['Dauer', '45 Seminartage in Vollzeit'],
+      ['Format', 'Präsenz oder live online'],
+      ['Ziel', 'ISTQB® Certified Tester Foundation Level'],
+      ['Voraussetzungen', 'Keine IT-Vorkenntnisse nötig'],
+      ['Förderung', 'Bildungsgutschein, nach der Maßnahmenzulassung'],
+      ['Plätze vor Ort', `mindestens ${ns.plaetzeVorOrt}, garantiert`],
+    ],
     showcaseStagesLabel: 'So ist das Seminar aufgebaut',
     showcaseStages: ['Die Inhalte kennenlernen', 'Das Verständnis vertiefen', 'Das Wissen festigen', 'Gezielt auf die ISTQB® CTFL Prüfung vorbereiten'],
     stageRange: (from: number, to: number) => `Tag ${from} bis ${to}`,
-    showcaseStatusPlanned:
-      'Die Zulassung für das Seminar ist in Vorbereitung, die Unterlagen sind weitgehend fertig. Wir starten erst danach. So kannst du deinen Bildungsgutschein von Anfang an nutzen.',
+    showcaseStatusPlanned: 'Maßnahmenzulassung in Vorbereitung. Wir starten erst danach, damit du deinen Bildungsgutschein von Anfang an nutzen kannst.',
     showcaseStatusApproved: 'Dieses Seminar kann mit einem Bildungsgutschein gefördert werden. Über die Förderung entscheidet die Agentur für Arbeit.',
 
     // Kalender. Verknappung nur mit Fakten aus src/data/bildungstraeger.ts.
@@ -89,110 +125,141 @@ const copy = {
     calStart: 'Seminarstart',
     weekdays: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
 
-    // Vorteile. Abgeleitet aus den Trainingsunterlagen des 45-Tage-Seminars
-    // (Struktur, Umfang, Ausstattung), ohne Inhalte daraus zu veröffentlichen.
-    benefitsLead: 'Was dir das 45-Tage-Seminar',
-    benefitsRest: 'bringt',
-    benefits: [
-      // Quelle: § 83 Abs. 1 SGB III.
-      ['Die Kosten können übernommen werden', 'Mit einem Bildungsgutschein kann die Agentur für Arbeit die Lehrgangskosten übernehmen. Auch Fahrkosten, Kinderbetreuung sowie Unterkunft und Verpflegung bei auswärtiger Unterbringung sind möglich. Die Entscheidung trifft sie im Einzelfall.'],
-      ['Einstieg ohne Vorkenntnisse', 'Du brauchst keine IT-Erfahrung. Wir fangen bei den Grundlagen an und bereiten dich Schritt für Schritt auf die Arbeit als Softwaretester vor. Bei Bewerbungen und Vorstellungsgesprächen stehen wir an deiner Seite.'],
-      ['Ein Zertifikat, das Arbeitgeber kennen', 'Das Seminar umfasst alle prüfungsrelevanten Inhalte des aktuellen ISTQB® Certified Tester Foundation Level. Viele Unternehmen nennen dieses Zertifikat ausdrücklich in ihren Stellenanzeigen.'],
-      ['Lernen in drei Durchgängen', 'Du gehst den gesamten Stoff dreimal durch, jedes Mal mit neuen Aufgaben aus der Praxis. Jeder Tag beginnt mit einem Rückblick auf den Vortag. So bleibt dein Wissen bis zur Prüfung präsent.'],
-      ['Anwenden statt auswendig lernen', 'Du arbeitest mit vielen Beispielen und Fällen aus echten Projekten. So kennst du nicht nur die Begriffe, sondern weißt auch, wie du sie im Job einsetzt. Zusätzlich übst du jeden Tag in DiTeLe.'],
-      ['Ein klarer Tagesablauf', 'Das Seminar läuft in Vollzeit mit festem Stundenplan. Vor Ort arbeitest du an einem Arbeitsplatz mit zwei Monitoren, online reicht dein Browser. Nach dem Unterricht bleiben die Trainer, bis alle Fragen beantwortet sind.'],
+    // Formate. Ausstattung und Online-Anforderungen aus den Trainingsunterlagen.
+    formatsEyebrow: 'Neu: zwei Wege, ein Abschluss',
+    formatsLead: 'Präsenz oder online.',
+    formatsRest: 'Du entscheidest.',
+    formatsText: 'Beide Varianten führen zum selben Ziel, mit denselben Trainern und denselben Inhalten. Wähle, was zu deinem Alltag passt.',
+    format: { praesenz: 'Präsenz', online: 'Live online' } as Record<MassnahmeFormat, string>,
+    formatTag: { praesenz: 'In unseren Seminarräumen', online: 'Von überall' } as Record<MassnahmeFormat, string>,
+    formatPoints: {
+      praesenz: [`Mindestens ${ns.plaetzeVorOrt} Plätze garantiert`, 'Arbeitsplatz mit zwei Monitoren, Notebook und Dockingstation', 'Direkter Austausch mit Trainern und Gruppe'],
+      online: ['Live-Unterricht mit denselben Trainern', 'Teilnahme direkt im Browser, ohne Installation', 'Mit Kamera und Mikrofon aktiv dabei'],
+    } as Record<MassnahmeFormat, string[]>,
+    statusPlanned: 'Zulassung in Vorbereitung',
+    coursesNoteApproved: 'Diese Kurse sind zugelassen. Deine Teilnahme kann mit einem Bildungsgutschein gefördert werden. Die Entscheidung trifft die Agentur für Arbeit.',
+    measureNumber: 'Maßnahmenummer',
+    place: 'Ort',
+    degree: 'Abschluss',
+    fundingNote: 'Kann mit Bildungsgutschein gefördert werden.',
+
+    // Know-how. "Über 50 Jahre gebündelte Praxiserfahrung" ist die bestätigte
+    // Formulierung der Website (audit-compliance.mjs).
+    knowEyebrow: 'Unser Know-how',
+    knowLead: 'Über 50 Jahre Praxiswissen',
+    knowRest: 'aus IT-Großprojekten',
+    knowText:
+      'Unser Trainerteam bündelt über 50 Jahre Praxiserfahrung aus IT-Testprojekten der WAMOCON GmbH, unter anderem für Deutsche Telekom, Deutsche Bank, Intel, EnBW und Daimler. Dieses Wissen steckt in jedem Seminartag. Du lernst, wie Testen in echten Projekten funktioniert, nicht nur, wie es im Lehrbuch steht.',
+    kpiLabel: 'Kennzahlen',
+    kpis: [
+      [50, '+', 'Jahre gebündelte Praxiserfahrung'],
+      [50, '+', 'IT-Projekte umgesetzt'],
+      [5500, '+', 'Projekttage'],
+      [100, '+', 'Kunden der WAMOCON GmbH weltweit'],
+      [450, '', 'Personen in Projektteams geleitet'],
+      // Quelle: Vergleichstabelle auf /istqb-zertifizierung/ (Stand 2024).
+      [957000, '', 'ISTQB® Certified Tester weltweit (2024)'],
+    ],
+    knowTiles: [
+      ['Praxis aus Großprojekten', 'Echte Fälle aus Testprojekten in Mobilkommunikation, Finanzsektor, Energie und Automobilindustrie statt Beispiele aus dem Lehrbuch.'],
+      ['ISTQB® CTFL 4.0 Prüfungsvorbereitung', 'Alle prüfungsrelevanten Inhalte des aktuellen Lehrplans. Viele Unternehmen nennen dieses Zertifikat in ihren Stellenanzeigen.'],
+      ['Testdesign, Testmanagement, Testwerkzeuge', 'Du lernst, Testfälle zu entwerfen, Tests zu planen und zu steuern und die passenden Werkzeuge einzusetzen.'],
+      ['Lernen in drei Durchgängen', 'Den gesamten Stoff dreimal, jedes Mal mit neuen Praxisaufgaben. Jeder Tag beginnt mit einem Rückblick auf den Vortag.'],
+      ['Tägliches Training in DiTeLe', 'Über 300 Übungsfragen und mehr als 45 interaktive Übungen in unserer Lernplattform, passend zu jedem Unterrichtstag.'],
+      ['Live-Unterricht in Vollzeit', 'Jeden Seminartag live mit Trainern aus der Praxis, vor Ort oder online. Nach dem Unterricht bleiben die Trainer, bis alle Fragen geklärt sind.'],
     ],
 
-    trustLabel: 'Zulassung und Kennzahlen',
-    trustAzav: ['AZAV', `Zugelassener Bildungsträger, Fachbereich ${bt.fachbereich.nummer}: berufliche Weiterbildung`],
-    trustIstqb: ['ISTQB®', 'Accredited Training Provider für deutschsprachige CTFL 4.0 und Agile Tester 1.0'],
-
-    meaningLead: 'Was die Zulassung',
-    meaningRest: 'für dich bedeutet',
-    // AZAV = Akkreditierungs- und Zulassungsverordnung Arbeitsförderung.
-    // Quelle: § 176 SGB III (Zulassung von Trägern und Maßnahmen durch eine fachkundige Stelle).
-    meaningIntro:
-      'Damit die Agentur für Arbeit eine Weiterbildung fördern darf, braucht es zwei Zulassungen nach der AZAV, der Akkreditierungs- und Zulassungsverordnung Arbeitsförderung. Beide vergibt eine unabhängige, akkreditierte Prüfstelle, die sogenannte fachkundige Stelle.',
-    meaningFor: 'Das bedeutet für dich',
-    // Quelle: § 178 SGB III (Trägerzulassung).
-    providerTitle: 'Trägerzulassung',
-    providerStatus: 'Erteilt',
-    providerText:
-      'Hier wird der Bildungsträger als Ganzes geprüft. Ist er leistungsfähig und zuverlässig? Ist das Personal qualifiziert? Gibt es ein System zur Qualitätssicherung und faire Verträge? Die GZQ GmbH hat die WAMOCON Academy GmbH geprüft und zugelassen.',
-    providerMeaning:
-      'Du lernst bei einem geprüften Bildungsträger, der die gesetzlichen Anforderungen erfüllt. Die erste Voraussetzung für deine Förderung ist damit geschaffen.',
-    // Quelle: § 179 SGB III (Maßnahmezulassung).
-    measureTitle: 'Maßnahmenzulassung',
-    measureStatusPlanned: 'In Vorbereitung',
-    measureStatusApproved: 'Erteilt',
-    measureText:
-      'Zusätzlich wird jeder einzelne Kurs geprüft. Dabei geht es um Inhalte, Methoden und Lehrorganisation, um die Ausstattung sowie um angemessene Kosten und Dauer.',
-    measureMeaningPlanned:
-      'Für unser 45-Tage-Seminar ist diese Zulassung in Vorbereitung, die Unterlagen sind weitgehend fertig. Das Seminar startet erst danach. So kannst du deinen Bildungsgutschein von Anfang an bei uns einlösen.',
-    measureMeaningApproved:
-      'Die unten aufgeführten Kurse sind zugelassen. Deine Teilnahme kann damit über einen Bildungsgutschein gefördert werden.',
-    // Quelle: § 81 Abs. 1 Nr. 3 SGB III, § 176 Abs. 2 SGB III.
-    meaningRule:
-      'Kurz gesagt: Gefördert werden kann nur, wenn Bildungsträger und Kurs zugelassen sind. Ob du die Förderung erhältst, entscheidet die Agentur für Arbeit.',
+    fundEyebrow: 'Förderung',
+    fundLead: 'Mit Bildungsgutschein',
+    fundRest: 'kostenfrei teilnehmen*',
+    // Quelle: § 176 und § 81 Abs. 1 Nr. 3 SGB III.
+    fundText: 'Die Agentur für Arbeit kann deine Weiterbildung über einen Bildungsgutschein bezahlen. Dafür braucht es zwei Zulassungen nach der AZAV. Die erste haben wir schon.',
+    fundTiles: [
+      ['done', 'Erteilt', 'Bildungsträger zugelassen', `Geprüft und zugelassen durch die ${bt.fachkundigeStelle.name}.`],
+      ['open', 'In Vorbereitung', '45-Tage-Seminar', 'Maßnahmenzulassung in Vorbereitung, die Unterlagen sind weitgehend fertig.'],
+    ],
+    fundTilesApproved: [
+      ['done', 'Erteilt', 'Bildungsträger zugelassen', `Geprüft und zugelassen durch die ${bt.fachkundigeStelle.name}.`],
+      ['done', 'Erteilt', 'Maßnahme zugelassen', 'Unsere Weiterbildung ist für den Bildungsgutschein zugelassen.'],
+    ],
+    // Quelle: § 83 Abs. 1 SGB III.
+    fundNote:
+      '* Wird dein Bildungsgutschein bewilligt, übernimmt die Agentur für Arbeit die Lehrgangskosten. Möglich sind außerdem Fahrkosten, Kinderbetreuung sowie Unterkunft und Verpflegung bei auswärtiger Unterbringung. Die Entscheidung trifft die Agentur für Arbeit.',
 
     stepsLead: 'Dein Weg zur Förderung',
     stepsRest: 'in 4 Schritten',
     steps: [
-      ['Gespräch mit uns', 'Wir lernen dich kennen und sprechen über deine Ziele. Gemeinsam klären wir, ob das 45-Tage-Seminar zu dir passt.'],
-      // Quelle: § 81 Abs. 1 Nr. 2 SGB III (Beratung vor Beginn der Teilnahme).
-      ['Beratung bei der Agentur für Arbeit', 'Vor der Weiterbildung berät dich die Agentur für Arbeit. Sie prüft, ob eine Förderung für dich in Frage kommt.'],
+      ['Gespräch mit uns', 'Wir lernen dich kennen und klären gemeinsam, ob das Seminar zu dir passt.'],
+      // Quelle: § 81 Abs. 1 Nr. 2 SGB III.
+      ['Beratung bei der Agentur für Arbeit', 'Die Agentur für Arbeit berät dich vor der Weiterbildung und prüft die Förderung.'],
       // Quelle: § 81 Abs. 4 SGB III.
-      ['Bildungsgutschein', 'Sind die Voraussetzungen erfüllt, erhältst du einen Bildungsgutschein. Er kann zeitlich, regional und auf ein bestimmtes Bildungsziel begrenzt sein.'],
+      ['Bildungsgutschein', 'Sind die Voraussetzungen erfüllt, erhältst du deinen Bildungsgutschein.'],
       // Quelle: § 81 Abs. 4 SGB III (Träger legt den Gutschein vor Beginn vor).
-      ['Start bei der WAMOCON Academy', 'Du meldest dich für das zugelassene Seminar an. Wir reichen deinen Bildungsgutschein vor Kursbeginn bei der Agentur für Arbeit ein. Dann geht es los.'],
+      ['Start bei der WAMOCON Academy', 'Wir reichen den Gutschein vor Kursbeginn ein. Dann geht es los.'],
+    ],
+
+    trainersEyebrow: 'Deine Trainer',
+    trainersLead: 'Lernen von',
+    trainersRest: 'Praktikern',
+    trainersText: 'Bei uns unterrichten Menschen, die selbst Testprojekte leiten. Sie wissen, worauf es im Job ankommt.',
+    trainers: [
+      {
+        key: 'waleri',
+        name: 'Dipl.-Ing. Waleri Moretz',
+        role: 'Geschäftsführer, Testmanager und ISTQB®-Trainer',
+        facts: ['17 Jahre Praxiserfahrung im Softwaretesting', 'Projektleitung für Teams mit bis zu 450 Personen', 'Agile und klassische Testmethoden', 'ISTQB®-zertifiziert und ISTQB®-Trainer'],
+        alt: 'Porträt von Dipl.-Ing. Waleri Moretz',
+      },
+      {
+        key: 'daniel',
+        name: 'Daniel Moretz',
+        role: 'Testmanager, Testautomatisierer und ISTQB®-Trainer',
+        facts: ['Über 7 Jahre Erfahrung im Application Lifecycle Management', 'Testautomatisierung, Last- und Performancetests', 'Integrations-, System-, Abnahme- und Regressionstests', 'ISTQB®-zertifiziert, Mitautor der Seminarunterlagen'],
+        alt: 'Porträt von Daniel Moretz',
+      },
     ],
 
     supportLead: 'So begleiten wir dich',
     supportRest: 'während und nach dem Seminar',
     supportIntro: 'Du bist bei uns nicht auf dich allein gestellt. Unsere Begleitung folgt einem festen, dokumentierten Ablauf.',
     support: [
-      ['Persönliche Beratung', 'Wir beraten dich persönlich, vor dem Start und während des gesamten Seminars.'],
-      ['Hilfe bei Bewerbungen', 'Wir unterstützen dich dabei, überzeugende Bewerbungen für deinen Einstieg ins Softwaretesting zu erstellen.'],
-      ['Vorbereitung auf Vorstellungsgespräche', 'Wir bereiten dich gezielt auf Vorstellungsgespräche vor, damit du sicher auftrittst.'],
-      ['Nachhilfe und zusätzliches Lernmaterial', 'Wenn du bei einem Thema mehr Zeit brauchst, bekommst du individuelle Nachhilfe und ergänzende Lernangebote.'],
-      ['Übungen, Tests und Prüfungssimulationen', 'Regelmäßige Übungen und Wissenstests zeigen dir, wo du stehst. Prüfungssimulationen bereiten dich auf den echten Prüfungstag vor. Zwischengespräche halten wir schriftlich fest.'],
-      ['Nachfrage nach dem Seminar', 'Nach Kursende sowie nach drei und sechs Monaten ist eine Nachbefragung vorgesehen. Wir möchten wissen, wie es beruflich für dich weitergeht.'],
+      ['Persönliche Beratung', 'Vor dem Start und während des gesamten Seminars hast du uns als Ansprechpartner an deiner Seite.'],
+      ['Unterstützung bei Bewerbungen', 'Wir helfen dir, überzeugende Bewerbungen für deinen Einstieg ins Softwaretesting zu erstellen.'],
+      ['Übungen und Wissenstests', 'Regelmäßige Übungen und Tests zeigen dir jederzeit, wo du stehst.'],
+      ['Prüfungsvorbereitung', 'Gezielte Vorbereitung auf die ISTQB® Prüfung, damit du am Prüfungstag weißt, was dich erwartet.'],
+      ['Feedbackgespräche', 'In dokumentierten Zwischengesprächen besprechen wir deinen Fortschritt und die nächsten Schritte.'],
+      ['Wir denken an euch', 'Auch nach dem Seminar sind wir für dich da. Mit deinem Zertifikat wirst du Teil der WAMOCON Community und kannst dich mit anderen Absolventen austauschen. Nach Kursende sowie nach drei und sechs Monaten melden wir uns und fragen, wie es dir beruflich geht.'],
     ],
 
-    coursesLeadPlanned: 'Unser 45-Tage-Seminar',
-    coursesLeadApproved: 'Zugelassene Weiterbildung',
-    coursesRest: 'in Präsenz oder online',
-    coursesNotePlanned:
-      'Du entscheidest, ob du vor Ort oder online teilnimmst. Das Seminar startet nach der Maßnahmenzulassung, damit deine Teilnahme mit Bildungsgutschein gefördert werden kann. Lass dich am besten jetzt vormerken.',
-    coursesNoteApproved:
-      'Diese Kurse sind zugelassen. Deine Teilnahme kann mit einem Bildungsgutschein gefördert werden. Die Entscheidung trifft die Agentur für Arbeit.',
-    variants: 'Zwei Varianten, ein Abschluss',
-    format: { praesenz: 'Präsenz', online: 'Online' } as Record<MassnahmeFormat, string>,
-    statusPlanned: 'Zulassung in Vorbereitung',
-    planNote: 'Start nach der Maßnahmenzulassung',
-    measureNumber: 'Maßnahmenummer',
-    duration: 'Dauer',
-    place: 'Ort',
-    degree: 'Abschluss',
-    fundingNote: 'Kann mit Bildungsgutschein gefördert werden.',
+    testiEyebrow: 'Stimmen',
+    testiLead: 'Das sagen',
+    testiRest: 'unsere Teilnehmenden',
+    testiText: 'Teilnehmende früherer Kurse der WAMOCON Academy erzählen von ihrem Weg in die IT.',
+    testiParticipant: 'Teilnehmende der WAMOCON Academy',
+    testiCta: 'Alle Bewertungen ansehen',
 
     whyLead: 'Warum',
     whyRest: 'die WAMOCON Academy',
-    // Inhalte übernommen aus /ber-die-akademie/, der Startseite und der Start-FAQ.
-    why: [
-      ['Praxis aus echten Projekten', 'Die WAMOCON Academy GmbH wird gemeinsam mit der WAMOCON GmbH betrieben, einem Unternehmen für IT-Testmanagement. Du lernst genau die Methoden, die dort in Unternehmensprojekten eingesetzt werden.'],
-      ['Trainer aus der Praxis', 'Unsere Trainer sind erfahrene Praktiker. Zusammen bringen sie über 50 Jahre Erfahrung aus IT-Testprojekten mit.'],
-      ['Bei ISTQB® akkreditiert', 'Die WAMOCON Academy GmbH ist bei ISTQB® als akkreditierter Trainingsanbieter für deutschsprachige CTFL 4.0- und Agile Tester 1.0-Trainingsmaterialien gelistet.'],
-      ['Mentoring', 'Unsere Trainer vermitteln nicht nur Wissen. Sie geben dir Feedback und begleiten dich als Mentoren durch die gesamte Ausbildung.'],
+    whyText: 'Hinter der Academy steht die WAMOCON GmbH, ein Unternehmen für IT-Testmanagement. Diese Branchen kennen wir aus eigenen Projekten.',
+    industriesLabel: 'Branchen aus unseren Projekten',
+    industries: ['Mobilkommunikation', 'Finanzsektor', 'Energie', 'Automobilindustrie', 'Bauwesen'],
+    clientsLabel: 'Projekte unter anderem für',
+    whyFacts: [
+      ['ISTQB®', 'Akkreditierter Trainingsanbieter für deutschsprachige CTFL 4.0- und Agile Tester 1.0-Materialien'],
+      ['AZAV', `Zugelassener Bildungsträger, geprüft durch die ${bt.fachkundigeStelle.name}`],
+      ['DiTeLe', 'Eigene Lernplattform mit über 300 Übungsfragen'],
+      ['1:1', 'Mentoring durch Trainer, die selbst Projekte leiten'],
     ],
 
-    proofLead: 'Nachweise',
-    proofRest: 'zu unserer Zulassung',
+    proofEyebrow: 'Qualitätssiegel',
+    proofLead: 'Geprüft.',
+    proofRest: 'Zugelassen.',
+    proofSeal: ['AZAV', 'Zulassung erhalten', bt.fachkundigeStelle.name],
+    proofText: `Die WAMOCON Academy GmbH hat die Trägerzulassung nach AZAV erhalten. Geprüft hat die ${bt.fachkundigeStelle.name} aus ${bt.fachkundigeStelle.ort}, eine akkreditierte fachkundige Stelle.`,
     proofRows: {
       body: 'Fachkundige Stelle',
       type: 'Art der Zulassung',
       area: 'Zugelassener Fachbereich',
-      audit: 'Audit',
       number: 'Zertifikatsnummer',
       validity: 'Gültigkeit',
       measures: 'Zugelassene Maßnahmen',
@@ -208,13 +275,11 @@ const copy = {
     groupsLead: 'Für wen',
     groupsRest: 'das Seminar gedacht ist',
     groups: [
-      // Quelle: § 81 Abs. 1 Nr. 1 SGB III.
-      ['Arbeitsuchende', 'Du bist arbeitslos und möchtest beruflich neu starten? Dann kann die Weiterbildung gefördert werden, wenn sie für deinen Wiedereinstieg notwendig ist. Das prüft die Agentur für Arbeit.'],
-      // Quelle: § 81 Abs. 1 Nr. 1 SGB III, arbeitsagentur.de (auch Beschäftigte können gefördert werden).
-      ['Beschäftigte', 'Auch wenn du gerade arbeitest, ist eine Förderung möglich, etwa wenn dir Arbeitslosigkeit droht. Ob das auf dich zutrifft, klärt die Agentur für Arbeit.'],
-      // Inhalt aus der Start-FAQ (Teamtraining). Bewusst ohne Förderaussage.
-      ['Unternehmen', 'Ihr möchtet euer QA- oder Testteam weiterbilden? Wir bieten Teamtrainings an und stimmen Inhalte und Termine auf eure Projekte ab.'],
+      ['Absolventen', 'Du hast dein Studium oder deine Ausbildung abgeschlossen und suchst den Einstieg in die IT? Mit dem ISTQB® Zertifikat und echter Projektpraxis bringst du mit, was viele Arbeitgeber in ihren Stellenanzeigen nennen.'],
+      ['Quereinsteiger', 'Du kommst aus einem anderen Beruf und willst in die IT wechseln? Vorkenntnisse brauchst du nicht. Wir starten bei den Grundlagen und begleiten dich bis zur Prüfung.'],
     ],
+    // Quelle: § 81 Abs. 1 Nr. 1 SGB III; arbeitsagentur.de.
+    groupsNote: 'Gefördert werden kann die Weiterbildung zum Beispiel, wenn du arbeitslos bist oder dir Arbeitslosigkeit droht. Das prüft die Agentur für Arbeit.',
 
     faqHeading: 'Häufige Fragen zu Förderung und Zulassung',
     faqIntro: 'Hier findest du Antworten auf die Fragen, die uns zum Bildungsgutschein und zum 45-Tage-Seminar am häufigsten gestellt werden.',
@@ -226,31 +291,46 @@ const copy = {
 
   en: {
     stand: 'As of October 2026',
+    newBadge: 'New',
     markText: `Approved by ${bt.fachkundigeStelle.name}`,
     markAlt: `Mark of the certification body ${bt.fachkundigeStelle.name}`,
-    heroLead: 'Approved education provider',
-    heroRest: 'under AZAV',
+    heroKicker: 'Approved education provider under AZAV',
+    heroLead: 'Become an ISTQB®',
+    heroRest: 'software tester in 45 days',
     // AZAV and Bildungsgutschein are explained on first use.
-    heroText:
-      'WAMOCON Academy GmbH is approved under AZAV, Germany’s scheme for funded training. Approval for our 45-day seminar comes next. A Bildungsgutschein (education voucher) can then cover your place.',
+    heroText: 'Our new seminar, on site or live online. Free for you with a Bildungsgutschein, a German education voucher.*',
+    heroNote: '* Once the course approval is granted. If your Bildungsgutschein is approved, the Agentur für Arbeit covers the course fees.',
+    heroStats: [['45', 'days of hands-on seminar'], ['50+', 'years of project experience in the team'], [`${ns.plaetzeVorOrt}+`, 'on-site places']],
     ctaPlanned: 'Get advice and pre-register',
     ctaApproved: 'Request funding advice',
-    ctaCourses: 'See the seminar',
+    ctaSeminar: 'See the seminar',
 
-    showcaseEyebrow: 'Our seminar',
+    sealsLabel: 'Approvals and awards',
+    sealAzav: ['Approved under AZAV', `${bt.fachkundigeStelle.name}, field ${bt.fachbereich.nummer}`],
+    sealIstqb: ['ISTQB® Accredited Training Provider', 'CTFL 4.0 and Agile Tester 1.0 (German)'],
+
+    showcaseEyebrow: 'New in our programme',
     showcaseDays: 'days',
-    showcaseSub: 'Your route to the "Abschluss Softwaretester:in ISTQB® Zertifikat". On site or online.',
+    showcaseSub: 'The training leading to the "Abschluss Softwaretester:in ISTQB® Zertifikat".',
     showcaseText:
-      'You learn the ISTQB® Certified Tester Foundation Level step by step. Every day you put what you have learned into practice, including in our DiTeLe learning platform. In the final days we prepare you specifically for the exam.',
+      'You learn the complete ISTQB® Certified Tester Foundation Level syllabus. Not as a crash course, but over 45 days with daily practice. That way you go into the exam and your first job well prepared.',
+    glanceLabel: 'At a glance',
+    glance: [
+      ['Duration', '45 full-time seminar days'],
+      ['Format', 'On site or live online'],
+      ['Goal', 'ISTQB® Certified Tester Foundation Level'],
+      ['Requirements', 'No prior IT knowledge needed'],
+      ['Funding', 'Bildungsgutschein, after course approval'],
+      ['On-site places', `at least ${ns.plaetzeVorOrt}, guaranteed`],
+    ],
     showcaseStagesLabel: 'How the seminar is structured',
     showcaseStages: ['Getting to know the content', 'Deepening your understanding', 'Consolidating your knowledge', 'Preparing for the ISTQB® CTFL exam'],
     stageRange: (from: number, to: number) => `Days ${from} to ${to}`,
-    showcaseStatusPlanned:
-      'Approval for the seminar is in preparation and the documents are largely complete. We only start once it is granted, so you can use your Bildungsgutschein from day one.',
+    showcaseStatusPlanned: 'Course approval in preparation. We only start afterwards, so you can use your Bildungsgutschein from day one.',
     showcaseStatusApproved: 'This seminar can be funded with a Bildungsgutschein. The Agentur für Arbeit decides on funding.',
 
     calEyebrow: 'Next seminar start',
-    calLead: (year: number) => `Only one more start`,
+    calLead: (_year: number) => 'Only one more start',
     calRest: 'planned this year',
     calTextPending:
       'The seminar begins as soon as the approval is granted. We will announce the exact date shortly. If you pre-register, you hear it first and can secure your place in good time.',
@@ -261,105 +341,132 @@ const copy = {
     calStart: 'Seminar start',
     weekdays: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
 
-    benefitsLead: 'What the 45-day seminar',
-    benefitsRest: 'gives you',
-    benefits: [
-      ['Your costs can be covered', 'With a Bildungsgutschein, the Agentur für Arbeit, the local office of the German Federal Employment Agency, can cover the course fees. Travel, childcare, and accommodation and meals away from home are also possible. It decides case by case.'],
-      ['No prior knowledge needed', 'You do not need any IT experience. We start with the fundamentals and prepare you step by step for working as a software tester. We support you with applications and job interviews.'],
-      ['A certificate employers know', 'The seminar covers all exam-relevant content of the current ISTQB® Certified Tester Foundation Level. Many companies name this certificate in their job postings.'],
-      ['Learning in three passes', 'You work through the whole syllabus three times, each time with new practical tasks. Every day starts with a recap of the day before. That keeps your knowledge fresh for the exam.'],
-      ['Apply it, do not just memorise it', 'You work with many examples and cases from real projects. You learn the terms and also how to use them on the job. On top of that you practise every day in DiTeLe.'],
-      ['A clear daily routine', 'The seminar runs full time with a fixed timetable. On site you work at a desk with two monitors, online all you need is a browser. After class the trainers stay until every question is answered.'],
+    formatsEyebrow: 'New: two routes, one goal',
+    formatsLead: 'On site or online.',
+    formatsRest: 'Your choice.',
+    formatsText: 'Both formats lead to the same goal, with the same trainers and the same content. Choose what fits your life.',
+    format: { praesenz: 'On site', online: 'Live online' } as Record<MassnahmeFormat, string>,
+    formatTag: { praesenz: 'In our seminar rooms', online: 'From anywhere' } as Record<MassnahmeFormat, string>,
+    formatPoints: {
+      praesenz: [`At least ${ns.plaetzeVorOrt} places guaranteed`, 'Desk with two monitors, notebook and docking station', 'Direct exchange with trainers and group'],
+      online: ['Live classes with the same trainers', 'Join straight from your browser, no installation', 'Take an active part with camera and microphone'],
+    } as Record<MassnahmeFormat, string[]>,
+    statusPlanned: 'Approval in preparation',
+    coursesNoteApproved: 'These courses are approved. Your participation can be funded with a Bildungsgutschein. The Agentur für Arbeit makes the decision.',
+    measureNumber: 'Course approval number',
+    place: 'Location',
+    degree: 'Qualification',
+    fundingNote: 'Can be funded with a Bildungsgutschein.',
+
+    knowEyebrow: 'Our expertise',
+    knowLead: 'Over 50 years of know-how',
+    knowRest: 'from large IT projects',
+    knowText:
+      'Our training team brings over 50 years of combined experience from IT testing projects of WAMOCON GmbH, including work for Deutsche Telekom, Deutsche Bank, Intel, EnBW and Daimler. That knowledge goes into every seminar day. You learn how testing works in real projects, not just in the textbook.',
+    kpiLabel: 'Key figures',
+    kpis: [
+      [50, '+', 'years of combined practical experience'],
+      [50, '+', 'IT projects delivered'],
+      [5500, '+', 'project days'],
+      [100, '+', 'WAMOCON GmbH clients worldwide'],
+      [450, '', 'people led in project teams'],
+      [957000, '', 'ISTQB® Certified Testers worldwide (2024)'],
+    ],
+    knowTiles: [
+      ['Practice from large projects', 'Real cases from testing projects in mobile communications, finance, energy and automotive instead of textbook examples.'],
+      ['ISTQB® CTFL 4.0 exam preparation', 'All exam-relevant content of the current syllabus. Many companies name this certificate in their job postings.'],
+      ['Test design, test management, test tools', 'You learn to design test cases, plan and control testing and use the right tools.'],
+      ['Learning in three passes', 'The whole syllabus three times, each time with new practical tasks. Every day starts with a recap of the day before.'],
+      ['Daily training in DiTeLe', 'More than 300 practice questions and over 45 interactive exercises in our learning platform, matched to every class.'],
+      ['Full-time live classes', 'Every seminar day live with trainers from the field, on site or online. After class the trainers stay until every question is answered.'],
     ],
 
-    trustLabel: 'Approval and key figures',
-    trustAzav: ['AZAV', `Approved education provider, field ${bt.fachbereich.nummer}: vocational further training`],
-    trustIstqb: ['ISTQB®', 'Accredited Training Provider for German-language CTFL 4.0 and Agile Tester 1.0'],
-
-    meaningLead: 'What the approval',
-    meaningRest: 'means for you',
-    // Source: § 176 SGB III.
-    meaningIntro:
-      'Before the Agentur für Arbeit can fund training, two approvals under AZAV are required. Both are granted by an independent, accredited certification body known as a fachkundige Stelle.',
-    meaningFor: 'What this means for you',
-    // Source: § 178 SGB III.
-    providerTitle: 'Provider approval',
-    providerStatus: 'Granted',
-    providerText:
-      'This review looks at the provider as a whole. Is it capable and reliable? Are the staff qualified? Is there a quality assurance system and are the contracts fair? GZQ GmbH has reviewed and approved WAMOCON Academy GmbH.',
-    providerMeaning:
-      'You learn with a reviewed provider that meets the legal requirements. The first condition for your funding is in place.',
-    // Source: § 179 SGB III.
-    measureTitle: 'Course approval',
-    measureStatusPlanned: 'In preparation',
-    measureStatusApproved: 'Granted',
-    measureText:
-      'In addition, every individual course is reviewed. This covers content, methods and teaching organisation, the facilities, and reasonable cost and duration.',
-    measureMeaningPlanned:
-      'For our 45-day seminar this approval is in preparation and the documents are largely complete. The seminar only starts afterwards, so you can redeem your Bildungsgutschein with us from day one.',
-    measureMeaningApproved:
-      'The courses listed below are approved. Your participation can therefore be funded with a Bildungsgutschein.',
-    // Source: § 81 (1) no. 3 SGB III, § 176 (2) SGB III.
-    meaningRule:
-      'In short: funding is only possible when both the provider and the course are approved. Whether you receive it is decided by the Agentur für Arbeit.',
+    fundEyebrow: 'Funding',
+    fundLead: 'Take part free of charge',
+    fundRest: 'with a Bildungsgutschein*',
+    fundText: 'The Agentur für Arbeit, the local office of the German Federal Employment Agency, can pay for your training with a Bildungsgutschein. Two approvals under AZAV are needed for this. We already have the first.',
+    fundTiles: [
+      ['done', 'Granted', 'Education provider approved', `Reviewed and approved by ${bt.fachkundigeStelle.name}.`],
+      ['open', 'In preparation', '45-day seminar', 'Course approval in preparation, the documents are largely complete.'],
+    ],
+    fundTilesApproved: [
+      ['done', 'Granted', 'Education provider approved', `Reviewed and approved by ${bt.fachkundigeStelle.name}.`],
+      ['done', 'Granted', 'Course approved', 'Our training is approved for the Bildungsgutschein.'],
+    ],
+    fundNote:
+      '* If your Bildungsgutschein is approved, the Agentur für Arbeit covers the course fees. Travel, childcare, and accommodation and meals away from home are also possible. The Agentur für Arbeit makes the decision.',
 
     stepsLead: 'Your route to funding',
     stepsRest: 'in 4 steps',
     steps: [
-      ['A conversation with us', 'We get to know you and talk about your goals. Together we work out whether the 45-day seminar is right for you.'],
-      // Source: § 81 (1) no. 2 SGB III.
-      ['Advice at the Agentur für Arbeit', 'Before the training, the Agentur für Arbeit advises you. It checks whether funding is an option for you.'],
-      // Source: § 81 (4) SGB III.
-      ['Bildungsgutschein', 'If the conditions are met, you receive a Bildungsgutschein. It can be limited in time, to a region and to a specific training goal.'],
-      // Source: § 81 (4) SGB III.
-      ['Start at WAMOCON Academy', 'You register for the approved seminar. We submit your Bildungsgutschein to the Agentur für Arbeit before the course begins. Then you are ready to go.'],
+      ['A conversation with us', 'We get to know you and work out together whether the seminar is right for you.'],
+      ['Advice at the Agentur für Arbeit', 'The Agentur für Arbeit advises you before the training and reviews funding.'],
+      ['Bildungsgutschein', 'If the conditions are met, you receive your Bildungsgutschein.'],
+      ['Start at WAMOCON Academy', 'We submit the voucher before the course begins. Then you are ready to go.'],
+    ],
+
+    trainersEyebrow: 'Your trainers',
+    trainersLead: 'Learn from',
+    trainersRest: 'practitioners',
+    trainersText: 'Our trainers lead testing projects themselves. They know what matters on the job.',
+    trainers: [
+      {
+        key: 'waleri',
+        name: 'Dipl.-Ing. Waleri Moretz',
+        role: 'Managing Director, test manager and ISTQB® trainer',
+        facts: ['17 years of hands-on experience in software testing', 'Project lead for teams of up to 450 people', 'Agile and classic testing methods', 'ISTQB® certified and ISTQB® trainer'],
+        alt: 'Portrait of Dipl.-Ing. Waleri Moretz',
+      },
+      {
+        key: 'daniel',
+        name: 'Daniel Moretz',
+        role: 'Test manager, test automation engineer and ISTQB® trainer',
+        facts: ['Over 7 years in application lifecycle management', 'Test automation, load and performance testing', 'Integration, system, acceptance and regression testing', 'ISTQB® certified, co-author of the seminar materials'],
+        alt: 'Portrait of Daniel Moretz',
+      },
     ],
 
     supportLead: 'How we support you',
     supportRest: 'during and after the seminar',
     supportIntro: 'You are not on your own with us. Our support follows a fixed, documented procedure.',
     support: [
-      ['Personal advice', 'We advise you in person, before you start and throughout the seminar.'],
+      ['Personal advice', 'Before you start and throughout the seminar, we are your point of contact.'],
       ['Help with applications', 'We help you put together strong applications for your first role in software testing.'],
-      ['Interview preparation', 'We prepare you for job interviews so that you present yourself with confidence.'],
-      ['Tutoring and extra material', 'If you need more time on a topic, you receive individual tutoring and additional learning material.'],
-      ['Exercises, tests and mock exams', 'Regular exercises and knowledge tests show you where you stand. Mock exams prepare you for the real exam day. We record progress reviews in writing.'],
-      ['Follow-up after the seminar', 'A follow-up survey is planned at the end of the course and after three and six months. We want to know how your career is progressing.'],
+      ['Exercises and knowledge tests', 'Regular exercises and tests show you where you stand at any time.'],
+      ['Exam preparation', 'Focused preparation for the ISTQB® exam, so you know what to expect on exam day.'],
+      ['Feedback meetings', 'In documented progress reviews we discuss how you are doing and the next steps.'],
+      ['We think of you', 'We are there for you after the seminar too. With your certificate you join the WAMOCON community and can connect with other graduates. At the end of the course and after three and six months we get in touch to ask how your career is going.'],
     ],
 
-    coursesLeadPlanned: 'Our 45-day seminar',
-    coursesLeadApproved: 'Approved training',
-    coursesRest: 'on site or online',
-    coursesNotePlanned:
-      'You choose whether to take part on site or online. The seminar starts after the course approval, so your participation can be funded with a Bildungsgutschein. Pre-register now.',
-    coursesNoteApproved:
-      'These courses are approved. Your participation can be funded with a Bildungsgutschein. The Agentur für Arbeit makes the decision.',
-    variants: 'Two formats, one qualification',
-    format: { praesenz: 'On site', online: 'Online' } as Record<MassnahmeFormat, string>,
-    statusPlanned: 'Approval in preparation',
-    planNote: 'Starts after course approval',
-    measureNumber: 'Course approval number',
-    duration: 'Duration',
-    place: 'Location',
-    degree: 'Qualification',
-    fundingNote: 'Can be funded with a Bildungsgutschein.',
+    testiEyebrow: 'Voices',
+    testiLead: 'What our',
+    testiRest: 'participants say',
+    testiText: 'Participants from earlier WAMOCON Academy courses talk about their route into IT.',
+    testiParticipant: 'Participant WAMOCON Academy',
+    testiCta: 'See all reviews',
 
     whyLead: 'Why',
     whyRest: 'WAMOCON Academy',
-    why: [
-      ['Practice from real projects', 'WAMOCON Academy GmbH is operated alongside WAMOCON GmbH, an IT test-management company. You learn exactly the methods used there in enterprise projects.'],
-      ['Trainers from the field', 'Our trainers are experienced practitioners. Together they bring over 50 years of experience from IT testing projects.'],
-      ['Accredited by ISTQB®', 'WAMOCON Academy GmbH is listed by ISTQB® as an accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 training materials.'],
-      ['Mentoring', 'Our trainers do more than teach. They give you feedback and mentor you throughout your training.'],
+    whyText: 'The academy is backed by WAMOCON GmbH, an IT test-management company. We know these industries from our own projects.',
+    industriesLabel: 'Industries from our projects',
+    industries: ['Mobile communications', 'Finance', 'Energy', 'Automotive', 'Construction'],
+    clientsLabel: 'Projects include work for',
+    whyFacts: [
+      ['ISTQB®', 'Accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 materials'],
+      ['AZAV', `Approved education provider, reviewed by ${bt.fachkundigeStelle.name}`],
+      ['DiTeLe', 'Our own learning platform with more than 300 practice questions'],
+      ['1:1', 'Mentoring by trainers who lead projects themselves'],
     ],
 
-    proofLead: 'Evidence',
-    proofRest: 'of our approval',
+    proofEyebrow: 'Quality seal',
+    proofLead: 'Reviewed.',
+    proofRest: 'Approved.',
+    proofSeal: ['AZAV', 'Approval granted', bt.fachkundigeStelle.name],
+    proofText: `WAMOCON Academy GmbH has received its provider approval under AZAV. The review was carried out by ${bt.fachkundigeStelle.name} from ${bt.fachkundigeStelle.ort}, an accredited certification body.`,
     proofRows: {
       body: 'Certification body',
       type: 'Type of approval',
       area: 'Approved field',
-      audit: 'Audit',
       number: 'Certificate number',
       validity: 'Valid',
       measures: 'Approved courses',
@@ -375,10 +482,10 @@ const copy = {
     groupsLead: 'Who',
     groupsRest: 'the seminar is for',
     groups: [
-      ['Job seekers', 'Out of work and ready for a fresh start? Your training can be funded if it is necessary for your return to work. The Agentur für Arbeit assesses this.'],
-      ['Employees', 'Funding is possible even while you are employed, for example if you are at risk of losing your job. The Agentur für Arbeit clarifies whether this applies to you.'],
-      ['Companies', 'Want to train your QA or test team? We offer team training and tailor content and dates to your projects.'],
+      ['Graduates', 'You have finished your degree or vocational training and want to get into IT? With the ISTQB® certificate and real project practice you bring what many employers name in their job postings.'],
+      ['Career changers', 'You come from a different profession and want to move into IT? No prior knowledge needed. We start with the fundamentals and support you all the way to the exam.'],
     ],
+    groupsNote: 'Funding is possible, for example, if you are unemployed or at risk of losing your job. The Agentur für Arbeit assesses this.',
 
     faqHeading: 'Frequently asked questions about funding and approval',
     faqIntro: 'Answers to the questions we hear most often about the Bildungsgutschein and the 45-day seminar.',
@@ -391,26 +498,41 @@ const copy = {
   // Muttersprachliche Prüfung offen: der gesamte kasachische Block.
   kk: {
     stand: '2026 жылғы қазандағы жағдай',
+    newBadge: 'Жаңа',
     markText: `${bt.fachkundigeStelle.name} рұқсат берген`,
     markAlt: `${bt.fachkundigeStelle.name} сараптама органының белгісі`,
-    heroLead: 'AZAV бойынша рұқсат алған',
-    heroRest: 'білім беру ұйымы',
-    heroText:
-      'WAMOCON Academy GmbH AZAV (мемлекет қаржыландыратын оқуға рұқсат беру ережесі) бойынша рұқсат алды. Келесі қадам: 45 күндік семинарымызға рұқсат. Содан кейін қатысуыңызды Bildungsgutschein (білім беру ваучері) өтей алады.',
+    heroKicker: 'AZAV бойынша рұқсат алған білім беру ұйымы',
+    heroLead: '45 күнде',
+    heroRest: 'ISTQB® тестілеуші болыңыз',
+    heroText: 'Аудиторияда немесе тікелей онлайн өтетін жаңа семинарымыз. Bildungsgutschein (неміс білім беру ваучері) арқылы сіз үшін тегін.*',
+    heroNote: '* Курсқа рұқсат берілгеннен кейін. Bildungsgutschein мақұлданса, курс ақысын Agentur für Arbeit өтейді.',
+    heroStats: [['45', 'күндік тәжірибелік семинар'], ['50+', 'жыл командадағы жоба тәжірибесі'], [`${ns.plaetzeVorOrt}+`, 'аудиториядағы орын']],
     ctaPlanned: 'Кеңес алу және алдын ала тіркелу',
     ctaApproved: 'Қаржыландыру бойынша кеңес алу',
-    ctaCourses: 'Семинарға өту',
+    ctaSeminar: 'Семинарға өту',
 
-    showcaseEyebrow: 'Біздің семинар',
+    sealsLabel: 'Рұқсаттар мен марапаттар',
+    sealAzav: ['AZAV бойынша рұқсат', `${bt.fachkundigeStelle.name}, ${bt.fachbereich.nummer}-бағыт`],
+    sealIstqb: ['ISTQB® Accredited Training Provider', 'CTFL 4.0 және Agile Tester 1.0 (неміс тілі)'],
+
+    showcaseEyebrow: 'Бағдарламадағы жаңалық',
     showcaseDays: 'күн',
-    showcaseSub: '«Abschluss Softwaretester:in ISTQB® Zertifikat» біліктілігіне апарар жолыңыз. Аудиторияда немесе онлайн.',
+    showcaseSub: '«Abschluss Softwaretester:in ISTQB® Zertifikat» біліктілігіне апаратын оқу бағдарламасы.',
     showcaseText:
-      'ISTQB® Certified Tester Foundation Level мазмұнын кезең-кезеңімен меңгересіз. Күн сайын үйренгеніңізді жаттығуда қолданасыз, оның ішінде DiTeLe оқу платформасында. Соңғы күндері сізді емтиханға арнайы дайындаймыз.',
+      'ISTQB® Certified Tester Foundation Level бағдарламасын толық меңгересіз. Асығыс емес, күнделікті тәжірибемен 45 күн ішінде. Осылайша емтиханға да, алғашқы жұмысыңызға да жақсы дайындалып барасыз.',
+    glanceLabel: 'Қысқаша',
+    glance: [
+      ['Ұзақтығы', 'Толық күндік 45 семинар күні'],
+      ['Формат', 'Аудиторияда немесе тікелей онлайн'],
+      ['Мақсат', 'ISTQB® Certified Tester Foundation Level'],
+      ['Талаптар', 'IT бойынша алдын ала білім қажет емес'],
+      ['Қаржыландыру', 'Bildungsgutschein, курсқа рұқсат берілгеннен кейін'],
+      ['Аудиториядағы орын', `кемінде ${ns.plaetzeVorOrt}, кепілдікпен`],
+    ],
     showcaseStagesLabel: 'Семинардың құрылымы',
     showcaseStages: ['Мазмұнмен танысу', 'Түсінікті тереңдету', 'Білімді бекіту', 'ISTQB® CTFL емтиханына дайындық'],
     stageRange: (from: number, to: number) => `${from}-күннен ${to}-күнге дейін`,
-    showcaseStatusPlanned:
-      'Семинарға рұқсат дайындалуда, құжаттар негізінен дайын. Біз тек рұқсат берілгеннен кейін бастаймыз, сондықтан Bildungsgutschein ваучерін алғашқы күннен пайдалана аласыз.',
+    showcaseStatusPlanned: 'Курсқа рұқсат дайындалуда. Біз одан кейін ғана бастаймыз, сондықтан Bildungsgutschein ваучерін алғашқы күннен пайдалана аласыз.',
     showcaseStatusApproved: 'Бұл семинарды Bildungsgutschein арқылы қаржыландыруға болады. Шешімді Agentur für Arbeit қабылдайды.',
 
     calEyebrow: 'Семинардың келесі басталуы',
@@ -425,98 +547,132 @@ const copy = {
     calStart: 'Семинардың басталуы',
     weekdays: ['Дс', 'Сс', 'Ср', 'Бс', 'Жм', 'Сб', 'Жс'],
 
-    benefitsLead: '45 күндік семинар',
-    benefitsRest: 'сізге не береді',
-    benefits: [
-      ['Шығындар өтелуі мүмкін', 'Bildungsgutschein бойынша Agentur für Arbeit, яғни Германияның жұмыспен қамту агенттігінің жергілікті бөлімі, курс ақысын өтей алады. Жол шығыны, балаларды күту, басқа жерде тұру мен тамақтану да өтелуі мүмкін. Шешімді әр жағдайда жеке қабылдайды.'],
-      ['Алдын ала білім қажет емес', 'IT саласындағы тәжірибе талап етілмейді. Біз негіздерден бастап, сізді тестілеуші жұмысына кезең-кезеңімен дайындаймыз. Өтініш беру мен жұмыс сұхбатында қасыңызда боламыз.'],
-      ['Жұмыс берушілер білетін сертификат', 'Семинар ағымдағы ISTQB® Certified Tester Foundation Level емтиханына қажет барлық мазмұнды қамтиды. Көптеген компания бұл сертификатты жұмыс хабарландыруларында атайды.'],
-      ['Үш рет қайталап оқу', 'Бүкіл материалды үш рет өтесіз, әр жолы жаңа тәжірибелік тапсырмалармен. Әр күн алдыңғы күнге шолудан басталады. Осылайша білім емтиханға дейін есте сақталады.'],
-      ['Жаттау емес, қолдану', 'Нақты жобалардан алынған көптеген мысалмен жұмыс істейсіз. Ұғымдарды біліп қана қоймай, оларды жұмыста қалай қолдану керегін түсінесіз. Сонымен қатар күн сайын DiTeLe платформасында жаттығасыз.'],
-      ['Нақты күн тәртібі', 'Семинар толық күн форматында, тұрақты кестемен өтеді. Аудиторияда екі мониторлы жұмыс орнында отырасыз, онлайн үшін браузер жеткілікті. Сабақтан кейін тренерлер барлық сұраққа жауап бергенше қалады.'],
+    formatsEyebrow: 'Жаңа: екі жол, бір мақсат',
+    formatsLead: 'Аудиторияда немесе онлайн.',
+    formatsRest: 'Таңдау өзіңізде.',
+    formatsText: 'Екі нұсқа да бір мақсатқа жеткізеді: тренерлер де, мазмұн да бірдей. Өміріңізге ыңғайлысын таңдаңыз.',
+    format: { praesenz: 'Аудиторияда', online: 'Тікелей онлайн' } as Record<MassnahmeFormat, string>,
+    formatTag: { praesenz: 'Семинар залдарымызда', online: 'Кез келген жерден' } as Record<MassnahmeFormat, string>,
+    formatPoints: {
+      praesenz: [`Кемінде ${ns.plaetzeVorOrt} орынға кепілдік`, 'Екі монитор, ноутбук және док-станциясы бар жұмыс орны', 'Тренерлермен және топпен тікелей пікір алмасу'],
+      online: ['Сол тренерлермен тікелей сабақ', 'Орнатусыз, тікелей браузер арқылы қатысу', 'Камера мен микрофон арқылы белсенді қатысу'],
+    } as Record<MassnahmeFormat, string[]>,
+    statusPlanned: 'Рұқсат дайындалуда',
+    coursesNoteApproved: 'Бұл курстардың рұқсаты бар. Қатысуыңызды Bildungsgutschein арқылы қаржыландыруға болады. Шешімді Agentur für Arbeit қабылдайды.',
+    measureNumber: 'Рұқсат нөмірі',
+    place: 'Өтетін жері',
+    degree: 'Біліктілік',
+    fundingNote: 'Bildungsgutschein арқылы қаржыландыруға болады.',
+
+    knowEyebrow: 'Біздің тәжірибе',
+    knowLead: '50 жылдан астам білім',
+    knowRest: 'ірі IT жобаларынан',
+    knowText:
+      'Тренерлер тобы WAMOCON GmbH компаниясының IT тестілеу жобаларынан жинақталған 50 жылдан астам тәжірибені біріктіреді, оның ішінде Deutsche Telekom, Deutsche Bank, Intel, EnBW және Daimler үшін. Бұл білім әр семинар күнінде бар. Тестілеудің оқулықта емес, нақты жобада қалай жүретінін үйренесіз.',
+    kpiLabel: 'Көрсеткіштер',
+    kpis: [
+      [50, '+', 'жыл жинақталған тәжірибе'],
+      [50, '+', 'жүзеге асырылған IT жоба'],
+      [5500, '+', 'жоба күні'],
+      [100, '+', 'WAMOCON GmbH клиенті әлем бойынша'],
+      [450, '', 'адамға дейінгі жоба командаларын басқару'],
+      [957000, '', 'әлемдегі ISTQB® Certified Tester (2024)'],
+    ],
+    knowTiles: [
+      ['Ірі жобалардан алынған тәжірибе', 'Оқулық мысалдарының орнына мобильді байланыс, қаржы, энергетика және автомобиль саласындағы тестілеу жобаларынан нақты жағдайлар.'],
+      ['ISTQB® CTFL 4.0 емтиханына дайындық', 'Ағымдағы оқу бағдарламасының емтиханға қажет барлық мазмұны. Көптеген компания бұл сертификатты жұмыс хабарландыруларында атайды.'],
+      ['Тест жобалау, тестілеуді басқару, құралдар', 'Тест-кейстерді жобалауды, тестілеуді жоспарлап басқаруды және тиісті құралдарды қолдануды үйренесіз.'],
+      ['Үш рет қайталап оқу', 'Бүкіл материалды үш рет, әр жолы жаңа тәжірибелік тапсырмалармен. Әр күн алдыңғы күнге шолудан басталады.'],
+      ['DiTeLe платформасында күнделікті жаттығу', 'Оқу платформамызда әр сабаққа сай 300-ден астам сұрақ және 45-тен астам интерактивті жаттығу.'],
+      ['Толық күндік тікелей сабақ', 'Әр семинар күні тәжірибелі тренерлермен тікелей, аудиторияда немесе онлайн. Сабақтан кейін тренерлер барлық сұраққа жауап бергенше қалады.'],
     ],
 
-    trustLabel: 'Рұқсат және көрсеткіштер',
-    trustAzav: ['AZAV', `Рұқсаты бар білім беру ұйымы, ${bt.fachbereich.nummer}-бағыт: кәсіптік біліктілікті арттыру`],
-    trustIstqb: ['ISTQB®', 'неміс тіліндегі CTFL 4.0 және Agile Tester 1.0 бойынша Accredited Training Provider'],
-
-    meaningLead: 'Бұл рұқсат',
-    meaningRest: 'сіз үшін нені білдіреді',
-    meaningIntro:
-      'Agentur für Arbeit оқуды қаржыландыруы үшін AZAV бойынша екі рұқсат қажет. Екеуін де тәуелсіз әрі аккредиттелген сараптама органы, яғни fachkundige Stelle береді.',
-    meaningFor: 'Бұл сіз үшін нені білдіреді',
-    providerTitle: 'Ұйымға берілетін рұқсат',
-    providerStatus: 'Берілді',
-    providerText:
-      'Мұнда ұйым толық тексеріледі. Ол қабілетті әрі сенімді ме? Қызметкерлері білікті ме? Сапаны қамтамасыз ету жүйесі мен әділ шарттар бар ма? GZQ GmbH WAMOCON Academy GmbH компаниясын тексеріп, рұқсат берді.',
-    providerMeaning:
-      'Сіз заң талаптарына сай, тексерістен өткен ұйымда оқисыз. Қаржыландырудың бірінші шарты орындалды.',
-    measureTitle: 'Курсқа берілетін рұқсат',
-    measureStatusPlanned: 'Дайындалуда',
-    measureStatusApproved: 'Берілді',
-    measureText:
-      'Сонымен қатар әр курс жеке тексеріледі. Мазмұны, әдістері мен оқуды ұйымдастыру, жабдықталуы, сондай-ақ құны мен ұзақтығының орындылығы қаралады.',
-    measureMeaningPlanned:
-      '45 күндік семинарымызға бұл рұқсат дайындалуда, құжаттар негізінен дайын. Семинар одан кейін ғана басталады. Сондықтан Bildungsgutschein ваучерін бізде алғашқы күннен пайдалана аласыз.',
-    measureMeaningApproved:
-      'Төменде көрсетілген курстардың рұқсаты бар. Сондықтан қатысуыңызды Bildungsgutschein арқылы қаржыландыруға болады.',
-    meaningRule:
-      'Қысқаша айтқанда: қаржыландыру тек ұйымның да, курстың да рұқсаты болғанда мүмкін. Қаржыландыру туралы шешімді Agentur für Arbeit, яғни Германияның жұмыспен қамту агенттігінің жергілікті бөлімі қабылдайды.',
+    fundEyebrow: 'Қаржыландыру',
+    fundLead: 'Bildungsgutschein арқылы',
+    fundRest: 'тегін қатысыңыз*',
+    fundText: 'Agentur für Arbeit, яғни Германияның жұмыспен қамту агенттігінің жергілікті бөлімі, оқуыңызды Bildungsgutschein арқылы төлей алады. Ол үшін AZAV бойынша екі рұқсат қажет. Біріншісі бізде бар.',
+    fundTiles: [
+      ['done', 'Берілді', 'Білім беру ұйымына рұқсат', `${bt.fachkundigeStelle.name} тексеріп, рұқсат берді.`],
+      ['open', 'Дайындалуда', '45 күндік семинар', 'Курсқа рұқсат дайындалуда, құжаттар негізінен дайын.'],
+    ],
+    fundTilesApproved: [
+      ['done', 'Берілді', 'Білім беру ұйымына рұқсат', `${bt.fachkundigeStelle.name} тексеріп, рұқсат берді.`],
+      ['done', 'Берілді', 'Курсқа рұқсат', 'Біздің оқу бағдарламамыз Bildungsgutschein үшін рұқсат алған.'],
+    ],
+    fundNote:
+      '* Bildungsgutschein мақұлданса, курс ақысын Agentur für Arbeit өтейді. Жол шығыны, балаларды күту, басқа жерде тұру мен тамақтану да өтелуі мүмкін. Шешімді Agentur für Arbeit қабылдайды.',
 
     stepsLead: 'Қаржыландыруға апарар жол',
     stepsRest: '4 қадамда',
     steps: [
-      ['Бізбен әңгіме', 'Сізбен танысып, мақсаттарыңызды талқылаймыз. 45 күндік семинар сізге сай ма, соны бірге анықтаймыз.'],
-      ['Agentur für Arbeit-те кеңес', 'Оқу басталмай тұрып Agentur für Arbeit сізге кеңес береді. Ол сіз үшін қаржыландыру мүмкін бе, соны тексереді.'],
-      ['Bildungsgutschein', 'Шарттар орындалса, сіз Bildungsgutschein аласыз. Ол мерзіммен, өңірмен және белгілі бір оқу мақсатымен шектелуі мүмкін.'],
-      ['WAMOCON Academy-де бастау', 'Рұқсаты бар семинарға тіркелесіз. Біз ваучеріңізді курс басталғанға дейін Agentur für Arbeit-ке тапсырамыз. Содан кейін оқу басталады.'],
+      ['Бізбен әңгіме', 'Сізбен танысып, семинар сізге сай ма, соны бірге анықтаймыз.'],
+      ['Agentur für Arbeit-те кеңес', 'Agentur für Arbeit оқу алдында кеңес беріп, қаржыландыруды тексереді.'],
+      ['Bildungsgutschein', 'Шарттар орындалса, Bildungsgutschein аласыз.'],
+      ['WAMOCON Academy-де бастау', 'Ваучерді курс басталғанға дейін тапсырамыз. Содан кейін оқу басталады.'],
+    ],
+
+    trainersEyebrow: 'Тренерлеріңіз',
+    trainersLead: 'Практиктерден',
+    trainersRest: 'үйреніңіз',
+    trainersText: 'Бізде тестілеу жобаларын өздері басқаратын мамандар сабақ береді. Олар жұмыста не маңызды екенін біледі.',
+    trainers: [
+      {
+        key: 'waleri',
+        name: 'Dipl.-Ing. Waleri Moretz',
+        role: 'Атқарушы директор, тестілеу менеджері және ISTQB® тренері',
+        facts: ['Тестілеу саласында 17 жылдық тәжірибе', '450 адамға дейінгі командалардың жоба жетекшісі', 'Agile және классикалық тестілеу әдістері', 'ISTQB® сертификаты бар және ISTQB® тренері'],
+        alt: 'Dipl.-Ing. Waleri Moretz портреті',
+      },
+      {
+        key: 'daniel',
+        name: 'Daniel Moretz',
+        role: 'Тестілеу менеджері, автоматтандыру маманы және ISTQB® тренері',
+        facts: ['Application Lifecycle Management саласында 7 жылдан астам тәжірибе', 'Тестілеуді автоматтандыру, жүктеме және өнімділік тесттері', 'Интеграциялық, жүйелік, қабылдау және регрессиялық тесттер', 'ISTQB® сертификаты бар, семинар материалдарының бірлескен авторы'],
+        alt: 'Daniel Moretz портреті',
+      },
     ],
 
     supportLead: 'Сізді қалай',
     supportRest: 'семинар кезінде және одан кейін қолдаймыз',
     supportIntro: 'Бізде сіз жалғыз қалмайсыз. Қолдауымыз белгіленген әрі құжатталған тәртіппен жүреді.',
     support: [
-      ['Жеке кеңес', 'Басталар алдында да, бүкіл семинар барысында да сізге жеке кеңес береміз.'],
+      ['Жеке кеңес', 'Басталар алдында да, бүкіл семинар барысында да біз сізге байланыс тұлғасы боламыз.'],
       ['Өтініш беруге көмек', 'Тестілеу саласындағы алғашқы жұмысыңызға сенімді өтініш дайындауға көмектесеміз.'],
-      ['Сұхбатқа дайындық', 'Өзіңізді сенімді көрсету үшін сізді жұмыс сұхбатына арнайы дайындаймыз.'],
-      ['Қосымша сабақ пен материал', 'Бір тақырыпқа көбірек уақыт керек болса, жеке қосымша сабақ пен қосымша оқу материалын аласыз.'],
-      ['Жаттығулар, тесттер, емтихан имитациясы', 'Тұрақты жаттығулар мен білім тесттері деңгейіңізді көрсетеді. Емтихан имитациясы нақты емтихан күніне дайындайды. Аралық әңгімелерді жазбаша тіркейміз.'],
-      ['Семинардан кейінгі сауалнама', 'Курс аяқталғанда, сондай-ақ үш және алты айдан кейін сауалнама жүргізу көзделген. Кәсіби жолыңыз қалай жалғасып жатқанын білгіміз келеді.'],
+      ['Жаттығулар мен білім тесттері', 'Тұрақты жаттығулар мен тесттер деңгейіңізді кез келген уақытта көрсетеді.'],
+      ['Емтиханға дайындық', 'Емтихан күні не күтетініңізді білу үшін ISTQB® емтиханына мақсатты дайындық.'],
+      ['Кері байланыс әңгімелері', 'Құжатталған аралық әңгімелерде жетістігіңізді және келесі қадамдарды талқылаймыз.'],
+      ['Біз сіз туралы ойлаймыз', 'Семинардан кейін де қасыңыздамыз. Сертификат алған соң WAMOCON қауымдастығына қосылып, басқа түлектермен пікір алмаса аласыз. Курс аяқталғанда, сондай-ақ үш және алты айдан кейін хабарласып, жұмысыңыз қалай екенін сұраймыз.'],
     ],
 
-    coursesLeadPlanned: '45 күндік семинарымыз',
-    coursesLeadApproved: 'Рұқсаты бар оқу',
-    coursesRest: 'аудиторияда немесе онлайн',
-    coursesNotePlanned:
-      'Аудиторияда немесе онлайн қатысуды өзіңіз таңдайсыз. Қатысуыңызды Bildungsgutschein арқылы қаржыландыру үшін семинар курсқа рұқсат берілгеннен кейін басталады. Қазір алдын ала тіркеліңіз.',
-    coursesNoteApproved:
-      'Бұл курстардың рұқсаты бар. Қатысуыңызды Bildungsgutschein арқылы қаржыландыруға болады. Шешімді Agentur für Arbeit қабылдайды.',
-    variants: 'Екі нұсқа, бір біліктілік',
-    format: { praesenz: 'Аудиторияда', online: 'Онлайн' } as Record<MassnahmeFormat, string>,
-    statusPlanned: 'Рұқсат дайындалуда',
-    planNote: 'Курсқа рұқсат берілген соң басталады',
-    measureNumber: 'Рұқсат нөмірі',
-    duration: 'Ұзақтығы',
-    place: 'Өтетін жері',
-    degree: 'Біліктілік',
-    fundingNote: 'Bildungsgutschein арқылы қаржыландыруға болады.',
+    testiEyebrow: 'Пікірлер',
+    testiLead: 'Тыңдаушыларымыз',
+    testiRest: 'не дейді',
+    testiText: 'WAMOCON Academy-дің бұрынғы курстарының тыңдаушылары IT саласына жолы туралы айтады.',
+    testiParticipant: 'WAMOCON Academy тыңдаушысы',
+    testiCta: 'Барлық пікірді қарау',
 
     whyLead: 'Неге',
     whyRest: 'WAMOCON Academy',
-    why: [
-      ['Нақты жобалардағы тәжірибе', 'WAMOCON Academy GmbH IT тестілеуді басқару компаниясы WAMOCON GmbH-пен бірге жұмыс істейді. Сіз сол компания корпоративтік жобаларда қолданатын әдістерді үйренесіз.'],
-      ['Тәжірибелі тренерлер', 'Тренерлеріміз тәжірибелі практиктер. Олар бірлесіп IT тестілеу жобаларынан жинақталған 50 жылдан астам тәжірибе ұсынады.'],
-      ['ISTQB® аккредиттеуі', 'WAMOCON Academy GmbH компаниясы ISTQB® тізімінде неміс тіліндегі CTFL 4.0 және Agile Tester 1.0 оқу материалдары бойынша аккредиттелген оқыту провайдері ретінде тіркелген.'],
-      ['Тәлімгерлік', 'Тренерлеріміз білім берумен шектелмейді. Олар кері байланыс беріп, бүкіл оқу барысында сізге тәлімгер болады.'],
+    whyText: 'Академияның артында IT тестілеуді басқару компаниясы WAMOCON GmbH тұр. Бұл салаларды өз жобаларымыздан білеміз.',
+    industriesLabel: 'Жобаларымыздағы салалар',
+    industries: ['Мобильді байланыс', 'Қаржы саласы', 'Энергетика', 'Автомобиль өнеркәсібі', 'Құрылыс'],
+    clientsLabel: 'Жобалар, оның ішінде',
+    whyFacts: [
+      ['ISTQB®', 'Неміс тіліндегі CTFL 4.0 және Agile Tester 1.0 материалдары бойынша аккредиттелген оқыту провайдері'],
+      ['AZAV', `${bt.fachkundigeStelle.name} тексерген, рұқсаты бар білім беру ұйымы`],
+      ['DiTeLe', '300-ден астам сұрағы бар өз оқу платформамыз'],
+      ['1:1', 'Жобаларды өздері басқаратын тренерлердің тәлімгерлігі'],
     ],
 
-    proofLead: 'Рұқсатымызды',
-    proofRest: 'растайтын мәліметтер',
+    proofEyebrow: 'Сапа белгісі',
+    proofLead: 'Тексерілді.',
+    proofRest: 'Рұқсат берілді.',
+    proofSeal: ['AZAV', 'Рұқсат алынды', bt.fachkundigeStelle.name],
+    proofText: `WAMOCON Academy GmbH AZAV бойынша ұйымға берілетін рұқсатты алды. Тексеруді ${bt.fachkundigeStelle.ort} қаласындағы аккредиттелген сараптама органы ${bt.fachkundigeStelle.name} жүргізді.`,
     proofRows: {
       body: 'Сараптама органы',
       type: 'Рұқсат түрі',
       area: 'Рұқсат берілген бағыт',
-      audit: 'Аудит',
       number: 'Сертификат нөмірі',
       validity: 'Жарамдылық мерзімі',
       measures: 'Рұқсаты бар курстар',
@@ -532,10 +688,10 @@ const copy = {
     groupsLead: 'Семинар',
     groupsRest: 'кімге арналған',
     groups: [
-      ['Жұмыс іздеушілер', 'Жұмыссыз жүрсіз бе және жаңа бастама іздейсіз бе? Оқу жұмысқа қайта оралуыңызға қажет болса, ол қаржыландырылуы мүмкін. Мұны Agentur für Arbeit тексереді.'],
-      ['Жұмыс істейтіндер', 'Қазір жұмыс істеп жүрсеңіз де қаржыландыру мүмкін, мысалы жұмыссыз қалу қаупі болса. Бұл сізге қатысты ма, оны Agentur für Arbeit анықтайды.'],
-      ['Компаниялар', 'Сапа немесе тестілеу командаңызды оқытқыңыз келе ме? Командалық тренинг ұсынып, мазмұны мен күндерін жобаларыңызға бейімдейміз.'],
+      ['Түлектер', 'Оқуыңызды бітіріп, IT саласына кіргіңіз келе ме? ISTQB® сертификаты мен нақты жоба тәжірибесі арқылы көптеген жұмыс беруші хабарландыруында атайтын біліктілікке ие боласыз.'],
+      ['Басқа саладан ауысушылар', 'Басқа мамандықтан IT саласына ауысқыңыз келе ме? Алдын ала білім қажет емес. Негіздерден бастап, емтиханға дейін қолдаймыз.'],
     ],
+    groupsNote: 'Оқу, мысалы, жұмыссыз болсаңыз немесе жұмыссыз қалу қаупі болса, қаржыландырылуы мүмкін. Мұны Agentur für Arbeit тексереді.',
 
     faqHeading: 'Қаржыландыру мен рұқсат туралы жиі қойылатын сұрақтар',
     faqIntro: 'Bildungsgutschein және 45 күндік семинар туралы бізге ең жиі қойылатын сұрақтардың жауаптары.',
@@ -548,11 +704,13 @@ const copy = {
 
 const c = copy[lang];
 const cta = approved ? c.ctaApproved : c.ctaPlanned;
+const formats = [...new Set(bt.massnahmenGeplant.map((m) => m.format))];
+const seals = bt.siegel.filter((s) => s.datei.trim() !== '' && s.breite !== null && s.hoehe !== null);
+const numberFormat = new Intl.NumberFormat(intlLocale);
 
 // Calendar. Until a start date is entered, the configured months render
 // greyed out under a "date coming soon" label; once it is set, only that
 // month is shown with the start day highlighted.
-const ns = bt.naechsterStart;
 const startSet = ns.datum.trim() !== '';
 const calendarMonths = (startSet ? [ns.datum.slice(0, 7)] : ns.kalenderMonate).map((ym) => {
   const [year, month] = ym.split('-').map(Number);
@@ -572,15 +730,12 @@ const calendarMonths = (startSet ? [ns.datum.slice(0, 7)] : ns.kalenderMonate).m
     startDay: startSet && ns.datum.startsWith(ym) ? Number(ns.datum.slice(8, 10)) : null,
   };
 });
-const stats = home.hero.stats.map((stat) => [stat.value, stat[lang]] as const);
-const trust = [c.trustAzav, c.trustIstqb, ...stats];
 
-// Planned courses share one name and differ by format, so they render as one
-// training with two variants. Approved measures keep their own entries.
-const plannedGroups = [...new Set(bt.massnahmenGeplant.map((m) => m.name))].map((name) => ({
-  name,
-  variants: bt.massnahmenGeplant.filter((m) => m.name === name),
-}));
+// Industry network: one centre node and the industries on an ellipse.
+const netNodes = c.industries.map((label, i, all) => {
+  const angle = (-90 + (360 / all.length) * i) * (Math.PI / 180);
+  return { label, x: Math.round(320 + Math.cos(angle) * 220), y: Math.round(215 + Math.sin(angle) * 150) };
+});
 
 const validity =
   bt.gueltigVon && bt.gueltigBis ? c.validityRange(formatDate(bt.gueltigVon), formatDate(bt.gueltigBis)) : '';
@@ -590,7 +745,6 @@ const typeValue = [`${bt.zulassungsart} (${bt.paragraf})`, bt.erstzulassung ? c.
 const proofRows: Array<[string, string]> = [
   [c.proofRows.type, typeValue],
   [c.proofRows.area, c.areaValue],
-  [c.proofRows.audit, auditDates],
   [c.proofRows.number, bt.zertifikatsnummer],
   [c.proofRows.validity, validity],
   [c.proofRows.measures, approved ? c.measuresCount(bt.massnahmen.length) : c.measuresNone],
@@ -604,7 +758,7 @@ const certificateHasSize = bt.zertifikatBreite !== null && bt.zertifikatHoehe !=
 // its date, following the pattern of the home-page FAQ (src/data/faq.ts).
 // ---------------------------------------------------------------------------
 const approvedNames = bt.massnahmen.map((m) => `${m.name} (${m.massnahmenummer})`).join(', ');
-const plannedName = plannedGroups[0]?.name ?? '';
+const plannedName = bt.massnahmenGeplant[0]?.name ?? '';
 const faq = pick(lang, {
   de: [
     {
@@ -624,9 +778,9 @@ const faq = pick(lang, {
         : `Bald (${c.stand}). Die WAMOCON Academy GmbH ist bereits als Bildungsträger nach AZAV zugelassen. Für das 45-Tage-Seminar ${plannedName} ist die Maßnahmenzulassung in Vorbereitung, die Unterlagen sind weitgehend fertig. Das Seminar startet erst, wenn diese Zulassung vorliegt. Ab dann kannst du deinen Bildungsgutschein bei uns einlösen. Für ${ns.jahr} ist nur noch ein Start geplant. Lass dich deshalb am besten jetzt beraten und vormerken.`,
     },
     {
-      question: 'Welche Kosten können übernommen werden?',
+      question: 'Ist das Seminar mit Bildungsgutschein kostenfrei?',
       // Quelle: § 83 Abs. 1 SGB III; arbeitsagentur.de.
-      answer: `§ 83 SGB III nennt vier Arten von Kosten, die bei einer geförderten Weiterbildung übernommen werden können (${c.stand}): Lehrgangskosten und Kosten für die Eignungsfeststellung, Fahrkosten, Kosten für auswärtige Unterbringung und Verpflegung sowie Kosten für die Betreuung von Kindern. Welche davon in deinem Fall übernommen werden, entscheidet die Agentur für Arbeit. Sprich das im Beratungsgespräch an und lass dir die Förderung vor deiner Anmeldung schriftlich bestätigen.`,
+      answer: `Ja, wenn die Agentur für Arbeit deinen Bildungsgutschein bewilligt (${c.stand}). Dann übernimmt sie die Lehrgangskosten des 45-Tage-Seminars, sobald die Maßnahmenzulassung vorliegt. § 83 SGB III nennt außerdem Fahrkosten, Kosten für auswärtige Unterbringung und Verpflegung sowie Kosten für die Betreuung von Kindern. Welche Kosten in deinem Fall übernommen werden, entscheidet die Agentur für Arbeit. Sprich das im Beratungsgespräch an und lass dir die Förderung vor deiner Anmeldung schriftlich bestätigen.`,
     },
     {
       question: 'Muss ich zuerst zur Agentur für Arbeit?',
@@ -634,19 +788,23 @@ const faq = pick(lang, {
       answer: `Ja (${c.stand}). Nach § 81 SGB III muss dich die Agentur für Arbeit vor Beginn der Weiterbildung beraten haben. Erst danach kann sie einen Bildungsgutschein ausstellen. Unser Tipp: Lass dich vorher von der WAMOCON Academy beraten. Dann weißt du, ob das 45-Tage-Seminar zu deinen Zielen passt, und gehst gut vorbereitet in das Gespräch bei der Agentur für Arbeit.`,
     },
     {
+      question: 'Brauche ich Vorkenntnisse für das Seminar?',
+      answer: `Nein (${c.stand}). Das 45-Tage-Seminar der WAMOCON Academy richtet sich an Absolventen und Quereinsteiger ohne IT-Vorkenntnisse. Wir beginnen bei den Grundlagen des Softwaretestens und gehen den gesamten Stoff des ISTQB® Certified Tester Foundation Level in drei Durchgängen durch. Jeden Tag übst du das Gelernte in der Lernplattform DiTeLe. Ob das Seminar zu deinen Zielen passt, klären wir gern in einem Beratungsgespräch.`,
+    },
+    {
       question: 'Gibt es den Kurs auch online?',
       answer: approved
         ? `Ja (${c.stand}). Bei jedem zugelassenen Kurs auf dieser Seite siehst du, ob er in Präsenz oder online stattfindet. Das 45-Tage-Seminar ${plannedName} bieten wir in beiden Varianten an. Welche besser zu dir passt, klären wir gern im Beratungsgespräch.`
-        : `Ja (${c.stand}). Das 45-Tage-Seminar ${plannedName} gibt es in Präsenz und online. Für beide Varianten ist die Maßnahmenzulassung in Vorbereitung. Vor Ort sind mindestens ${ns.plaetzeVorOrt} Plätze garantiert. Online nimmst du bequem über deinen Browser teil. Welche Variante besser zu dir passt, klären wir gern im Beratungsgespräch.`,
+        : `Ja (${c.stand}). Das 45-Tage-Seminar ${plannedName} gibt es in Präsenz und live online, mit denselben Trainern und Inhalten. Für beide Varianten ist die Maßnahmenzulassung in Vorbereitung. Vor Ort sind mindestens ${ns.plaetzeVorOrt} Plätze garantiert. Online nimmst du direkt im Browser teil, ohne Installation. Welche Variante besser zu dir passt, klären wir gern im Beratungsgespräch.`,
     },
     {
       question: 'Was passiert nach der Prüfung?',
-      answer: `Die WAMOCON Academy begleitet dich auch auf dem Weg in den Job (${c.stand}). Wir unterstützen dich bei Bewerbungen und bereiten dich auf Vorstellungsgespräche vor. Nach Kursende sowie nach drei und sechs Monaten ist eine Nachbefragung zu deinem beruflichen Weg vorgesehen. Eine Stelle können wir dir nicht versprechen. Beim Einstieg unterstützen wir dich aber.`,
+      answer: `Die WAMOCON Academy lässt dich nach der Prüfung nicht allein (${c.stand}). Wir unterstützen dich bei deinen Bewerbungen. Mit deinem Zertifikat wirst du Teil der WAMOCON Community und kannst dich mit anderen Absolventen austauschen. Nach Kursende sowie nach drei und sechs Monaten melden wir uns und fragen, wie es beruflich für dich weitergeht. Eine Stelle können wir dir nicht versprechen. Beim Einstieg unterstützen wir dich aber.`,
     },
     {
       question: 'Wer hat die WAMOCON Academy geprüft?',
       // Quelle: § 176 und § 178 SGB III.
-      answer: `Geprüft hat uns die ${bt.fachkundigeStelle.name} aus ${bt.fachkundigeStelle.ort} (${c.stand}). Sie ist eine fachkundige Stelle, also eine akkreditierte Prüfstelle, die Bildungsträger und Kurse für die Arbeitsförderung zulässt. Die Audits fanden am ${auditDates} statt. Die WAMOCON Academy GmbH erhielt daraufhin ihre Erstzulassung als Träger nach ${bt.paragraf}. Zugelassen ist der Fachbereich ${bt.fachbereich.nummer}, ${bt.fachbereich.bezeichnung}.`,
+      answer: `Geprüft hat uns die ${bt.fachkundigeStelle.name} aus ${bt.fachkundigeStelle.ort} (${c.stand}). Sie ist eine fachkundige Stelle, also eine akkreditierte Prüfstelle, die Bildungsträger und Kurse für die Arbeitsförderung zulässt. Die Prüfung fand im ${reviewMonth} statt. Daraufhin hat die WAMOCON Academy GmbH ihre Erstzulassung als Träger nach ${bt.paragraf} erhalten. Zugelassen ist der Fachbereich ${bt.fachbereich.nummer}, ${bt.fachbereich.bezeichnung}.`,
     },
     {
       question: 'Wie kann ich mich beschweren?',
@@ -669,26 +827,30 @@ const faq = pick(lang, {
         : `Soon (${c.stand}). WAMOCON Academy GmbH is already approved as an education provider under AZAV. Course approval for the 45-day seminar ${plannedName} is in preparation and the documents are largely complete. The seminar only starts once this approval is granted. From then on you can redeem your Bildungsgutschein with us. Only one more start is planned for ${ns.jahr}, so it is best to get advice and pre-register now.`,
     },
     {
-      question: 'Which costs can be covered?',
-      answer: `§ 83 SGB III lists four types of costs that can be covered for funded training (${c.stand}): course fees and the cost of aptitude assessment, travel costs, accommodation and meals away from home, and childcare. Which of these are covered in your case is decided by the Agentur für Arbeit. Raise it in your consultation and get the funding confirmed in writing before you register.`,
+      question: 'Is the seminar free with a Bildungsgutschein?',
+      answer: `Yes, if the Agentur für Arbeit approves your Bildungsgutschein (${c.stand}). It then covers the course fees of the 45-day seminar once the course approval is in place. § 83 SGB III also lists travel costs, accommodation and meals away from home, and childcare. Which costs are covered in your case is decided by the Agentur für Arbeit. Raise it in your consultation and get the funding confirmed in writing before you register.`,
     },
     {
       question: 'Do I have to go to the Agentur für Arbeit first?',
       answer: `Yes (${c.stand}). Under § 81 SGB III, the Agentur für Arbeit must have advised you before the training begins. Only then can it issue a Bildungsgutschein. Our tip: talk to WAMOCON Academy first. You will then know whether the 45-day seminar fits your goals and go into the consultation well prepared.`,
     },
     {
+      question: 'Do I need prior knowledge for the seminar?',
+      answer: `No (${c.stand}). The 45-day seminar at WAMOCON Academy is designed for graduates and career changers without IT experience. We start with the fundamentals of software testing and work through the whole ISTQB® Certified Tester Foundation Level syllabus in three passes. Every day you practise what you have learned in the DiTeLe learning platform. We are happy to clarify in a consultation whether the seminar fits your goals.`,
+    },
+    {
       question: 'Is the course also available online?',
       answer: approved
         ? `Yes (${c.stand}). Each approved course on this page shows whether it runs on site or online. We offer the 45-day seminar ${plannedName} in both formats. We are happy to work out which one suits you in a consultation.`
-        : `Yes (${c.stand}). The 45-day seminar ${plannedName} runs on site and online. Course approval is in preparation for both formats. At least ${ns.plaetzeVorOrt} on-site places are guaranteed. Online you simply join through your browser. We are happy to work out which format suits you in a consultation.`,
+        : `Yes (${c.stand}). The 45-day seminar ${plannedName} runs on site and live online, with the same trainers and content. Course approval is in preparation for both formats. At least ${ns.plaetzeVorOrt} on-site places are guaranteed. Online you join straight from your browser, without installing anything. We are happy to work out which format suits you in a consultation.`,
     },
     {
       question: 'What happens after the exam?',
-      answer: `WAMOCON Academy supports you on your way into work as well (${c.stand}). We help you with applications and prepare you for job interviews. A follow-up survey on your career path is planned at the end of the course and after three and six months. We cannot promise you a job, but we do support you in getting started.`,
+      answer: `WAMOCON Academy does not leave you on your own after the exam (${c.stand}). We support you with your applications. With your certificate you join the WAMOCON community and can connect with other graduates. At the end of the course and after three and six months we get in touch to ask how your career is going. We cannot promise you a job, but we do support you in getting started.`,
     },
     {
       question: 'Who reviewed WAMOCON Academy?',
-      answer: `We were reviewed by ${bt.fachkundigeStelle.name} from ${bt.fachkundigeStelle.ort} (${c.stand}). It is a fachkundige Stelle, an accredited certification body that approves education providers and courses for employment promotion in Germany. The audits took place on ${auditDates}. WAMOCON Academy GmbH then received its initial approval as a provider under ${bt.paragraf}. The approved field is field ${bt.fachbereich.nummer}, vocational further training.`,
+      answer: `We were reviewed by ${bt.fachkundigeStelle.name} from ${bt.fachkundigeStelle.ort} (${c.stand}). It is a fachkundige Stelle, an accredited certification body that approves education providers and courses for employment promotion in Germany. The review took place in ${reviewMonth}. WAMOCON Academy GmbH then received its initial approval as a provider under ${bt.paragraf}. The approved field is field ${bt.fachbereich.nummer}, vocational further training.`,
     },
     {
       question: 'How can I make a complaint?',
@@ -712,26 +874,30 @@ const faq = pick(lang, {
         : `Жақында болады (${c.stand}). WAMOCON Academy GmbH AZAV бойынша білім беру ұйымы ретінде рұқсат алып қойған. ${plannedName} 45 күндік семинарына рұқсат дайындалуда, құжаттар негізінен дайын. Семинар бұл рұқсат берілгеннен кейін ғана басталады. Сол кезден бастап ваучеріңізді бізде пайдалана аласыз. ${ns.jahr} жылы тек бір басталу жоспарланған, сондықтан қазір кеңес алып, алдын ала тіркелгеніңіз жөн.`,
     },
     {
-      question: 'Қандай шығындар өтелуі мүмкін?',
-      answer: `§ 83 SGB III қаржыландырылатын оқу кезінде өтелуі мүмкін шығындардың төрт түрін атайды (${c.stand}): курс ақысы мен жарамдылықты анықтау шығындары, жол шығындары, басқа жерде тұру мен тамақтану шығындары және балаларды күту шығындары. Сіздің жағдайыңызда олардың қайсысы өтелетінін Agentur für Arbeit шешеді. Мұны кеңес кезінде сұраңыз және тіркелмес бұрын қаржыландыруды жазбаша растатып алыңыз.`,
+      question: 'Bildungsgutschein арқылы семинар тегін бе?',
+      answer: `Иә, егер Agentur für Arbeit ваучеріңізді мақұлдаса (${c.stand}). Курсқа рұқсат берілген соң ол 45 күндік семинардың курс ақысын өтейді. § 83 SGB III бұдан бөлек жол шығынын, басқа жерде тұру мен тамақтануды және балаларды күту шығынын атайды. Сіздің жағдайыңызда қандай шығын өтелетінін Agentur für Arbeit шешеді. Мұны кеңес кезінде сұраңыз және тіркелмес бұрын қаржыландыруды жазбаша растатып алыңыз.`,
     },
     {
       question: 'Алдымен Agentur für Arbeit-ке бару керек пе?',
       answer: `Иә (${c.stand}). § 81 SGB III бойынша Agentur für Arbeit оқу басталмай тұрып сізге кеңес берген болуы керек. Содан кейін ғана ол Bildungsgutschein бере алады. Кеңесіміз: алдымен WAMOCON Academy-ден кеңес алыңыз. Сонда 45 күндік семинар мақсаттарыңызға сай ма, соны біліп, Agentur für Arbeit-тегі әңгімеге жақсы дайындалып барасыз.`,
     },
     {
+      question: 'Семинар үшін алдын ала білім керек пе?',
+      answer: `Жоқ (${c.stand}). WAMOCON Academy-дің 45 күндік семинары IT тәжірибесі жоқ түлектер мен басқа саладан ауысушыларға арналған. Тестілеу негіздерінен бастап, ISTQB® Certified Tester Foundation Level бағдарламасын үш рет толық өтеміз. Күн сайын үйренгеніңізді DiTeLe платформасында жаттықтырасыз. Семинар мақсаттарыңызға сай ма, соны кеңес кезінде анықтаймыз.`,
+    },
+    {
       question: 'Курс онлайн форматта да бар ма?',
       answer: approved
         ? `Иә (${c.stand}). Осы беттегі әр рұқсаты бар курста оның аудиторияда немесе онлайн өтетіні көрсетілген. ${plannedName} 45 күндік семинарын екі нұсқада да ұсынамыз. Қайсысы сізге сай екенін кеңес кезінде бірге анықтаймыз.`
-        : `Иә (${c.stand}). ${plannedName} 45 күндік семинары аудиторияда да, онлайн да өтеді. Екі нұсқаға да рұқсат дайындалуда. Аудиторияда кемінде ${ns.plaetzeVorOrt} орынға кепілдік беріледі. Онлайн форматта браузер арқылы оңай қатысасыз. Қай нұсқа сізге сай екенін кеңес кезінде бірге анықтаймыз.`,
+        : `Иә (${c.stand}). ${plannedName} 45 күндік семинары аудиторияда да, тікелей онлайн да өтеді, тренерлер мен мазмұн бірдей. Екі нұсқаға да рұқсат дайындалуда. Аудиторияда кемінде ${ns.plaetzeVorOrt} орынға кепілдік беріледі. Онлайн форматта ештеңе орнатпай, тікелей браузер арқылы қатысасыз. Қай нұсқа сізге сай екенін кеңес кезінде бірге анықтаймыз.`,
     },
     {
       question: 'Емтиханнан кейін не болады?',
-      answer: `WAMOCON Academy жұмысқа апарар жолда да сізбен бірге болады (${c.stand}). Өтініш дайындауға көмектесіп, жұмыс сұхбатына дайындаймыз. Курс аяқталғанда, сондай-ақ үш және алты айдан кейін кәсіби жолыңыз туралы сауалнама жүргізу көзделген. Жұмыс орнына уәде бере алмаймыз, бірақ бастауыңызға көмектесеміз.`,
+      answer: `WAMOCON Academy емтиханнан кейін де сізді жалғыз қалдырмайды (${c.stand}). Өтініштеріңізді дайындауға көмектесеміз. Сертификат алған соң WAMOCON қауымдастығына қосылып, басқа түлектермен пікір алмаса аласыз. Курс аяқталғанда, сондай-ақ үш және алты айдан кейін хабарласып, жұмысыңыз қалай екенін сұраймыз. Жұмыс орнына уәде бере алмаймыз, бірақ бастауыңызға көмектесеміз.`,
     },
     {
       question: 'WAMOCON Academy-ді кім тексерді?',
-      answer: `Бізді ${bt.fachkundigeStelle.ort} қаласындағы ${bt.fachkundigeStelle.name} тексерді (${c.stand}). Ол fachkundige Stelle, яғни Германияда жұмыспен қамтуға жәрдемдесу үшін білім беру ұйымдары мен курстарға рұқсат беретін аккредиттелген сараптама органы. Аудиттер ${auditDates} күндері өтті. Содан кейін WAMOCON Academy GmbH ${bt.paragraf} бойынша ұйымға берілетін алғашқы рұқсатты алды. Рұқсат берілген бағыт: ${bt.fachbereich.nummer}-бағыт, кәсіптік біліктілікті арттыру.`,
+      answer: `Бізді ${bt.fachkundigeStelle.ort} қаласындағы ${bt.fachkundigeStelle.name} тексерді (${c.stand}). Ол fachkundige Stelle, яғни Германияда жұмыспен қамтуға жәрдемдесу үшін білім беру ұйымдары мен курстарға рұқсат беретін аккредиттелген сараптама органы. Тексеру ${reviewMonth} өтті. Содан кейін WAMOCON Academy GmbH ${bt.paragraf} бойынша ұйымға берілетін алғашқы рұқсатты алды. Рұқсат берілген бағыт: ${bt.fachbereich.nummer}-бағыт, кәсіптік біліктілікті арттыру.`,
     },
     {
       question: 'Шағымды қалай беруге болады?',
@@ -742,77 +908,104 @@ const faq = pick(lang, {
 ---
 
 <div class="bt-page">
-  <section class="page-hero bt-hero">
-    <div class="glow" aria-hidden="true"></div>
-    <div class="bt-hero__art page-hero__art" aria-hidden="true">
-      <img class="bt-hero__ring" src={assets.missionRing} alt="" width="1484" height="1908" />
-      <img class="bt-hero__curve" src={assets.accentCurve} alt="" width="2228" height="1724" />
+  <!-- ================================================================ HERO -->
+  <section class="bt-hero" aria-labelledby="bt-hero-title">
+    <div class="bt-hero__media" aria-hidden="true">
+      <img src={heroImage} alt="" width="1144" height="960" fetchpriority="high" />
     </div>
-    <div class="container page-hero__inner">
-      <div class="bt-hero__copy page-hero__copy" data-reveal>
-        {showMark ? (
-          <p class="bt-hero__mark">
-            <img
-              src={bt.zeichenDatei}
-              alt={c.markAlt}
-              width={bt.zeichenBreite ?? undefined}
-              height={bt.zeichenHoehe ?? undefined}
-            />
-            <span>{c.markText}</span>
-          </p>
-        ) : (
-          <p class="bt-hero__kicker">{c.markText}</p>
-        )}
-        <h1><span>{c.heroLead}</span> {c.heroRest}</h1>
-        <p>{c.heroText}</p>
+    <div class="bt-hero__overlay" aria-hidden="true"></div>
+    <div class="bt-aurora" aria-hidden="true"><span></span><span></span></div>
+    <div class="container bt-hero__inner">
+      <div class="bt-hero__copy" data-reveal>
+        <div class="bt-hero__badges">
+          <span class="bt-new">{c.newBadge}</span>
+          {showMark ? (
+            <span class="bt-hero__kicker">
+              <img src={bt.zeichenDatei} alt={c.markAlt} width={bt.zeichenBreite ?? undefined} height={bt.zeichenHoehe ?? undefined} />
+              {c.markText}
+            </span>
+          ) : (
+            <span class="bt-hero__kicker">{c.heroKicker} · {c.markText}</span>
+          )}
+        </div>
+        <h1 id="bt-hero-title"><span>{c.heroLead}</span> {c.heroRest}</h1>
+        <p class="bt-hero__lead">{c.heroText}</p>
         <div class="bt-hero__actions">
           <Button href={`#${formAnchor}`} size="lg">{cta}</Button>
-          <Button href={`#${coursesAnchor}`} size="lg" variant="outline">{c.ctaCourses}</Button>
+          <Button href={`#${seminarAnchor}`} size="lg" variant="outline">{c.ctaSeminar}</Button>
         </div>
+        <ul class="bt-hero__stats">
+          {c.heroStats.map(([value, label]) => <li><strong>{value}</strong><span>{label}</span></li>)}
+        </ul>
+        {!approved && <p class="bt-hero__note">{c.heroNote}</p>}
       </div>
     </div>
   </section>
 
-  <section class="bt-showcase" aria-labelledby="bt-showcase-title">
+  <!-- ============================================================== SEALS -->
+  <section class="bt-seals" aria-label={c.sealsLabel}>
+    <ul class="container bt-seals__list">
+      <li class="bt-seal bt-seal--text" data-reveal>
+        <strong>{c.sealAzav[0]}</strong>
+        <span>{c.sealAzav[1]}</span>
+      </li>
+      <li class="bt-seal bt-seal--text" data-reveal>
+        <strong>{c.sealIstqb[0]}</strong>
+        <span>{c.sealIstqb[1]}</span>
+      </li>
+      {seals.map((seal) => (
+        <li class="bt-seal" data-reveal>
+          {/* The visible caption names the seal, so the image itself is decorative. */}
+          <img src={seal.datei} alt="" width={seal.breite!} height={seal.hoehe!} loading="lazy" decoding="async" />
+          <span>{seal.label[lang]}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- =========================================================== SHOWCASE -->
+  <section class="bt-showcase" id={seminarAnchor} aria-labelledby="bt-showcase-title">
     <div class="container">
       <article class="bt-showcase__panel" data-reveal>
+        <div class="bt-aurora" aria-hidden="true"><span></span><span></span></div>
         <div class="bt-showcase__intro">
-          <p class="eyebrow">{c.showcaseEyebrow}</p>
-          <p class="bt-showcase__days">
-            <strong>{bt.seminar.tage}</strong>
-            <span>{c.showcaseDays}</span>
-          </p>
+          <p class="bt-showcase__eyebrow"><span class="bt-new">{c.newBadge}</span>{c.showcaseEyebrow}</p>
+          <p class="bt-showcase__days"><strong>{bt.seminar.tage}</strong> <span>{c.showcaseDays}</span></p>
           <h2 id="bt-showcase-title">{bt.seminar.titel}</h2>
           <p class="bt-showcase__sub">{c.showcaseSub}</p>
           <p class="bt-showcase__text">{c.showcaseText}</p>
-          <ul class="bt-showcase__formats">
-            {[...new Set(bt.massnahmenGeplant.map((m) => m.format))].map((format) => <li>{c.format[format]}</li>)}
-          </ul>
-          <p class:list={['bt-showcase__status', { 'bt-showcase__status--open': !approved }]}>
-            {approved ? c.showcaseStatusApproved : c.showcaseStatusPlanned}
-          </p>
+          <p class="bt-showcase__status">{approved ? c.showcaseStatusApproved : c.showcaseStatusPlanned}</p>
           <div class="bt-showcase__actions">
             <Button href={`#${formAnchor}`}>{cta}</Button>
           </div>
         </div>
-        <div class="bt-showcase__stages">
-          <h3>{c.showcaseStagesLabel}</h3>
-          <ol>
-            {bt.seminar.etappen.map(([from, to], index) => (
-              <li>
-                <span class="bt-steps__number">{String(index + 1).padStart(2, '0')}</span>
-                <div>
-                  <p>{c.stageRange(from, to)}</p>
-                  <h4>{c.showcaseStages[index]}</h4>
-                </div>
-              </li>
-            ))}
-          </ol>
+        <div class="bt-showcase__side">
+          <div class="bt-glance">
+            <h3>{c.glanceLabel}</h3>
+            <dl>
+              {c.glance.map(([term, value]) => <div><dt>{term}</dt><dd>{value}</dd></div>)}
+            </dl>
+          </div>
+          <div class="bt-stages">
+            <h3>{c.showcaseStagesLabel}</h3>
+            <ol>
+              {bt.seminar.etappen.map(([from, to], index) => (
+                <li>
+                  <span class="bt-num">{String(index + 1).padStart(2, '0')}</span>
+                  <div>
+                    <p>{c.stageRange(from, to)}</p>
+                    <h4>{c.showcaseStages[index]}</h4>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
         </div>
       </article>
     </div>
   </section>
 
+  <!-- =========================================================== CALENDAR -->
   <section class="section bt-calendar" id="termine" aria-labelledby="bt-calendar-title">
     <div class="container bt-calendar__grid">
       <div class="bt-calendar__copy" data-reveal>
@@ -825,7 +1018,7 @@ const faq = pick(lang, {
         </ul>
         <Button href={`#${formAnchor}`}>{cta}</Button>
       </div>
-      <div class:list={['bt-calendar__board', { 'is-pending': !startSet }]} data-reveal>
+      <div class:list={['bt-calendar__board', { 'is-pending': !startSet }]} data-reveal="right">
         <div class="bt-calendar__months" aria-hidden={startSet ? undefined : 'true'}>
           {calendarMonths.map((month) => (
             <table class="bt-cal">
@@ -838,7 +1031,7 @@ const faq = pick(lang, {
                   <tr>
                     {week.map((day) =>
                       day === month.startDay ? (
-                        <td class="is-start"><span class="bt-cal__label">{c.calStart}: </span>{day}</td>
+                        <td class="is-start"><span class="bt-sr">{c.calStart}: </span>{day}</td>
                       ) : (
                         <td>{day ?? ''}</td>
                       ),
@@ -854,66 +1047,115 @@ const faq = pick(lang, {
     </div>
   </section>
 
-  <section class="section bt-benefits" aria-labelledby="bt-benefits-title">
+  <!-- ============================================================ FORMATS -->
+  <section class="section bt-formats" aria-labelledby="bt-formats-title">
+    <div class="bt-aurora" aria-hidden="true"><span></span><span></span></div>
+    <div class="container">
+      <div class="bt-head bt-head--center" data-reveal>
+        <p class="eyebrow">{c.formatsEyebrow}</p>
+        <h2 id="bt-formats-title"><span>{c.formatsLead}</span> {c.formatsRest}</h2>
+        <p>{c.formatsText}</p>
+      </div>
+      <div class="bt-formats__grid">
+        {formats.map((format) => (
+          <article class="bt-format" data-reveal="zoom">
+            <div class="bt-format__inner">
+              <div class="bt-format__top">
+                <span class="bt-new">{c.newBadge}</span>
+                <span class="bt-format__tag">{c.formatTag[format]}</span>
+              </div>
+              <h3>{c.format[format]}</h3>
+              <p class="bt-format__meta">{bt.seminar.tage} {c.showcaseDays} · {bt.seminar.titel}</p>
+              <ul>{c.formatPoints[format].map((point) => <li>{point}</li>)}</ul>
+              <p class="bt-format__status">{approved ? c.fundingNote : c.statusPlanned}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+      {approved && (
+        <div class="bt-approved" data-reveal>
+          <p>{c.coursesNoteApproved}</p>
+          <div class="bt-approved__grid">
+            {bt.massnahmen.map((m) => (
+              <article class="bt-card">
+                <p class="bt-card__eyebrow">{c.format[m.format]} · {m.dauer}</p>
+                <h3>{m.name}</h3>
+                <dl class="bt-approved__facts">
+                  <div><dt>{c.measureNumber}</dt><dd>{m.massnahmenummer}</dd></div>
+                  <div><dt>{c.place}</dt><dd>{m.ort}</dd></div>
+                  <div><dt>{c.degree}</dt><dd>{m.abschluss}</dd></div>
+                </dl>
+              </article>
+            ))}
+          </div>
+        </div>
+      )}
+      <div class="bt-center" data-reveal>
+        <Button href={`#${formAnchor}`} size="lg">{cta}</Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ KNOW-HOW -->
+  <section class="section bt-know" aria-labelledby="bt-know-title">
     <div class="container">
       <div class="bt-head" data-reveal>
-        <h2 id="bt-benefits-title"><span>{c.benefitsLead}</span> {c.benefitsRest}</h2>
+        <p class="eyebrow">{c.knowEyebrow}</p>
+        <h2 id="bt-know-title"><span>{c.knowLead}</span> {c.knowRest}</h2>
+        <p>{c.knowText}</p>
       </div>
-      <div class="bt-cards bt-cards--three">
-        {c.benefits.map(([title, text], index) => (
-          <article class="bt-card" data-reveal>
-            <span class="bt-steps__number">{String(index + 1).padStart(2, '0')}</span>
+      <ul class="bt-kpis" aria-label={c.kpiLabel}>
+        {c.kpis.map(([value, suffix, label]) => (
+          <li data-reveal>
+            <strong data-count-to={value} data-count-suffix={suffix}>{numberFormat.format(value as number)}{suffix}</strong>
+            <span>{label}</span>
+          </li>
+        ))}
+      </ul>
+      <div class="bt-tiles">
+        {c.knowTiles.map(([title, text], index) => (
+          <article class="bt-tile" data-reveal>
+            <span class="bt-num">{String(index + 1).padStart(2, '0')}</span>
             <h3>{title}</h3>
             <p>{text}</p>
           </article>
         ))}
       </div>
+      <div class="bt-clients">
+        <p>{c.clientsLabel}</p>
+        <div class="bt-clients__track">
+          <ul>{clients.map((name) => <li>{name}</li>)}</ul>
+          <ul aria-hidden="true">{clients.map((name) => <li>{name}</li>)}</ul>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="bt-trust" aria-label={c.trustLabel}>
-    <ul class="container bt-trust__list">
-      {trust.map(([value, label]) => (
-        <li data-reveal>
-          <strong>{value}</strong>
-          <span>{label}</span>
-        </li>
-      ))}
-    </ul>
-  </section>
-
-  <section class="section bt-meaning" aria-labelledby="bt-meaning-title">
-    <div class="container">
-      <div class="bt-head" data-reveal>
-        <h2 id="bt-meaning-title"><span>{c.meaningLead}</span> {c.meaningRest}</h2>
-        <p>{c.meaningIntro}</p>
+  <!-- ============================================================ FUNDING -->
+  <section class="section bt-fund" aria-labelledby="bt-fund-title">
+    <div class="container bt-fund__grid">
+      <div class="bt-fund__copy" data-reveal="left">
+        <p class="eyebrow">{c.fundEyebrow}</p>
+        <h2 id="bt-fund-title"><span>{c.fundLead}</span> {c.fundRest}</h2>
+        <p>{c.fundText}</p>
       </div>
-      <div class="bt-meaning__grid">
-        <article class="bt-panel" data-reveal>
-          <p class="bt-status bt-status--done">{c.providerStatus}</p>
-          <h3>{c.providerTitle}</h3>
-          <p>{c.providerText}</p>
-          <div class="bt-panel__meaning">
-            <h4>{c.meaningFor}</h4>
-            <p>{c.providerMeaning}</p>
-          </div>
-        </article>
-        <article class:list={['bt-panel', { 'bt-panel--open': !approved }]} data-reveal>
-          <p class:list={['bt-status', approved ? 'bt-status--done' : 'bt-status--open']}>
-            {approved ? c.measureStatusApproved : c.measureStatusPlanned}
-          </p>
-          <h3>{c.measureTitle}</h3>
-          <p>{c.measureText}</p>
-          <div class="bt-panel__meaning">
-            <h4>{c.meaningFor}</h4>
-            <p>{approved ? c.measureMeaningApproved : c.measureMeaningPlanned}</p>
-          </div>
-        </article>
+      <div class="bt-fund__tiles">
+        {(approved ? c.fundTilesApproved : c.fundTiles).map(([state, status, title, text]) => (
+          <article class:list={['bt-fund__tile', { 'is-open': state === 'open' }]} data-reveal="right">
+            <span class="bt-fund__check" aria-hidden="true">{state === 'open' ? '' : '✓'}</span>
+            <div>
+              <p class="bt-fund__status">{status}</p>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </div>
+          </article>
+        ))}
       </div>
-      <p class="bt-rule" data-reveal>{c.meaningRule}</p>
+      <p class="bt-fund__note" data-reveal>{c.fundNote}</p>
     </div>
   </section>
 
+  <!-- ============================================================== STEPS -->
   <section class="section bt-steps" aria-labelledby="bt-steps-title">
     <div class="container">
       <div class="bt-head" data-reveal>
@@ -922,7 +1164,7 @@ const faq = pick(lang, {
       <ol class="bt-steps__list">
         {c.steps.map(([title, text], index) => (
           <li data-reveal>
-            <span class="bt-steps__number">{String(index + 1).padStart(2, '0')}</span>
+            <span class="bt-num">{String(index + 1).padStart(2, '0')}</span>
             <h3>{title}</h3>
             <p>{text}</p>
           </li>
@@ -931,15 +1173,41 @@ const faq = pick(lang, {
     </div>
   </section>
 
+  <!-- =========================================================== TRAINERS -->
+  <section class="section bt-trainers" aria-labelledby="bt-trainers-title">
+    <div class="container">
+      <div class="bt-head" data-reveal>
+        <p class="eyebrow">{c.trainersEyebrow}</p>
+        <h2 id="bt-trainers-title"><span>{c.trainersLead}</span> {c.trainersRest}</h2>
+        <p>{c.trainersText}</p>
+      </div>
+      <div class="bt-trainers__grid">
+        {c.trainers.map((trainer) => (
+          <article class="bt-trainer" data-reveal>
+            <figure>
+              <img src={trainerImages[trainer.key]} alt={trainer.alt} width="700" height="486" loading="lazy" decoding="async" />
+            </figure>
+            <div class="bt-trainer__body">
+              <h3>{trainer.name}</h3>
+              <p class="bt-trainer__role">{trainer.role}</p>
+              <ul>{trainer.facts.map((fact) => <li>{fact}</li>)}</ul>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ SUPPORT -->
   <section class="section bt-support" aria-labelledby="bt-support-title">
     <div class="container">
       <div class="bt-head" data-reveal>
         <h2 id="bt-support-title"><span>{c.supportLead}</span> {c.supportRest}</h2>
         <p>{c.supportIntro}</p>
       </div>
-      <div class="bt-cards bt-cards--three">
-        {c.support.map(([title, text]) => (
-          <article class="bt-card" data-reveal>
+      <div class="bt-cards">
+        {c.support.map(([title, text], index) => (
+          <article class:list={['bt-card', { 'bt-card--feature': index === c.support.length - 1 }]} data-reveal>
             <h3>{title}</h3>
             <p>{text}</p>
           </article>
@@ -948,90 +1216,83 @@ const faq = pick(lang, {
     </div>
   </section>
 
-  <section class="section bt-courses" id={coursesAnchor} aria-labelledby="bt-courses-title">
+  <!-- ======================================================= TESTIMONIALS -->
+  <section class="section bt-testi" aria-labelledby="bt-testi-title">
     <div class="container">
       <div class="bt-head" data-reveal>
-        <h2 id="bt-courses-title">
-          <span>{approved ? c.coursesLeadApproved : c.coursesLeadPlanned}</span> {c.coursesRest}
-        </h2>
-        <p class:list={['bt-notice', { 'bt-notice--open': !approved }]}>
-          {approved ? c.coursesNoteApproved : c.coursesNotePlanned}
-        </p>
+        <p class="eyebrow">{c.testiEyebrow}</p>
+        <h2 id="bt-testi-title"><span>{c.testiLead}</span> {c.testiRest}</h2>
+        <p>{c.testiText}</p>
       </div>
-
-      {approved ? (
-        <div class="bt-course-grid">
-          {bt.massnahmen.map((m) => (
-            <article class="bt-course" data-reveal>
-              <span class="bt-course__format">{c.format[m.format]}</span>
-              <span class="bt-course__badge">{m.dauer}</span>
-              <h3>{m.name}</h3>
-              <dl class="bt-course__facts">
-                <div><dt>{c.measureNumber}</dt><dd>{m.massnahmenummer}</dd></div>
-                <div><dt>{c.place}</dt><dd>{m.ort}</dd></div>
-                <div><dt>{c.degree}</dt><dd>{m.abschluss}</dd></div>
-              </dl>
-              <p class="bt-course__note">{c.fundingNote}</p>
-            </article>
-          ))}
-        </div>
-      ) : (
-        plannedGroups.map((group) => (
-          <div class="bt-course-group">
-            <p class="bt-course-group__label">{c.variants}</p>
-            <div class="bt-course-grid">
-              {group.variants.map((m) => (
-                <article class="bt-course" data-reveal>
-                  <span class="bt-course__format">{c.format[m.format]}</span>
-                  <span class="bt-course__badge">{c.statusPlanned}</span>
-                  <h3>{group.name}</h3>
-                  <p class="bt-course__meta">{bt.seminar.tage} {c.showcaseDays}, {bt.seminar.titel}</p>
-                  <p class="bt-course__note">{c.planNote}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        ))
-      )}
-
-      <div class="bt-courses__actions" data-reveal>
-        <Button href={`#${formAnchor}`}>{cta}</Button>
-      </div>
-    </div>
-  </section>
-
-  <section class="section bt-why" aria-labelledby="bt-why-title">
-    <div class="container">
-      <div class="bt-head" data-reveal>
-        <h2 id="bt-why-title"><span>{c.whyLead}</span> {c.whyRest}</h2>
-      </div>
-      <div class="bt-cards bt-cards--two">
-        {c.why.map(([title, text]) => (
-          <article class="bt-card" data-reveal>
-            <h3>{title}</h3>
-            <p>{text}</p>
+      <div class="bt-testi__grid">
+        {testimonials.map(([name, id, poster]) => (
+          <article data-reveal>
+            <VideoEmbed videoId={id} title={name} poster={poster} lang={lang} channel={c.testiParticipant} />
+            <h3>{name}</h3>
+            <p>{c.testiParticipant}</p>
           </article>
         ))}
       </div>
-    </div>
-  </section>
-
-  <section class="section surface-light bt-proof" aria-labelledby="bt-proof-title">
-    <div class:list={['container', 'bt-proof__grid', { 'bt-proof__grid--single': !hasCertificate || certificateIsPdf }]}>
       <div data-reveal>
-        <div class="bt-head">
-          <h2 id="bt-proof-title"><span>{c.proofLead}</span> {c.proofRest}</h2>
-        </div>
-        {showMark && (
-          <img
-            class="bt-proof__mark"
-            src={bt.zeichenDatei}
-            alt={c.markAlt}
-            width={bt.zeichenBreite ?? undefined}
-            height={bt.zeichenHoehe ?? undefined}
-            loading="lazy"
-          />
+        <Button href={reviewsHref} variant="outline">{c.testiCta}</Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ WHY -->
+  <section class="section bt-why" aria-labelledby="bt-why-title">
+    <div class="container bt-why__grid">
+      <div class="bt-why__copy" data-reveal="left">
+        <h2 id="bt-why-title"><span>{c.whyLead}</span> {c.whyRest}</h2>
+        <p>{c.whyText}</p>
+        <dl class="bt-why__facts">
+          {c.whyFacts.map(([value, label]) => <div><dt>{value}</dt><dd>{label}</dd></div>)}
+        </dl>
+      </div>
+      <figure class="bt-net" data-reveal="right">
+        <svg viewBox="0 0 640 430" role="img" aria-labelledby="bt-net-title">
+          <title id="bt-net-title">{c.industriesLabel}: {c.industries.join(', ')}</title>
+          {netNodes.map((node, i) => (
+            <line class="bt-net__line" x1="320" y1="215" x2={node.x} y2={node.y} style={`--i:${i}`} />
+          ))}
+          {netNodes.map((node, i) => (
+            <g class="bt-net__node" style={`--i:${i}`}>
+              <circle class="bt-net__pulse" cx={node.x} cy={node.y} r="10" />
+              <circle class="bt-net__dot" cx={node.x} cy={node.y} r="8" />
+              <text x={node.x} y={node.y + (node.y > 215 ? 36 : -22)} text-anchor="middle">{node.label}</text>
+            </g>
+          ))}
+          <circle class="bt-net__core-ring" cx="320" cy="215" r="64" />
+          <circle class="bt-net__core" cx="320" cy="215" r="54" />
+          <text class="bt-net__core-text" x="320" y="221" text-anchor="middle">WAMOCON</text>
+        </svg>
+        <figcaption>
+          <span>{c.industriesLabel}</span>
+          <ul>{c.industries.map((industry) => <li>{industry}</li>)}</ul>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============================================================== PROOF -->
+  <section class="section surface-light bt-proof" aria-labelledby="bt-proof-title">
+    <div class:list={['container', 'bt-proof__grid', { 'has-certificate': hasCertificate && !certificateIsPdf }]}>
+      <div class="bt-proof__seal-wrap" data-reveal="zoom">
+        {showMark ? (
+          <img class="bt-proof__mark" src={bt.zeichenDatei} alt={c.markAlt} width={bt.zeichenBreite ?? undefined} height={bt.zeichenHoehe ?? undefined} loading="lazy" />
+        ) : (
+          <div class="bt-proof__seal" aria-hidden="true">
+            <span>{c.proofSeal[0]}</span>
+            <strong>✓</strong>
+            <span>{c.proofSeal[1]}</span>
+            <small>{c.proofSeal[2]}</small>
+          </div>
         )}
+      </div>
+      <div data-reveal>
+        <p class="eyebrow">{c.proofEyebrow}</p>
+        <h2 id="bt-proof-title"><span>{c.proofLead}</span> {c.proofRest}</h2>
+        <p class="bt-proof__text">{c.proofText}</p>
         <dl class="bt-proof__list">
           <div>
             <dt>{c.proofRows.body}</dt>
@@ -1040,12 +1301,7 @@ const faq = pick(lang, {
               <a href={bt.fachkundigeStelle.url} target="_blank" rel="noopener noreferrer">{bt.fachkundigeStelle.urlLabel}</a>
             </dd>
           </div>
-          {proofRows.map(([label, value]) => (
-            <div>
-              <dt>{label}</dt>
-              <dd>{value}</dd>
-            </div>
-          ))}
+          {proofRows.map(([label, value]) => <div><dt>{label}</dt><dd>{value}</dd></div>)}
         </dl>
         {hasCertificate && certificateIsPdf && (
           <div class="bt-proof__actions">
@@ -1067,19 +1323,22 @@ const faq = pick(lang, {
     </div>
   </section>
 
+  <!-- ============================================================= GROUPS -->
   <section class="section bt-groups" aria-labelledby="bt-groups-title">
     <div class="container">
       <div class="bt-head" data-reveal>
         <h2 id="bt-groups-title"><span>{c.groupsLead}</span> {c.groupsRest}</h2>
       </div>
-      <div class="bt-cards bt-cards--three">
-        {c.groups.map(([title, text]) => (
-          <article class="bt-card" data-reveal>
+      <div class="bt-groups__grid">
+        {c.groups.map(([title, text], index) => (
+          <article class="bt-group" data-reveal={index === 0 ? 'left' : 'right'}>
+            <span class="bt-num">{String(index + 1).padStart(2, '0')}</span>
             <h3>{title}</h3>
             <p>{text}</p>
           </article>
         ))}
       </div>
+      <p class="bt-groups__note" data-reveal>{c.groupsNote}</p>
     </div>
   </section>
 
@@ -1103,324 +1362,31 @@ const faq = pick(lang, {
 </div>
 
 <style>
-  /* Section rhythm, surfaces, cards and type all reuse the tokens and the
-     patterns of the home page (steps, facts, compare panels), the About page
-     (advantages grid) and the course catalogue (course cards). Where a block
-     mirrors one of those, the source is named next to it. */
-  .bt-page { background: var(--color-bg); }
+  /* Tokens only. Section rhythm, card surfaces and type follow the home page,
+     the About page and the course catalogue. This page carries more motion
+     than the others on purpose (team feedback); every animation is transform
+     or opacity based and switches off under prefers-reduced-motion. */
+  .bt-page { position: relative; background: var(--color-bg); overflow: hidden; }
+  .bt-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-  /* ---- Hero ---------------------------------------------------------------
-     Geometry is owned by .page-hero in global.css; only the art and the
-     kicker are styled here (pattern: IstqbCertificationPage hero). */
-  .bt-hero__kicker,
-  .bt-hero__mark span {
-    color: var(--color-accent);
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-  }
-  .page-hero .bt-hero__kicker,
-  .page-hero .bt-hero__mark { margin-bottom: 1.25rem; font-size: var(--fs-sm); }
-  .bt-hero__mark { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm); }
-  /* The GZQ mark is embedded unchanged: height-bounded only, width follows the
-     file's own aspect ratio, no crop, no filter. */
-  /* If the GZQ usage rules set a minimum size, that size wins over this cap. */
-  .bt-hero__mark img { width: auto; height: auto; max-height: 48px; }
-  .bt-hero h1 span { color: var(--color-accent); }
-  .bt-hero__actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: 1.75rem; }
-  .bt-hero__ring,
-  .bt-hero__curve { will-change: transform; }
-  .bt-hero__ring {
-    left: 56%;
-    max-height: min(84%, 470px);
-    max-width: 58%;
-    opacity: 0.9;
-    animation: bt-ring-drift 10s ease-in-out infinite alternate;
-  }
-  .bt-hero__curve {
-    left: 38%;
-    top: 62%;
-    max-height: min(48%, 280px);
-    max-width: 46%;
-    animation: bt-curve-drift 9s ease-in-out infinite alternate;
-  }
-
-  /* ---- Showcase: the 45-day seminar ----------------------------------------
-     The page's one feature panel. Same card surface, radius and elevation as
-     every other card, lifted by the hero's own red glow and an accent border
-     so it reads as the headline offer. Stage badges reuse .bt-steps__number. */
-  .bt-showcase { padding-block: 0 var(--space-lg); }
-  .bt-showcase__panel {
-    position: relative;
-    display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-    gap: clamp(2rem, 5vw, 5rem);
-    overflow: hidden;
-    padding: clamp(28px, 4vw, 64px);
-    border: 1px solid var(--color-accent-surface);
-    border-radius: var(--radius-lg);
-    background:
-      radial-gradient(60% 70% at 0% 0%, var(--glow-top), transparent 70%),
-      var(--surface-card);
-    box-shadow: var(--shadow-card), var(--shadow-accent);
-  }
-  .bt-showcase__days { display: flex; align-items: baseline; gap: var(--space-xs); margin-top: var(--space-sm); }
-  .bt-showcase__days strong {
-    color: var(--color-accent);
-    font-size: var(--fs-display);
-    font-weight: var(--fw-bold);
-    line-height: var(--lh-display);
-    letter-spacing: var(--tracking-display);
-    font-variant-numeric: tabular-nums;
-  }
-  .bt-showcase__days span { color: var(--color-text); font-size: var(--fs-h3); font-weight: var(--fw-semibold); }
-  .bt-showcase h2 { margin-top: var(--space-xs); font-size: var(--fs-h2); }
-  .bt-showcase__sub { margin-top: var(--space-sm); color: var(--color-text); font-size: var(--fs-lead); line-height: var(--lh-snug); }
-  .bt-showcase__text { max-width: 62ch; margin-top: var(--space-sm); color: var(--color-muted); font-size: var(--fs-body); }
-  .bt-showcase__formats { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-top: var(--space-md); }
-  .bt-showcase__formats li {
-    padding: 0.35rem 0.95rem;
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius-pill);
-    color: var(--color-text);
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-  }
-  .bt-showcase__status {
-    margin-top: var(--space-sm);
-    padding-left: var(--space-sm);
-    border-left: 2px solid var(--color-accent);
-    color: var(--color-text);
-    font-size: var(--fs-sm);
-  }
-  .bt-showcase__actions { margin-top: var(--space-md); }
-  .bt-showcase__stages {
-    align-self: center;
-    padding: clamp(22px, 2.4vw, 36px);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    background: rgba(255, 255, 255, 0.035);
-  }
-  .bt-showcase__stages > h3 {
-    margin-bottom: var(--space-sm);
-    color: var(--color-accent);
-    font-size: var(--fs-2xs);
-    font-weight: var(--fw-semibold);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-  }
-  .bt-showcase__stages ol { display: grid; gap: var(--space-sm); }
-  .bt-showcase__stages li { display: flex; align-items: center; gap: var(--space-sm); }
-  .bt-showcase__stages li + li { padding-top: var(--space-sm); border-top: 1px solid var(--border-subtle); }
-  .bt-showcase__stages p { color: var(--color-muted); font-size: var(--fs-sm); }
-  .bt-showcase__stages h4 { font-size: var(--fs-h5); }
-  .bt-showcase .bt-steps__number { flex: 0 0 auto; }
-
-  /* ---- Calendar: next seminar start ----------------------------------------
-     A real month grid. While the date is open the grid is greyed out under a
-     "date coming soon" label, so the scarcity message ("one start left this
-     year") stays truthful without inventing a date. */
-  .bt-calendar { background: var(--color-bg-elevated); }
-  .bt-calendar__grid {
-    display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-    gap: clamp(2rem, 5vw, 5rem);
+  /* ---- Shared bits ---------------------------------------------------------- */
+  .bt-new {
+    display: inline-flex;
     align-items: center;
-  }
-  .bt-calendar__copy h2 { margin-top: var(--space-sm); font-size: var(--fs-h1); line-height: var(--lh-tight); }
-  .bt-calendar__copy h2 span { display: block; color: var(--color-accent); }
-  .bt-calendar__text { max-width: 56ch; margin-top: 1.2rem; color: var(--color-muted); font-size: var(--fs-lead); line-height: var(--lh-relaxed); }
-  .bt-calendar__facts { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-block: var(--space-md); }
-  .bt-calendar__facts li {
-    padding: 0.4rem 1rem;
-    border: 1px solid var(--border-strong);
+    padding: 0.3rem 0.75rem;
     border-radius: var(--radius-pill);
-    color: var(--color-text);
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-  }
-  .bt-calendar__facts li:first-child { border-color: var(--color-accent-surface); background: var(--color-accent-surface); }
-  .bt-calendar__board {
-    position: relative;
-    padding: clamp(20px, 2.4vw, 36px);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    background: var(--surface-card);
-    box-shadow: var(--shadow-card);
-  }
-  .bt-calendar__months { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: var(--space-md); }
-  .bt-cal { width: 100%; border-collapse: separate; border-spacing: 4px; text-align: center; font-variant-numeric: tabular-nums; }
-  .bt-cal caption {
-    padding: 0 4px var(--space-xs);
-    color: var(--color-text);
-    font-size: var(--fs-h5);
-    font-weight: var(--fw-semibold);
-    text-align: left;
-  }
-  .bt-cal th { padding-bottom: 4px; color: var(--color-muted); font-size: var(--fs-xs); font-weight: var(--fw-semibold); }
-  .bt-cal td {
-    height: 2.25rem;
-    border-radius: var(--radius-sm);
-    background: rgba(255, 255, 255, 0.04);
-    color: var(--color-text);
-    font-size: var(--fs-sm);
-  }
-  .bt-cal td:empty { background: transparent; }
-  .bt-cal td.is-start {
     background: var(--color-accent-surface);
-    font-weight: var(--fw-bold);
-    box-shadow: var(--shadow-accent);
-  }
-  .bt-cal__label {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-  }
-  .is-pending .bt-cal { opacity: 0.35; filter: grayscale(1); }
-  .bt-calendar__pending { position: absolute; inset: 0; display: grid; place-items: center; padding: var(--space-sm); pointer-events: none; }
-  .bt-calendar__pending span {
-    padding: 0.7rem 1.4rem;
-    border: 1px solid var(--color-accent-surface);
-    border-radius: var(--radius-pill);
-    background: var(--color-bg);
     color: var(--color-text);
-    font-size: var(--fs-body);
-    font-weight: var(--fw-semibold);
-    text-align: center;
-    box-shadow: var(--shadow-accent);
-  }
-
-  /* Benefit cards carry the step badge so the six reasons read as a list. */
-  .bt-benefits .bt-card .bt-steps__number { margin-bottom: var(--space-sm); }
-
-  /* ---- Trust bar (pattern: AcademyHome .online-course__facts) ------------- */
-  .bt-trust { padding-block: 0 var(--space-lg); }
-  .bt-trust__list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-    gap: clamp(18px, 1.6vw, 30px);
-  }
-  .bt-trust__list li {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(10px, 0.8vw, 14px);
-    padding: clamp(22px, 1.8vw, 34px);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    background: var(--surface-card);
-    box-shadow: var(--shadow-card);
-  }
-  .bt-trust__list strong {
-    color: var(--color-accent);
-    font-size: var(--fs-h3);
-    font-weight: var(--fw-bold);
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-  }
-  .bt-trust__list span { color: var(--color-muted); font-size: var(--fs-sm); line-height: var(--lh-snug); }
-
-  /* ---- Section heads (pattern: AcademyHome .steps .section-head) ---------- */
-  .bt-head { max-width: 1100px; margin-bottom: clamp(2rem, 3vw, 3rem); }
-  .bt-head h2 { margin: 0; font-size: var(--fs-h1); line-height: var(--lh-tight); }
-  .bt-head h2 span { display: block; color: var(--color-accent); }
-  .bt-head p {
-    max-width: 68ch;
-    margin-top: 1.2rem;
-    color: var(--color-muted);
-    font-size: var(--fs-lead);
-    line-height: var(--lh-relaxed);
-  }
-
-  /* ---- Meaning panels (pattern: AcademyHome .compare-panel) --------------- */
-  .bt-meaning__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(24px, 2.5vw, 40px); }
-  .bt-panel {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
-    padding: clamp(28px, 2.5vw, 44px);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    background: var(--surface-card);
-    box-shadow: var(--shadow-card);
-  }
-  /* The open half stays recessive, like the "without" comparison panel. */
-  .bt-panel--open { background: rgba(255, 255, 255, 0.035); box-shadow: none; }
-  .bt-panel h3 { font-size: var(--fs-h3); }
-  .bt-panel > p:not(.bt-status) { color: var(--color-muted); font-size: var(--fs-body); }
-  .bt-panel__meaning {
-    margin-top: auto;
-    padding-top: var(--space-sm);
-    border-top: 1px solid var(--border-subtle);
-  }
-  .bt-panel__meaning h4 {
-    margin-bottom: var(--space-xs);
-    color: var(--color-accent);
     font-size: var(--fs-2xs);
-    font-weight: var(--fw-semibold);
+    font-weight: var(--fw-bold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
+    box-shadow: var(--shadow-accent);
+    animation: bt-pulse 2.6s var(--ease-out) infinite;
   }
-  .bt-panel__meaning p { color: var(--color-text); font-size: var(--fs-body); }
-
-  .bt-status {
-    align-self: flex-start;
-    padding: 0.35rem 0.85rem;
-    border-radius: var(--radius-pill);
-    font-size: var(--fs-xs);
-    font-weight: var(--fw-semibold);
-    line-height: var(--lh-snug);
-  }
-  .bt-status--done { background: var(--color-accent-surface); color: var(--color-text); }
-  .bt-status--open { border: 1px solid var(--border-strong); color: var(--color-muted); }
-
-  .bt-rule {
-    max-width: 1100px;
-    margin-top: clamp(28px, 2.5vw, 40px);
-    padding-left: var(--space-sm);
-    border-left: 2px solid var(--color-accent);
-    color: var(--color-text);
-    font-size: var(--fs-lead);
-    font-weight: var(--fw-semibold);
-    line-height: var(--lh-snug);
-  }
-
-  /* ---- Steps (pattern: AcademyHome .steps__list, four instead of six) ----- */
-  .bt-steps { background: var(--color-bg-elevated); }
-  .bt-steps__list {
+  .bt-num {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: clamp(28px, 2.7vw, 46px);
-  }
-  .bt-steps__list li {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: clamp(14px, 1.1vw, 20px);
-    padding: clamp(22px, 1.8vw, 34px);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    background: var(--surface-card);
-    box-shadow: var(--shadow-card);
-  }
-  .bt-steps__list li::after {
-    content: '→';
-    position: absolute;
-    top: 50%;
-    right: clamp(-30px, -1.7vw, -18px);
-    transform: translateY(-50%);
-    color: var(--color-accent);
-    font-size: var(--fs-h4);
-    line-height: 1;
-    pointer-events: none;
-  }
-  .bt-steps__list li:last-child::after { content: none; }
-  .bt-steps__number {
-    display: grid;
+    flex: 0 0 auto;
     width: clamp(42px, 2.6vw, 52px);
     height: clamp(42px, 2.6vw, 52px);
     place-items: center;
@@ -1433,182 +1399,399 @@ const faq = pick(lang, {
     line-height: 1;
     box-shadow: var(--shadow-accent);
   }
-  .bt-steps__list h3 { font-size: var(--fs-h4); }
-  .bt-steps__list p { color: var(--color-muted); font-size: var(--fs-body); }
+  .bt-head { max-width: 1100px; margin-bottom: clamp(2rem, 3vw, 3rem); }
+  .bt-head h2 { margin: 0.8rem 0 0; font-size: var(--fs-h1); line-height: var(--lh-tight); }
+  .bt-head h2 span { display: block; color: var(--color-accent); }
+  .bt-head > p:not(.eyebrow) { max-width: 68ch; margin-top: 1.2rem; color: var(--color-muted); font-size: var(--fs-lead); line-height: var(--lh-relaxed); }
+  .bt-head--center { margin-inline: auto; text-align: center; }
+  .bt-head--center > p:not(.eyebrow) { margin-inline: auto; }
+  .bt-center { margin-top: clamp(32px, 3vw, 48px); text-align: center; }
 
-  /* ---- Cards (pattern: AboutAcademyPage .about-advantages__grid) ---------- */
-  .bt-cards { display: grid; gap: clamp(24px, 2.5vw, 40px); }
-  .bt-cards--three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .bt-cards--two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .bt-card {
-    padding: clamp(30px, 2.8vw, 48px);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    background: var(--surface-card);
-    box-shadow: var(--shadow-card);
+  /* Aurora: slow drifting red light, the page's "living" background. */
+  .bt-aurora { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+  .bt-aurora span {
+    position: absolute;
+    width: 60vmax;
+    height: 60vmax;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--glow-top), transparent 62%);
+    animation: bt-drift 22s ease-in-out infinite alternate;
   }
-  .bt-card h3 { margin-bottom: var(--space-sm); font-size: var(--fs-h4); line-height: var(--lh-snug); }
-  .bt-card p { color: var(--color-muted); font-size: var(--fs-body); }
+  .bt-aurora span:first-child { top: -30%; left: -20%; }
+  .bt-aurora span:last-child { right: -25%; bottom: -35%; background: radial-gradient(circle, var(--glow-side), transparent 60%); animation-duration: 28s; animation-direction: alternate-reverse; }
 
-  /* ---- Courses (pattern: SoftwareTesterProgramsPage .course-card) ---------
-     Same accent rule, format label and corner badge. No hover lift and no
-     arrow: these cards are not links, so they must not look clickable. */
-  .bt-notice {
-    padding: var(--space-sm) clamp(1rem, 2vw, 1.5rem);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    background: rgba(255, 255, 255, 0.035);
+  /* ---- Hero (pattern: AcademyHome full-bleed hero) -------------------------- */
+  /* minmax(0, 1fr): without it the long word "Softwaretester" sets the grid
+     column's minimum width and pushes the whole copy past a phone screen. */
+  .bt-hero { position: relative; display: grid; min-height: 100svh; grid-template-columns: minmax(0, 1fr); align-items: end; overflow: hidden; }
+  .bt-hero__media, .bt-hero__overlay { position: absolute; inset: 0; }
+  .bt-hero__media img { width: 100%; height: 100%; object-fit: cover; animation: bt-kenburns 26s ease-in-out infinite alternate; }
+  .bt-hero__overlay {
+    background:
+      linear-gradient(90deg, rgba(0, 0, 0, 0.84) 0%, rgba(0, 0, 0, 0.58) 55%, rgba(0, 0, 0, 0.36) 100%),
+      linear-gradient(0deg, var(--color-bg) 0%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0.25) 100%);
   }
-  .bt-head .bt-notice { color: var(--color-text); font-size: var(--fs-body); line-height: var(--lh-body); }
-  .bt-notice--open { border-color: var(--color-accent); }
-  .bt-course-group__label {
-    margin-bottom: var(--space-sm);
-    color: var(--color-muted);
-    font-size: var(--fs-sm);
-  }
-  .bt-course-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1.5rem, 2vw, 2.75rem); }
-  .bt-course {
-    position: relative;
+  .bt-hero__inner { position: relative; z-index: 2; padding-block: clamp(140px, 19vh, 210px) clamp(40px, 6vh, 88px); }
+  .bt-hero__copy { max-width: 1100px; }
+  .bt-hero__badges { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xs) var(--space-sm); margin-bottom: 1.25rem; }
+  .bt-hero__kicker { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--space-xs); color: var(--color-text); font-size: var(--fs-sm); font-weight: var(--fw-semibold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+  .bt-hero__kicker img { width: auto; height: auto; max-height: 48px; }
+  .bt-hero h1 { margin: 0 0 1rem; font-size: var(--fs-hero); line-height: var(--lh-display); letter-spacing: var(--tracking-display); }
+  .bt-hero h1 span { display: block; color: var(--color-accent); }
+  .bt-hero__lead { max-width: 54ch; font-size: var(--fs-lead); line-height: var(--lh-relaxed); }
+  .bt-hero__actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: 1.75rem; }
+  .bt-hero__stats { display: flex; flex-wrap: wrap; gap: clamp(24px, 3vw, 56px); margin-top: clamp(24px, 3.5vh, 40px); }
+  .bt-hero__stats strong { display: block; font-size: var(--fs-h3); font-weight: var(--fw-bold); line-height: var(--lh-display); font-variant-numeric: tabular-nums; }
+  .bt-hero__stats span { color: var(--color-muted); font-size: var(--fs-sm); }
+  .bt-hero__note { max-width: 80ch; margin-top: var(--space-sm); color: var(--color-text-subtle); font-size: var(--fs-xs); line-height: var(--lh-body); }
+
+  /* ---- Seals ------------------------------------------------------------------ */
+  .bt-seals { position: relative; z-index: 1; padding-block: var(--space-md) var(--space-lg); }
+  .bt-seals__list { display: flex; flex-wrap: wrap; align-items: stretch; justify-content: center; gap: clamp(16px, 2vw, 32px); }
+  .bt-seal {
     display: flex;
-    min-height: clamp(210px, 13vw, 260px);
+    flex: 1 1 180px;
+    max-width: 260px;
     flex-direction: column;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: center;
     gap: var(--space-xs);
-    overflow: hidden;
-    padding: 5rem clamp(1.5rem, 2vw, 2.4rem) clamp(1.65rem, 2vw, 2.2rem);
+    padding: var(--space-sm);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-lg);
     background: var(--surface-card);
-    box-shadow: var(--shadow-card);
+    text-align: center;
+    transition: transform var(--dur-med) var(--ease-out), border-color var(--dur-med) var(--ease-out);
   }
-  .bt-course::before {
+  .bt-seal:hover { transform: translateY(-4px); border-color: var(--border-strong); }
+  .bt-seal img { width: auto; height: auto; max-height: 104px; }
+  .bt-seal span { color: var(--color-muted); font-size: var(--fs-xs); line-height: var(--lh-snug); }
+  .bt-seal--text strong { color: var(--color-accent); font-size: var(--fs-h5); line-height: var(--lh-snug); }
+
+  /* ---- Showcase ------------------------------------------------------------- */
+  .bt-showcase { position: relative; z-index: 1; padding-block: 0 var(--space-lg); }
+  .bt-showcase__panel {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    overflow: hidden;
+    padding: clamp(28px, 4vw, 64px);
+    border: 1px solid var(--color-accent-surface);
+    border-radius: var(--radius-lg);
+    background: var(--surface-card);
+    box-shadow: var(--shadow-card), var(--shadow-accent);
+  }
+  .bt-showcase__intro, .bt-showcase__side { position: relative; z-index: 1; }
+  .bt-showcase__eyebrow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xs); color: var(--color-accent); font-size: var(--fs-2xs); font-weight: var(--fw-semibold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+  .bt-showcase__days { display: flex; align-items: baseline; gap: var(--space-xs); margin-top: var(--space-sm); }
+  .bt-showcase__days strong { color: var(--color-accent); font-size: var(--fs-display); font-weight: var(--fw-bold); line-height: var(--lh-display); letter-spacing: var(--tracking-display); }
+  .bt-showcase__days span { font-size: var(--fs-h3); font-weight: var(--fw-semibold); }
+  .bt-showcase h2 { margin-top: var(--space-xs); font-size: var(--fs-h2); }
+  .bt-showcase__sub { margin-top: var(--space-sm); font-size: var(--fs-lead); line-height: var(--lh-snug); }
+  .bt-showcase__text { max-width: 62ch; margin-top: var(--space-sm); color: var(--color-muted); }
+  .bt-showcase__status { margin-top: var(--space-md); padding-left: var(--space-sm); border-left: 2px solid var(--color-accent); font-size: var(--fs-sm); }
+  .bt-showcase__actions { margin-top: var(--space-md); }
+  .bt-showcase__side { display: grid; align-content: start; gap: var(--space-md); }
+  .bt-glance, .bt-stages { padding: clamp(20px, 2.2vw, 32px); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: rgba(255, 255, 255, 0.035); }
+  .bt-glance h3, .bt-stages h3 { margin-bottom: var(--space-sm); color: var(--color-accent); font-size: var(--fs-2xs); font-weight: var(--fw-semibold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+  .bt-glance dl { display: grid; }
+  .bt-glance div { display: grid; grid-template-columns: minmax(120px, 0.45fr) minmax(0, 1fr); gap: var(--space-sm); padding-block: 0.6rem; border-top: 1px solid var(--border-subtle); }
+  .bt-glance div:first-child { padding-top: 0; border-top: 0; }
+  .bt-glance dt { color: var(--color-muted); font-size: var(--fs-sm); }
+  .bt-glance dd { font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
+  .bt-stages ol { display: grid; gap: var(--space-sm); }
+  .bt-stages li { display: flex; align-items: center; gap: var(--space-sm); }
+  .bt-stages li + li { padding-top: var(--space-sm); border-top: 1px solid var(--border-subtle); }
+  .bt-stages p { color: var(--color-muted); font-size: var(--fs-sm); }
+  .bt-stages h4 { font-size: var(--fs-h5); }
+
+  /* ---- Calendar --------------------------------------------------------------- */
+  .bt-calendar { background: var(--color-bg-elevated); }
+  .bt-calendar__grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
+  .bt-calendar__copy h2 { margin-top: var(--space-sm); font-size: var(--fs-h1); line-height: var(--lh-tight); }
+  .bt-calendar__copy h2 span { display: block; color: var(--color-accent); }
+  .bt-calendar__text { max-width: 56ch; margin-top: 1.2rem; color: var(--color-muted); font-size: var(--fs-lead); line-height: var(--lh-relaxed); }
+  .bt-calendar__facts { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-block: var(--space-md); }
+  .bt-calendar__facts li { padding: 0.4rem 1rem; border: 1px solid var(--border-strong); border-radius: var(--radius-pill); font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
+  .bt-calendar__facts li:first-child { border-color: var(--color-accent-surface); background: var(--color-accent-surface); animation: bt-pulse 2.6s var(--ease-out) infinite; }
+  .bt-calendar__board { position: relative; padding: clamp(20px, 2.4vw, 36px); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow-card); }
+  .bt-calendar__months { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: var(--space-md); }
+  .bt-cal { width: 100%; border-collapse: separate; border-spacing: 4px; text-align: center; font-variant-numeric: tabular-nums; }
+  .bt-cal caption { padding: 0 4px var(--space-xs); font-size: var(--fs-h5); font-weight: var(--fw-semibold); text-align: left; }
+  .bt-cal th { padding-bottom: 4px; color: var(--color-muted); font-size: var(--fs-xs); font-weight: var(--fw-semibold); }
+  .bt-cal td { height: 2.25rem; border-radius: var(--radius-sm); background: rgba(255, 255, 255, 0.04); font-size: var(--fs-sm); }
+  .bt-cal td:empty { background: transparent; }
+  .bt-cal td.is-start { background: var(--color-accent-surface); font-weight: var(--fw-bold); box-shadow: var(--shadow-accent); }
+  .is-pending .bt-cal { opacity: 0.35; filter: grayscale(1); }
+  .bt-calendar__pending { position: absolute; inset: 0; display: grid; place-items: center; padding: var(--space-sm); pointer-events: none; }
+  .bt-calendar__pending span { padding: 0.7rem 1.4rem; border: 1px solid var(--color-accent-surface); border-radius: var(--radius-pill); background: var(--color-bg); font-weight: var(--fw-semibold); text-align: center; box-shadow: var(--shadow-accent); animation: bt-float 4s ease-in-out infinite; }
+
+  /* ---- Formats: the "wow" block. A light beam runs around each card border. */
+  .bt-formats { position: relative; overflow: hidden; }
+  .bt-formats .container { position: relative; z-index: 1; }
+  .bt-formats__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 2.5vw, 40px); }
+  .bt-format { position: relative; overflow: hidden; padding: 2px; border-radius: var(--radius-lg); background: var(--border-subtle); box-shadow: var(--shadow-card); }
+  .bt-format::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: clamp(1.5rem, 2vw, 2.4rem);
-    width: clamp(72px, 7vw, 128px);
-    height: 4px;
-    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-    background: var(--color-accent-surface);
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    aspect-ratio: 1;
+    background: conic-gradient(from 0deg, transparent 0deg 250deg, var(--color-accent) 320deg, transparent 360deg);
+    translate: -50% -50%;
+    animation: bt-spin 6s linear infinite;
   }
-  .bt-course h3 { font-size: var(--fs-h4); line-height: var(--lh-snug); }
-  .bt-course__format {
-    position: absolute;
-    top: 1.05rem;
-    left: clamp(1.5rem, 2vw, 2.4rem);
-    color: var(--color-muted);
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-medium);
-  }
-  /* White badge with the AA-safe accent (the brighter CI red is 4.27:1). */
-  .bt-course__badge {
-    position: absolute;
-    top: 0;
-    right: 0;
-    min-width: 120px;
-    padding: 0.62rem 1rem;
-    background: var(--color-surface);
-    color: var(--color-accent-surface);
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    text-align: center;
-  }
-  .bt-course__note { color: var(--color-muted); font-size: var(--fs-sm); }
-  .bt-course__meta { color: var(--color-text); font-size: var(--fs-body); font-weight: var(--fw-medium); }
-  .bt-course__facts { display: grid; gap: var(--space-xs); margin-block: var(--space-xs); }
-  .bt-course__facts div { display: flex; flex-wrap: wrap; gap: 0 var(--space-xs); font-size: var(--fs-sm); }
-  .bt-course__facts dt { color: var(--color-muted); }
-  .bt-course__facts dt::after { content: ':'; }
-  .bt-courses__actions { margin-top: clamp(32px, 3vw, 48px); }
+  .bt-format:nth-child(2)::before { animation-delay: -3s; }
+  .bt-format__inner { position: relative; height: 100%; padding: clamp(28px, 3vw, 48px); border-radius: calc(var(--radius-lg) - 2px); background: var(--surface-card); transition: background var(--dur-med) var(--ease-out); }
+  .bt-format:hover .bt-format__inner { background: var(--surface-card-hover); }
+  .bt-format__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-xs); }
+  .bt-format__tag { color: var(--color-muted); font-size: var(--fs-sm); }
+  .bt-format h3 { margin-top: var(--space-md); font-size: var(--fs-h1); line-height: var(--lh-tight); }
+  .bt-format__meta { margin-top: var(--space-xs); color: var(--color-accent); font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
+  .bt-format ul { display: grid; gap: var(--space-xs); margin-top: var(--space-md); }
+  .bt-format li { position: relative; padding-left: 28px; }
+  .bt-format li::before { content: '✓'; position: absolute; top: 0.1em; left: 0; display: grid; width: 18px; height: 18px; place-items: center; border-radius: var(--radius-pill); background: var(--color-accent-surface); font-size: var(--fs-2xs); font-weight: var(--fw-bold); }
+  .bt-format__status { margin-top: var(--space-md); padding-top: var(--space-sm); border-top: 1px solid var(--border-subtle); color: var(--color-muted); font-size: var(--fs-sm); }
+  .bt-approved { margin-top: var(--space-lg); }
+  .bt-approved__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-md); margin-top: var(--space-sm); }
+  .bt-approved__facts { display: grid; gap: 4px; margin-top: var(--space-sm); font-size: var(--fs-sm); }
+  .bt-approved__facts div { display: flex; flex-wrap: wrap; gap: 0 var(--space-xs); }
+  .bt-approved__facts dt { color: var(--color-muted); }
+  .bt-approved__facts dt::after { content: ':'; }
 
-  /* ---- Evidence (pattern: AcademyHome .istqb on .surface-light) ----------- */
-  .bt-proof__grid { display: grid; grid-template-columns: 1fr 0.9fr; gap: clamp(2rem, 6vw, 5rem); align-items: center; }
-  .bt-proof__grid--single { grid-template-columns: minmax(0, 1fr); }
-  .bt-proof .bt-head h2 { color: var(--color-text-dark); }
-  .bt-proof__mark { width: auto; height: auto; max-height: 96px; margin-bottom: var(--space-md); }
-  .bt-proof__list { display: grid; max-width: 1100px; border-top: 1px solid var(--color-line-dark); }
-  .bt-proof__list div {
+  /* ---- Know-how ---------------------------------------------------------------- */
+  .bt-know { background: var(--color-bg-elevated); }
+  .bt-kpis { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(12px, 1.4vw, 24px); margin-bottom: clamp(32px, 3vw, 56px); }
+  .bt-kpis li { display: flex; flex-direction: column; gap: var(--space-xs); padding: clamp(18px, 1.6vw, 28px); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow-card); }
+  .bt-kpis strong { color: var(--color-accent); font-size: var(--fs-h3); font-weight: var(--fw-bold); line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .bt-kpis span { color: var(--color-muted); font-size: var(--fs-sm); line-height: var(--lh-snug); }
+  .bt-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 2vw, 32px); }
+  .bt-tile { padding: clamp(24px, 2.4vw, 40px); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow-card); transition: transform var(--dur-med) var(--ease-out), border-color var(--dur-med) var(--ease-out), background var(--dur-med) var(--ease-out); }
+  .bt-tile:hover { transform: translateY(-4px); border-color: var(--color-accent); background: var(--surface-card-hover); }
+  .bt-tile h3 { margin-block: var(--space-sm) var(--space-xs); font-size: var(--fs-h4); line-height: var(--lh-snug); }
+  .bt-tile p { color: var(--color-muted); }
+  .bt-clients { margin-top: clamp(40px, 4vw, 72px); }
+  .bt-clients > p { margin-bottom: var(--space-sm); color: var(--color-muted); font-size: var(--fs-xs); letter-spacing: var(--tracking-wide); text-align: center; text-transform: uppercase; }
+  .bt-clients__track { display: flex; overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+  .bt-clients__track ul { display: flex; flex: 0 0 auto; gap: clamp(40px, 5vw, 96px); padding-right: clamp(40px, 5vw, 96px); animation: bt-marquee 26s linear infinite; }
+  .bt-clients__track li { font-size: var(--fs-h3); font-weight: var(--fw-bold); white-space: nowrap; opacity: 0.85; }
+
+  /* ---- Funding --------------------------------------------------------------- */
+  .bt-fund__grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
+  .bt-fund__copy h2 { margin-top: var(--space-sm); font-size: var(--fs-h1); line-height: var(--lh-tight); letter-spacing: var(--tracking-display); }
+  .bt-fund__copy h2 span { display: block; color: var(--color-accent); }
+  .bt-fund__copy > p:last-child { max-width: 52ch; margin-top: 1.2rem; color: var(--color-muted); font-size: var(--fs-lead); line-height: var(--lh-relaxed); }
+  .bt-fund__tiles { display: grid; gap: var(--space-md); }
+  .bt-fund__tile { display: flex; gap: var(--space-sm); padding: clamp(22px, 2.2vw, 32px); border: 1px solid var(--color-accent-surface); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow-card); }
+  .bt-fund__tile.is-open { border-color: var(--border-strong); background: rgba(255, 255, 255, 0.035); }
+  .bt-fund__check { display: grid; flex: 0 0 auto; width: 48px; height: 48px; place-items: center; border-radius: var(--radius-pill); background: var(--color-accent-surface); font-size: var(--fs-h4); font-weight: var(--fw-bold); box-shadow: var(--shadow-accent); }
+  .is-open .bt-fund__check { border: 2px dashed var(--color-accent); background: transparent; box-shadow: none; animation: bt-spin 8s linear infinite; }
+  .bt-fund__status { color: var(--color-accent); font-size: var(--fs-2xs); font-weight: var(--fw-semibold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+  .bt-fund__tile h3 { margin-top: 4px; font-size: var(--fs-h4); }
+  .bt-fund__tile p:last-child { color: var(--color-muted); font-size: var(--fs-sm); }
+  .bt-fund__note { grid-column: 1 / -1; max-width: 100ch; color: var(--color-text-subtle); font-size: var(--fs-xs); line-height: var(--lh-body); }
+
+  /* ---- Steps (pattern: AcademyHome .steps__list) ----------------------------- */
+  .bt-steps { background: var(--color-bg-elevated); }
+  .bt-steps__list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(28px, 2.7vw, 46px); }
+  .bt-steps__list li { position: relative; display: flex; flex-direction: column; gap: clamp(12px, 1vw, 18px); padding: clamp(22px, 1.8vw, 34px); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow-card); transition: transform var(--dur-med) var(--ease-out), border-color var(--dur-med) var(--ease-out); }
+  .bt-steps__list li:hover { transform: translateY(-4px); border-color: var(--color-accent); }
+  .bt-steps__list li::after { content: '→'; position: absolute; top: 50%; right: clamp(-30px, -1.7vw, -18px); transform: translateY(-50%); color: var(--color-accent); font-size: var(--fs-h4); line-height: 1; pointer-events: none; }
+  .bt-steps__list li:last-child::after { content: none; }
+  .bt-steps__list h3 { font-size: var(--fs-h4); }
+  .bt-steps__list p { color: var(--color-muted); }
+
+  /* ---- Trainers ------------------------------------------------------------- */
+  .bt-trainers__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 2.5vw, 40px); }
+  .bt-trainer { overflow: hidden; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow-card); transition: transform var(--dur-med) var(--ease-out), border-color var(--dur-med) var(--ease-out); }
+  .bt-trainer:hover { transform: translateY(-4px); border-color: var(--border-strong); }
+  .bt-trainer figure { overflow: hidden; aspect-ratio: 700 / 486; background: var(--color-surface-soft); }
+  .bt-trainer img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--dur-slow) var(--ease-out); }
+  .bt-trainer:hover img { transform: scale(1.04); }
+  .bt-trainer__body { padding: clamp(24px, 2.4vw, 40px); }
+  .bt-trainer h3 { font-size: var(--fs-h3); }
+  .bt-trainer__role { margin-top: 4px; color: var(--color-accent); font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
+  .bt-trainer ul { display: grid; gap: var(--space-xs); margin-top: var(--space-sm); }
+  .bt-trainer li { position: relative; padding-left: 22px; color: var(--color-muted); }
+  .bt-trainer li::before { content: ''; position: absolute; top: 0.65em; left: 0; width: 8px; height: 8px; border-radius: var(--radius-pill); background: var(--color-accent-surface); }
+
+  /* ---- Support -------------------------------------------------------------- */
+  .bt-support { background: var(--color-bg-elevated); }
+  .bt-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 2vw, 32px); }
+  .bt-card { padding: clamp(24px, 2.4vw, 40px); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow-card); }
+  .bt-card h3 { margin-bottom: var(--space-xs); font-size: var(--fs-h4); line-height: var(--lh-snug); }
+  .bt-card p { color: var(--color-muted); }
+  .bt-card .bt-card__eyebrow { margin-bottom: var(--space-xs); color: var(--color-accent); font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
+  .bt-card--feature { grid-column: span 3; border-color: var(--color-accent-surface); background: radial-gradient(70% 120% at 0% 0%, var(--glow-top), transparent 70%), var(--surface-card); }
+  .bt-card--feature p { max-width: 90ch; color: var(--color-text); font-size: var(--fs-lead); line-height: var(--lh-relaxed); }
+
+  /* ---- Testimonials --------------------------------------------------------- */
+  .bt-testi__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 2.5vw, 40px); margin-bottom: var(--space-md); }
+  .bt-testi__grid article { min-width: 0; }
+  .bt-testi__grid h3 { margin-top: var(--space-sm); font-size: var(--fs-h5); }
+  .bt-testi__grid p { color: var(--color-muted); font-size: var(--fs-sm); }
+
+  /* ---- Why + industry network --------------------------------------------------- */
+  .bt-why { background: var(--color-bg-elevated); }
+  .bt-why__grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
+  .bt-why__copy h2 { font-size: var(--fs-h1); line-height: var(--lh-tight); }
+  .bt-why__copy h2 span { display: block; color: var(--color-accent); }
+  .bt-why__copy > p { max-width: 56ch; margin-top: 1.2rem; color: var(--color-muted); font-size: var(--fs-lead); line-height: var(--lh-relaxed); }
+  .bt-why__facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm); margin-top: var(--space-md); }
+  .bt-why__facts div { padding: var(--space-sm); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-card); }
+  .bt-why__facts dt { color: var(--color-accent); font-size: var(--fs-h3); font-weight: var(--fw-bold); line-height: 1.1; }
+  .bt-why__facts dd { margin-top: 4px; color: var(--color-muted); font-size: var(--fs-sm); line-height: var(--lh-snug); }
+  .bt-net { margin: 0; }
+  .bt-net svg { width: 100%; height: auto; overflow: visible; }
+  .bt-net__line { stroke: var(--color-accent); stroke-width: 2; stroke-dasharray: 6 10; opacity: 0.7; animation: bt-dash 2.4s linear infinite; animation-delay: calc(var(--i) * -0.4s); }
+  .bt-net__dot { fill: var(--color-accent-surface); }
+  .bt-net__pulse { fill: none; stroke: var(--color-accent); stroke-width: 2; transform-box: fill-box; transform-origin: center; animation: bt-ring 2.8s var(--ease-out) infinite; animation-delay: calc(var(--i) * 0.45s); }
+  .bt-net__node text { fill: var(--color-text); font-family: var(--font-sans); font-size: 19px; font-weight: var(--fw-semibold); }
+  .bt-net__core { fill: var(--color-accent-surface); }
+  .bt-net__core-ring { fill: none; stroke: var(--color-accent); stroke-width: 2; opacity: 0.5; transform-box: fill-box; transform-origin: center; animation: bt-ring 3.4s var(--ease-out) infinite; }
+  .bt-net__core-text { fill: var(--color-text); font-family: var(--font-sans); font-size: 17px; font-weight: var(--fw-bold); letter-spacing: 0.06em; }
+  .bt-net figcaption { display: none; }
+
+  /* ---- Proof: quality seal on a light surface ---------------------------------- */
+  .bt-proof__grid { display: grid; grid-template-columns: minmax(220px, 0.5fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
+  .bt-proof__grid.has-certificate { grid-template-columns: minmax(200px, 0.4fr) minmax(0, 1fr) minmax(0, 0.8fr); }
+  .bt-proof__seal-wrap { display: grid; place-items: center; }
+  .bt-proof__seal {
+    position: relative;
     display: grid;
-    grid-template-columns: minmax(180px, 0.4fr) minmax(0, 1fr);
-    gap: var(--space-xs) var(--space-md);
-    padding-block: var(--space-sm);
-    border-bottom: 1px solid var(--color-line-dark);
+    width: min(100%, 280px);
+    aspect-ratio: 1;
+    place-content: center;
+    justify-items: center;
+    gap: 4px;
+    border: 6px double var(--color-accent-surface);
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--color-surface) 55%, var(--color-surface-soft) 100%);
+    color: var(--color-text-dark);
+    text-align: center;
+    box-shadow: 0 24px 48px -24px rgba(17, 24, 39, 0.45);
   }
+  .bt-proof__seal::after { content: ''; position: absolute; inset: 14px; border: 1px dashed var(--color-accent-surface); border-radius: 50%; animation: bt-spin 40s linear infinite; }
+  .bt-proof__seal span:first-child { color: var(--color-accent-surface); font-size: var(--fs-h2); font-weight: var(--fw-extrabold); letter-spacing: var(--tracking-wide); }
+  .bt-proof__seal strong { display: grid; width: 48px; height: 48px; place-items: center; border-radius: 50%; background: var(--color-accent-surface); color: var(--color-text); font-size: var(--fs-h4); }
+  .bt-proof__seal span:nth-of-type(2) { font-size: var(--fs-sm); font-weight: var(--fw-bold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+  .bt-proof__seal small { color: var(--color-muted-dark); font-size: var(--fs-xs); }
+  .bt-proof__mark { width: auto; height: auto; max-height: 200px; }
+  .bt-proof h2 { margin-top: var(--space-sm); color: var(--color-text-dark); font-size: var(--fs-h1); line-height: var(--lh-tight); }
+  .bt-proof h2 span { color: var(--color-accent-surface); }
+  .bt-proof .eyebrow { color: var(--color-accent-surface); }
+  .bt-proof__text { max-width: 60ch; margin-top: var(--space-sm); color: var(--color-muted-dark); font-size: var(--fs-lead); line-height: var(--lh-relaxed); }
+  .bt-proof__list { display: grid; margin-top: var(--space-md); border-top: 1px solid var(--color-line-dark); }
+  .bt-proof__list div { display: grid; grid-template-columns: minmax(170px, 0.4fr) minmax(0, 1fr); gap: var(--space-xs) var(--space-md); padding-block: var(--space-sm); border-bottom: 1px solid var(--color-line-dark); }
   .bt-proof__list dt { color: var(--color-muted-dark); font-size: var(--fs-sm); }
-  .bt-proof__list dd { color: var(--color-text-dark); font-size: var(--fs-body); font-weight: var(--fw-medium); }
+  .bt-proof__list dd { color: var(--color-text-dark); font-weight: var(--fw-medium); }
   .bt-proof__list a { text-decoration: underline; text-underline-offset: 0.2em; }
   .bt-proof__list a:hover { color: var(--color-accent-surface); }
   .bt-proof__actions { margin-top: var(--space-md); }
-  .bt-proof__certificate {
-    display: grid;
-    place-items: center;
-    overflow: hidden;
-    border-radius: var(--radius-md);
-    background: var(--color-surface-soft);
-    box-shadow: var(--shadow-card);
-  }
-  .bt-proof__certificate img { width: auto; max-width: 100%; height: auto; max-height: 760px; object-fit: contain; }
+  .bt-proof__certificate { display: grid; place-items: center; overflow: hidden; border-radius: var(--radius-md); background: var(--color-surface-soft); box-shadow: var(--shadow-card); }
+  .bt-proof__certificate img { width: auto; max-width: 100%; height: auto; max-height: 640px; object-fit: contain; }
 
-  /* ---- Motion: same drift family as the About and home renders ------------- */
-  @keyframes bt-ring-drift {
-    from { transform: translate3d(-10px, 8px, 0) rotate(-4deg); }
-    to { transform: translate3d(14px, -16px, 0) rotate(6deg); }
-  }
-  @keyframes bt-curve-drift {
-    from { transform: translate3d(-8px, 12px, 0) rotate(-7deg); }
-    to { transform: translate3d(18px, -10px, 0) rotate(6deg); }
-  }
+  /* ---- Groups --------------------------------------------------------------- */
+  .bt-groups__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 2.5vw, 40px); }
+  .bt-group { padding: clamp(28px, 3vw, 48px); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow-card); transition: transform var(--dur-med) var(--ease-out), border-color var(--dur-med) var(--ease-out); }
+  .bt-group:hover { transform: translateY(-4px); border-color: var(--color-accent); }
+  .bt-group h3 { margin-block: var(--space-sm) var(--space-xs); font-size: var(--fs-h2); }
+  .bt-group p { color: var(--color-muted); font-size: var(--fs-lead); line-height: var(--lh-relaxed); }
+  .bt-groups__note { max-width: 90ch; margin-top: var(--space-md); color: var(--color-muted); font-size: var(--fs-sm); }
 
-  /* ---- Breakpoints (site ladder: 1050, 900, 620, 479) ---------------------- */
+  /* ---- Motion ------------------------------------------------------------------ */
+  @keyframes bt-kenburns { from { transform: scale(1.04); } to { transform: scale(1.14) translate3d(-1.5%, -1%, 0); } }
+  @keyframes bt-drift { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(12%, 8%, 0) scale(1.15); } }
+  @keyframes bt-pulse { 0%, 100% { box-shadow: var(--shadow-accent); } 50% { box-shadow: 0 0 0 6px rgba(244, 14, 14, 0.18), var(--shadow-accent); } }
+  @keyframes bt-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  @keyframes bt-spin { to { rotate: 360deg; } }
+  @keyframes bt-marquee { to { transform: translateX(-100%); } }
+  @keyframes bt-dash { to { stroke-dashoffset: -32; } }
+  @keyframes bt-ring { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(2.4); opacity: 0; } }
+
+  /* ---- Breakpoints (site ladder: 1200, 1050, 900, 620, 479) --------------------- */
+  @media (max-width: 1200px) {
+    .bt-kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
   @media (max-width: 1050px) {
     .bt-steps__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .bt-steps__list li:nth-child(2n)::after { content: none; }
-    .bt-cards--three { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .bt-tiles, .bt-cards, .bt-testi__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .bt-card--feature { grid-column: span 2; }
   }
-
   @media (max-width: 900px) {
-    .bt-calendar__grid,
-    .bt-showcase__panel,
-    .bt-meaning__grid,
-    .bt-proof__grid,
-    .bt-cards--two { grid-template-columns: minmax(0, 1fr); }
+    .bt-showcase__panel, .bt-calendar__grid, .bt-formats__grid, .bt-fund__grid, .bt-trainers__grid,
+    .bt-why__grid, .bt-proof__grid, .bt-proof__grid.has-certificate, .bt-groups__grid, .bt-approved__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .bt-proof__seal-wrap { justify-items: start; }
+    .bt-proof__seal { width: 220px; }
   }
-
   @media (max-width: 620px) {
-    .bt-steps__list,
-    .bt-cards--three,
-    .bt-course-grid { grid-template-columns: minmax(0, 1fr); gap: 30px; }
-    .bt-steps__list li::after,
-    .bt-steps__list li:nth-child(2n)::after {
-      content: '↓';
-      top: auto;
-      right: auto;
-      bottom: clamp(-26px, -5vw, -20px);
-      left: 50%;
-      transform: translateX(-50%);
+    .bt-hero__inner { padding-top: 120px; }
+    .bt-hero h1 { font-size: var(--fs-h1); overflow-wrap: break-word; hyphens: auto; }
+    .bt-hero__stats { gap: var(--space-sm) var(--space-md); }
+    .bt-tiles, .bt-cards, .bt-testi__grid, .bt-steps__list, .bt-why__facts { grid-template-columns: minmax(0, 1fr); }
+    .bt-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .bt-card--feature { grid-column: auto; }
+    .bt-steps__list li::after, .bt-steps__list li:nth-child(2n)::after {
+      content: '↓'; top: auto; right: auto; bottom: clamp(-26px, -5vw, -20px); left: 50%; transform: translateX(-50%);
     }
     .bt-steps__list li:last-child::after { content: none; }
-    .bt-proof__list div { grid-template-columns: minmax(0, 1fr); }
-    .bt-hero__actions :global(.btn),
-    .bt-showcase__actions :global(.btn),
-    .bt-calendar__copy :global(.btn),
-    .bt-courses__actions :global(.btn) { width: 100%; }
+    .bt-glance div, .bt-proof__list div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+    .bt-net svg { display: none; }
+    .bt-net figcaption { display: block; }
+    .bt-net figcaption span { color: var(--color-muted); font-size: var(--fs-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+    .bt-net figcaption ul { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-top: var(--space-xs); }
+    .bt-net figcaption li { padding: 0.4rem 0.9rem; border: 1px solid var(--color-accent-surface); border-radius: var(--radius-pill); font-size: var(--fs-sm); }
+    .bt-clients__track li { font-size: var(--fs-h4); }
     /* Long labels wrap on a phone; the button's line-height of 1 would stack
        the two lines on top of each other. */
-    .bt-page :global(.btn) { padding-block: var(--space-xs); line-height: var(--lh-snug); text-align: center; }
-    /* Approval facts run full width, the three home-page figures share a row. */
-    .bt-trust__list { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
-    .bt-trust__list li { grid-column: span 2; padding: var(--space-sm); }
-    .bt-trust__list li:nth-child(-n + 2) { grid-column: 1 / -1; }
+    .bt-page :global(.btn) { width: 100%; padding-block: var(--space-xs); line-height: var(--lh-snug); text-align: center; }
   }
-
   @media (max-width: 479px) {
-    .bt-course { padding-top: 4.5rem; }
-    .bt-course__badge { min-width: 0; }
+    .bt-kpis strong { font-size: var(--fs-h4); }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .bt-hero__ring,
-    .bt-hero__curve { animation: none; }
+    .bt-new, .bt-aurora span, .bt-hero__media img, .bt-format::before, .bt-clients__track ul, .bt-net__line,
+    .bt-net__pulse, .bt-net__core-ring, .bt-calendar__pending span, .bt-calendar__facts li, .bt-proof__seal::after,
+    .is-open .bt-fund__check { animation: none; }
+    .bt-net__pulse { opacity: 0; }
   }
 </style>
+
+<script>
+  // KPI count-up. The final value is already in the HTML (for search engines,
+  // AI crawlers and visitors without JavaScript); this only animates up to it
+  // once the row scrolls into view.
+  const counters = Array.from(document.querySelectorAll<HTMLElement>('[data-count-to]'));
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (counters.length && !reduced && 'IntersectionObserver' in window) {
+    const format = new Intl.NumberFormat(document.documentElement.lang || 'de');
+    const run = (el: HTMLElement) => {
+      const target = Number(el.dataset.countTo) || 0;
+      const suffix = el.dataset.countSuffix || '';
+      const start = performance.now();
+      const duration = 1600;
+      const tick = (now: number) => {
+        const p = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = `${format.format(Math.round(target * eased))}${suffix}`;
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        run(entry.target as HTMLElement);
+        observer.unobserve(entry.target);
+      }),
+      { threshold: 0.4 },
+    );
+    counters.forEach((el) => observer.observe(el));
+  }
+</script>

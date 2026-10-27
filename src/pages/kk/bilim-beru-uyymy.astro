@@ -1,23 +1,20 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import BildungstraegerPage from '../../components/sections/BildungstraegerPage.astro';
-import { istVeroeffentlicht } from '../../data/bildungstraeger';
+import { istVeroeffentlicht, seminarSchema } from '../../data/bildungstraeger';
 
 const lang = 'kk';
 // Muttersprachliche Prüfung offen
-const title = 'AZAV бойынша рұқсат алған білім беру ұйымы';
+const title = 'Bildungsgutschein арқылы тестілеуші біліктілігін арттыру (AZAV)';
 // Muttersprachliche Prüfung offen
 const description =
-  'WAMOCON Academy GmbH GZQ GmbH-тан AZAV бойынша білім беру ұйымы ретінде рұқсат алды. Бұл нені білдіретіні және Bildungsgutschein арқылы қаржыландыру қалай жүретіні.';
+  'Жаңа: 45 күнде ISTQB® тестілеуші болыңыз. AZAV бойынша рұқсат алған WAMOCON Academy-де аудиторияда немесе тікелей онлайн. Мақұлданған Bildungsgutschein арқылы тегін.';
 // noindex until the certificate number is entered in src/data/bildungstraeger.ts.
 const noindex = !istVeroeffentlicht();
+const origin = (Astro.site ?? new URL('https://test-it-academy.com')).origin;
+const schema = [seminarSchema(origin, new URL(Astro.url.pathname, origin).href, 'kk-KZ', description)];
 ---
 
-<BaseLayout
-  title={title}
-  description={description}
-  lang={lang}
-  noindex={noindex}
->
+<BaseLayout title={title} description={description} lang={lang} noindex={noindex} schema={schema}>
   <BildungstraegerPage lang={lang} />
 </BaseLayout>

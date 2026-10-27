@@ -63,6 +63,20 @@ export type Seminar = {
 };
 
 /**
+ * Siegel und Auszeichnungen für die Siegelleiste. Ein Eintrag ohne `datei`
+ * wird nicht angezeigt. Jedes Logo nur mit Nutzungsrecht einbinden und
+ * unverändert lassen (kein Zuschnitt, keine Umfärbung).
+ */
+export type Siegel = {
+  key: string;
+  /** Bildunterschrift je Sprache. */
+  label: { de: string; en: string; kk: string };
+  datei: string;
+  breite: number | null;
+  hoehe: number | null;
+};
+
+/**
  * Nächster Seminarstart für den Kalender auf der Seite. Solange `datum` leer
  * ist, zeigt der Kalender die Monate aus `kalenderMonate` ausgegraut mit
  * „Termin folgt in Kürze“. Ist ein Datum eingetragen, wird nur dessen Monat
@@ -102,6 +116,7 @@ export const bildungstraeger: {
   massnahmenGeplant: MassnahmeGeplant[];
   seminar: Seminar;
   naechsterStart: NaechsterStart;
+  siegel: Siegel[];
 } = {
   fachkundigeStelle: {
     name: 'GZQ GmbH',
@@ -168,6 +183,42 @@ export const bildungstraeger: {
     startsImJahr: 1,
     plaetzeVorOrt: 12,
   },
+
+  siegel: [
+    {
+      // Auszeichnung des Deutschen Innovationsinstituts (diind), gültig bis
+      // 12/2025. Deshalb ausdrücklich als Auszeichnung 2025 beschriftet.
+      key: 'ki-innovator',
+      label: { de: 'KI-Innovator 2025', en: 'AI Innovator 2025', kk: 'KI-Innovator 2025' },
+      datei: '/images/badge-ki-siegel.png',
+      breite: 1680,
+      hoehe: 2432,
+    },
+    {
+      key: 'zukunft',
+      label: { de: 'Unternehmen der Zukunft', en: 'Company of the Future', kk: 'Болашақ компаниясы' },
+      datei: '/images/badge-zukunft.webp',
+      breite: 1052,
+      hoehe: 1524,
+    },
+    {
+      // TODO: OFFEN. Logo "Bildung Made in Germany" unter /public ablegen
+      // (z. B. /images/badge-bildung-made-in-germany.png) und Maße eintragen.
+      key: 'bildung-made-in-germany',
+      label: { de: 'Bildung Made in Germany', en: 'Bildung Made in Germany', kk: 'Bildung Made in Germany' },
+      datei: '',
+      breite: null,
+      hoehe: null,
+    },
+    {
+      // TODO: OFFEN. IHK-Zeichen nur mit Freigabe der zuständigen IHK einbinden.
+      key: 'ihk',
+      label: { de: 'IHK: Wir bilden aus', en: 'IHK: Wir bilden aus', kk: 'IHK: Wir bilden aus' },
+      datei: '',
+      breite: null,
+      hoehe: null,
+    },
+  ],
 };
 
 // ---------------------------------------------------------------------------
@@ -193,6 +244,32 @@ export function hatZugelasseneMassnahmen(): boolean {
 /** Das Zertifikat liegt als PDF vor (sonst als Bild). */
 export function zertifikatIstPdf(): boolean {
   return /\.pdf$/i.test(bildungstraeger.zertifikatDatei);
+}
+
+/**
+ * schema.org-Kurs für das 45-Tage-Seminar (SEO und GEO). Bewusst ohne Preis
+ * und ohne Förderaussage; ein Starttermin erscheint erst, wenn er feststeht.
+ */
+export function seminarSchema(origin: string, url: string, inLanguage: string, description: string) {
+  const { seminar, naechsterStart } = bildungstraeger;
+  const instance = (courseMode: string) => ({
+    '@type': 'CourseInstance',
+    courseMode,
+    courseWorkload: `P${seminar.tage}D`,
+    ...(naechsterStart.datum ? { startDate: naechsterStart.datum } : {}),
+  });
+  return {
+    '@type': 'Course',
+    '@id': `${url}#seminar`,
+    name: `${seminar.titel} (${seminar.tage} Tage)`,
+    description,
+    url,
+    inLanguage,
+    provider: { '@id': `${origin}/#organization` },
+    educationalLevel: 'Beginner',
+    teaches: ['Software testing fundamentals', 'Test design techniques', 'Test management', 'Test tools', 'ISTQB Certified Tester Foundation Level 4.0'],
+    hasCourseInstance: [instance('onsite'), instance('online')],
+  };
 }
 
 /** Pfade der Seite je Sprache. Einzige Quelle für Navigation, Sitemap und Audit. */

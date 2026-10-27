@@ -1,21 +1,20 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BildungstraegerPage from '../components/sections/BildungstraegerPage.astro';
-import { istVeroeffentlicht } from '../data/bildungstraeger';
+import { istVeroeffentlicht, seminarSchema } from '../data/bildungstraeger';
 
 const lang = 'de';
-const title = 'Zugelassener Bildungsträger nach AZAV';
+// SEO: Suchbegriffe "Softwaretester Weiterbildung", "Bildungsgutschein",
+// "ISTQB", "AZAV" (Wettbewerbsanalyse Oktober 2026).
+const title = 'Softwaretester Weiterbildung mit Bildungsgutschein (AZAV)';
 const description =
-  'Die WAMOCON Academy GmbH ist durch die GZQ GmbH als Bildungsträger nach AZAV zugelassen. Was das bedeutet und wie der Weg zum Bildungsgutschein abläuft.';
+  'Neu: In 45 Tagen zum ISTQB® Softwaretester. Präsenz oder live online beim AZAV-zugelassenen Bildungsträger WAMOCON Academy. Mit Bildungsgutschein kostenfrei möglich.';
 // noindex, solange die Zertifikatsnummer in src/data/bildungstraeger.ts fehlt.
 const noindex = !istVeroeffentlicht();
+const origin = (Astro.site ?? new URL('https://test-it-academy.com')).origin;
+const schema = [seminarSchema(origin, new URL(Astro.url.pathname, origin).href, 'de-DE', description)];
 ---
 
-<BaseLayout
-  title={title}
-  description={description}
-  lang={lang}
-  noindex={noindex}
->
+<BaseLayout title={title} description={description} lang={lang} noindex={noindex} schema={schema}>
   <BildungstraegerPage lang={lang} />
 </BaseLayout>
