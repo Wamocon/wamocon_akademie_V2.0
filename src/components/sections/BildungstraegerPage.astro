@@ -56,8 +56,12 @@ const reviewMonth = new Intl.DateTimeFormat(intlLocale, { month: 'long', year: '
 // The hero uses a real photo from a WAMOCON Academy seminar room.
 const heroImage = '/images/academy/tild3464-3762-4433-b130-323731353237__img52.jpg';
 
-// Trainer facts: www.wamocon.com/ueber-uns/ (retrieved 27.10.2026).
-const trainerImages: Record<string, string> = { waleri: '/images/team-waleri.png', daniel: '/images/team-daniel.png' };
+// Trainer facts and portraits: www.wamocon.com/ueber-uns/ (retrieved 27.10.2026).
+const trainerImages: Record<string, { src: string; size: number }> = {
+  waleri: { src: '/images/wamocon/team-waleri.webp', size: 800 },
+  daniel: { src: '/images/wamocon/team-daniel.jpg', size: 760 },
+};
+const teamPhoto = '/images/wamocon/team-photo.jpg';
 
 // Industries and clients: www.wamocon.com and the home-page FAQ of this site.
 const clients = ['Deutsche Telekom', 'Deutsche Bank', 'Intel', 'EnBW', 'Daimler'];
@@ -81,7 +85,7 @@ const copy = {
     heroText: 'Unser neues Seminar in Präsenz oder live online. Mit Bildungsgutschein kostenfrei für dich.*',
     // Quelle: § 83 Abs. 1 SGB III (Lehrgangskosten).
     heroNote: '* Sobald die Maßnahmenzulassung vorliegt. Wird dein Bildungsgutschein bewilligt, übernimmt die Agentur für Arbeit die Lehrgangskosten.',
-    heroStats: [['45', 'Tage Praxis-Seminar'], ['50+', 'Jahre Projekterfahrung im Team'], [`${ns.plaetzeVorOrt}+`, 'Plätze vor Ort']],
+    heroStats: [['45', 'Tage Praxis-Seminar'], ['Seit 2007', 'im IT-Test für Großprojekte'], [`${ns.plaetzeVorOrt}+`, 'Plätze vor Ort']],
     ctaPlanned: 'Beratung und Vormerkung anfragen',
     ctaApproved: 'Förderberatung anfragen',
     ctaSeminar: 'Zum Seminar',
@@ -89,6 +93,8 @@ const copy = {
     sealsLabel: 'Zulassungen und Auszeichnungen',
     sealAzav: ['AZAV-zugelassen', `${bt.fachkundigeStelle.name}, Fachbereich ${bt.fachbereich.nummer}`],
     sealIstqb: ['ISTQB® Accredited Training Provider', 'CTFL 4.0 und Agile Tester 1.0 (deutsch)'],
+    // Bewertung wie im Footer der Website ausgewiesen.
+    sealGoogle: ['5,0 ★★★★★', 'Google-Bewertung'],
 
     // Werbeschild. Inhalte aus dem Kurs "ISTQB® CTFL + Praxistraining"
     // (audit/course-popup-copy.json) und den Trainingsunterlagen des Seminars.
@@ -149,7 +155,7 @@ const copy = {
     knowLead: 'Über 50 Jahre Praxiswissen',
     knowRest: 'aus IT-Großprojekten',
     knowText:
-      'Unser Trainerteam bündelt über 50 Jahre Praxiserfahrung aus IT-Testprojekten der WAMOCON GmbH, unter anderem für Deutsche Telekom, Deutsche Bank, Intel, EnBW und Daimler. Dieses Wissen steckt in jedem Seminartag. Du lernst, wie Testen in echten Projekten funktioniert, nicht nur, wie es im Lehrbuch steht.',
+      'Seit 2007 testet unser Team Software in Großprojekten, unter anderem für Deutsche Telekom, Deutsche Bank, Intel, EnBW und Daimler. Zusammen bündeln die Trainer über 50 Jahre Praxiserfahrung. Dieses Wissen steckt in jedem Seminartag. Du lernst, wie Testen in echten Projekten funktioniert, nicht nur, wie es im Lehrbuch steht.',
     kpiLabel: 'Kennzahlen',
     kpis: [
       [50, '+', 'Jahre gebündelte Praxiserfahrung'],
@@ -189,7 +195,7 @@ const copy = {
     stepsLead: 'Dein Weg zur Förderung',
     stepsRest: 'in 4 Schritten',
     steps: [
-      ['Gespräch mit uns', 'Wir lernen dich kennen und klären gemeinsam, ob das Seminar zu dir passt.'],
+      ['Gespräch mit uns', 'Wir lernen dich kennen, klären, ob das Seminar zu dir passt, und geben dir die Angaben zur Maßnahme für dein Gespräch mit.'],
       // Quelle: § 81 Abs. 1 Nr. 2 SGB III.
       ['Beratung bei der Agentur für Arbeit', 'Die Agentur für Arbeit berät dich vor der Weiterbildung und prüft die Förderung.'],
       // Quelle: § 81 Abs. 4 SGB III.
@@ -201,20 +207,22 @@ const copy = {
     trainersEyebrow: 'Deine Trainer',
     trainersLead: 'Lernen von',
     trainersRest: 'Praktikern',
-    trainersText: 'Bei uns unterrichten Menschen, die selbst Testprojekte leiten. Sie wissen, worauf es im Job ankommt.',
+    trainersText: 'Du lernst Softwaretesting nicht von Theoretikern, sondern von den Testmanagern der WAMOCON, die selbst Projekte für große Unternehmen leiten. Heute testen sie auch KI-Systeme.',
+    teamAlt: 'Gruppenfoto des WAMOCON-Teams vor dem Bürogebäude in Eschborn',
+    teamCaption: 'Das Team hinter deinem Seminar in Eschborn',
     trainers: [
       {
         key: 'waleri',
         name: 'Dipl.-Ing. Waleri Moretz',
-        role: 'Geschäftsführer, Testmanager und ISTQB®-Trainer',
-        facts: ['17 Jahre Praxiserfahrung im Softwaretesting', 'Projektleitung für Teams mit bis zu 450 Personen', 'Agile und klassische Testmethoden', 'ISTQB®-zertifiziert und ISTQB®-Trainer'],
+        role: 'Geschäftsführer, Testmanager, ISTQB®-Trainer und LaaJ-Architekt für KI-Qualitätssicherung',
+        facts: ['Seit 2007 im IT-Test und Qualitätsmanagement', 'Projektleitung für Teams mit bis zu 450 Personen', 'Agile und klassische Testmethoden', 'ISTQB®-zertifiziert und ISTQB®-Trainer'],
         alt: 'Porträt von Dipl.-Ing. Waleri Moretz',
       },
       {
         key: 'daniel',
         name: 'Daniel Moretz',
-        role: 'Testmanager, Testautomatisierer und ISTQB®-Trainer',
-        facts: ['Über 7 Jahre Erfahrung im Application Lifecycle Management', 'Testautomatisierung, Last- und Performancetests', 'Integrations-, System-, Abnahme- und Regressionstests', 'ISTQB®-zertifiziert, Mitautor der Seminarunterlagen'],
+        role: 'Testmanager, Testautomatisierer, ISTQB®-Trainer und LLM-as-a-Judge-Ingenieur',
+        facts: ['Über 7 Jahre Erfahrung im Application Lifecycle Management', 'Testautomatisierung, Last- und Performancetests', 'V-Modell kombiniert mit SCRUM und SAFe', 'ISTQB®-zertifiziert, Mitautor der Seminarunterlagen'],
         alt: 'Porträt von Daniel Moretz',
       },
     ],
@@ -242,7 +250,7 @@ const copy = {
     whyRest: 'die WAMOCON Academy',
     whyText: 'Hinter der Academy steht die WAMOCON GmbH, ein Unternehmen für IT-Testmanagement. Diese Branchen kennen wir aus eigenen Projekten.',
     industriesLabel: 'Branchen aus unseren Projekten',
-    industries: ['Mobilkommunikation', 'Finanzsektor', 'Energie', 'Automobilindustrie', 'Bauwesen'],
+    industries: ['Mobilfunk', 'Banken', 'Versicherungen', 'Energie', 'Automobil', 'Verkehr und Logistik', 'Pharma'],
     clientsLabel: 'Projekte unter anderem für',
     whyFacts: [
       ['ISTQB®', 'Akkreditierter Trainingsanbieter für deutschsprachige CTFL 4.0- und Agile Tester 1.0-Materialien'],
@@ -251,12 +259,17 @@ const copy = {
       ['1:1', 'Mentoring durch Trainer, die selbst Projekte leiten'],
     ],
 
-    proofEyebrow: 'Qualitätssiegel',
+    proofEyebrow: 'Qualitätssiegel und Fakten für Vermittlungsfachkräfte',
     proofLead: 'Geprüft.',
     proofRest: 'Zugelassen.',
     proofSeal: ['AZAV', 'Zulassung erhalten', bt.fachkundigeStelle.name],
     proofText: `Die WAMOCON Academy GmbH hat die Trägerzulassung nach AZAV erhalten. Geprüft hat die ${bt.fachkundigeStelle.name} aus ${bt.fachkundigeStelle.ort}, eine akkreditierte fachkundige Stelle.`,
     proofRows: {
+      provider: 'Bildungsträger',
+      course: 'Maßnahme',
+      duration: 'Dauer und Format',
+      basis: 'Fördergrundlage',
+      contact: 'Direktkontakt',
       body: 'Fachkundige Stelle',
       type: 'Art der Zulassung',
       area: 'Zugelassener Fachbereich',
@@ -271,15 +284,78 @@ const copy = {
     measuresCount: (n: number) => (n === 1 ? '1 Maßnahme' : `${n} Maßnahmen`),
     certAlt: `Zertifikat der Trägerzulassung nach AZAV, ausgestellt von der ${bt.fachkundigeStelle.name}`,
     certPdf: 'Zertifikat ansehen (PDF)',
+    factCourse: `${bt.seminar.titel}, ${bt.seminar.tage} Tage. Maßnahmenzulassung in Vorbereitung`,
+    factDuration: '45 Seminartage in Vollzeit, in Präsenz in Eschborn oder live online',
+    factBasis: 'Bildungsgutschein nach § 81 SGB III',
 
     groupsLead: 'Für wen',
     groupsRest: 'das Seminar gedacht ist',
     groups: [
       ['Absolventen', 'Du hast dein Studium oder deine Ausbildung abgeschlossen und suchst den Einstieg in die IT? Mit dem ISTQB® Zertifikat und echter Projektpraxis bringst du mit, was viele Arbeitgeber in ihren Stellenanzeigen nennen.'],
       ['Quereinsteiger', 'Du kommst aus einem anderen Beruf und willst in die IT wechseln? Vorkenntnisse brauchst du nicht. Wir starten bei den Grundlagen und begleiten dich bis zur Prüfung.'],
+      ['Internationale Fachkräfte', 'Du lebst in Deutschland und hast deine Ausbildung im Ausland gemacht? Wir beraten dich auf Deutsch, Englisch und Kasachisch und erklären dir Schritt für Schritt den Weg zum Bildungsgutschein.'],
     ],
     // Quelle: § 81 Abs. 1 Nr. 1 SGB III; arbeitsagentur.de.
     groupsNote: 'Gefördert werden kann die Weiterbildung zum Beispiel, wenn du arbeitslos bist oder dir Arbeitslosigkeit droht. Das prüft die Agentur für Arbeit.',
+
+    // Warum Softwaretesting. Copywriting nach der Marktanalyse, ohne Gehalts- oder Quotenangaben.
+    entryEyebrow: 'Warum Softwaretesting',
+    entryLead: 'Dein Weg in die IT,',
+    entryRest: 'ohne Informatikstudium',
+    entryText: 'Du willst in die IT, aber nicht jahrelang studieren oder Programmier-Theorie pauken? Softwaretesting setzt auf strukturiertes Denken und klare Methoden. Genau das lernst du bei uns.',
+    entryPoints: [
+      ['Methoden statt Code-Marathon', 'Du prüfst Software systematisch nach festen Verfahren. Dafür brauchst du kein Informatikstudium.'],
+      ['Ein Zertifikat mit Gewicht', 'ISTQB® ist das international verbreitete Zertifizierungsschema für Softwaretester und in vielen Stellenanzeigen gefragt.'],
+      ['Gefragt auch bei KI', 'Jede Software und jedes KI-System muss getestet werden. Unser Team prüft heute auch KI-Lösungen.'],
+    ],
+
+    compareLead: 'Was dich bei uns',
+    compareRest: 'erwartet',
+    compareText: 'Drei Wege zum ISTQB® Certified Tester Foundation Level im Vergleich der Formate.',
+    compareCols: ['45-Tage-Seminar der WAMOCON Academy', 'Kompaktkurs mit 3 bis 5 Tagen', 'Video-Selbststudium'],
+    compareRows: [
+      ['Live-Unterricht mit Trainern', 'yes', 'yes', 'no'],
+      ['Zeit für Übung und Wiederholung', '45 Tage, drei Durchgänge', '3 bis 5 Tage', 'selbst organisiert'],
+      ['Fragen sofort klären', 'yes', 'yes', 'no'],
+      ['Vorbereitung auf die ISTQB® CTFL Prüfung', 'yes', 'yes', 'yes'],
+      ['Fälle aus Großprojekten der WAMOCON', 'yes', 'je nach Anbieter', 'je nach Anbieter'],
+      ['Begleitung bis zur Bewerbung', 'yes', 'je nach Anbieter', 'je nach Anbieter'],
+      ['Förderung mit Bildungsgutschein', 'nach Maßnahmenzulassung', 'je nach Anbieter', 'je nach Anbieter'],
+    ],
+    compareYes: 'Ja',
+    compareNo: 'Nein',
+
+    // Förder-Check. Gibt nur eine Orientierung; die Entscheidung trifft die Agentur für Arbeit.
+    quizEyebrow: 'Förder-Check',
+    quizLead: 'Kommt eine Förderung',
+    quizRest: 'für dich infrage?',
+    quizText: 'Zwei Fragen, 20 Sekunden. Du bekommst sofort eine erste Einschätzung.',
+    quizQuestions: [
+      { name: 'situation', label: 'Wie ist deine Situation gerade?', options: [['unemployed', 'Ich bin arbeitslos oder arbeitsuchend gemeldet'], ['risk', 'Ich arbeite, aber mir droht Arbeitslosigkeit'], ['employed', 'Ich arbeite und möchte mich weiterbilden'], ['other', 'Etwas anderes']] },
+      { name: 'residence', label: 'Lebst du in Deutschland?', options: [['yes', 'Ja'], ['no', 'Nein']] },
+    ],
+    quizResults: {
+      good: ['Gute Voraussetzungen', 'Für Arbeitsuchende und Menschen, denen Arbeitslosigkeit droht, ist eine Förderung mit Bildungsgutschein vorgesehen. Lass uns gemeinsam deinen Weg planen.'],
+      check: ['Lass es prüfen', 'Auch Beschäftigte können gefördert werden. Ob das bei dir passt, klärt die Agentur für Arbeit. Wir beraten dich vorher gern.'],
+      abroad: ['Sprich mit uns', 'Der Bildungsgutschein ist ein Angebot der Agentur für Arbeit in Deutschland. Wir zeigen dir, welche Möglichkeiten du hast.'],
+    },
+    quizSubmit: 'Ergebnis anzeigen',
+    quizNote: 'Unverbindliche Orientierung. Deine Antworten bleiben in deinem Browser. Über die Förderung entscheidet die Agentur für Arbeit.',
+
+    timelineLead: 'Projekte',
+    timelineRest: 'seit 2007',
+    timelineText: 'Ein Auszug aus der Projektgeschichte der WAMOCON. Diese Erfahrung bringen deine Trainer ins Seminar mit.',
+    timeline: [
+      ['2007', 'Start im IT-Test und Qualitätsmanagement'],
+      ['2010', 'Unternehmensverzeichnis für einen deutschen Energieversorger'],
+      ['2013', 'Testmanagement für ein Bankensystem einer Automobilbank'],
+      ['2015', 'SAP-Rollout bei einem internationalen Pharmaunternehmen'],
+      ['2016', 'SAP-HANA-Integration bei einem Versicherungsunternehmen'],
+      ['2017', 'Systeme für ein deutsches Logistikunternehmen'],
+      ['2021', 'Aufbau der WAMOCON Academy und Start der Lernplattform DiTeLe'],
+      ['2023', 'Testmanagement für einen europäischen Mobilfunkanbieter'],
+      ['2026', 'Über 50 KI-Produktlösungen, jede mit LLM-as-a-Judge getestet'],
+    ],
 
     faqHeading: 'Häufige Fragen zu Förderung und Zulassung',
     faqIntro: 'Hier findest du Antworten auf die Fragen, die uns zum Bildungsgutschein und zum 45-Tage-Seminar am häufigsten gestellt werden.',
@@ -300,7 +376,7 @@ const copy = {
     // AZAV and Bildungsgutschein are explained on first use.
     heroText: 'Our new seminar, on site or live online. Free for you with a Bildungsgutschein, a German education voucher.*',
     heroNote: '* Once the course approval is granted. If your Bildungsgutschein is approved, the Agentur für Arbeit covers the course fees.',
-    heroStats: [['45', 'days of hands-on seminar'], ['50+', 'years of project experience in the team'], [`${ns.plaetzeVorOrt}+`, 'on-site places']],
+    heroStats: [['45', 'days of hands-on seminar'], ['Since 2007', 'testing large IT projects'], [`${ns.plaetzeVorOrt}+`, 'on-site places']],
     ctaPlanned: 'Get advice and pre-register',
     ctaApproved: 'Request funding advice',
     ctaSeminar: 'See the seminar',
@@ -308,6 +384,7 @@ const copy = {
     sealsLabel: 'Approvals and awards',
     sealAzav: ['Approved under AZAV', `${bt.fachkundigeStelle.name}, field ${bt.fachbereich.nummer}`],
     sealIstqb: ['ISTQB® Accredited Training Provider', 'CTFL 4.0 and Agile Tester 1.0 (German)'],
+    sealGoogle: ['5.0 ★★★★★', 'Google rating'],
 
     showcaseEyebrow: 'New in our programme',
     showcaseDays: 'days',
@@ -362,7 +439,7 @@ const copy = {
     knowLead: 'Over 50 years of know-how',
     knowRest: 'from large IT projects',
     knowText:
-      'Our training team brings over 50 years of combined experience from IT testing projects of WAMOCON GmbH, including work for Deutsche Telekom, Deutsche Bank, Intel, EnBW and Daimler. That knowledge goes into every seminar day. You learn how testing works in real projects, not just in the textbook.',
+      'Since 2007 our team has been testing software in large projects, including work for Deutsche Telekom, Deutsche Bank, Intel, EnBW and Daimler. Together the trainers bring over 50 years of practical experience. That knowledge goes into every seminar day. You learn how testing works in real projects, not just in the textbook.',
     kpiLabel: 'Key figures',
     kpis: [
       [50, '+', 'years of combined practical experience'],
@@ -399,7 +476,7 @@ const copy = {
     stepsLead: 'Your route to funding',
     stepsRest: 'in 4 steps',
     steps: [
-      ['A conversation with us', 'We get to know you and work out together whether the seminar is right for you.'],
+      ['A conversation with us', 'We get to know you, check whether the seminar is right for you and give you the course details for your appointment.'],
       ['Advice at the Agentur für Arbeit', 'The Agentur für Arbeit advises you before the training and reviews funding.'],
       ['Bildungsgutschein', 'If the conditions are met, you receive your Bildungsgutschein.'],
       ['Start at WAMOCON Academy', 'We submit the voucher before the course begins. Then you are ready to go.'],
@@ -408,20 +485,22 @@ const copy = {
     trainersEyebrow: 'Your trainers',
     trainersLead: 'Learn from',
     trainersRest: 'practitioners',
-    trainersText: 'Our trainers lead testing projects themselves. They know what matters on the job.',
+    trainersText: 'You learn software testing from the WAMOCON test managers who lead projects for large companies themselves, not from theorists. Today they also test AI systems.',
+    teamAlt: 'Group photo of the WAMOCON team in front of the office building in Eschborn',
+    teamCaption: 'The team behind your seminar in Eschborn',
     trainers: [
       {
         key: 'waleri',
         name: 'Dipl.-Ing. Waleri Moretz',
-        role: 'Managing Director, test manager and ISTQB® trainer',
-        facts: ['17 years of hands-on experience in software testing', 'Project lead for teams of up to 450 people', 'Agile and classic testing methods', 'ISTQB® certified and ISTQB® trainer'],
+        role: 'Managing Director, test manager, ISTQB® trainer and LaaJ architect for AI quality assurance',
+        facts: ['In IT testing and quality management since 2007', 'Project lead for teams of up to 450 people', 'Agile and classic testing methods', 'ISTQB® certified and ISTQB® trainer'],
         alt: 'Portrait of Dipl.-Ing. Waleri Moretz',
       },
       {
         key: 'daniel',
         name: 'Daniel Moretz',
-        role: 'Test manager, test automation engineer and ISTQB® trainer',
-        facts: ['Over 7 years in application lifecycle management', 'Test automation, load and performance testing', 'Integration, system, acceptance and regression testing', 'ISTQB® certified, co-author of the seminar materials'],
+        role: 'Test manager, test automation engineer, ISTQB® trainer and LLM-as-a-Judge engineer',
+        facts: ['Over 7 years in application lifecycle management', 'Test automation, load and performance testing', 'V-model combined with SCRUM and SAFe', 'ISTQB® certified, co-author of the seminar materials'],
         alt: 'Portrait of Daniel Moretz',
       },
     ],
@@ -449,7 +528,7 @@ const copy = {
     whyRest: 'WAMOCON Academy',
     whyText: 'The academy is backed by WAMOCON GmbH, an IT test-management company. We know these industries from our own projects.',
     industriesLabel: 'Industries from our projects',
-    industries: ['Mobile communications', 'Finance', 'Energy', 'Automotive', 'Construction'],
+    industries: ['Mobile networks', 'Banking', 'Insurance', 'Energy', 'Automotive', 'Transport and logistics', 'Pharma'],
     clientsLabel: 'Projects include work for',
     whyFacts: [
       ['ISTQB®', 'Accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 materials'],
@@ -458,12 +537,17 @@ const copy = {
       ['1:1', 'Mentoring by trainers who lead projects themselves'],
     ],
 
-    proofEyebrow: 'Quality seal',
+    proofEyebrow: 'Quality seal and facts for employment advisers',
     proofLead: 'Reviewed.',
     proofRest: 'Approved.',
     proofSeal: ['AZAV', 'Approval granted', bt.fachkundigeStelle.name],
     proofText: `WAMOCON Academy GmbH has received its provider approval under AZAV. The review was carried out by ${bt.fachkundigeStelle.name} from ${bt.fachkundigeStelle.ort}, an accredited certification body.`,
     proofRows: {
+      provider: 'Education provider',
+      course: 'Course',
+      duration: 'Duration and format',
+      basis: 'Funding basis',
+      contact: 'Direct contact',
       body: 'Certification body',
       type: 'Type of approval',
       area: 'Approved field',
@@ -478,14 +562,75 @@ const copy = {
     measuresCount: (n: number) => (n === 1 ? '1 course' : `${n} courses`),
     certAlt: `Certificate of the AZAV provider approval, issued by ${bt.fachkundigeStelle.name}`,
     certPdf: 'View certificate (PDF)',
+    factCourse: `${bt.seminar.titel}, ${bt.seminar.tage} days. Course approval in preparation`,
+    factDuration: '45 full-time seminar days, on site in Eschborn or live online',
+    factBasis: 'Bildungsgutschein under § 81 SGB III',
 
     groupsLead: 'Who',
     groupsRest: 'the seminar is for',
     groups: [
       ['Graduates', 'You have finished your degree or vocational training and want to get into IT? With the ISTQB® certificate and real project practice you bring what many employers name in their job postings.'],
       ['Career changers', 'You come from a different profession and want to move into IT? No prior knowledge needed. We start with the fundamentals and support you all the way to the exam.'],
+      ['International professionals', 'You live in Germany and trained abroad? We advise you in German, English and Kazakh and explain the route to a Bildungsgutschein step by step.'],
     ],
     groupsNote: 'Funding is possible, for example, if you are unemployed or at risk of losing your job. The Agentur für Arbeit assesses this.',
+
+    entryEyebrow: 'Why software testing',
+    entryLead: 'Your route into IT,',
+    entryRest: 'without a computer science degree',
+    entryText: 'You want to work in IT but not study for years or cram programming theory? Software testing rewards structured thinking and clear methods. That is exactly what you learn with us.',
+    entryPoints: [
+      ['Methods, not a coding marathon', 'You check software systematically using defined techniques. No computer science degree required.'],
+      ['A certificate that counts', 'ISTQB® is the internationally widespread certification scheme for software testers and appears in many job postings.'],
+      ['In demand for AI too', 'Every piece of software and every AI system has to be tested. Our team tests AI solutions today as well.'],
+    ],
+
+    compareLead: 'What to expect',
+    compareRest: 'with us',
+    compareText: 'Three routes to the ISTQB® Certified Tester Foundation Level, compared by format.',
+    compareCols: ['WAMOCON Academy 45-day seminar', 'Compact course of 3 to 5 days', 'Video self-study'],
+    compareRows: [
+      ['Live classes with trainers', 'yes', 'yes', 'no'],
+      ['Time for practice and revision', '45 days, three passes', '3 to 5 days', 'self-organised'],
+      ['Questions answered straight away', 'yes', 'yes', 'no'],
+      ['Preparation for the ISTQB® CTFL exam', 'yes', 'yes', 'yes'],
+      ['Cases from large WAMOCON projects', 'yes', 'depends on provider', 'depends on provider'],
+      ['Support up to your application', 'yes', 'depends on provider', 'depends on provider'],
+      ['Funding with a Bildungsgutschein', 'after course approval', 'depends on provider', 'depends on provider'],
+    ],
+    compareYes: 'Yes',
+    compareNo: 'No',
+
+    quizEyebrow: 'Funding check',
+    quizLead: 'Could funding',
+    quizRest: 'work for you?',
+    quizText: 'Two questions, 20 seconds. You get an initial assessment straight away.',
+    quizQuestions: [
+      { name: 'situation', label: 'What is your situation right now?', options: [['unemployed', 'I am registered as unemployed or job-seeking'], ['risk', 'I am employed but at risk of losing my job'], ['employed', 'I am employed and want to train further'], ['other', 'Something else']] },
+      { name: 'residence', label: 'Do you live in Germany?', options: [['yes', 'Yes'], ['no', 'No']] },
+    ],
+    quizResults: {
+      good: ['Good starting point', 'Funding with a Bildungsgutschein is intended for job seekers and people at risk of unemployment. Let us plan your route together.'],
+      check: ['Worth checking', 'Employees can be funded too. The Agentur für Arbeit decides whether it applies to you. We are happy to advise you first.'],
+      abroad: ['Talk to us', 'The Bildungsgutschein is offered by the Agentur für Arbeit in Germany. We will show you which options you have.'],
+    },
+    quizSubmit: 'Show result',
+    quizNote: 'Non-binding guidance. Your answers stay in your browser. The Agentur für Arbeit decides on funding.',
+
+    timelineLead: 'Projects',
+    timelineRest: 'since 2007',
+    timelineText: 'Highlights from the WAMOCON project history. This is the experience your trainers bring into the seminar.',
+    timeline: [
+      ['2007', 'Start in IT testing and quality management'],
+      ['2010', 'Company directory for a German energy supplier'],
+      ['2013', 'Test management for an automotive bank core system'],
+      ['2015', 'SAP rollout at an international pharmaceutical company'],
+      ['2016', 'SAP HANA integration at an insurance company'],
+      ['2017', 'Systems for a German logistics company'],
+      ['2021', 'WAMOCON Academy founded, DiTeLe learning platform launched'],
+      ['2023', 'Test management for a European mobile network operator'],
+      ['2026', 'Over 50 AI product solutions, each tested with LLM-as-a-Judge'],
+    ],
 
     faqHeading: 'Frequently asked questions about funding and approval',
     faqIntro: 'Answers to the questions we hear most often about the Bildungsgutschein and the 45-day seminar.',
@@ -506,7 +651,7 @@ const copy = {
     heroRest: 'ISTQB® тестілеуші болыңыз',
     heroText: 'Аудиторияда немесе тікелей онлайн өтетін жаңа семинарымыз. Bildungsgutschein (неміс білім беру ваучері) арқылы сіз үшін тегін.*',
     heroNote: '* Курсқа рұқсат берілгеннен кейін. Bildungsgutschein мақұлданса, курс ақысын Agentur für Arbeit өтейді.',
-    heroStats: [['45', 'күндік тәжірибелік семинар'], ['50+', 'жыл командадағы жоба тәжірибесі'], [`${ns.plaetzeVorOrt}+`, 'аудиториядағы орын']],
+    heroStats: [['45', 'күндік тәжірибелік семинар'], ['2007 жылдан', 'ірі IT жобаларын тестілеуде'], [`${ns.plaetzeVorOrt}+`, 'аудиториядағы орын']],
     ctaPlanned: 'Кеңес алу және алдын ала тіркелу',
     ctaApproved: 'Қаржыландыру бойынша кеңес алу',
     ctaSeminar: 'Семинарға өту',
@@ -514,6 +659,7 @@ const copy = {
     sealsLabel: 'Рұқсаттар мен марапаттар',
     sealAzav: ['AZAV бойынша рұқсат', `${bt.fachkundigeStelle.name}, ${bt.fachbereich.nummer}-бағыт`],
     sealIstqb: ['ISTQB® Accredited Training Provider', 'CTFL 4.0 және Agile Tester 1.0 (неміс тілі)'],
+    sealGoogle: ['5,0 ★★★★★', 'Google бағасы'],
 
     showcaseEyebrow: 'Бағдарламадағы жаңалық',
     showcaseDays: 'күн',
@@ -568,7 +714,7 @@ const copy = {
     knowLead: '50 жылдан астам білім',
     knowRest: 'ірі IT жобаларынан',
     knowText:
-      'Тренерлер тобы WAMOCON GmbH компаниясының IT тестілеу жобаларынан жинақталған 50 жылдан астам тәжірибені біріктіреді, оның ішінде Deutsche Telekom, Deutsche Bank, Intel, EnBW және Daimler үшін. Бұл білім әр семинар күнінде бар. Тестілеудің оқулықта емес, нақты жобада қалай жүретінін үйренесіз.',
+      'Командамыз 2007 жылдан бері ірі жобаларда бағдарламаларды тестілеп келеді, оның ішінде Deutsche Telekom, Deutsche Bank, Intel, EnBW және Daimler үшін. Тренерлер бірлесіп 50 жылдан астам тәжірибе ұсынады. Бұл білім әр семинар күнінде бар. Тестілеудің оқулықта емес, нақты жобада қалай жүретінін үйренесіз.',
     kpiLabel: 'Көрсеткіштер',
     kpis: [
       [50, '+', 'жыл жинақталған тәжірибе'],
@@ -605,7 +751,7 @@ const copy = {
     stepsLead: 'Қаржыландыруға апарар жол',
     stepsRest: '4 қадамда',
     steps: [
-      ['Бізбен әңгіме', 'Сізбен танысып, семинар сізге сай ма, соны бірге анықтаймыз.'],
+      ['Бізбен әңгіме', 'Сізбен танысып, семинар сізге сай ма, соны анықтаймыз және кездесуіңізге курс туралы мәліметтерді береміз.'],
       ['Agentur für Arbeit-те кеңес', 'Agentur für Arbeit оқу алдында кеңес беріп, қаржыландыруды тексереді.'],
       ['Bildungsgutschein', 'Шарттар орындалса, Bildungsgutschein аласыз.'],
       ['WAMOCON Academy-де бастау', 'Ваучерді курс басталғанға дейін тапсырамыз. Содан кейін оқу басталады.'],
@@ -614,20 +760,22 @@ const copy = {
     trainersEyebrow: 'Тренерлеріңіз',
     trainersLead: 'Практиктерден',
     trainersRest: 'үйреніңіз',
-    trainersText: 'Бізде тестілеу жобаларын өздері басқаратын мамандар сабақ береді. Олар жұмыста не маңызды екенін біледі.',
+    trainersText: 'Тестілеуді теоретиктерден емес, ірі компаниялардың жобаларын өздері басқаратын WAMOCON тестілеу менеджерлерінен үйренесіз. Бүгін олар KI жүйелерін де тестілейді.',
+    teamAlt: 'Эшборндағы кеңсе ғимараты алдындағы WAMOCON командасының суреті',
+    teamCaption: 'Эшборндағы семинарыңыздың артындағы команда',
     trainers: [
       {
         key: 'waleri',
         name: 'Dipl.-Ing. Waleri Moretz',
-        role: 'Атқарушы директор, тестілеу менеджері және ISTQB® тренері',
-        facts: ['Тестілеу саласында 17 жылдық тәжірибе', '450 адамға дейінгі командалардың жоба жетекшісі', 'Agile және классикалық тестілеу әдістері', 'ISTQB® сертификаты бар және ISTQB® тренері'],
+        role: 'Атқарушы директор, тестілеу менеджері, ISTQB® тренері және KI сапасын қамтамасыз ету жөніндегі LaaJ сәулетшісі',
+        facts: ['2007 жылдан бері IT тестілеу және сапа менеджментінде', '450 адамға дейінгі командалардың жоба жетекшісі', 'Agile және классикалық тестілеу әдістері', 'ISTQB® сертификаты бар және ISTQB® тренері'],
         alt: 'Dipl.-Ing. Waleri Moretz портреті',
       },
       {
         key: 'daniel',
         name: 'Daniel Moretz',
-        role: 'Тестілеу менеджері, автоматтандыру маманы және ISTQB® тренері',
-        facts: ['Application Lifecycle Management саласында 7 жылдан астам тәжірибе', 'Тестілеуді автоматтандыру, жүктеме және өнімділік тесттері', 'Интеграциялық, жүйелік, қабылдау және регрессиялық тесттер', 'ISTQB® сертификаты бар, семинар материалдарының бірлескен авторы'],
+        role: 'Тестілеу менеджері, автоматтандыру маманы, ISTQB® тренері және LLM-as-a-Judge инженері',
+        facts: ['Application Lifecycle Management саласында 7 жылдан астам тәжірибе', 'Тестілеуді автоматтандыру, жүктеме және өнімділік тесттері', 'V-модель, SCRUM және SAFe әдістерін ұштастыру', 'ISTQB® сертификаты бар, семинар материалдарының бірлескен авторы'],
         alt: 'Daniel Moretz портреті',
       },
     ],
@@ -655,7 +803,7 @@ const copy = {
     whyRest: 'WAMOCON Academy',
     whyText: 'Академияның артында IT тестілеуді басқару компаниясы WAMOCON GmbH тұр. Бұл салаларды өз жобаларымыздан білеміз.',
     industriesLabel: 'Жобаларымыздағы салалар',
-    industries: ['Мобильді байланыс', 'Қаржы саласы', 'Энергетика', 'Автомобиль өнеркәсібі', 'Құрылыс'],
+    industries: ['Мобильді байланыс', 'Банктер', 'Сақтандыру', 'Энергетика', 'Автомобиль', 'Көлік және логистика', 'Фармацевтика'],
     clientsLabel: 'Жобалар, оның ішінде',
     whyFacts: [
       ['ISTQB®', 'Неміс тіліндегі CTFL 4.0 және Agile Tester 1.0 материалдары бойынша аккредиттелген оқыту провайдері'],
@@ -664,12 +812,17 @@ const copy = {
       ['1:1', 'Жобаларды өздері басқаратын тренерлердің тәлімгерлігі'],
     ],
 
-    proofEyebrow: 'Сапа белгісі',
+    proofEyebrow: 'Сапа белгісі және кеңесшілерге арналған деректер',
     proofLead: 'Тексерілді.',
     proofRest: 'Рұқсат берілді.',
     proofSeal: ['AZAV', 'Рұқсат алынды', bt.fachkundigeStelle.name],
     proofText: `WAMOCON Academy GmbH AZAV бойынша ұйымға берілетін рұқсатты алды. Тексеруді ${bt.fachkundigeStelle.ort} қаласындағы аккредиттелген сараптама органы ${bt.fachkundigeStelle.name} жүргізді.`,
     proofRows: {
+      provider: 'Білім беру ұйымы',
+      course: 'Курс',
+      duration: 'Ұзақтығы мен форматы',
+      basis: 'Қаржыландыру негізі',
+      contact: 'Тікелей байланыс',
       body: 'Сараптама органы',
       type: 'Рұқсат түрі',
       area: 'Рұқсат берілген бағыт',
@@ -684,14 +837,75 @@ const copy = {
     measuresCount: (n: number) => `${n} курс`,
     certAlt: `${bt.fachkundigeStelle.name} берген AZAV бойынша ұйымға рұқсат сертификаты`,
     certPdf: 'Сертификатты қарау (PDF)',
+    factCourse: `${bt.seminar.titel}, ${bt.seminar.tage} күн. Курсқа рұқсат дайындалуда`,
+    factDuration: 'Толық күндік 45 семинар күні, Эшборнда аудиторияда немесе тікелей онлайн',
+    factBasis: '§ 81 SGB III бойынша Bildungsgutschein',
 
     groupsLead: 'Семинар',
     groupsRest: 'кімге арналған',
     groups: [
       ['Түлектер', 'Оқуыңызды бітіріп, IT саласына кіргіңіз келе ме? ISTQB® сертификаты мен нақты жоба тәжірибесі арқылы көптеген жұмыс беруші хабарландыруында атайтын біліктілікке ие боласыз.'],
       ['Басқа саладан ауысушылар', 'Басқа мамандықтан IT саласына ауысқыңыз келе ме? Алдын ала білім қажет емес. Негіздерден бастап, емтиханға дейін қолдаймыз.'],
+      ['Халықаралық мамандар', 'Германияда тұрасыз және білімді шетелде алдыңыз ба? Сізге неміс, ағылшын және қазақ тілдерінде кеңес беріп, Bildungsgutschein алу жолын кезең-кезеңімен түсіндіреміз.'],
     ],
     groupsNote: 'Оқу, мысалы, жұмыссыз болсаңыз немесе жұмыссыз қалу қаупі болса, қаржыландырылуы мүмкін. Мұны Agentur für Arbeit тексереді.',
+
+    entryEyebrow: 'Неге тестілеу',
+    entryLead: 'IT саласына жол,',
+    entryRest: 'информатика мамандығынсыз',
+    entryText: 'IT саласында жұмыс істегіңіз келеді, бірақ жылдар бойы оқып, бағдарламалау теориясын жаттағыңыз келмей ме? Тестілеу құрылымды ойлау мен нақты әдістерге сүйенеді. Біз дәл соны үйретеміз.',
+    entryPoints: [
+      ['Код марафоны емес, әдістер', 'Бағдарламаны белгіленген әдістермен жүйелі тексересіз. Информатика мамандығы қажет емес.'],
+      ['Салмағы бар сертификат', 'ISTQB® тестілеушілерге арналған халықаралық кең таралған сертификаттау схемасы, көптеген жұмыс хабарландыруында сұралады.'],
+      ['KI үшін де сұранысқа ие', 'Әр бағдарлама мен әр KI жүйесі тестілеуді қажет етеді. Командамыз бүгін KI шешімдерін де тексереді.'],
+    ],
+
+    compareLead: 'Бізде сізді',
+    compareRest: 'не күтеді',
+    compareText: 'ISTQB® Certified Tester Foundation Level деңгейіне апаратын үш жолдың форматтар бойынша салыстыруы.',
+    compareCols: ['WAMOCON Academy 45 күндік семинары', '3-5 күндік қысқа курс', 'Бейне арқылы өздігінен оқу'],
+    compareRows: [
+      ['Тренерлермен тікелей сабақ', 'yes', 'yes', 'no'],
+      ['Жаттығу мен қайталауға уақыт', '45 күн, үш рет өту', '3-5 күн', 'өзіңіз ұйымдастырасыз'],
+      ['Сұрақтарға бірден жауап', 'yes', 'yes', 'no'],
+      ['ISTQB® CTFL емтиханына дайындық', 'yes', 'yes', 'yes'],
+      ['WAMOCON ірі жобаларынан мысалдар', 'yes', 'провайдерге байланысты', 'провайдерге байланысты'],
+      ['Өтініш беруге дейін қолдау', 'yes', 'провайдерге байланысты', 'провайдерге байланысты'],
+      ['Bildungsgutschein арқылы қаржыландыру', 'курсқа рұқсаттан кейін', 'провайдерге байланысты', 'провайдерге байланысты'],
+    ],
+    compareYes: 'Иә',
+    compareNo: 'Жоқ',
+
+    quizEyebrow: 'Қаржыландыруды тексеру',
+    quizLead: 'Сізге қаржыландыру',
+    quizRest: 'мүмкін бе?',
+    quizText: 'Екі сұрақ, 20 секунд. Бірден алғашқы бағаны аласыз.',
+    quizQuestions: [
+      { name: 'situation', label: 'Қазір жағдайыңыз қандай?', options: [['unemployed', 'Жұмыссыз немесе жұмыс іздеуші ретінде тіркелгенмін'], ['risk', 'Жұмыс істеймін, бірақ жұмыссыз қалу қаупі бар'], ['employed', 'Жұмыс істеймін және біліктілігімді арттырғым келеді'], ['other', 'Басқа жағдай']] },
+      { name: 'residence', label: 'Германияда тұрасыз ба?', options: [['yes', 'Иә'], ['no', 'Жоқ']] },
+    ],
+    quizResults: {
+      good: ['Жақсы бастама', 'Bildungsgutschein арқылы қаржыландыру жұмыс іздеушілер мен жұмыссыз қалу қаупі барларға арналған. Жолыңызды бірге жоспарлайық.'],
+      check: ['Тексертіп көріңіз', 'Жұмыс істейтіндер де қаржыландырылуы мүмкін. Бұл сізге қатысты ма, оны Agentur für Arbeit шешеді. Алдын ала кеңес береміз.'],
+      abroad: ['Бізбен сөйлесіңіз', 'Bildungsgutschein Германиядағы Agentur für Arbeit ұсынатын мүмкіндік. Сізде қандай жол бар екенін көрсетеміз.'],
+    },
+    quizSubmit: 'Нәтижені көрсету',
+    quizNote: 'Міндеттемесіз бағдар. Жауаптарыңыз браузеріңізде қалады. Қаржыландыру туралы шешімді Agentur für Arbeit қабылдайды.',
+
+    timelineLead: 'Жобалар',
+    timelineRest: '2007 жылдан бері',
+    timelineText: 'WAMOCON жоба тарихынан үзінді. Тренерлеріңіз семинарға осы тәжірибені әкеледі.',
+    timeline: [
+      ['2007', 'IT тестілеу және сапа менеджментіндегі бастама'],
+      ['2010', 'Неміс энергия жеткізушісіне арналған компания анықтамалығы'],
+      ['2013', 'Автомобиль банкінің банк жүйесі үшін тестілеуді басқару'],
+      ['2015', 'Халықаралық фармацевтика компаниясында SAP енгізу'],
+      ['2016', 'Сақтандыру компаниясында SAP HANA интеграциясы'],
+      ['2017', 'Неміс логистика компаниясына арналған жүйелер'],
+      ['2021', 'WAMOCON Academy қалыптасып, DiTeLe платформасы іске қосылды'],
+      ['2023', 'Еуропалық мобильді байланыс операторы үшін тестілеуді басқару'],
+      ['2026', '50-ден астам KI өнім шешімі, әрқайсысы LLM-as-a-Judge арқылы тестіленген'],
+    ],
 
     faqHeading: 'Қаржыландыру мен рұқсат туралы жиі қойылатын сұрақтар',
     faqIntro: 'Bildungsgutschein және 45 күндік семинар туралы бізге ең жиі қойылатын сұрақтардың жауаптары.',
@@ -792,6 +1006,15 @@ const faq = pick(lang, {
       answer: `Nein (${c.stand}). Das 45-Tage-Seminar der WAMOCON Academy richtet sich an Absolventen und Quereinsteiger ohne IT-Vorkenntnisse. Wir beginnen bei den Grundlagen des Softwaretestens und gehen den gesamten Stoff des ISTQB® Certified Tester Foundation Level in drei Durchgängen durch. Jeden Tag übst du das Gelernte in der Lernplattform DiTeLe. Ob das Seminar zu deinen Zielen passt, klären wir gern in einem Beratungsgespräch.`,
     },
     {
+      question: 'Wie lange dauert die Weiterbildung zum Softwaretester?',
+      answer: `Das Seminar ${bt.seminar.titel} der WAMOCON Academy dauert ${bt.seminar.tage} Seminartage in Vollzeit (${c.stand}). Es ist in vier Etappen aufgebaut: Tag 1 bis 14, Tag 15 bis 28 und Tag 29 bis 42 führen dreimal durch den gesamten Stoff des ISTQB® Certified Tester Foundation Level, jeweils mit neuen Praxisaufgaben. Tag 43 bis 45 dienen der gezielten Prüfungsvorbereitung. Du kannst in Präsenz in Eschborn oder live online teilnehmen.`,
+    },
+    {
+      question: 'Wo findet das Präsenz-Seminar statt?',
+      // Lage und Anbindung wie in der Start-FAQ beschrieben.
+      answer: `Das Präsenz-Seminar findet bei der ${company.name} in der ${company.street}, ${company.city} statt, direkt an der Stadtgrenze zu Frankfurt am Main (${c.stand}). Eschborn erreichst du mit den S-Bahn-Linien S3 und S4 sowie über die Autobahnen A5 und A66. Vor Ort sind mindestens ${ns.plaetzeVorOrt} Plätze garantiert. Wer nicht nach Eschborn kommen kann, nimmt live online teil, mit denselben Trainern und Inhalten.`,
+    },
+    {
       question: 'Gibt es den Kurs auch online?',
       answer: approved
         ? `Ja (${c.stand}). Bei jedem zugelassenen Kurs auf dieser Seite siehst du, ob er in Präsenz oder online stattfindet. Das 45-Tage-Seminar ${plannedName} bieten wir in beiden Varianten an. Welche besser zu dir passt, klären wir gern im Beratungsgespräch.`
@@ -837,6 +1060,14 @@ const faq = pick(lang, {
     {
       question: 'Do I need prior knowledge for the seminar?',
       answer: `No (${c.stand}). The 45-day seminar at WAMOCON Academy is designed for graduates and career changers without IT experience. We start with the fundamentals of software testing and work through the whole ISTQB® Certified Tester Foundation Level syllabus in three passes. Every day you practise what you have learned in the DiTeLe learning platform. We are happy to clarify in a consultation whether the seminar fits your goals.`,
+    },
+    {
+      question: 'How long does the software tester training take?',
+      answer: `The ${bt.seminar.titel} seminar at WAMOCON Academy takes ${bt.seminar.tage} full-time seminar days (${c.stand}). It runs in four stages: days 1 to 14, 15 to 28 and 29 to 42 take you through the whole ISTQB® Certified Tester Foundation Level syllabus three times, each with new practical tasks. Days 43 to 45 are dedicated to exam preparation. You can take part on site in Eschborn or live online.`,
+    },
+    {
+      question: 'Where does the on-site seminar take place?',
+      answer: `The on-site seminar takes place at ${company.name}, ${company.street}, ${company.city}, Germany, right on the city boundary of Frankfurt am Main (${c.stand}). Eschborn is reachable via suburban rail lines S3 and S4 and the A5 and A66 motorways. At least ${ns.plaetzeVorOrt} on-site places are guaranteed. If you cannot come to Eschborn, you join live online with the same trainers and content.`,
     },
     {
       question: 'Is the course also available online?',
@@ -886,6 +1117,14 @@ const faq = pick(lang, {
       answer: `Жоқ (${c.stand}). WAMOCON Academy-дің 45 күндік семинары IT тәжірибесі жоқ түлектер мен басқа саладан ауысушыларға арналған. Тестілеу негіздерінен бастап, ISTQB® Certified Tester Foundation Level бағдарламасын үш рет толық өтеміз. Күн сайын үйренгеніңізді DiTeLe платформасында жаттықтырасыз. Семинар мақсаттарыңызға сай ма, соны кеңес кезінде анықтаймыз.`,
     },
     {
+      question: 'Тестілеуші біліктілігін арттыру қанша уақытқа созылады?',
+      answer: `WAMOCON Academy-дің ${bt.seminar.titel} семинары толық күндік ${bt.seminar.tage} семинар күніне созылады (${c.stand}). Ол төрт кезеңнен тұрады: 1-14, 15-28 және 29-42 күндер ISTQB® Certified Tester Foundation Level бағдарламасын жаңа тәжірибелік тапсырмалармен үш рет толық өтуге арналған. 43-45 күндер емтиханға мақсатты дайындыққа бөлінген. Эшборнда аудиторияда немесе тікелей онлайн қатыса аласыз.`,
+    },
+    {
+      question: 'Аудиториядағы семинар қайда өтеді?',
+      answer: `Аудиториядағы семинар ${company.name} компаниясында, ${company.street}, ${company.city} мекенжайында, Франкфурт қаласының шекарасына іргелес жерде өтеді (${c.stand}). Эшборнға S3 және S4 пойыздарымен, сондай-ақ A5 және A66 автобандарымен жетуге болады. Аудиторияда кемінде ${ns.plaetzeVorOrt} орынға кепілдік беріледі. Эшборнға келе алмасаңыз, сол тренерлермен және сол мазмұнмен тікелей онлайн қатысасыз.`,
+    },
+    {
       question: 'Курс онлайн форматта да бар ма?',
       answer: approved
         ? `Иә (${c.stand}). Осы беттегі әр рұқсаты бар курста оның аудиторияда немесе онлайн өтетіні көрсетілген. ${plannedName} 45 күндік семинарын екі нұсқада да ұсынамыз. Қайсысы сізге сай екенін кеңес кезінде бірге анықтаймыз.`
@@ -908,6 +1147,7 @@ const faq = pick(lang, {
 ---
 
 <div class="bt-page">
+  <div class="bt-progress" aria-hidden="true"><span data-bt-progress></span></div>
   <!-- ================================================================ HERO -->
   <section class="bt-hero" aria-labelledby="bt-hero-title">
     <div class="bt-hero__media" aria-hidden="true">
@@ -952,6 +1192,10 @@ const faq = pick(lang, {
       <li class="bt-seal bt-seal--text" data-reveal>
         <strong>{c.sealIstqb[0]}</strong>
         <span>{c.sealIstqb[1]}</span>
+      </li>
+      <li class="bt-seal bt-seal--text" data-reveal>
+        <strong>{c.sealGoogle[0]}</strong>
+        <span>{c.sealGoogle[1]}</span>
       </li>
       {seals.map((seal) => (
         <li class="bt-seal" data-reveal>
@@ -1106,7 +1350,7 @@ const faq = pick(lang, {
       </div>
       <ul class="bt-kpis" aria-label={c.kpiLabel}>
         {c.kpis.map(([value, suffix, label]) => (
-          <li data-reveal>
+          <li class="bt-spot" data-reveal>
             <strong data-count-to={value} data-count-suffix={suffix}>{numberFormat.format(value as number)}{suffix}</strong>
             <span>{label}</span>
           </li>
@@ -1114,7 +1358,7 @@ const faq = pick(lang, {
       </ul>
       <div class="bt-tiles">
         {c.knowTiles.map(([title, text], index) => (
-          <article class="bt-tile" data-reveal>
+          <article class="bt-tile bt-spot" data-reveal>
             <span class="bt-num">{String(index + 1).padStart(2, '0')}</span>
             <h3>{title}</h3>
             <p>{text}</p>
@@ -1127,6 +1371,67 @@ const faq = pick(lang, {
           <ul>{clients.map((name) => <li>{name}</li>)}</ul>
           <ul aria-hidden="true">{clients.map((name) => <li>{name}</li>)}</ul>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================= ENTRY -->
+  <section class="section bt-entry" aria-labelledby="bt-entry-title">
+    <div class="bt-aurora" aria-hidden="true"><span></span><span></span></div>
+    <div class="container bt-entry__grid">
+      <div class="bt-head" data-reveal="left">
+        <p class="eyebrow">{c.entryEyebrow}</p>
+        <h2 id="bt-entry-title"><span>{c.entryLead}</span> {c.entryRest}</h2>
+        <p>{c.entryText}</p>
+      </div>
+      <ol class="bt-entry__points">
+        {c.entryPoints.map(([title, text], index) => (
+          <li class="bt-spot" data-reveal="right">
+            <span class="bt-num">{String(index + 1).padStart(2, '0')}</span>
+            <div>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ========================================================== COMPARE -->
+  <section class="section bt-compare" aria-labelledby="bt-compare-title">
+    <div class="container">
+      <div class="bt-head" data-reveal>
+        <h2 id="bt-compare-title"><span>{c.compareLead}</span> {c.compareRest}</h2>
+        <p>{c.compareText}</p>
+      </div>
+      <div class="bt-compare__wrap" data-reveal>
+        <table class="bt-compare__table">
+          <thead>
+            <tr>
+              <td></td>
+              {c.compareCols.map((col, index) => <th scope="col" class:list={{ 'is-ours': index === 0 }}>{col}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {c.compareRows.map(([label, ...cells]) => (
+              <tr>
+                <th scope="row">{label}</th>
+                {cells.map((cell, index) => (
+                  <td class:list={{ 'is-ours': index === 0 }}>
+                    {cell === 'yes' ? (
+                      <span class="bt-mark bt-mark--yes"><span aria-hidden="true">✓</span><span class="bt-sr">{c.compareYes}</span></span>
+                    ) : cell === 'no' ? (
+                      <span class="bt-mark bt-mark--no"><span aria-hidden="true">×</span><span class="bt-sr">{c.compareNo}</span></span>
+                    ) : (
+                      cell
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
@@ -1152,6 +1457,41 @@ const faq = pick(lang, {
         ))}
       </div>
       <p class="bt-fund__note" data-reveal>{c.fundNote}</p>
+      <form class="bt-quiz" data-bt-quiz data-reveal aria-labelledby="bt-quiz-title">
+        <div class="bt-quiz__head">
+          <p class="eyebrow">{c.quizEyebrow}</p>
+          <h3 id="bt-quiz-title"><span>{c.quizLead}</span> {c.quizRest}</h3>
+          <p>{c.quizText}</p>
+        </div>
+        <div class="bt-quiz__questions">
+          {c.quizQuestions.map((question) => (
+            <fieldset>
+              <legend>{question.label}</legend>
+              <div class="bt-quiz__options">
+                {question.options.map(([value, label]) => (
+                  <label>
+                    <input type="radio" name={question.name} value={value} required />
+                    <span>{label}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          ))}
+        </div>
+        <div class="bt-quiz__foot">
+          <button type="submit" class="bt-quiz__submit" data-bt-quiz-submit>{c.quizSubmit}</button>
+          <p class="bt-quiz__note">{c.quizNote}</p>
+        </div>
+        <div class="bt-quiz__result" role="status" aria-live="polite" hidden data-bt-quiz-result>
+          {Object.entries(c.quizResults).map(([key, [title, text]]) => (
+            <div data-result={key} hidden>
+              <strong>{title}</strong>
+              <p>{text}</p>
+            </div>
+          ))}
+          <Button href={`#${formAnchor}`}>{cta}</Button>
+        </div>
+      </form>
     </div>
   </section>
 
@@ -1181,11 +1521,15 @@ const faq = pick(lang, {
         <h2 id="bt-trainers-title"><span>{c.trainersLead}</span> {c.trainersRest}</h2>
         <p>{c.trainersText}</p>
       </div>
+      <figure class="bt-team" data-reveal="zoom">
+        <img src={teamPhoto} alt={c.teamAlt} width="1680" height="681" loading="lazy" decoding="async" />
+        <figcaption>{c.teamCaption}</figcaption>
+      </figure>
       <div class="bt-trainers__grid">
         {c.trainers.map((trainer) => (
-          <article class="bt-trainer" data-reveal>
+          <article class="bt-trainer bt-spot" data-reveal>
             <figure>
-              <img src={trainerImages[trainer.key]} alt={trainer.alt} width="700" height="486" loading="lazy" decoding="async" />
+              <img src={trainerImages[trainer.key].src} alt={trainer.alt} width={trainerImages[trainer.key].size} height={trainerImages[trainer.key].size} loading="lazy" decoding="async" />
             </figure>
             <div class="bt-trainer__body">
               <h3>{trainer.name}</h3>
@@ -1207,7 +1551,7 @@ const faq = pick(lang, {
       </div>
       <div class="bt-cards">
         {c.support.map(([title, text], index) => (
-          <article class:list={['bt-card', { 'bt-card--feature': index === c.support.length - 1 }]} data-reveal>
+          <article class:list={['bt-card', 'bt-spot', { 'bt-card--feature': index === c.support.length - 1 }]} data-reveal>
             <h3>{title}</h3>
             <p>{text}</p>
           </article>
@@ -1272,6 +1616,20 @@ const faq = pick(lang, {
         </figcaption>
       </figure>
     </div>
+    <div class="container bt-timeline">
+      <div class="bt-head" data-reveal>
+        <h3><span>{c.timelineLead}</span> {c.timelineRest}</h3>
+        <p>{c.timelineText}</p>
+      </div>
+      <ol class="bt-timeline__list" data-bt-timeline>
+        {c.timeline.map(([year, text]) => (
+          <li data-reveal>
+            <span class="bt-timeline__year">{year}</span>
+            <p>{text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
   </section>
 
   <!-- ============================================================== PROOF -->
@@ -1294,6 +1652,10 @@ const faq = pick(lang, {
         <h2 id="bt-proof-title"><span>{c.proofLead}</span> {c.proofRest}</h2>
         <p class="bt-proof__text">{c.proofText}</p>
         <dl class="bt-proof__list">
+          <div><dt>{c.proofRows.provider}</dt><dd>{company.name}, {company.street}, {company.city}</dd></div>
+          <div><dt>{c.proofRows.course}</dt><dd>{c.factCourse}</dd></div>
+          <div><dt>{c.proofRows.duration}</dt><dd>{c.factDuration}</dd></div>
+          <div><dt>{c.proofRows.basis}</dt><dd>{c.factBasis}</dd></div>
           <div>
             <dt>{c.proofRows.body}</dt>
             <dd>
@@ -1302,6 +1664,10 @@ const faq = pick(lang, {
             </dd>
           </div>
           {proofRows.map(([label, value]) => <div><dt>{label}</dt><dd>{value}</dd></div>)}
+          <div>
+            <dt>{c.proofRows.contact}</dt>
+            <dd><a href={company.phoneHref}>{company.phone}</a><br /><a href={company.emailHref}>{company.email}</a></dd>
+          </div>
         </dl>
         {hasCertificate && certificateIsPdf && (
           <div class="bt-proof__actions">
@@ -1331,7 +1697,7 @@ const faq = pick(lang, {
       </div>
       <div class="bt-groups__grid">
         {c.groups.map(([title, text], index) => (
-          <article class="bt-group" data-reveal={index === 0 ? 'left' : 'right'}>
+          <article class="bt-group bt-spot" data-reveal>
             <span class="bt-num">{String(index + 1).padStart(2, '0')}</span>
             <h3>{title}</h3>
             <p>{text}</p>
@@ -1367,6 +1733,7 @@ const faq = pick(lang, {
      than the others on purpose (team feedback); every animation is transform
      or opacity based and switches off under prefers-reduced-motion. */
   .bt-page { position: relative; background: var(--color-bg); overflow: hidden; }
+  .bt-page ol { list-style: none; }
   .bt-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
   /* ---- Shared bits ---------------------------------------------------------- */
@@ -1605,12 +1972,12 @@ const faq = pick(lang, {
 
   /* ---- Trainers ------------------------------------------------------------- */
   .bt-trainers__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 2.5vw, 40px); }
-  .bt-trainer { overflow: hidden; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow-card); transition: transform var(--dur-med) var(--ease-out), border-color var(--dur-med) var(--ease-out); }
+  .bt-trainer { display: grid; grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr); overflow: hidden; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow-card); transition: transform var(--dur-med) var(--ease-out), border-color var(--dur-med) var(--ease-out); }
   .bt-trainer:hover { transform: translateY(-4px); border-color: var(--border-strong); }
-  .bt-trainer figure { overflow: hidden; aspect-ratio: 700 / 486; background: var(--color-surface-soft); }
+  .bt-trainer figure { overflow: hidden; height: 100%; min-height: 280px; background: var(--color-surface-soft); }
   .bt-trainer img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--dur-slow) var(--ease-out); }
   .bt-trainer:hover img { transform: scale(1.04); }
-  .bt-trainer__body { padding: clamp(24px, 2.4vw, 40px); }
+  .bt-trainer__body { align-self: center; padding: clamp(24px, 2.4vw, 40px); }
   .bt-trainer h3 { font-size: var(--fs-h3); }
   .bt-trainer__role { margin-top: 4px; color: var(--color-accent); font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
   .bt-trainer ul { display: grid; gap: var(--space-xs); margin-top: var(--space-sm); }
@@ -1694,14 +2061,140 @@ const faq = pick(lang, {
   .bt-proof__certificate img { width: auto; max-width: 100%; height: auto; max-height: 640px; object-fit: contain; }
 
   /* ---- Groups --------------------------------------------------------------- */
-  .bt-groups__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 2.5vw, 40px); }
+  .bt-groups__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 2.5vw, 40px); }
   .bt-group { padding: clamp(28px, 3vw, 48px); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow-card); transition: transform var(--dur-med) var(--ease-out), border-color var(--dur-med) var(--ease-out); }
   .bt-group:hover { transform: translateY(-4px); border-color: var(--color-accent); }
-  .bt-group h3 { margin-block: var(--space-sm) var(--space-xs); font-size: var(--fs-h2); }
+  .bt-group h3 { margin-block: var(--space-sm) var(--space-xs); font-size: var(--fs-h3); }
   .bt-group p { color: var(--color-muted); font-size: var(--fs-lead); line-height: var(--lh-relaxed); }
   .bt-groups__note { max-width: 90ch; margin-top: var(--space-md); color: var(--color-muted); font-size: var(--fs-sm); }
 
+  /* ---- Scroll progress and spotlight -------------------------------------------- */
+  .bt-progress { position: fixed; top: 0; left: 0; right: 0; z-index: calc(var(--z-header) + 1); height: 3px; pointer-events: none; }
+  .bt-progress span { display: block; height: 100%; background: var(--color-accent); transform: scaleX(var(--p, 0)); transform-origin: left; box-shadow: var(--shadow-accent); }
+  /* A soft red light follows the pointer across cards (set from the script). */
+  .bt-spot { position: relative; isolation: isolate; }
+  .bt-spot::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), var(--glow-top), transparent 45%);
+    opacity: 0;
+    transition: opacity var(--dur-med) var(--ease-out);
+    pointer-events: none;
+  }
+  .bt-spot:hover::before { opacity: 1; }
+
+  /* Hero extras: a slowly moving dot grid and a light sweep across the accent line. */
+  .bt-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: linear-gradient(90deg, #000, transparent 70%);
+    animation: bt-grid 30s linear infinite;
+    pointer-events: none;
+  }
+  .bt-hero h1 span {
+    background: linear-gradient(100deg, var(--color-accent) 0%, var(--color-accent) 40%, rgba(255, 255, 255, 0.92) 50%, var(--color-accent) 60%, var(--color-accent) 100%);
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: bt-sheen 7s ease-in-out infinite;
+  }
+
+  /* ---- Why software testing ------------------------------------------------------ */
+  .bt-entry { position: relative; overflow: hidden; }
+  .bt-entry__grid { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
+  .bt-entry__grid .bt-head { margin-bottom: 0; }
+  .bt-entry__points { display: grid; gap: var(--space-sm); }
+  .bt-entry__points li { display: flex; gap: var(--space-sm); padding: clamp(20px, 2vw, 32px); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow-card); transition: transform var(--dur-med) var(--ease-out), border-color var(--dur-med) var(--ease-out); }
+  .bt-entry__points li:hover { transform: translateX(6px); border-color: var(--color-accent); }
+  .bt-entry__points h3 { font-size: var(--fs-h4); }
+  .bt-entry__points p { margin-top: 4px; color: var(--color-muted); }
+
+  /* ---- Comparison table ------------------------------------------------------------ */
+  .bt-compare { background: var(--color-bg-elevated); }
+  .bt-compare__wrap { overflow-x: auto; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow-card); }
+  .bt-compare__table { width: 100%; min-width: 720px; border-collapse: collapse; }
+  .bt-compare__table th, .bt-compare__table td { padding: var(--space-sm) clamp(14px, 1.6vw, 28px); border-bottom: 1px solid var(--border-subtle); text-align: center; font-size: var(--fs-sm); vertical-align: middle; }
+  .bt-compare__table tbody th { color: var(--color-text); font-weight: var(--fw-semibold); text-align: left; }
+  .bt-compare__table thead th { color: var(--color-muted); font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+  .bt-compare__table tbody tr:last-child > * { border-bottom: 0; }
+  .bt-compare__table .is-ours { background: rgba(244, 14, 14, 0.08); color: var(--color-text); font-weight: var(--fw-semibold); }
+  .bt-compare__table thead .is-ours { color: var(--color-accent); border-top: 3px solid var(--color-accent-surface); }
+  .bt-mark { display: inline-grid; width: 28px; height: 28px; place-items: center; border-radius: var(--radius-pill); font-weight: var(--fw-bold); }
+  .bt-mark--yes { background: var(--color-accent-surface); color: var(--color-text); }
+  .bt-mark--no { border: 1px solid var(--border-strong); color: var(--color-muted); }
+
+  /* ---- Funding check (quiz) --------------------------------------------------------- */
+  .bt-quiz { grid-column: 1 / -1; display: grid; gap: var(--space-md); padding: clamp(24px, 3vw, 48px); border: 1px solid var(--color-accent-surface); border-radius: var(--radius-lg); background: radial-gradient(60% 100% at 100% 0%, var(--glow-top), transparent 70%), var(--surface-card); box-shadow: var(--shadow-card), var(--shadow-accent); }
+  .bt-quiz__head h3 { margin-top: var(--space-xs); font-size: var(--fs-h2); line-height: var(--lh-tight); }
+  .bt-quiz__head h3 span { color: var(--color-accent); }
+  .bt-quiz__head > p:last-child { margin-top: var(--space-xs); color: var(--color-muted); }
+  .bt-quiz__questions { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.6fr); gap: var(--space-md); }
+  .bt-quiz fieldset { min-width: 0; border: 0; }
+  .bt-quiz legend { margin-bottom: var(--space-xs); font-weight: var(--fw-semibold); }
+  .bt-quiz__options { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+  .bt-quiz__options label { position: relative; cursor: pointer; }
+  .bt-quiz__options input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .bt-quiz__options span { display: inline-flex; padding: 0.6rem 1rem; border: 1px solid var(--border-strong); border-radius: var(--radius-pill); font-size: var(--fs-sm); transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out); }
+  .bt-quiz__options label:hover span { border-color: var(--color-accent); }
+  .bt-quiz__options input:checked + span { border-color: var(--color-accent-surface); background: var(--color-accent-surface); }
+  .bt-quiz__options input:focus-visible + span { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+  .bt-quiz__foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm) var(--space-md); }
+  .bt-quiz__submit { min-height: var(--btn-h); padding-inline: var(--btn-pad-x); border-radius: var(--radius-pill); background: var(--color-text); color: var(--color-bg); font-size: var(--fs-sm); font-weight: var(--fw-semibold); transition: transform var(--dur-fast) var(--ease-out); }
+  .bt-quiz__submit:hover { transform: translateY(-2px); }
+  .bt-quiz__note { max-width: 70ch; color: var(--color-text-subtle); font-size: var(--fs-xs); }
+  .bt-quiz__result { display: grid; gap: var(--space-sm); justify-items: start; padding: var(--space-md); border-left: 3px solid var(--color-accent); border-radius: var(--radius-md); background: rgba(255, 255, 255, 0.04); animation: bt-pop var(--dur-med) var(--ease-out); }
+  .bt-quiz__result strong { color: var(--color-accent); font-size: var(--fs-h4); }
+  .bt-quiz__result p { margin-top: 4px; }
+
+  /* ---- Team photo ------------------------------------------------------------------- */
+  .bt-team { position: relative; overflow: hidden; margin-bottom: clamp(24px, 3vw, 48px); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); }
+  .bt-team img { width: 100%; height: auto; aspect-ratio: 1680 / 681; object-fit: cover; transition: transform var(--dur-slow) var(--ease-out); }
+  .bt-team:hover img { transform: scale(1.03); }
+  .bt-team figcaption { position: absolute; left: var(--space-sm); bottom: var(--space-sm); padding: 0.45rem 1rem; border-radius: var(--radius-pill); background: var(--color-bg); font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
+
+  /* ---- Timeline --------------------------------------------------------------------- */
+  .bt-timeline { margin-top: clamp(48px, 6vw, 96px); }
+  .bt-timeline .bt-head h3 { font-size: var(--fs-h2); line-height: var(--lh-tight); }
+  .bt-timeline .bt-head h3 span { color: var(--color-accent); }
+  .bt-timeline__list {
+    position: relative;
+    display: grid;
+    grid-auto-columns: minmax(200px, 1fr);
+    grid-auto-flow: column;
+    gap: var(--space-sm);
+    overflow-x: auto;
+    padding: 28px 2px 8px;
+    scroll-snap-type: x mandatory;
+  }
+  .bt-timeline__list::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 0;
+    width: max(100%, calc(var(--n, 9) * 212px));
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-accent-surface), var(--color-accent) 50%, var(--color-accent-surface));
+    background-size: 200% 100%;
+    animation: bt-flow 6s linear infinite;
+  }
+  .bt-timeline__list li { position: relative; scroll-snap-align: start; padding: var(--space-sm); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-card); }
+  .bt-timeline__list li::before { content: ''; position: absolute; top: -24px; left: var(--space-sm); width: 12px; height: 12px; border-radius: 50%; background: var(--color-accent-surface); box-shadow: 0 0 0 4px rgba(244, 14, 14, 0.18); }
+  .bt-timeline__year { display: block; color: var(--color-accent); font-size: var(--fs-h3); font-weight: var(--fw-bold); line-height: 1; font-variant-numeric: tabular-nums; }
+  .bt-timeline__list p { margin-top: var(--space-xs); color: var(--color-muted); font-size: var(--fs-sm); line-height: var(--lh-snug); overflow-wrap: break-word; hyphens: auto; }
+
   /* ---- Motion ------------------------------------------------------------------ */
+  @keyframes bt-grid { to { background-position: 280px 140px; } }
+  @keyframes bt-sheen { 0%, 60% { background-position: 100% 0; } 100% { background-position: -150% 0; } }
+  @keyframes bt-flow { to { background-position: -200% 0; } }
+  @keyframes bt-pop { from { opacity: 0; transform: translateY(8px); } }
   @keyframes bt-kenburns { from { transform: scale(1.04); } to { transform: scale(1.14) translate3d(-1.5%, -1%, 0); } }
   @keyframes bt-drift { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(12%, 8%, 0) scale(1.15); } }
   @keyframes bt-pulse { 0%, 100% { box-shadow: var(--shadow-accent); } 50% { box-shadow: 0 0 0 6px rgba(244, 14, 14, 0.18), var(--shadow-accent); } }
@@ -1718,12 +2211,14 @@ const faq = pick(lang, {
   @media (max-width: 1050px) {
     .bt-steps__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .bt-steps__list li:nth-child(2n)::after { content: none; }
-    .bt-tiles, .bt-cards, .bt-testi__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .bt-tiles, .bt-cards, .bt-testi__grid, .bt-groups__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .bt-trainer { grid-template-columns: minmax(0, 1fr); }
+    .bt-trainer figure { height: auto; min-height: 0; aspect-ratio: 4 / 3; }
     .bt-card--feature { grid-column: span 2; }
   }
   @media (max-width: 900px) {
     .bt-showcase__panel, .bt-calendar__grid, .bt-formats__grid, .bt-fund__grid, .bt-trainers__grid,
-    .bt-why__grid, .bt-proof__grid, .bt-proof__grid.has-certificate, .bt-groups__grid, .bt-approved__grid {
+    .bt-why__grid, .bt-proof__grid, .bt-proof__grid.has-certificate, .bt-groups__grid, .bt-approved__grid, .bt-entry__grid, .bt-quiz__questions {
       grid-template-columns: minmax(0, 1fr);
     }
     .bt-proof__seal-wrap { justify-items: start; }
@@ -1758,7 +2253,7 @@ const faq = pick(lang, {
   @media (prefers-reduced-motion: reduce) {
     .bt-new, .bt-aurora span, .bt-hero__media img, .bt-format::before, .bt-clients__track ul, .bt-net__line,
     .bt-net__pulse, .bt-net__core-ring, .bt-calendar__pending span, .bt-calendar__facts li, .bt-proof__seal::after,
-    .is-open .bt-fund__check { animation: none; }
+    .is-open .bt-fund__check, .bt-hero::after, .bt-hero h1 span, .bt-timeline__list::before, .bt-quiz__result { animation: none; }
     .bt-net__pulse { opacity: 0; }
   }
 </style>
@@ -1793,5 +2288,55 @@ const faq = pick(lang, {
       { threshold: 0.4 },
     );
     counters.forEach((el) => observer.observe(el));
+  }
+
+  // Scroll progress bar.
+  const progress = document.querySelector<HTMLElement>('[data-bt-progress]');
+  if (progress) {
+    let queued = false;
+    const update = () => {
+      queued = false;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      progress.style.setProperty('--p', String(max > 0 ? Math.min(1, window.scrollY / max) : 0));
+    };
+    window.addEventListener('scroll', () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(update);
+    }, { passive: true });
+    update();
+  }
+
+  // Spotlight: the card glow follows the pointer. Pointer devices only.
+  if (!reduced && window.matchMedia('(hover: hover)').matches) {
+    document.querySelectorAll<HTMLElement>('.bt-spot').forEach((card) => {
+      card.addEventListener('pointermove', (event) => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+        card.style.setProperty('--my', `${event.clientY - rect.top}px`);
+      });
+    });
+  }
+
+  // Funding check. Pure orientation, nothing is sent or stored.
+  const quiz = document.querySelector<HTMLFormElement>('[data-bt-quiz]');
+  if (quiz) {
+    const result = quiz.querySelector<HTMLElement>('[data-bt-quiz-result]');
+    quiz.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!quiz.reportValidity() || !result) return;
+      const data = new FormData(quiz);
+      const situation = String(data.get('situation'));
+      const residence = String(data.get('residence'));
+      const key = residence === 'no' ? 'abroad' : situation === 'unemployed' || situation === 'risk' ? 'good' : 'check';
+      result.querySelectorAll<HTMLElement>('[data-result]').forEach((block) => {
+        block.hidden = block.dataset.result !== key;
+      });
+      result.hidden = false;
+      result.style.animation = 'none';
+      void result.offsetWidth;
+      result.style.animation = '';
+      result.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' });
+    });
   }
 </script>

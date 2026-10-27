@@ -142,24 +142,14 @@ const isActive = (item: NavLink) => {
       box-shadow var(--dur-med) var(--ease-out);
   }
 
-  /* Once the page scrolls, the bar earns a surface: a translucent ground with a
-     blur behind it, so content reads through without fighting the nav. */
+  /* Once the page scrolls, the bar earns a solid surface. It used to be
+     translucent with a blur, but headings scrolling underneath stayed readable
+     through it and competed with the navigation, which confused visitors. */
   .site-header.is-scrolled,
   .site-header.is-menu-open {
-    background: rgba(16, 16, 16, 0.72);
-    backdrop-filter: blur(16px) saturate(140%);
-    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    background: var(--color-bg);
     border-bottom-color: var(--border-subtle);
     box-shadow: 0 8px 32px -12px rgba(0, 0, 0, 0.6);
-  }
-
-  /* Safari and Firefox without backdrop-filter fall back to a solid bar rather
-     than an unreadable translucent one. */
-  @supports not (backdrop-filter: blur(4px)) {
-    .site-header.is-scrolled,
-    .site-header.is-menu-open {
-      background: rgba(16, 16, 16, 0.97);
-    }
   }
 
   .site-header__inner {
