@@ -161,8 +161,8 @@ export const bildungstraeger: {
 
   // Geplant, noch ohne Maßnahmenzulassung. Bewusst ohne Termin.
   massnahmenGeplant: [
-    { name: 'Abschluss Softwaretester:in ISTQB® Zertifikat, Weiterbildung', format: 'praesenz' },
-    { name: 'Abschluss Softwaretester:in ISTQB® Zertifikat, Weiterbildung', format: 'online' },
+    { name: 'Abschluss Softwaretester ISTQB® Zertifikat, Weiterbildung', format: 'praesenz' },
+    { name: 'Abschluss Softwaretester ISTQB® Zertifikat, Weiterbildung', format: 'online' },
   ],
 
   // Das Seminar hinter der geplanten Maßnahme (Werbeschild unter dem Hero).
@@ -202,13 +202,12 @@ export const bildungstraeger: {
       hoehe: 1524,
     },
     {
-      // TODO: OFFEN. Logo "Bildung Made in Germany" unter /public ablegen
-      // (z. B. /images/badge-bildung-made-in-germany.png) und Maße eintragen.
+      // Logo vom Team geliefert (27.10.2026).
       key: 'bildung-made-in-germany',
       label: { de: 'Bildung Made in Germany', en: 'Bildung Made in Germany', kk: 'Bildung Made in Germany' },
-      datei: '',
-      breite: null,
-      hoehe: null,
+      datei: '/images/badge-bildung-made-in-germany.png',
+      breite: 1024,
+      hoehe: 440,
     },
     {
       // TODO: OFFEN. IHK-Zeichen nur mit Freigabe der zuständigen IHK einbinden.

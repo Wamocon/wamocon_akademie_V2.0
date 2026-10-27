@@ -399,7 +399,7 @@ export const pages = {
       title: 'Der Weg zum Erfolg beginnt mit der WAMOCON Academy',
       eyebrow: 'Über die Academy',
       lead:
-        'Unser Bildungszentrum bietet mehr als nur Kurse. Es ist deine Startrampe für eine erfolgreiche IT-Karriere. Hier verwandeln wir Lernende in IT-Profis, die bereit sind, die Herausforderungen der heutigen digitalen Welt zu meistern.',
+        'Unser Bildungszentrum bietet mehr als nur Kurse. Es ist deine Startrampe für eine erfolgreiche IT-Karriere. Hier verwandeln wir Einsteiger in IT-Profis, die bereit sind, die Herausforderungen der heutigen digitalen Welt zu meistern.',
       sections: [
         {
           title: 'Unterstützung durch erfahrene Dozenten',

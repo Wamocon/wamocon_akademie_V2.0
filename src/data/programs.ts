@@ -262,7 +262,7 @@ export const programContent = {
     ],
     individualTitle: 'Einzelkurse',
     teamTitle: 'Teamkurse',
-    networkText: 'Studierende der WAMOCON Academy erhalten die einzigartige Möglichkeit, sich online und offline mit führenden Experten zu treffen und auszutauschen, was ihnen neue Karrierechancen eröffnet und ihr berufliches Netzwerk erweitert.',
+    networkText: 'Teilnehmer der WAMOCON Academy erhalten die einzigartige Möglichkeit, sich online und offline mit führenden Experten zu treffen und auszutauschen, was ihnen neue Karrierechancen eröffnet und ihr berufliches Netzwerk erweitert.',
     datesTitle: 'Termine im überblick',
     dates: [
       {
