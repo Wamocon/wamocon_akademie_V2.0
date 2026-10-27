@@ -47,6 +47,8 @@
      It always carries dark text: #111827 on #ff8a1f is 7.4:1. */
   --color-signal: #ff8a1f;
   --color-signal-soft: #ffb35c;
+  /* Rating stars (Google review seal on the AZAV page). */
+  --color-star: #fbbc04;
 
   /* ---- Lines and borders -------------------------------------------------- */
   --color-line: rgba(255, 255, 255, 0.2);

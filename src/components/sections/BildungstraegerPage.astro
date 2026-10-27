@@ -232,10 +232,8 @@ const copy = {
     sealCertLink: 'Zum AZAV-Zertifikat',
     // Akkreditierung über das German Testing Board laut WAMOCON-Unternehmensübersicht.
     sealIstqb: ['ISTQB® Accredited Training Provider', 'CTFL 4.0, akkreditiert über das German Testing Board (GTB)'],
-    sealIstqbRing: 'ACCREDITED TRAINING PROVIDER • GERMAN TESTING BOARD • ',
     // Bewertung wie im Footer der Website ausgewiesen.
     sealGoogle: ['5,0 von 5 Sternen', 'Google-Bewertung'],
-    sealGoogleRing: 'GOOGLE-BEWERTUNG • ★★★★★ • GOOGLE-BEWERTUNG • ★★★★★ • ',
     rating: '5,0',
 
     // Werbeschild. Inhalte aus dem Kurs "ISTQB® CTFL + Praxistraining"
@@ -538,9 +536,7 @@ const copy = {
     sealAzavRing: `APPROVED PROVIDER • ${bt.fachkundigeStelle.name.toUpperCase()} • ${certNo || 'AZAV'} • `,
     sealCertLink: 'View the AZAV certificate',
     sealIstqb: ['ISTQB® Accredited Training Provider', 'CTFL 4.0, accredited via the German Testing Board (GTB)'],
-    sealIstqbRing: 'ACCREDITED TRAINING PROVIDER • GERMAN TESTING BOARD • ',
     sealGoogle: ['5.0 out of 5 stars', 'Google rating'],
-    sealGoogleRing: 'GOOGLE RATING • ★★★★★ • GOOGLE RATING • ★★★★★ • ',
     rating: '5.0',
 
     showcaseEyebrow: 'New in our programme',
@@ -824,9 +820,7 @@ const copy = {
     sealAzavRing: `РҰҚСАТ АЛҒАН ҰЙЫМ • ${bt.fachkundigeStelle.name.toUpperCase()} • ${certNo || 'AZAV'} • `,
     sealCertLink: 'AZAV сертификатына өту',
     sealIstqb: ['ISTQB® Accredited Training Provider', 'CTFL 4.0, German Testing Board (GTB) арқылы аккредиттелген'],
-    sealIstqbRing: 'ACCREDITED TRAINING PROVIDER • GERMAN TESTING BOARD • ',
     sealGoogle: ['5 жұлдыздан 5,0', 'Google бағасы'],
-    sealGoogleRing: 'GOOGLE БАҒАСЫ • ★★★★★ • GOOGLE БАҒАСЫ • ★★★★★ • ',
     rating: '5,0',
 
     showcaseEyebrow: 'Бағдарламадағы жаңалық',
@@ -1175,10 +1169,14 @@ const certLink = hasCertificate ? bt.zertifikatDatei : certPreview;
 // of radius 46 in a 120 x 120 box, so its length is about 289 units.
 const ringPath = 'M 14,60 a 46,46 0 1,1 92,0 a 46,46 0 1,1 -92,0';
 const validityYears = bt.gueltigVon && bt.gueltigBis ? `${bt.gueltigVon.slice(0, 4)}–${bt.gueltigBis.slice(0, 4)}` : '';
+// Official ISTQB® Accredited Training Provider logo, supplied by the team
+// (27.10.2026); shown unchanged.
+const istqbLogo = { src: '/images/badge-istqb-atp.webp', size: 384 };
+const starPath = 'M12 2.5l2.9 6.06 6.6.8-4.87 4.55 1.24 6.55L12 17.27l-5.87 3.19 1.24-6.55L2.5 9.36l6.6-.8z';
 const medals = [
-  { key: 'azav', ring: c.sealAzavRing, main: 'AZAV', mainSize: 21, sub: validityYears || `FB ${bt.fachbereich.nummer}`, title: c.sealAzav[0], text: c.sealAzav[1], href: certPreview || hasCertificate ? '#zertifikat' : '' },
-  { key: 'istqb', ring: c.sealIstqbRing, main: 'ISTQB®', mainSize: 15, sub: 'CTFL 4.0', title: c.sealIstqb[0], text: c.sealIstqb[1], href: '' },
-  { key: 'google', ring: c.sealGoogleRing, main: c.rating, mainSize: 25, sub: '★★★★★', title: c.sealGoogle[0], text: c.sealGoogle[1], href: '' },
+  { key: 'azav', kind: 'medal', ring: c.sealAzavRing, main: 'AZAV', mainSize: 21, sub: validityYears || `FB ${bt.fachbereich.nummer}`, title: c.sealAzav[0], text: c.sealAzav[1], href: certPreview || hasCertificate ? '#zertifikat' : '' },
+  { key: 'istqb', kind: 'image', ring: '', main: '', mainSize: 0, sub: '', title: c.sealIstqb[0], text: c.sealIstqb[1], href: '' },
+  { key: 'google', kind: 'rating', ring: '', main: c.rating, mainSize: 0, sub: '', title: c.sealGoogle[0], text: c.sealGoogle[1], href: '' },
 ];
 
 // ---------------------------------------------------------------------------
@@ -1424,6 +1422,20 @@ const faq = pick(lang, {
       {medals.map((medal) => (
         <li class:list={['bt-seal', 'bt-spot', { 'has-link': medal.href }]} data-reveal>
           <span class="bt-seal__visual" aria-hidden="true">
+            {medal.kind === 'image' && (
+              <img class="bt-seal__logo" src={istqbLogo.src} alt="" width={istqbLogo.size} height={istqbLogo.size} loading="lazy" decoding="async" />
+            )}
+            {medal.kind === 'rating' && (
+              <span class="bt-rating">
+                <span class="bt-rating__value">{medal.main}</span>
+                <span class="bt-rating__stars">
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <svg viewBox="0 0 24 24" focusable="false" style={`--i:${i}`}><path d={starPath} /></svg>
+                  ))}
+                </span>
+              </span>
+            )}
+            {medal.kind === 'medal' && (
             <svg class="bt-medal" viewBox="0 0 120 120" focusable="false">
               <defs><path id={`bt-medal-${medal.key}`} d={ringPath} /></defs>
               <circle class="bt-medal__outer" cx="60" cy="60" r="58" />
@@ -1435,6 +1447,7 @@ const faq = pick(lang, {
               <text class="bt-medal__main" x="60" y="63" text-anchor="middle" style={`font-size:${medal.mainSize}px`}>{medal.main}</text>
               <text class="bt-medal__sub" x="60" y="78" text-anchor="middle">{medal.sub}</text>
             </svg>
+            )}
           </span>
           <strong>{medal.title}</strong>
           <span class="bt-seal__text">{medal.text}</span>
@@ -2163,6 +2176,7 @@ const faq = pick(lang, {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 6px;
     padding: clamp(16px, 1.4vw, 22px);
     border: 1px solid var(--border-subtle);
@@ -2175,6 +2189,13 @@ const faq = pick(lang, {
   /* Every seal shares one visual height, so medals and logos line up. */
   .bt-seal__visual { display: flex; align-items: center; justify-content: center; height: 96px; margin-bottom: 6px; }
   .bt-seal__visual img { width: auto; max-width: 100%; height: auto; max-height: 96px; border-radius: var(--radius-sm); }
+  .bt-seal__visual .bt-seal__logo { width: 96px; height: 96px; border-radius: 50%; filter: drop-shadow(0 8px 18px rgba(212, 18, 67, 0.35)); }
+  /* Google rating: a large score over five solid stars. */
+  .bt-rating { display: grid; justify-items: center; gap: 8px; }
+  .bt-rating__value { color: var(--color-text); font-size: 2.6rem; font-weight: var(--fw-extrabold); line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .bt-rating__stars { display: flex; gap: 3px; }
+  .bt-rating__stars svg { width: 22px; height: 22px; fill: var(--color-star); filter: drop-shadow(0 2px 6px rgba(251, 188, 4, 0.35)); transition: transform var(--dur-med) var(--ease-out); transition-delay: calc(var(--i) * 40ms); }
+  .bt-seal:hover .bt-rating__stars svg { transform: translateY(-3px) scale(1.08); }
   .bt-seal strong { color: var(--color-text); font-size: var(--fs-sm); font-weight: var(--fw-semibold); line-height: var(--lh-snug); }
   .bt-seal__text { color: var(--color-muted); font-size: var(--fs-xs); line-height: var(--lh-snug); }
   .bt-seal__link { position: absolute; inset: 0; z-index: 1; border-radius: inherit; }
