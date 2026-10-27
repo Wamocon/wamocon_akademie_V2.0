@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BildungstraegerPage from '../../components/sections/BildungstraegerPage.astro';
+import { istVeroeffentlicht } from '../../data/bildungstraeger';
+
+const lang = 'en';
+const title = 'Approved education provider under AZAV | WAMOCON Academy';
+const description =
+  'WAMOCON Academy GmbH is approved by GZQ GmbH as an education provider under AZAV. What this means and how funding with a Bildungsgutschein works.';
+// Hidden until the certificate number is entered in src/data/bildungstraeger.ts.
+const noindex = !istVeroeffentlicht();
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  lang={lang}
+  noindex={noindex}
+  breadcrumbs={[
+    { name: 'About the Academy', path: '/en/about-us/' },
+    { name: 'Education provider', path: '/en/education-provider/' },
+  ]}
+>
+  <BildungstraegerPage lang={lang} />
+</BaseLayout>

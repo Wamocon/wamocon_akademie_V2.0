@@ -59,7 +59,10 @@ const consultationAlt = pick(lang, {
       <p class="lead-form__intro">{intro ?? t('form.text')}</p>
       <input type="hidden" name="type" value={type} />
       <input type="hidden" name="lang" value={lang} />
-      <input class="lead-form__trap" type="text" name="company" tabindex="-1" autocomplete="off" />
+      {/* Spam trap for bots. Hidden from assistive technology so screen-reader
+          users are never asked to fill it (and the unlabelled field no longer
+          fails the WCAG form-label check). */}
+      <input class="lead-form__trap" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
       <label>
         <span>{t('form.name')}</span>
         <input type="text" name="name" placeholder={t('form.name')} autocomplete="name" required />

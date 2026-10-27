@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { readFile, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -19,6 +20,9 @@ const localeRoutes = [
   { de: '/impressum/', en: '/imprint/', kk: '/kk/zandy-malimetter/' },
   { de: '/barrierefreiheit/', en: '/accessibility/', kk: '/kk/qolzhetimdilik/' },
   { de: '/danke/', en: '/thanks/', kk: '/kk/rahmet/' },
+  // AZAV provider page. Rendered with noindex and left out of the navigation
+  // until its certificate number is entered in src/data/bildungstraeger.ts.
+  { de: '/bildungstraeger/', en: '/en/education-provider/', kk: '/kk/bilim-beru-uyymy/' },
 ];
 
 const locales = ['de', 'en', 'kk'];
@@ -26,6 +30,11 @@ const routes = localeRoutes.flatMap((group) => locales.map((code) => group[code]
 // Confirmation pages render with noindex and therefore emit no canonical or
 // hreflang tags.
 const noindexRoutes = new Set(['/danke/', '/thanks/', '/kk/rahmet/']);
+// Pages that are hidden on purpose until their content is published. They are
+// detected from the rendered robots tag, so the audit follows the data file
+// instead of hard-coding the current state.
+const hiddenRoutes = new Set();
+const isNoindex = (html) => html.includes('name="robots" content="noindex, follow"');
 
 const failures = [];
 const nonNavigationRoutes = new Set([
@@ -51,14 +60,15 @@ for (const route of routes) {
     continue;
   }
   renderedPages.set(route, html);
+  if (!noindexRoutes.has(route) && isNoindex(html)) hiddenRoutes.add(route);
 
   assert(html.includes('name="generator" content="Astro'), `${route}: missing Astro generator metadata`);
   assert(html.includes('<title>') && html.includes('name="description"'), `${route}: missing SEO title/description`);
   // Confirmation pages are noindex, so they deliberately emit no canonical or
   // hreflang tags; every indexable route must carry them.
   if (noindexRoutes.has(route)) {
-    assert(html.includes('name="robots" content="noindex, follow"'), `${route}: confirmation page must be excluded from search results`);
-  } else {
+    assert(isNoindex(html), `${route}: confirmation page must be excluded from search results`);
+  } else if (!hiddenRoutes.has(route)) {
     assert(html.includes('rel="canonical"'), `${route}: missing canonical URL`);
   }
   assert(html.includes('class="office-map'), `${route}: shared office map is missing`);
@@ -66,7 +76,7 @@ for (const route of routes) {
   assert(html.indexOf('class="office-map') < html.indexOf('<footer'), `${route}: map must appear above the footer`);
   assert(html.includes('href="/images/favicon-32.png"'), `${route}: WMA favicon is missing`);
   assert(html.includes('rel="apple-touch-icon"'), `${route}: apple-touch-icon is missing`);
-  if (!nonNavigationRoutes.has(route)) {
+  if (!nonNavigationRoutes.has(route) && !hiddenRoutes.has(route)) {
     assert(html.includes('aria-current="page"'), `${route}: active navigation state is missing`);
   }
   assert(!html.includes('—'), `${route}: em dash remains in rendered website copy`);
@@ -86,6 +96,11 @@ for (const route of routes) {
     if (!href || href.startsWith('#') || /^(?:mailto:|tel:)/i.test(href)) continue;
     const target = new URL(href, 'https://test-it-academy.com');
     if (target.origin !== 'https://test-it-academy.com') continue;
+    // Links to files (e.g. a certificate PDF) must point at a published asset.
+    if (/\.[a-z0-9]{2,5}$/i.test(target.pathname)) {
+      assert(existsSync(join(dist, decodeURIComponent(target.pathname))), `${route}: linked file is missing (${href})`);
+      continue;
+    }
     assert(knownRoutes.has(normalizeRoute(target.pathname)), `${route}: internal link has no rendered route (${href})`);
   }
 
@@ -115,7 +130,7 @@ for (const group of localeRoutes) {
     for (const other of locales) {
       if (other === code) continue;
       assert(
-        noindexRoutes.has(route) ||
+        noindexRoutes.has(route) || hiddenRoutes.has(route) ||
           html.includes(`hreflang="${other}" href="https://test-it-academy.com${group[other]}"`),
         `${route}: ${other} alternate link is incorrect (expected ${group[other]})`,
       );

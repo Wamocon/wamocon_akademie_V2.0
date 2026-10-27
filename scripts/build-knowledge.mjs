@@ -112,6 +112,9 @@ for (const file of files) {
   if (SKIP.includes(url)) continue;
 
   const html = readFileSync(file, 'utf8');
+  // A noindex page is not public yet (e.g. the AZAV page before its
+  // certificate number is entered), so the assistant must not cite it either.
+  if (/<meta name="robots" content="noindex/i.test(html)) continue;
   const lang = langOf(html, url);
   const title = titleOf(html);
 

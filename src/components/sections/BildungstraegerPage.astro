@@ -1,0 +1,1246 @@
+---
+/**
+ * AZAV provider page (/bildungstraeger/, /en/education-provider/,
+ * /kk/bilim-beru-uyymy/).
+ *
+ * Every fact comes from src/data/bildungstraeger.ts and the page adapts to its
+ * state: no certificate number keeps the page hidden (handled by the route
+ * files and the nav), no approved measure shows the planned courses with the
+ * "not yet fundable" notice, and the GZQ mark only appears once the file and
+ * its usage rules are both in place.
+ *
+ * Legal statements are taken only from official sources. Each one carries its
+ * source as a comment next to the copy:
+ *   SGB III: https://www.gesetze-im-internet.de/sgb_3/ (§§ 81, 83, 176, 178, 179)
+ *   Bundesagentur für Arbeit: https://www.arbeitsagentur.de/karriere-und-weiterbildung/bildungsgutschein
+ *
+ * Kazakh copy is marked "Muttersprachliche Prüfung offen" until a native
+ * speaker has reviewed it.
+ */
+import { assets, home } from '../../data/academy';
+import {
+  bildungstraeger as bt,
+  hatZugelasseneMassnahmen,
+  zeigeZeichen,
+  zertifikatIstPdf,
+  type MassnahmeFormat,
+} from '../../data/bildungstraeger';
+import { company, type Lang } from '../../i18n/config';
+import { pick } from '../../i18n/utils';
+import Button from '../ui/Button.astro';
+import FaqSection from '../ui/FaqSection.astro';
+import LeadForm from './LeadForm.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const approved = hatZugelasseneMassnahmen();
+const showMark = zeigeZeichen();
+const formAnchor = 'anfrage';
+const coursesAnchor = 'kurse';
+const meinNowHref = 'https://mein-now.de/weiterbildungssuche/';
+
+const intlLocale = { de: 'de-DE', en: 'en-GB', kk: 'kk-KZ' }[lang];
+const formatDate = (iso: string) =>
+  new Intl.DateTimeFormat(intlLocale, { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' }).format(
+    new Date(`${iso}T00:00:00Z`),
+  );
+const joinWord = pick(lang, { de: 'und', en: 'and', kk: 'және' });
+const auditDates = bt.auditTermine.map(formatDate).join(` ${joinWord} `);
+
+const copy = {
+  de: {
+    stand: 'Stand: Oktober 2026',
+    markText: `Zugelassen durch die ${bt.fachkundigeStelle.name}`,
+    markAlt: `Zeichen der fachkundigen Stelle ${bt.fachkundigeStelle.name}`,
+    heroLead: 'Zugelassener Bildungsträger',
+    heroRest: 'nach AZAV',
+    heroText:
+      'Die WAMOCON Academy GmbH ist als Träger nach AZAV zugelassen. Sobald ein Kurs zugelassen ist, kann deine Weiterbildung mit einem Bildungsgutschein gefördert werden.',
+    ctaPlanned: 'Beratung und Vormerkung anfragen',
+    ctaApproved: 'Förderberatung anfragen',
+    ctaCourses: 'Zu den Kursen',
+
+    trustLabel: 'Zulassung und Kennzahlen',
+    trustAzav: ['AZAV', `Trägerzulassung, Fachbereich ${bt.fachbereich.nummer}: berufliche Weiterbildung`],
+    trustIstqb: ['ISTQB®', 'Accredited Training Provider für deutschsprachige CTFL 4.0 und Agile Tester 1.0'],
+
+    meaningLead: 'Was die Zulassung',
+    meaningRest: 'für dich bedeutet',
+    // AZAV = Akkreditierungs- und Zulassungsverordnung Arbeitsförderung.
+    // Quelle: § 176 SGB III (Zulassung von Trägern und Maßnahmen durch eine fachkundige Stelle).
+    meaningIntro:
+      'AZAV steht für Akkreditierungs- und Zulassungsverordnung Arbeitsförderung. Sie regelt, wie Bildungsträger und ihre Kurse für die Arbeitsförderung zugelassen werden. Die Prüfung übernimmt eine fachkundige Stelle. Das ist eine akkreditierte Prüfstelle.',
+    meaningFor: 'Das bedeutet für dich',
+    // Quelle: § 178 SGB III (Trägerzulassung).
+    providerTitle: 'Trägerzulassung',
+    providerStatus: 'Liegt vor',
+    providerText:
+      'Die fachkundige Stelle prüft den Bildungsträger als Ganzes. Dazu gehören Leistungsfähigkeit und Zuverlässigkeit, qualifiziertes Personal, ein System zur Qualitätssicherung und faire Vertragsbedingungen. Die GZQ GmbH hat die WAMOCON Academy GmbH geprüft und zugelassen.',
+    providerMeaning:
+      'Die WAMOCON Academy erfüllt die gesetzlichen Anforderungen an einen Bildungsträger in der Arbeitsförderung. Das ist die erste von zwei Voraussetzungen für eine Förderung.',
+    // Quelle: § 179 SGB III (Maßnahmezulassung).
+    measureTitle: 'Maßnahmenzulassung',
+    measureStatusPlanned: 'Noch nicht erteilt',
+    measureStatusApproved: 'Liegt vor',
+    measureText:
+      'Zusätzlich braucht jeder einzelne Kurs eine eigene Zulassung. Geprüft werden Inhalte, Methoden und Lehrorganisation, die Ausstattung sowie angemessene Kosten und Dauer.',
+    measureMeaningPlanned:
+      'Für unsere Kurse liegt noch keine Maßnahmenzulassung vor. Einen Bildungsgutschein kannst du bei uns deshalb noch nicht einlösen. Eine Beratung und Vormerkung ist schon jetzt möglich.',
+    measureMeaningApproved:
+      'Die unten genannten Kurse haben eine Maßnahmenzulassung. Mit einem Bildungsgutschein kann deine Teilnahme an diesen Kursen gefördert werden.',
+    // Quelle: § 81 Abs. 1 Nr. 3 SGB III, § 176 Abs. 2 SGB III.
+    meaningRule:
+      'Gefördert werden kann eine Weiterbildung nur, wenn der Bildungsträger und der konkrete Kurs zugelassen sind. Ob du gefördert wirst, entscheidet die Agentur für Arbeit.',
+
+    stepsLead: 'Dein Weg zur Förderung',
+    stepsRest: 'in 4 Schritten',
+    steps: [
+      ['Beratung bei uns', 'Wir besprechen mit dir deine Ziele, die geplante Weiterbildung und die nächsten Schritte.'],
+      // Quelle: § 81 Abs. 1 Nr. 2 SGB III (Beratung vor Beginn der Teilnahme).
+      ['Beratungsgespräch bei der Agentur für Arbeit', 'Die Agentur für Arbeit berät dich vor Beginn der Weiterbildung. Sie klärt, ob eine Förderung für dich möglich ist.'],
+      // Quelle: § 81 Abs. 4 SGB III.
+      ['Bildungsgutschein', 'Sind die Voraussetzungen erfüllt, stellt dir die Agentur für Arbeit einen Bildungsgutschein aus. Er kann zeitlich befristet, regional begrenzt und auf ein Bildungsziel beschränkt sein.'],
+      // Quelle: § 81 Abs. 4 SGB III (Träger legt den Gutschein vor Beginn vor).
+      ['Kursstart bei der WAMOCON Academy', 'Du wählst einen zugelassenen Kurs. Wir legen deinen Bildungsgutschein vor Kursbeginn der Agentur für Arbeit vor. Dann beginnt deine Weiterbildung.'],
+    ],
+    // Quelle: arbeitsagentur.de, Bildungsgutschein (Weiterbildung in mein NOW suchen).
+    stepsClosing: 'Zugelassene Weiterbildungen aller Bildungsträger findest du in der Weiterbildungssuche der Bundesagentur für Arbeit.',
+    meinNowCta: 'Weiterbildungssuche mein NOW',
+
+    supportLead: 'So begleiten wir dich',
+    supportRest: 'während und nach dem Kurs',
+    supportIntro: 'Die Begleitung folgt einem festgelegten und dokumentierten Verfahren.',
+    support: [
+      ['Persönliche Beratung', 'Wir beraten dich persönlich. Vor dem Kurs und während der Weiterbildung.'],
+      ['Unterstützung bei Bewerbungen', 'Wir unterstützen dich dabei, deine Bewerbungen für den Einstieg ins Softwaretesting vorzubereiten.'],
+      ['Vorbereitung auf Vorstellungsgespräche', 'Wir bereiten dich auf Vorstellungsgespräche vor, damit du sicher in das Gespräch gehst.'],
+      ['Nachhilfe und ergänzende Lernangebote', 'Brauchst du bei einem Thema mehr Zeit, bekommst du individuelle Nachhilfe und ergänzende Lernangebote.'],
+      ['Übungen, Wissenstests, Prüfungssimulationen', 'Regelmäßige Übungen und Wissenstests zeigen dir deinen Lernstand. Prüfungssimulationen bereiten dich auf die Prüfung vor. Zwischengespräche halten wir schriftlich fest.'],
+      ['Nachbefragung nach dem Kurs', 'Nach Kursende sowie nach 3 und 6 Monaten ist eine Nachbefragung zu deinem beruflichen Verbleib vorgesehen.'],
+    ],
+
+    coursesLeadPlanned: 'Geplante Weiterbildung',
+    coursesLeadApproved: 'Zugelassene Weiterbildung',
+    coursesRest: 'in Präsenz oder online',
+    coursesNotePlanned:
+      'Diese Weiterbildung hat noch keine Maßnahmenzulassung. Eine Förderung mit Bildungsgutschein ist erst nach der Maßnahmenzulassung möglich. Termine nennen wir, sobald sie feststehen. Du kannst dich schon jetzt beraten lassen und vormerken.',
+    coursesNoteApproved:
+      'Diese Kurse haben eine Maßnahmenzulassung. Deine Teilnahme kann mit einem Bildungsgutschein gefördert werden. Die Entscheidung trifft die Agentur für Arbeit.',
+    variants: 'Zwei Varianten derselben Weiterbildung',
+    format: { praesenz: 'Präsenz', online: 'Online' } as Record<MassnahmeFormat, string>,
+    statusPlanned: 'In Vorbereitung',
+    planNote: 'Noch ohne Maßnahmenzulassung',
+    measureNumber: 'Maßnahmenummer',
+    duration: 'Dauer',
+    place: 'Ort',
+    degree: 'Abschluss',
+    fundingNote: 'Kann mit Bildungsgutschein gefördert werden.',
+
+    whyLead: 'Warum',
+    whyRest: 'WAMOCON Academy',
+    // Inhalte übernommen aus /ber-die-akademie/, der Startseite und der Start-FAQ.
+    why: [
+      ['Praxis aus Projekten der WAMOCON GmbH', 'Die WAMOCON Academy GmbH wird gemeinsam mit der WAMOCON GmbH betrieben, einem Unternehmen für IT-Testmanagement. Du lernst die Methoden, die das Mutterunternehmen in echten Unternehmensprojekten anwendet.'],
+      ['Trainer aus echten Testprojekten', 'Unsere Dozenten sind erfahrene Fachleute und Praktiker. Das Trainerteam bündelt über 50 Jahre Praxiserfahrung aus IT-Testprojekten.'],
+      ['ISTQB®-Akkreditierung', 'Die WAMOCON Academy GmbH ist bei ISTQB® als akkreditierter Trainingsanbieter für deutschsprachige CTFL 4.0- und Agile Tester 1.0-Trainingsmaterialien gelistet.'],
+      ['Mentoring', 'Unsere Dozenten vermitteln nicht nur Wissen. Sie unterstützen dich auf jedem Schritt deiner Ausbildung mit Feedback und Mentoring.'],
+    ],
+
+    proofLead: 'Nachweise',
+    proofRest: 'zur Zulassung',
+    proofRows: {
+      body: 'Fachkundige Stelle',
+      type: 'Art der Zulassung',
+      area: 'Zugelassener Fachbereich',
+      audit: 'Audit',
+      number: 'Zertifikatsnummer',
+      validity: 'Gültigkeit',
+      measures: 'Zugelassene Maßnahmen',
+    },
+    firstApproval: 'Erstzulassung',
+    areaValue: `Fachbereich ${bt.fachbereich.nummer}: ${bt.fachbereich.bezeichnung}`,
+    validityRange: (from: string, to: string) => `${from} bis ${to}`,
+    measuresNone: 'noch keine',
+    measuresCount: (n: number) => (n === 1 ? '1 Maßnahme' : `${n} Maßnahmen`),
+    certAlt: `Zertifikat der Trägerzulassung nach AZAV, ausgestellt von der ${bt.fachkundigeStelle.name}`,
+    certPdf: 'Zertifikat ansehen (PDF)',
+
+    groupsLead: 'Für wen',
+    groupsRest: 'die Weiterbildung passt',
+    groups: [
+      // Quelle: § 81 Abs. 1 Nr. 1 SGB III.
+      ['Arbeitsuchende', 'Bist du arbeitslos, kann eine Weiterbildung gefördert werden, wenn sie für deine berufliche Eingliederung notwendig ist. Das prüft die Agentur für Arbeit.'],
+      // Quelle: § 81 Abs. 1 Nr. 1 SGB III, arbeitsagentur.de (auch Beschäftigte können gefördert werden).
+      ['Beschäftigte', 'Auch Beschäftigte können gefördert werden, zum Beispiel wenn Arbeitslosigkeit droht. Ob das bei dir zutrifft, klärt die Agentur für Arbeit.'],
+      // Inhalt aus der Start-FAQ (Teamtraining). Bewusst ohne Förderaussage.
+      ['Unternehmen', 'Für Unternehmen bieten wir Teamtrainings für ganze QA- oder Testabteilungen an. Inhalte und Termine stimmen wir auf eure Projektsituation ab.'],
+    ],
+
+    faqHeading: 'Häufige Fragen zu Bildungsgutschein und Zulassung',
+    faqIntro: 'Antworten auf die Fragen, die uns zur Förderung einer Weiterbildung bei der WAMOCON Academy am häufigsten gestellt werden.',
+    bylineRole: 'Geschäftsführer der WAMOCON Academy GmbH',
+
+    formIntroPlanned: `Wir beraten dich zur geplanten Weiterbildung und merken dich vor. Sobald der Kurs zugelassen ist, melden wir uns bei dir. Ruf uns an unter ${company.phone} oder hinterlasse unten deine Kontaktdaten.`,
+    formIntroApproved: `Wir beraten dich zur Förderung mit Bildungsgutschein und zu den nächsten Schritten. Ruf uns an unter ${company.phone} oder hinterlasse unten deine Kontaktdaten.`,
+  },
+
+  en: {
+    stand: 'As of October 2026',
+    markText: `Approved by ${bt.fachkundigeStelle.name}`,
+    markAlt: `Mark of the certification body ${bt.fachkundigeStelle.name}`,
+    heroLead: 'Approved education provider',
+    heroRest: 'under AZAV',
+    // AZAV and Bildungsgutschein are explained on first use.
+    heroText:
+      'WAMOCON Academy GmbH is approved under AZAV, the German approval scheme for funded training. Approved courses can be funded with a Bildungsgutschein (education voucher).',
+    ctaPlanned: 'Get advice and pre-register',
+    ctaApproved: 'Request funding advice',
+    ctaCourses: 'See the courses',
+
+    trustLabel: 'Approval and key figures',
+    trustAzav: ['AZAV', `Provider approval, field ${bt.fachbereich.nummer}: vocational further training`],
+    trustIstqb: ['ISTQB®', 'Accredited Training Provider for German-language CTFL 4.0 and Agile Tester 1.0'],
+
+    meaningLead: 'What the approval',
+    meaningRest: 'means for you',
+    // Source: § 176 SGB III.
+    meaningIntro:
+      'AZAV regulates how education providers and their courses are approved for publicly funded training in Germany. The review is carried out by a fachkundige Stelle, an accredited certification body.',
+    meaningFor: 'What this means for you',
+    // Source: § 178 SGB III.
+    providerTitle: 'Provider approval',
+    providerStatus: 'Granted',
+    providerText:
+      'The fachkundige Stelle reviews the provider as a whole. This covers capability and reliability, qualified staff, a quality assurance system and fair contract terms. GZQ GmbH has reviewed and approved WAMOCON Academy GmbH.',
+    providerMeaning:
+      'WAMOCON Academy meets the legal requirements for an education provider in employment promotion. This is the first of two conditions for funding.',
+    // Source: § 179 SGB III.
+    measureTitle: 'Course approval',
+    measureStatusPlanned: 'Not yet granted',
+    measureStatusApproved: 'Granted',
+    measureText:
+      'In addition, every single course needs its own approval. The review covers content, methods and teaching organisation, facilities, and reasonable cost and duration.',
+    measureMeaningPlanned:
+      'Our courses do not have a course approval yet. You therefore cannot redeem a Bildungsgutschein with us yet. You can already get advice and pre-register.',
+    measureMeaningApproved:
+      'The courses listed below have a course approval. Your participation in these courses can be funded with a Bildungsgutschein.',
+    // Source: § 81 (1) no. 3 SGB III, § 176 (2) SGB III.
+    meaningRule:
+      'Training can only be funded if both the provider and the specific course are approved. Whether you receive funding is decided by the Agentur für Arbeit, the local office of the German Federal Employment Agency.',
+
+    stepsLead: 'Your route to funding',
+    stepsRest: 'in 4 steps',
+    steps: [
+      ['Advice from us', 'We talk through your goals, the planned training and the next steps.'],
+      // Source: § 81 (1) no. 2 SGB III.
+      ['Consultation at the Agentur für Arbeit', 'The Agentur für Arbeit advises you before the training begins. It clarifies whether funding is possible for you.'],
+      // Source: § 81 (4) SGB III.
+      ['Bildungsgutschein', 'If the conditions are met, the Agentur für Arbeit issues a Bildungsgutschein. It can be limited in time, to a region and to a specific training goal.'],
+      // Source: § 81 (4) SGB III.
+      ['Course start at WAMOCON Academy', 'You choose an approved course. We submit your Bildungsgutschein to the Agentur für Arbeit before the course begins. Then your training starts.'],
+    ],
+    // Source: arbeitsagentur.de, Bildungsgutschein.
+    stepsClosing: 'Approved training from all providers is listed in the training search of the German Federal Employment Agency.',
+    meinNowCta: 'Training search mein NOW',
+
+    supportLead: 'How we support you',
+    supportRest: 'during and after the course',
+    supportIntro: 'Support follows a defined and documented procedure.',
+    support: [
+      ['Personal advice', 'We advise you in person. Before the course and throughout the training.'],
+      ['Help with applications', 'We help you prepare your applications for entering software testing.'],
+      ['Interview preparation', 'We prepare you for job interviews so that you go into them with confidence.'],
+      ['Tutoring and extra learning', 'If you need more time on a topic, you receive individual tutoring and additional learning materials.'],
+      ['Exercises, knowledge tests, mock exams', 'Regular exercises and knowledge tests show you where you stand. Mock exams prepare you for the examination. We document progress reviews in writing.'],
+      ['Follow-up after the course', 'A follow-up survey on your career path is planned at the end of the course and after 3 and 6 months.'],
+    ],
+
+    coursesLeadPlanned: 'Planned training',
+    coursesLeadApproved: 'Approved training',
+    coursesRest: 'on site or online',
+    coursesNotePlanned:
+      'This training does not have a course approval yet. Funding with a Bildungsgutschein is only possible after the course approval. We will announce dates once they are fixed. You can already get advice and pre-register.',
+    coursesNoteApproved:
+      'These courses have a course approval. Your participation can be funded with a Bildungsgutschein. The decision is made by the Agentur für Arbeit.',
+    variants: 'Two formats of the same training',
+    format: { praesenz: 'On site', online: 'Online' } as Record<MassnahmeFormat, string>,
+    statusPlanned: 'In preparation',
+    planNote: 'No course approval yet',
+    measureNumber: 'Course approval number',
+    duration: 'Duration',
+    place: 'Location',
+    degree: 'Qualification',
+    fundingNote: 'Can be funded with a Bildungsgutschein.',
+
+    whyLead: 'Why',
+    whyRest: 'WAMOCON Academy',
+    why: [
+      ['Practice from WAMOCON GmbH projects', 'WAMOCON Academy GmbH is operated alongside WAMOCON GmbH, an IT test-management company. You learn the methods the parent company applies in real enterprise projects.'],
+      ['Trainers from real test projects', 'Our lecturers are experienced professionals and practitioners. The training team brings over 50 years of combined practical experience from IT testing projects.'],
+      ['ISTQB® accreditation', 'WAMOCON Academy GmbH is listed by ISTQB® as an accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 training materials.'],
+      ['Mentoring', 'Our lecturers do more than teach. They support you at every step of your training with feedback and mentoring.'],
+    ],
+
+    proofLead: 'Evidence',
+    proofRest: 'of the approval',
+    proofRows: {
+      body: 'Certification body',
+      type: 'Type of approval',
+      area: 'Approved field',
+      audit: 'Audit',
+      number: 'Certificate number',
+      validity: 'Valid',
+      measures: 'Approved courses',
+    },
+    firstApproval: 'initial approval',
+    areaValue: `Field ${bt.fachbereich.nummer}: vocational further training (${bt.fachbereich.bezeichnung})`,
+    validityRange: (from: string, to: string) => `${from} to ${to}`,
+    measuresNone: 'none yet',
+    measuresCount: (n: number) => (n === 1 ? '1 course' : `${n} courses`),
+    certAlt: `Certificate of the AZAV provider approval, issued by ${bt.fachkundigeStelle.name}`,
+    certPdf: 'View certificate (PDF)',
+
+    groupsLead: 'Who',
+    groupsRest: 'the training is for',
+    groups: [
+      ['Job seekers', 'If you are unemployed, training can be funded when it is necessary for your return to work. The Agentur für Arbeit assesses this.'],
+      ['Employees', 'Employees can be funded too, for example when unemployment is imminent. The Agentur für Arbeit clarifies whether this applies to you.'],
+      ['Companies', 'For companies we offer team training for entire QA or test departments. Content and dates are aligned with your project situation.'],
+    ],
+
+    faqHeading: 'Frequently asked questions about the Bildungsgutschein and the approval',
+    faqIntro: 'Answers to the questions we are asked most often about funded training at WAMOCON Academy.',
+    bylineRole: 'Managing Director of WAMOCON Academy GmbH',
+
+    formIntroPlanned: `We advise you on the planned training and pre-register you. As soon as the course is approved, we will get in touch. Call us on ${company.phone} or leave your contact details below.`,
+    formIntroApproved: `We advise you on funding with a Bildungsgutschein and on the next steps. Call us on ${company.phone} or leave your contact details below.`,
+  },
+
+  // Muttersprachliche Prüfung offen: der gesamte kasachische Block.
+  kk: {
+    stand: '2026 жылғы қазандағы жағдай',
+    markText: `${bt.fachkundigeStelle.name} рұқсат берген`,
+    markAlt: `${bt.fachkundigeStelle.name} сараптама органының белгісі`,
+    heroLead: 'AZAV бойынша рұқсат алған',
+    heroRest: 'білім беру ұйымы',
+    heroText:
+      'WAMOCON Academy GmbH AZAV бойынша рұқсат алды. AZAV дегеніміз мемлекет қаржыландыратын оқуға рұқсат беру туралы неміс ережесі. Курс рұқсат алған соң оны Bildungsgutschein (білім беру ваучері) арқылы қаржыландыруға болады.',
+    ctaPlanned: 'Кеңес алу және алдын ала тіркелу',
+    ctaApproved: 'Қаржыландыру бойынша кеңес алу',
+    ctaCourses: 'Курстарға өту',
+
+    trustLabel: 'Рұқсат және көрсеткіштер',
+    trustAzav: ['AZAV', `Ұйымға рұқсат, ${bt.fachbereich.nummer}-бағыт: кәсіптік біліктілікті арттыру`],
+    trustIstqb: ['ISTQB®', 'неміс тіліндегі CTFL 4.0 және Agile Tester 1.0 бойынша Accredited Training Provider'],
+
+    meaningLead: 'Бұл рұқсат',
+    meaningRest: 'сіз үшін нені білдіреді',
+    meaningIntro:
+      'AZAV білім беру ұйымдары мен олардың курстарына Германияда мемлекеттік қаржыландыру үшін қалай рұқсат берілетінін реттейді. Тексеруді fachkundige Stelle, яғни аккредиттелген сараптама органы жүргізеді.',
+    meaningFor: 'Бұл сіз үшін нені білдіреді',
+    providerTitle: 'Ұйымға берілетін рұқсат',
+    providerStatus: 'Бар',
+    providerText:
+      'Сараптама органы ұйымды толық тексереді. Оған ұйымның қабілеті мен сенімділігі, білікті қызметкерлер, сапаны қамтамасыз ету жүйесі және әділ шарт талаптары кіреді. GZQ GmbH WAMOCON Academy GmbH компаниясын тексеріп, рұқсат берді.',
+    providerMeaning:
+      'WAMOCON Academy жұмыспен қамтуға жәрдемдесу саласындағы білім беру ұйымына қойылатын заң талаптарына сай. Бұл қаржыландырудың екі шартының біріншісі.',
+    measureTitle: 'Курсқа берілетін рұқсат',
+    measureStatusPlanned: 'Әлі берілмеген',
+    measureStatusApproved: 'Бар',
+    measureText:
+      'Сонымен қатар әр курсқа жеке рұқсат қажет. Мазмұны, әдістері мен оқуды ұйымдастыру, жабдықталуы, сондай-ақ құны мен ұзақтығының орындылығы тексеріледі.',
+    measureMeaningPlanned:
+      'Біздің курстарға әлі рұқсат берілген жоқ. Сондықтан Bildungsgutschein ваучерін бізде әзірге пайдалана алмайсыз. Кеңес алып, алдын ала тіркелу қазірдің өзінде мүмкін.',
+    measureMeaningApproved:
+      'Төменде көрсетілген курстардың рұқсаты бар. Бұл курстарға қатысуыңызды Bildungsgutschein арқылы қаржыландыруға болады.',
+    meaningRule:
+      'Оқуды тек ұйымның да, нақты курстың да рұқсаты болғанда ғана қаржыландыруға болады. Қаржыландыру туралы шешімді Agentur für Arbeit, яғни Германияның жұмыспен қамту агенттігінің жергілікті бөлімі қабылдайды.',
+
+    stepsLead: 'Қаржыландыруға апарар жол',
+    stepsRest: '4 қадамда',
+    steps: [
+      ['Бізден кеңес алу', 'Мақсаттарыңызды, жоспарланған оқуды және келесі қадамдарды бірге талқылаймыз.'],
+      ['Agentur für Arbeit-те кеңес алу', 'Agentur für Arbeit оқу басталмай тұрып сізге кеңес береді. Ол сіз үшін қаржыландыру мүмкін бе, соны анықтайды.'],
+      ['Bildungsgutschein', 'Шарттар орындалса, Agentur für Arbeit сізге Bildungsgutschein береді. Ол мерзіммен, өңірмен және белгілі бір оқу мақсатымен шектелуі мүмкін.'],
+      ['WAMOCON Academy-де курсты бастау', 'Сіз рұқсаты бар курсты таңдайсыз. Біз ваучеріңізді курс басталғанға дейін Agentur für Arbeit-ке ұсынамыз. Содан кейін оқуыңыз басталады.'],
+    ],
+    stepsClosing: 'Барлық ұйымның рұқсаты бар оқу бағдарламалары Германияның Федералдық жұмыспен қамту агенттігінің іздеу жүйесінде берілген.',
+    meinNowCta: 'mein NOW оқу іздеу жүйесі',
+
+    supportLead: 'Сізді қалай',
+    supportRest: 'курс кезінде және одан кейін қолдаймыз',
+    supportIntro: 'Қолдау белгіленген әрі құжатталған тәртіп бойынша жүреді.',
+    support: [
+      ['Жеке кеңес', 'Сізге жеке кеңес береміз. Курсқа дейін де, оқу барысында да.'],
+      ['Түйіндеме дайындауға көмек', 'Тестілеу саласына кіруге арналған өтініштеріңізді дайындауға көмектесеміз.'],
+      ['Сұхбатқа дайындық', 'Жұмыс сұхбатына сенімді баруыңыз үшін сізді дайындаймыз.'],
+      ['Қосымша сабақтар', 'Бір тақырыпқа көбірек уақыт керек болса, жеке қосымша сабақ пен қосымша оқу материалдарын аласыз.'],
+      ['Жаттығулар, тесттер, емтихан имитациясы', 'Тұрақты жаттығулар мен білім тесттері деңгейіңізді көрсетеді. Емтихан имитациясы емтиханға дайындайды. Аралық әңгімелерді жазбаша тіркейміз.'],
+      ['Курстан кейінгі сауалнама', 'Курс аяқталғанда, сондай-ақ 3 және 6 айдан кейін кәсіби жолыңыз туралы сауалнама жүргізу көзделген.'],
+    ],
+
+    coursesLeadPlanned: 'Жоспарланған оқу',
+    coursesLeadApproved: 'Рұқсаты бар оқу',
+    coursesRest: 'аудиторияда немесе онлайн',
+    coursesNotePlanned:
+      'Бұл оқу бағдарламасының әлі рұқсаты жоқ. Bildungsgutschein арқылы қаржыландыру тек курсқа рұқсат берілгеннен кейін мүмкін. Күндерін белгіленген соң жариялаймыз. Кеңес алып, алдын ала тіркелу қазірдің өзінде мүмкін.',
+    coursesNoteApproved:
+      'Бұл курстардың рұқсаты бар. Қатысуыңызды Bildungsgutschein арқылы қаржыландыруға болады. Шешімді Agentur für Arbeit қабылдайды.',
+    variants: 'Бір оқу бағдарламасының екі нұсқасы',
+    format: { praesenz: 'Аудиторияда', online: 'Онлайн' } as Record<MassnahmeFormat, string>,
+    statusPlanned: 'Дайындалуда',
+    planNote: 'Курсқа рұқсат әлі жоқ',
+    measureNumber: 'Рұқсат нөмірі',
+    duration: 'Ұзақтығы',
+    place: 'Өтетін жері',
+    degree: 'Біліктілік',
+    fundingNote: 'Bildungsgutschein арқылы қаржыландыруға болады.',
+
+    whyLead: 'Неге',
+    whyRest: 'WAMOCON Academy',
+    why: [
+      ['WAMOCON GmbH жобаларынан алынған тәжірибе', 'WAMOCON Academy GmbH IT тестілеуді басқару компаниясы WAMOCON GmbH-пен бірге жұмыс істейді. Сіз бас компания нақты корпоративтік жобаларда қолданатын әдістерді үйренесіз.'],
+      ['Нақты тест жобаларынан келген тренерлер', 'Оқытушыларымыз тәжірибелі мамандар әрі практиктер. Тренерлер тобы IT тестілеу жобаларынан жинақталған 50 жылдан асатын тәжірибені біріктіреді.'],
+      ['ISTQB® аккредиттеуі', 'WAMOCON Academy GmbH компаниясы ISTQB® тізімінде неміс тіліндегі CTFL 4.0 және Agile Tester 1.0 оқу материалдары бойынша аккредиттелген оқыту провайдері ретінде тіркелген.'],
+      ['Тәлімгерлік', 'Оқытушыларымыз білім берумен шектелмейді. Кері байланыс пен тәлімгерлік арқылы оқудың әр қадамында сізді қолдайды.'],
+    ],
+
+    proofLead: 'Рұқсатты',
+    proofRest: 'растайтын мәліметтер',
+    proofRows: {
+      body: 'Сараптама органы',
+      type: 'Рұқсат түрі',
+      area: 'Рұқсат берілген бағыт',
+      audit: 'Аудит',
+      number: 'Сертификат нөмірі',
+      validity: 'Жарамдылық мерзімі',
+      measures: 'Рұқсаты бар курстар',
+    },
+    firstApproval: 'алғашқы рұқсат',
+    areaValue: `${bt.fachbereich.nummer}-бағыт: кәсіптік біліктілікті арттыру (${bt.fachbereich.bezeichnung})`,
+    validityRange: (from: string, to: string) => `${from} бастап ${to} дейін`,
+    measuresNone: 'әзірге жоқ',
+    measuresCount: (n: number) => `${n} курс`,
+    certAlt: `${bt.fachkundigeStelle.name} берген AZAV бойынша ұйымға рұқсат сертификаты`,
+    certPdf: 'Сертификатты қарау (PDF)',
+
+    groupsLead: 'Бұл оқу',
+    groupsRest: 'кімге арналған',
+    groups: [
+      ['Жұмыс іздеушілер', 'Жұмыссыз болсаңыз, оқу жұмысқа қайта орналасуыңызға қажет болғанда қаржыландырылуы мүмкін. Мұны Agentur für Arbeit тексереді.'],
+      ['Жұмыс істейтіндер', 'Жұмыс істейтін адамдар да қаржыландырылуы мүмкін, мысалы жұмыссыз қалу қаупі болса. Бұл сізге қатысты ма, оны Agentur für Arbeit анықтайды.'],
+      ['Компаниялар', 'Компанияларға тұтас сапа немесе тестілеу бөлімдеріне арналған командалық тренинг ұсынамыз. Мазмұны мен күндері жобаңыздың жағдайына бейімделеді.'],
+    ],
+
+    faqHeading: 'Bildungsgutschein және рұқсат туралы жиі қойылатын сұрақтар',
+    faqIntro: 'WAMOCON Academy-де оқуды қаржыландыру туралы бізге ең жиі қойылатын сұрақтардың жауаптары.',
+    bylineRole: 'WAMOCON Academy GmbH атқарушы директоры',
+
+    formIntroPlanned: `Жоспарланған оқу бойынша кеңес беріп, сізді алдын ала тіркейміз. Курсқа рұқсат берілген соң сізге хабарласамыз. Бізге ${company.phone} нөмірі бойынша қоңырау шалыңыз немесе төменде байланыс деректеріңізді қалдырыңыз.`,
+    formIntroApproved: `Bildungsgutschein арқылы қаржыландыру және келесі қадамдар бойынша кеңес береміз. Бізге ${company.phone} нөмірі бойынша қоңырау шалыңыз немесе төменде байланыс деректеріңізді қалдырыңыз.`,
+  },
+} as const;
+
+const c = copy[lang];
+const cta = approved ? c.ctaApproved : c.ctaPlanned;
+const stats = home.hero.stats.map((stat) => [stat.value, stat[lang]] as const);
+const trust = [c.trustAzav, c.trustIstqb, ...stats];
+
+// Planned courses share one name and differ by format, so they render as one
+// training with two variants. Approved measures keep their own entries.
+const plannedGroups = [...new Set(bt.massnahmenGeplant.map((m) => m.name))].map((name) => ({
+  name,
+  variants: bt.massnahmenGeplant.filter((m) => m.name === name),
+}));
+
+const validity =
+  bt.gueltigVon && bt.gueltigBis ? c.validityRange(formatDate(bt.gueltigVon), formatDate(bt.gueltigBis)) : '';
+const typeValue = [`${bt.zulassungsart} (${bt.paragraf})`, bt.erstzulassung ? c.firstApproval : '']
+  .filter(Boolean)
+  .join(', ');
+const proofRows: Array<[string, string]> = [
+  [c.proofRows.type, typeValue],
+  [c.proofRows.area, c.areaValue],
+  [c.proofRows.audit, auditDates],
+  [c.proofRows.number, bt.zertifikatsnummer],
+  [c.proofRows.validity, validity],
+  [c.proofRows.measures, approved ? c.measuresCount(bt.massnahmen.length) : c.measuresNone],
+].filter(([, value]) => value) as Array<[string, string]>;
+const hasCertificate = bt.zertifikatDatei.trim() !== '';
+const certificateIsPdf = zertifikatIstPdf();
+const certificateHasSize = bt.zertifikatBreite !== null && bt.zertifikatHoehe !== null;
+
+// ---------------------------------------------------------------------------
+// FAQ. Each answer stands on its own, names the subject in full and carries
+// its date, following the pattern of the home-page FAQ (src/data/faq.ts).
+// ---------------------------------------------------------------------------
+const approvedNames = bt.massnahmen.map((m) => `${m.name} (${m.massnahmenummer})`).join(', ');
+const plannedName = plannedGroups[0]?.name ?? '';
+const faq = pick(lang, {
+  de: [
+    {
+      question: 'Was ist ein Bildungsgutschein?',
+      // Quelle: § 81 Abs. 4 SGB III.
+      answer: `Ein Bildungsgutschein bescheinigt dir, dass die Voraussetzungen für die Förderung einer beruflichen Weiterbildung vorliegen (${c.stand}). Er wird von der Agentur für Arbeit ausgestellt. Grundlage ist § 81 SGB III. Der Bildungsgutschein kann zeitlich befristet, regional begrenzt und auf ein bestimmtes Bildungsziel beschränkt sein. Einlösen kannst du ihn nur bei einem zugelassenen Bildungsträger und nur für einen zugelassenen Kurs. Der Bildungsträger legt den Bildungsgutschein vor Kursbeginn der Agentur für Arbeit vor. Ob ein Bildungsgutschein ausgestellt wird, entscheidet die Agentur für Arbeit im Einzelfall.`,
+    },
+    {
+      question: 'Wer bekommt einen Bildungsgutschein?',
+      // Quelle: § 81 Abs. 1 SGB III; arbeitsagentur.de (auch Beschäftigte).
+      answer: `Einen Bildungsgutschein kann bekommen, wer die Voraussetzungen nach § 81 SGB III erfüllt (${c.stand}). Die Weiterbildung muss notwendig sein, zum Beispiel um nach Arbeitslosigkeit wieder in Arbeit zu kommen oder um drohende Arbeitslosigkeit abzuwenden. Die Agentur für Arbeit muss dich vor Beginn der Weiterbildung beraten haben. Außerdem müssen der Kurs und der Bildungsträger zugelassen sein. Auch Beschäftigte können gefördert werden. Die Entscheidung trifft die Agentur für Arbeit im Einzelfall.`,
+    },
+    {
+      question: 'Kann ich schon jetzt einen Bildungsgutschein bei euch einlösen?',
+      answer: approved
+        ? `Ja, für die Kurse mit Maßnahmenzulassung (${c.stand}). Die WAMOCON Academy GmbH ist als Bildungsträger nach AZAV zugelassen. Zugelassen sind folgende Kurse: ${approvedNames}. Für diese Kurse kannst du einen Bildungsgutschein der Agentur für Arbeit einlösen. Ob du einen Bildungsgutschein bekommst, entscheidet die Agentur für Arbeit. Gern beraten wir dich vorher zum Ablauf.`
+        : `Nein, noch nicht (${c.stand}). Die WAMOCON Academy GmbH ist als Bildungsträger nach AZAV zugelassen. Für die geplante Weiterbildung ${plannedName} liegt aber noch keine Maßnahmenzulassung vor. Einen Bildungsgutschein kannst du erst einlösen, wenn auch der Kurs zugelassen ist. Sobald die erste Maßnahme zugelassen ist, ist das bei uns möglich. Du kannst dich schon jetzt beraten lassen und für die Weiterbildung vormerken.`,
+    },
+    {
+      question: 'Welche Kosten können übernommen werden?',
+      // Quelle: § 83 Abs. 1 SGB III; arbeitsagentur.de.
+      answer: `§ 83 SGB III nennt vier Arten von Weiterbildungskosten, die übernommen werden können (${c.stand}): Lehrgangskosten und Kosten für die Eignungsfeststellung, Fahrkosten, Kosten für auswärtige Unterbringung und Verpflegung sowie Kosten für die Betreuung von Kindern. Welche Kosten in deinem Fall übernommen werden, entscheidet die Agentur für Arbeit. Kläre das vor der Anmeldung im Beratungsgespräch. Lass dir die Förderung vor einer Anmeldung bitte schriftlich bestätigen.`,
+    },
+    {
+      question: 'Muss ich zuerst zur Agentur für Arbeit?',
+      // Quelle: § 81 Abs. 1 Nr. 2 SGB III.
+      answer: `Ja. Die Agentur für Arbeit muss dich vor Beginn der Weiterbildung beraten haben (${c.stand}). Das schreibt § 81 SGB III vor. Erst danach kann sie einen Bildungsgutschein ausstellen. Du kannst dich vorher bei der WAMOCON Academy beraten lassen. Dann weißt du, welche Weiterbildung zu deinen Zielen passt, und gehst vorbereitet in das Gespräch bei der Agentur für Arbeit.`,
+    },
+    {
+      question: 'Gibt es den Kurs auch online?',
+      answer: approved
+        ? `Die Formate stehen bei jedem zugelassenen Kurs auf dieser Seite (${c.stand}). Die WAMOCON Academy plant die Weiterbildung ${plannedName} in zwei Varianten: in Präsenz und online. Welche Variante zu dir passt, besprechen wir gern in der Beratung.`
+        : `Ja, die Weiterbildung ${plannedName} ist in zwei Varianten geplant: in Präsenz und online (${c.stand}). Beide Varianten haben noch keine Maßnahmenzulassung. Eine Förderung mit Bildungsgutschein ist deshalb noch nicht möglich. Welche Variante zu dir passt, besprechen wir gern in der Beratung.`,
+    },
+    {
+      question: 'Was passiert nach der Prüfung?',
+      answer: `Die WAMOCON Academy begleitet dich auch beim Übergang in den Beruf (${c.stand}). Dazu gehören die Unterstützung bei Bewerbungen und die Vorbereitung auf Vorstellungsgespräche. Nach Kursende sowie nach 3 und 6 Monaten ist eine Nachbefragung zu deinem beruflichen Verbleib vorgesehen. Ein Arbeitsplatz wird dir damit nicht zugesagt.`,
+    },
+    {
+      question: 'Wer hat die WAMOCON Academy geprüft?',
+      // Quelle: § 176 und § 178 SGB III.
+      answer: `Die ${bt.fachkundigeStelle.name} aus ${bt.fachkundigeStelle.ort} hat die WAMOCON Academy GmbH als fachkundige Stelle geprüft (${c.stand}). Eine fachkundige Stelle ist eine akkreditierte Prüfstelle, die Bildungsträger und Kurse für die Arbeitsförderung zulässt. Die Audits fanden am ${auditDates} statt. Es handelt sich um eine Erstzulassung als Träger nach ${bt.paragraf}. Zugelassen ist der Fachbereich ${bt.fachbereich.nummer}, ${bt.fachbereich.bezeichnung}.`,
+    },
+    {
+      question: 'Wie kann ich mich beschweren?',
+      answer: `Du kannst dich bei der WAMOCON Academy GmbH persönlich, telefonisch, per E-Mail oder über Bewertungsplattformen beschweren (${c.stand}). Die Geschäftsführung bearbeitet jede Beschwerde. Jede Beschwerde wird dokumentiert. Du erreichst uns unter ${company.phone} oder per E-Mail an ${company.email}.`,
+    },
+  ],
+  en: [
+    {
+      question: 'What is a Bildungsgutschein?',
+      answer: `A Bildungsgutschein is an education voucher. It certifies that you meet the conditions for funding of vocational further training (${c.stand}). It is issued by the Agentur für Arbeit, the local office of the German Federal Employment Agency. The legal basis is § 81 SGB III. The voucher can be limited in time, to a region and to a specific training goal. It can only be redeemed with an approved provider and only for an approved course. The provider submits the voucher to the Agentur für Arbeit before the course begins. Whether a voucher is issued is decided by the Agentur für Arbeit case by case.`,
+    },
+    {
+      question: 'Who can get a Bildungsgutschein?',
+      answer: `A Bildungsgutschein can be issued to anyone who meets the conditions of § 81 SGB III (${c.stand}). The training must be necessary, for example to return to work after unemployment or to avert imminent unemployment. The Agentur für Arbeit must have advised you before the training begins. In addition, both the course and the provider must be approved. Employees can be funded too. The decision is made by the Agentur für Arbeit case by case.`,
+    },
+    {
+      question: 'Can I already redeem a Bildungsgutschein with you?',
+      answer: approved
+        ? `Yes, for the courses with a course approval (${c.stand}). WAMOCON Academy GmbH is approved as an education provider under AZAV. The following courses are approved: ${approvedNames}. You can redeem a Bildungsgutschein from the Agentur für Arbeit for these courses. Whether you receive a voucher is decided by the Agentur für Arbeit. We are happy to advise you on the process beforehand.`
+        : `No, not yet (${c.stand}). WAMOCON Academy GmbH is approved as an education provider under AZAV. However, the planned training ${plannedName} does not have a course approval yet. A Bildungsgutschein can only be redeemed once the course itself is approved. As soon as the first course is approved, this will be possible with us. You can already get advice and pre-register for the training.`,
+    },
+    {
+      question: 'Which costs can be covered?',
+      answer: `§ 83 SGB III lists four types of training costs that can be covered (${c.stand}): course fees and the cost of aptitude assessment, travel costs, the cost of accommodation and meals away from home, and childcare costs. Which costs are covered in your case is decided by the Agentur für Arbeit. Clarify this in the consultation before you register. Please get the funding confirmed in writing before you register.`,
+    },
+    {
+      question: 'Do I have to go to the Agentur für Arbeit first?',
+      answer: `Yes. The Agentur für Arbeit must have advised you before the training begins (${c.stand}). This is required by § 81 SGB III. Only then can it issue a Bildungsgutschein. You can get advice from WAMOCON Academy beforehand. You will then know which training suits your goals and go into the consultation at the Agentur für Arbeit prepared.`,
+    },
+    {
+      question: 'Is the course also available online?',
+      answer: approved
+        ? `The format is shown for every approved course on this page (${c.stand}). WAMOCON Academy plans the training ${plannedName} in two formats: on site and online. We are happy to discuss which format suits you in a consultation.`
+        : `Yes, the training ${plannedName} is planned in two formats: on site and online (${c.stand}). Neither format has a course approval yet. Funding with a Bildungsgutschein is therefore not possible yet. We are happy to discuss which format suits you in a consultation.`,
+    },
+    {
+      question: 'What happens after the exam?',
+      answer: `WAMOCON Academy also supports you in the transition into work (${c.stand}). This includes help with applications and preparation for job interviews. A follow-up survey on your career path is planned at the end of the course and after 3 and 6 months. This does not guarantee you a job.`,
+    },
+    {
+      question: 'Who reviewed WAMOCON Academy?',
+      answer: `${bt.fachkundigeStelle.name} from ${bt.fachkundigeStelle.ort} reviewed WAMOCON Academy GmbH as the fachkundige Stelle (${c.stand}). A fachkundige Stelle is an accredited certification body that approves education providers and courses for employment promotion in Germany. The audits took place on ${auditDates}. It is an initial approval as a provider under ${bt.paragraf}. The approved field is field ${bt.fachbereich.nummer}, vocational further training.`,
+    },
+    {
+      question: 'How can I make a complaint?',
+      answer: `You can complain to WAMOCON Academy GmbH in person, by phone, by e-mail or via review platforms (${c.stand}). The management handles every complaint. Every complaint is documented. You can reach us on ${company.phone} or by e-mail at ${company.email}.`,
+    },
+  ],
+  // Muttersprachliche Prüfung offen
+  kk: [
+    {
+      question: 'Bildungsgutschein деген не?',
+      answer: `Bildungsgutschein дегеніміз білім беру ваучері. Ол кәсіптік біліктілікті арттыруды қаржыландыру шарттары орындалғанын растайды (${c.stand}). Оны Agentur für Arbeit, яғни Германияның жұмыспен қамту агенттігінің жергілікті бөлімі береді. Құқықтық негізі: § 81 SGB III. Ваучер мерзіммен, өңірмен және белгілі бір оқу мақсатымен шектелуі мүмкін. Оны тек рұқсаты бар ұйымда және тек рұқсаты бар курсқа пайдалануға болады. Ұйым ваучерді курс басталғанға дейін Agentur für Arbeit-ке ұсынады. Ваучер беру туралы шешімді Agentur für Arbeit әр жағдайда жеке қабылдайды.`,
+    },
+    {
+      question: 'Bildungsgutschein кімге беріледі?',
+      answer: `Bildungsgutschein § 81 SGB III шарттарын орындаған адамға берілуі мүмкін (${c.stand}). Оқу қажет болуы тиіс, мысалы жұмыссыздықтан кейін жұмысқа қайта оралу немесе жұмыссыз қалу қаупін болдырмау үшін. Agentur für Arbeit оқу басталмай тұрып сізге кеңес берген болуы керек. Сонымен қатар курстың да, ұйымның да рұқсаты болуы тиіс. Жұмыс істейтін адамдар да қаржыландырылуы мүмкін. Шешімді Agentur für Arbeit әр жағдайда жеке қабылдайды.`,
+    },
+    {
+      question: 'Bildungsgutschein ваучерін бізде қазір пайдалануға бола ма?',
+      answer: approved
+        ? `Иә, рұқсаты бар курстар үшін болады (${c.stand}). WAMOCON Academy GmbH AZAV бойынша білім беру ұйымы ретінде рұқсат алған. Рұқсаты бар курстар: ${approvedNames}. Бұл курстарға Agentur für Arbeit берген ваучерді пайдалана аласыз. Ваучер беру туралы шешімді Agentur für Arbeit қабылдайды. Алдын ала тәртібі бойынша кеңес береміз.`
+        : `Жоқ, әзірге болмайды (${c.stand}). WAMOCON Academy GmbH AZAV бойынша білім беру ұйымы ретінде рұқсат алған. Бірақ жоспарланған ${plannedName} оқу бағдарламасының әлі рұқсаты жоқ. Ваучерді курстың өзі рұқсат алған соң ғана пайдалануға болады. Алғашқы курс рұқсат алысымен бізде бұл мүмкін болады. Қазірдің өзінде кеңес алып, оқуға алдын ала тіркеле аласыз.`,
+    },
+    {
+      question: 'Қандай шығындар өтелуі мүмкін?',
+      answer: `§ 83 SGB III өтелуі мүмкін оқу шығындарының төрт түрін атайды (${c.stand}): курс ақысы мен жарамдылықты анықтау шығындары, жол шығындары, басқа жерде тұру мен тамақтану шығындары және балаларды күту шығындары. Сіздің жағдайыңызда қандай шығын өтелетінін Agentur für Arbeit шешеді. Мұны тіркелмес бұрын кеңес кезінде анықтаңыз. Қаржыландыруды тіркелмес бұрын жазбаша растатып алыңыз.`,
+    },
+    {
+      question: 'Алдымен Agentur für Arbeit-ке бару керек пе?',
+      answer: `Иә. Agentur für Arbeit оқу басталмай тұрып сізге кеңес берген болуы керек (${c.stand}). Мұны § 81 SGB III талап етеді. Содан кейін ғана ол Bildungsgutschein бере алады. Оған дейін WAMOCON Academy-ден кеңес ала аласыз. Сонда қай оқу мақсаттарыңызға сай екенін білесіз және Agentur für Arbeit-тегі әңгімеге дайын барасыз.`,
+    },
+    {
+      question: 'Курс онлайн форматта да бар ма?',
+      answer: approved
+        ? `Әр рұқсаты бар курстың форматы осы бетте көрсетілген (${c.stand}). WAMOCON Academy ${plannedName} оқу бағдарламасын екі нұсқада жоспарлап отыр: аудиторияда және онлайн. Қай нұсқа сізге сай екенін кеңес кезінде талқылаймыз.`
+        : `Иә, ${plannedName} оқу бағдарламасы екі нұсқада жоспарланған: аудиторияда және онлайн (${c.stand}). Екі нұсқаның да әлі рұқсаты жоқ. Сондықтан Bildungsgutschein арқылы қаржыландыру әзірге мүмкін емес. Қай нұсқа сізге сай екенін кеңес кезінде талқылаймыз.`,
+    },
+    {
+      question: 'Емтиханнан кейін не болады?',
+      answer: `WAMOCON Academy жұмысқа өту кезеңінде де сізді қолдайды (${c.stand}). Оған өтініштерді дайындауға көмек және жұмыс сұхбатына дайындық кіреді. Курс аяқталғанда, сондай-ақ 3 және 6 айдан кейін кәсіби жолыңыз туралы сауалнама жүргізу көзделген. Бұл жұмыс орнына кепілдік бермейді.`,
+    },
+    {
+      question: 'WAMOCON Academy-ді кім тексерді?',
+      answer: `WAMOCON Academy GmbH компаниясын ${bt.fachkundigeStelle.ort} қаласындағы ${bt.fachkundigeStelle.name} fachkundige Stelle ретінде тексерді (${c.stand}). Fachkundige Stelle дегеніміз Германияда жұмыспен қамтуға жәрдемдесу үшін білім беру ұйымдары мен курстарға рұқсат беретін аккредиттелген сараптама органы. Аудиттер ${auditDates} күндері өтті. Бұл ${bt.paragraf} бойынша ұйымға берілген алғашқы рұқсат. Рұқсат берілген бағыт: ${bt.fachbereich.nummer}-бағыт, кәсіптік біліктілікті арттыру.`,
+    },
+    {
+      question: 'Шағымды қалай беруге болады?',
+      answer: `WAMOCON Academy GmbH-ге шағымды жеке өзіңіз, телефон, электрондық пошта немесе пікір платформалары арқылы бере аласыз (${c.stand}). Әр шағымды басшылық қарайды. Әр шағым құжатталады. Бізге ${company.phone} нөмірі немесе ${company.email} поштасы арқылы хабарласыңыз.`,
+    },
+  ],
+});
+---
+
+<div class="bt-page">
+  <section class="page-hero bt-hero">
+    <div class="glow" aria-hidden="true"></div>
+    <div class="bt-hero__art page-hero__art" aria-hidden="true">
+      <img class="bt-hero__ring" src={assets.missionRing} alt="" width="1484" height="1908" />
+      <img class="bt-hero__curve" src={assets.accentCurve} alt="" width="2228" height="1724" />
+    </div>
+    <div class="container page-hero__inner">
+      <div class="bt-hero__copy page-hero__copy" data-reveal>
+        {showMark ? (
+          <p class="bt-hero__mark">
+            <img
+              src={bt.zeichenDatei}
+              alt={c.markAlt}
+              width={bt.zeichenBreite ?? undefined}
+              height={bt.zeichenHoehe ?? undefined}
+            />
+            <span>{c.markText}</span>
+          </p>
+        ) : (
+          <p class="bt-hero__kicker">{c.markText}</p>
+        )}
+        <h1><span>{c.heroLead}</span> {c.heroRest}</h1>
+        <p>{c.heroText}</p>
+        <div class="bt-hero__actions">
+          <Button href={`#${formAnchor}`} size="lg">{cta}</Button>
+          <Button href={`#${coursesAnchor}`} size="lg" variant="outline">{c.ctaCourses}</Button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bt-trust" aria-label={c.trustLabel}>
+    <ul class="container bt-trust__list">
+      {trust.map(([value, label]) => (
+        <li data-reveal>
+          <strong>{value}</strong>
+          <span>{label}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="section bt-meaning" aria-labelledby="bt-meaning-title">
+    <div class="container">
+      <div class="bt-head" data-reveal>
+        <h2 id="bt-meaning-title"><span>{c.meaningLead}</span> {c.meaningRest}</h2>
+        <p>{c.meaningIntro}</p>
+      </div>
+      <div class="bt-meaning__grid">
+        <article class="bt-panel" data-reveal>
+          <p class="bt-status bt-status--done">{c.providerStatus}</p>
+          <h3>{c.providerTitle}</h3>
+          <p>{c.providerText}</p>
+          <div class="bt-panel__meaning">
+            <h4>{c.meaningFor}</h4>
+            <p>{c.providerMeaning}</p>
+          </div>
+        </article>
+        <article class:list={['bt-panel', { 'bt-panel--open': !approved }]} data-reveal>
+          <p class:list={['bt-status', approved ? 'bt-status--done' : 'bt-status--open']}>
+            {approved ? c.measureStatusApproved : c.measureStatusPlanned}
+          </p>
+          <h3>{c.measureTitle}</h3>
+          <p>{c.measureText}</p>
+          <div class="bt-panel__meaning">
+            <h4>{c.meaningFor}</h4>
+            <p>{approved ? c.measureMeaningApproved : c.measureMeaningPlanned}</p>
+          </div>
+        </article>
+      </div>
+      <p class="bt-rule" data-reveal>{c.meaningRule}</p>
+    </div>
+  </section>
+
+  <section class="section bt-steps" aria-labelledby="bt-steps-title">
+    <div class="container">
+      <div class="bt-head" data-reveal>
+        <h2 id="bt-steps-title"><span>{c.stepsLead}</span> {c.stepsRest}</h2>
+      </div>
+      <ol class="bt-steps__list">
+        {c.steps.map(([title, text], index) => (
+          <li data-reveal>
+            <span class="bt-steps__number">{String(index + 1).padStart(2, '0')}</span>
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </li>
+        ))}
+      </ol>
+      <div class="bt-steps__closing" data-reveal>
+        <p>{c.stepsClosing}</p>
+        <Button href={meinNowHref} variant="outline" target="_blank">{c.meinNowCta}</Button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bt-support" aria-labelledby="bt-support-title">
+    <div class="container">
+      <div class="bt-head" data-reveal>
+        <h2 id="bt-support-title"><span>{c.supportLead}</span> {c.supportRest}</h2>
+        <p>{c.supportIntro}</p>
+      </div>
+      <div class="bt-cards bt-cards--three">
+        {c.support.map(([title, text]) => (
+          <article class="bt-card" data-reveal>
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bt-courses" id={coursesAnchor} aria-labelledby="bt-courses-title">
+    <div class="container">
+      <div class="bt-head" data-reveal>
+        <h2 id="bt-courses-title">
+          <span>{approved ? c.coursesLeadApproved : c.coursesLeadPlanned}</span> {c.coursesRest}
+        </h2>
+        <p class:list={['bt-notice', { 'bt-notice--open': !approved }]}>
+          {approved ? c.coursesNoteApproved : c.coursesNotePlanned}
+        </p>
+      </div>
+
+      {approved ? (
+        <div class="bt-course-grid">
+          {bt.massnahmen.map((m) => (
+            <article class="bt-course" data-reveal>
+              <span class="bt-course__format">{c.format[m.format]}</span>
+              <span class="bt-course__badge">{m.dauer}</span>
+              <h3>{m.name}</h3>
+              <dl class="bt-course__facts">
+                <div><dt>{c.measureNumber}</dt><dd>{m.massnahmenummer}</dd></div>
+                <div><dt>{c.place}</dt><dd>{m.ort}</dd></div>
+                <div><dt>{c.degree}</dt><dd>{m.abschluss}</dd></div>
+              </dl>
+              <p class="bt-course__note">{c.fundingNote}</p>
+            </article>
+          ))}
+        </div>
+      ) : (
+        plannedGroups.map((group) => (
+          <div class="bt-course-group">
+            <p class="bt-course-group__label">{c.variants}</p>
+            <div class="bt-course-grid">
+              {group.variants.map((m) => (
+                <article class="bt-course" data-reveal>
+                  <span class="bt-course__format">{c.format[m.format]}</span>
+                  <span class="bt-course__badge">{c.statusPlanned}</span>
+                  <h3>{group.name}</h3>
+                  <p class="bt-course__note">{c.planNote}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        ))
+      )}
+
+      <div class="bt-courses__actions" data-reveal>
+        <Button href={`#${formAnchor}`}>{cta}</Button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bt-why" aria-labelledby="bt-why-title">
+    <div class="container">
+      <div class="bt-head" data-reveal>
+        <h2 id="bt-why-title"><span>{c.whyLead}</span> {c.whyRest}</h2>
+      </div>
+      <div class="bt-cards bt-cards--two">
+        {c.why.map(([title, text]) => (
+          <article class="bt-card" data-reveal>
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section surface-light bt-proof" aria-labelledby="bt-proof-title">
+    <div class:list={['container', 'bt-proof__grid', { 'bt-proof__grid--single': !hasCertificate || certificateIsPdf }]}>
+      <div data-reveal>
+        <div class="bt-head">
+          <h2 id="bt-proof-title"><span>{c.proofLead}</span> {c.proofRest}</h2>
+        </div>
+        {showMark && (
+          <img
+            class="bt-proof__mark"
+            src={bt.zeichenDatei}
+            alt={c.markAlt}
+            width={bt.zeichenBreite ?? undefined}
+            height={bt.zeichenHoehe ?? undefined}
+            loading="lazy"
+          />
+        )}
+        <dl class="bt-proof__list">
+          <div>
+            <dt>{c.proofRows.body}</dt>
+            <dd>
+              {bt.fachkundigeStelle.name}, {bt.fachkundigeStelle.ort}<br />
+              <a href={bt.fachkundigeStelle.url} target="_blank" rel="noopener noreferrer">{bt.fachkundigeStelle.urlLabel}</a>
+            </dd>
+          </div>
+          {proofRows.map(([label, value]) => (
+            <div>
+              <dt>{label}</dt>
+              <dd>{value}</dd>
+            </div>
+          ))}
+        </dl>
+        {hasCertificate && certificateIsPdf && (
+          <div class="bt-proof__actions">
+            <Button href={bt.zertifikatDatei} target="_blank">{c.certPdf}</Button>
+          </div>
+        )}
+      </div>
+      {hasCertificate && !certificateIsPdf && (
+        <figure class="bt-proof__certificate" data-reveal>
+          <img
+            src={bt.zertifikatDatei}
+            alt={c.certAlt}
+            width={certificateHasSize ? bt.zertifikatBreite! : undefined}
+            height={certificateHasSize ? bt.zertifikatHoehe! : undefined}
+            loading="lazy"
+          />
+        </figure>
+      )}
+    </div>
+  </section>
+
+  <section class="section bt-groups" aria-labelledby="bt-groups-title">
+    <div class="container">
+      <div class="bt-head" data-reveal>
+        <h2 id="bt-groups-title"><span>{c.groupsLead}</span> {c.groupsRest}</h2>
+      </div>
+      <div class="bt-cards bt-cards--three">
+        {c.groups.map(([title, text]) => (
+          <article class="bt-card" data-reveal>
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <FaqSection
+    heading={c.faqHeading}
+    intro={c.faqIntro}
+    items={faq}
+    lang={lang}
+    bylineName={bt.pruefer}
+    bylineRole={c.bylineRole}
+    lastReviewed={bt.pruefdatum || undefined}
+  />
+
+  <LeadForm
+    lang={lang}
+    type="bildungstraeger"
+    title={cta}
+    intro={approved ? c.formIntroApproved : c.formIntroPlanned}
+    anchorId={formAnchor}
+  />
+</div>
+
+<style>
+  /* Section rhythm, surfaces, cards and type all reuse the tokens and the
+     patterns of the home page (steps, facts, compare panels), the About page
+     (advantages grid) and the course catalogue (course cards). Where a block
+     mirrors one of those, the source is named next to it. */
+  .bt-page { background: var(--color-bg); }
+
+  /* ---- Hero ---------------------------------------------------------------
+     Geometry is owned by .page-hero in global.css; only the art and the
+     kicker are styled here (pattern: IstqbCertificationPage hero). */
+  .bt-hero__kicker,
+  .bt-hero__mark span {
+    color: var(--color-accent);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+  .page-hero .bt-hero__kicker,
+  .page-hero .bt-hero__mark { margin-bottom: 1.25rem; font-size: var(--fs-sm); }
+  .bt-hero__mark { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm); }
+  /* The GZQ mark is embedded unchanged: height-bounded only, width follows the
+     file's own aspect ratio, no crop, no filter. */
+  /* If the GZQ usage rules set a minimum size, that size wins over this cap. */
+  .bt-hero__mark img { width: auto; height: auto; max-height: 48px; }
+  .bt-hero h1 span { color: var(--color-accent); }
+  .bt-hero__actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: 1.75rem; }
+  .bt-hero__ring,
+  .bt-hero__curve { will-change: transform; }
+  .bt-hero__ring {
+    left: 56%;
+    max-height: min(84%, 470px);
+    max-width: 58%;
+    opacity: 0.9;
+    animation: bt-ring-drift 10s ease-in-out infinite alternate;
+  }
+  .bt-hero__curve {
+    left: 38%;
+    top: 62%;
+    max-height: min(48%, 280px);
+    max-width: 46%;
+    animation: bt-curve-drift 9s ease-in-out infinite alternate;
+  }
+
+  /* ---- Trust bar (pattern: AcademyHome .online-course__facts) ------------- */
+  .bt-trust { padding-block: 0 var(--space-lg); }
+  .bt-trust__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: clamp(18px, 1.6vw, 30px);
+  }
+  .bt-trust__list li {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(10px, 0.8vw, 14px);
+    padding: clamp(22px, 1.8vw, 34px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-card);
+    box-shadow: var(--shadow-card);
+  }
+  .bt-trust__list strong {
+    color: var(--color-accent);
+    font-size: var(--fs-h3);
+    font-weight: var(--fw-bold);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .bt-trust__list span { color: var(--color-muted); font-size: var(--fs-sm); line-height: var(--lh-snug); }
+
+  /* ---- Section heads (pattern: AcademyHome .steps .section-head) ---------- */
+  .bt-head { max-width: 1100px; margin-bottom: clamp(2rem, 3vw, 3rem); }
+  .bt-head h2 { margin: 0; font-size: var(--fs-h1); line-height: var(--lh-tight); }
+  .bt-head h2 span { display: block; color: var(--color-accent); }
+  .bt-head p {
+    max-width: 68ch;
+    margin-top: 1.2rem;
+    color: var(--color-muted);
+    font-size: var(--fs-lead);
+    line-height: var(--lh-relaxed);
+  }
+
+  /* ---- Meaning panels (pattern: AcademyHome .compare-panel) --------------- */
+  .bt-meaning__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(24px, 2.5vw, 40px); }
+  .bt-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: clamp(28px, 2.5vw, 44px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-card);
+    box-shadow: var(--shadow-card);
+  }
+  /* The open half stays recessive, like the "without" comparison panel. */
+  .bt-panel--open { background: rgba(255, 255, 255, 0.035); box-shadow: none; }
+  .bt-panel h3 { font-size: var(--fs-h3); }
+  .bt-panel > p:not(.bt-status) { color: var(--color-muted); font-size: var(--fs-body); }
+  .bt-panel__meaning {
+    margin-top: auto;
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--border-subtle);
+  }
+  .bt-panel__meaning h4 {
+    margin-bottom: var(--space-xs);
+    color: var(--color-accent);
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+  .bt-panel__meaning p { color: var(--color-text); font-size: var(--fs-body); }
+
+  .bt-status {
+    align-self: flex-start;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-pill);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-snug);
+  }
+  .bt-status--done { background: var(--color-accent-surface); color: var(--color-text); }
+  .bt-status--open { border: 1px solid var(--border-strong); color: var(--color-muted); }
+
+  .bt-rule {
+    max-width: 1100px;
+    margin-top: clamp(28px, 2.5vw, 40px);
+    padding-left: var(--space-sm);
+    border-left: 2px solid var(--color-accent);
+    color: var(--color-text);
+    font-size: var(--fs-lead);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-snug);
+  }
+
+  /* ---- Steps (pattern: AcademyHome .steps__list, four instead of six) ----- */
+  .bt-steps { background: var(--color-bg-elevated); }
+  .bt-steps__list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(28px, 2.7vw, 46px);
+  }
+  .bt-steps__list li {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(14px, 1.1vw, 20px);
+    padding: clamp(22px, 1.8vw, 34px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-card);
+    box-shadow: var(--shadow-card);
+  }
+  .bt-steps__list li::after {
+    content: '→';
+    position: absolute;
+    top: 50%;
+    right: clamp(-30px, -1.7vw, -18px);
+    transform: translateY(-50%);
+    color: var(--color-accent);
+    font-size: var(--fs-h4);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .bt-steps__list li:last-child::after { content: none; }
+  .bt-steps__number {
+    display: grid;
+    width: clamp(42px, 2.6vw, 52px);
+    height: clamp(42px, 2.6vw, 52px);
+    place-items: center;
+    border-radius: var(--radius-pill);
+    background: var(--color-accent-surface);
+    color: var(--color-text);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    box-shadow: var(--shadow-accent);
+  }
+  .bt-steps__list h3 { font-size: var(--fs-h4); }
+  .bt-steps__list p { color: var(--color-muted); font-size: var(--fs-body); }
+  .bt-steps__closing {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm) var(--space-md);
+    margin-top: clamp(32px, 3vw, 48px);
+  }
+  .bt-steps__closing p { max-width: 68ch; color: var(--color-muted); font-size: var(--fs-body); }
+
+  /* ---- Cards (pattern: AboutAcademyPage .about-advantages__grid) ---------- */
+  .bt-cards { display: grid; gap: clamp(24px, 2.5vw, 40px); }
+  .bt-cards--three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .bt-cards--two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bt-card {
+    padding: clamp(30px, 2.8vw, 48px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-card);
+    box-shadow: var(--shadow-card);
+  }
+  .bt-card h3 { margin-bottom: var(--space-sm); font-size: var(--fs-h4); line-height: var(--lh-snug); }
+  .bt-card p { color: var(--color-muted); font-size: var(--fs-body); }
+
+  /* ---- Courses (pattern: SoftwareTesterProgramsPage .course-card) ---------
+     Same accent rule, format label and corner badge. No hover lift and no
+     arrow: these cards are not links, so they must not look clickable. */
+  .bt-notice {
+    padding: var(--space-sm) clamp(1rem, 2vw, 1.5rem);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.035);
+  }
+  .bt-head .bt-notice { color: var(--color-text); font-size: var(--fs-body); line-height: var(--lh-body); }
+  .bt-notice--open { border-color: var(--color-accent); }
+  .bt-course-group__label {
+    margin-bottom: var(--space-sm);
+    color: var(--color-muted);
+    font-size: var(--fs-sm);
+  }
+  .bt-course-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1.5rem, 2vw, 2.75rem); }
+  .bt-course {
+    position: relative;
+    display: flex;
+    min-height: clamp(210px, 13vw, 260px);
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: var(--space-xs);
+    overflow: hidden;
+    padding: 5rem clamp(1.5rem, 2vw, 2.4rem) clamp(1.65rem, 2vw, 2.2rem);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-card);
+    box-shadow: var(--shadow-card);
+  }
+  .bt-course::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: clamp(1.5rem, 2vw, 2.4rem);
+    width: clamp(72px, 7vw, 128px);
+    height: 4px;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    background: var(--color-accent-surface);
+  }
+  .bt-course h3 { font-size: var(--fs-h4); line-height: var(--lh-snug); }
+  .bt-course__format {
+    position: absolute;
+    top: 1.05rem;
+    left: clamp(1.5rem, 2vw, 2.4rem);
+    color: var(--color-muted);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+  }
+  /* White badge with the AA-safe accent (the brighter CI red is 4.27:1). */
+  .bt-course__badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 120px;
+    padding: 0.62rem 1rem;
+    background: var(--color-surface);
+    color: var(--color-accent-surface);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    text-align: center;
+  }
+  .bt-course__note { color: var(--color-muted); font-size: var(--fs-sm); }
+  .bt-course__facts { display: grid; gap: var(--space-xs); margin-block: var(--space-xs); }
+  .bt-course__facts div { display: flex; flex-wrap: wrap; gap: 0 var(--space-xs); font-size: var(--fs-sm); }
+  .bt-course__facts dt { color: var(--color-muted); }
+  .bt-course__facts dt::after { content: ':'; }
+  .bt-courses__actions { margin-top: clamp(32px, 3vw, 48px); }
+
+  /* ---- Evidence (pattern: AcademyHome .istqb on .surface-light) ----------- */
+  .bt-proof__grid { display: grid; grid-template-columns: 1fr 0.9fr; gap: clamp(2rem, 6vw, 5rem); align-items: center; }
+  .bt-proof__grid--single { grid-template-columns: minmax(0, 1fr); }
+  .bt-proof .bt-head h2 { color: var(--color-text-dark); }
+  .bt-proof__mark { width: auto; height: auto; max-height: 96px; margin-bottom: var(--space-md); }
+  .bt-proof__list { display: grid; max-width: 1100px; border-top: 1px solid var(--color-line-dark); }
+  .bt-proof__list div {
+    display: grid;
+    grid-template-columns: minmax(180px, 0.4fr) minmax(0, 1fr);
+    gap: var(--space-xs) var(--space-md);
+    padding-block: var(--space-sm);
+    border-bottom: 1px solid var(--color-line-dark);
+  }
+  .bt-proof__list dt { color: var(--color-muted-dark); font-size: var(--fs-sm); }
+  .bt-proof__list dd { color: var(--color-text-dark); font-size: var(--fs-body); font-weight: var(--fw-medium); }
+  .bt-proof__list a { text-decoration: underline; text-underline-offset: 0.2em; }
+  .bt-proof__list a:hover { color: var(--color-accent-surface); }
+  .bt-proof__actions { margin-top: var(--space-md); }
+  .bt-proof__certificate {
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: var(--color-surface-soft);
+    box-shadow: var(--shadow-card);
+  }
+  .bt-proof__certificate img { width: auto; max-width: 100%; height: auto; max-height: 760px; object-fit: contain; }
+
+  /* ---- Motion: same drift family as the About and home renders ------------- */
+  @keyframes bt-ring-drift {
+    from { transform: translate3d(-10px, 8px, 0) rotate(-4deg); }
+    to { transform: translate3d(14px, -16px, 0) rotate(6deg); }
+  }
+  @keyframes bt-curve-drift {
+    from { transform: translate3d(-8px, 12px, 0) rotate(-7deg); }
+    to { transform: translate3d(18px, -10px, 0) rotate(6deg); }
+  }
+
+  /* ---- Breakpoints (site ladder: 1050, 900, 620, 479) ---------------------- */
+  @media (max-width: 1050px) {
+    .bt-steps__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .bt-steps__list li:nth-child(2n)::after { content: none; }
+    .bt-cards--three { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 900px) {
+    .bt-meaning__grid,
+    .bt-proof__grid,
+    .bt-cards--two { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  @media (max-width: 620px) {
+    .bt-steps__list,
+    .bt-cards--three,
+    .bt-course-grid { grid-template-columns: minmax(0, 1fr); gap: 30px; }
+    .bt-steps__list li::after,
+    .bt-steps__list li:nth-child(2n)::after {
+      content: '↓';
+      top: auto;
+      right: auto;
+      bottom: clamp(-26px, -5vw, -20px);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .bt-steps__list li:last-child::after { content: none; }
+    .bt-proof__list div { grid-template-columns: minmax(0, 1fr); }
+    .bt-hero__actions :global(.btn),
+    .bt-steps__closing :global(.btn),
+    .bt-courses__actions :global(.btn) { width: 100%; }
+    /* Long labels wrap on a phone; the button's line-height of 1 would stack
+       the two lines on top of each other. */
+    .bt-page :global(.btn) { padding-block: var(--space-xs); line-height: var(--lh-snug); text-align: center; }
+    /* Approval facts run full width, the three home-page figures share a row. */
+    .bt-trust__list { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+    .bt-trust__list li { grid-column: span 2; padding: var(--space-sm); }
+    .bt-trust__list li:nth-child(-n + 2) { grid-column: 1 / -1; }
+  }
+
+  @media (max-width: 479px) {
+    .bt-course { padding-top: 4.5rem; }
+    .bt-course__badge { min-width: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bt-hero__ring,
+    .bt-hero__curve { animation: none; }
+  }
+</style>

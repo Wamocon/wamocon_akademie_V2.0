@@ -6,6 +6,7 @@ import CookieBanner from '../components/ui/CookieBanner.astro';
 import ChatWidget from '../components/ui/ChatWidget.astro';
 import { assets } from '../data/academy';
 import { aggregateRating } from '../data/catalog';
+import { bildungstraeger, istVeroeffentlicht } from '../data/bildungstraeger';
 import { getAlternateLangUrls, pick } from '../i18n/utils';
 import { company, langCodes, localeTags, ogLocales, thanksHref, type Lang } from '../i18n/config';
 
@@ -82,16 +83,35 @@ const organization = {
   ],
   areaServed: ['Germany', 'Austria', 'Switzerland', 'European Union'],
   knowsLanguage: ['de', 'en', 'kk'],
-  hasCredential: {
-    '@type': 'EducationalOccupationalCredential',
-    name: 'ISTQB Accredited Training Provider',
-    credentialCategory: 'Accreditation',
-    recognizedBy: {
-      '@type': 'Organization',
-      name: 'International Software Testing Qualifications Board (ISTQB)',
-      url: 'https://www.istqb.org/',
+  hasCredential: [
+    {
+      '@type': 'EducationalOccupationalCredential',
+      name: 'ISTQB Accredited Training Provider',
+      credentialCategory: 'Accreditation',
+      recognizedBy: {
+        '@type': 'Organization',
+        name: 'International Software Testing Qualifications Board (ISTQB)',
+        url: 'https://www.istqb.org/',
+      },
     },
-  },
+    // Only asserted once the certificate number is entered in
+    // src/data/bildungstraeger.ts; until then the approval is not public.
+    ...(istVeroeffentlicht()
+      ? [{
+          '@type': 'EducationalOccupationalCredential',
+          name: `${bildungstraeger.zulassungsart} (${bildungstraeger.paragraf})`,
+          credentialCategory: 'Accreditation',
+          identifier: bildungstraeger.zertifikatsnummer,
+          ...(bildungstraeger.gueltigVon ? { validFrom: bildungstraeger.gueltigVon } : {}),
+          ...(bildungstraeger.gueltigBis ? { expires: bildungstraeger.gueltigBis } : {}),
+          recognizedBy: {
+            '@type': 'Organization',
+            name: bildungstraeger.fachkundigeStelle.name,
+            url: bildungstraeger.fachkundigeStelle.url,
+          },
+        }]
+      : []),
+  ],
   knowsAbout: [
     'Software testing',
     'ISTQB Certified Tester Foundation Level',
