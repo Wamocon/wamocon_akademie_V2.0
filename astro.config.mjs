@@ -18,7 +18,7 @@ const bildungstraegerNotice = () => ({
     'astro:build:start': ({ logger }) => {
       if (!istVeroeffentlicht()) {
         logger.warn(
-          'Zertifikatsnummer in src/data/bildungstraeger.ts fehlt: /bildungstraeger/ (EN, KK) wird mit noindex gebaut und erscheint nicht in Navigation, Footer und Sitemap.',
+          'Zertifikatsnummer in src/data/bildungstraeger.ts fehlt: /bildungstraeger/ (EN, KK) wird mit noindex gebaut und erscheint nicht in Sitemap und Chat-Wissen.',
         );
       }
     },

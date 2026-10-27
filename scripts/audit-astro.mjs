@@ -20,8 +20,8 @@ const localeRoutes = [
   { de: '/impressum/', en: '/imprint/', kk: '/kk/zandy-malimetter/' },
   { de: '/barrierefreiheit/', en: '/accessibility/', kk: '/kk/qolzhetimdilik/' },
   { de: '/danke/', en: '/thanks/', kk: '/kk/rahmet/' },
-  // AZAV provider page. Rendered with noindex and left out of the navigation
-  // until its certificate number is entered in src/data/bildungstraeger.ts.
+  // AZAV provider page. Rendered with noindex until its certificate number is
+  // entered in src/data/bildungstraeger.ts.
   { de: '/bildungstraeger/', en: '/en/education-provider/', kk: '/kk/bilim-beru-uyymy/' },
 ];
 
@@ -76,7 +76,7 @@ for (const route of routes) {
   assert(html.indexOf('class="office-map') < html.indexOf('<footer'), `${route}: map must appear above the footer`);
   assert(html.includes('href="/images/favicon-32.png"'), `${route}: WMA favicon is missing`);
   assert(html.includes('rel="apple-touch-icon"'), `${route}: apple-touch-icon is missing`);
-  if (!nonNavigationRoutes.has(route) && !hiddenRoutes.has(route)) {
+  if (!nonNavigationRoutes.has(route)) {
     assert(html.includes('aria-current="page"'), `${route}: active navigation state is missing`);
   }
   assert(!html.includes('—'), `${route}: em dash remains in rendered website copy`);

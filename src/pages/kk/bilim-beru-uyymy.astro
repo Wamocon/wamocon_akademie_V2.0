@@ -9,7 +9,7 @@ const title = 'AZAV бойынша рұқсат алған білім беру �
 // Muttersprachliche Prüfung offen
 const description =
   'WAMOCON Academy GmbH GZQ GmbH-тан AZAV бойынша білім беру ұйымы ретінде рұқсат алды. Бұл нені білдіретіні және Bildungsgutschein арқылы қаржыландыру қалай жүретіні.';
-// Hidden until the certificate number is entered in src/data/bildungstraeger.ts.
+// noindex until the certificate number is entered in src/data/bildungstraeger.ts.
 const noindex = !istVeroeffentlicht();
 ---
 
@@ -18,11 +18,6 @@ const noindex = !istVeroeffentlicht();
   description={description}
   lang={lang}
   noindex={noindex}
-  breadcrumbs={[
-    // Muttersprachliche Prüfung offen
-    { name: 'Академия туралы', path: '/kk/akademiya-turaly/' },
-    { name: 'Білім беру ұйымы', path: '/kk/bilim-beru-uyymy/' },
-  ]}
 >
   <BildungstraegerPage lang={lang} />
 </BaseLayout>

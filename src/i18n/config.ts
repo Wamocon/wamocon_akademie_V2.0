@@ -1,4 +1,4 @@
-import { bildungstraegerHref, istVeroeffentlicht } from '../data/bildungstraeger';
+import { bildungstraegerHref } from '../data/bildungstraeger';
 
 export const languages = {
   de: 'Deutsch',
@@ -39,8 +39,7 @@ export type NavLink = {
   children?: NavLink[];
 };
 
-/** The AZAV provider page. Kept outside `nav` so its route group exists even
- *  while the page is hidden from navigation. */
+/** The AZAV provider page, a top-level tab right after the online courses. */
 export const bildungstraegerNav: NavLink = {
   key: 'bildungstraeger',
   de: { label: 'Bildungsträger', href: bildungstraegerHref.de },
@@ -71,6 +70,7 @@ export const nav: NavLink[] = [
     en: { label: 'Online courses', href: '/en/ditele-app/' },
     kk: { label: 'Онлайн курстар', href: '/kk/ditele-app/' },
   },
+  bildungstraegerNav,
   {
     key: 'about-group',
     de: { label: 'Über uns', href: '/ber-die-akademie/' },
@@ -95,9 +95,6 @@ export const nav: NavLink[] = [
         en: { label: 'Reviews', href: '/en/reviews/' },
         kk: { label: 'Пікірлер', href: '/kk/pikirler/' },
       },
-      // Appears in the header dropdown and the footer column only once the AZAV
-      // certificate number is entered in src/data/bildungstraeger.ts.
-      ...(istVeroeffentlicht() ? [bildungstraegerNav] : []),
     ],
   },
   {

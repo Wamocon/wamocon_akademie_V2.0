@@ -10,7 +10,7 @@ interface Props { lang: Lang; showContact?: boolean; }
 const { lang, showContact = true } = Astro.props;
 const t = (key: keyof (typeof ui)['de']) => ui[lang][key];
 const year = new Date().getFullYear();
-const primaryLinks = nav.filter((item) => ['home', 'courses', 'certification', 'ditele'].includes(item.key));
+const primaryLinks = nav.filter((item) => ['home', 'courses', 'certification', 'ditele', 'bildungstraeger'].includes(item.key));
 const aboutLinks = nav.find((item) => item.key === 'about-group')?.children ?? [];
 const labels = pick(lang, {
   de: {

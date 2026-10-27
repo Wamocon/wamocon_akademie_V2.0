@@ -7,7 +7,7 @@ const lang = 'de';
 const title = 'Zugelassener Bildungsträger nach AZAV';
 const description =
   'Die WAMOCON Academy GmbH ist durch die GZQ GmbH als Bildungsträger nach AZAV zugelassen. Was das bedeutet und wie der Weg zum Bildungsgutschein abläuft.';
-// Versteckt, solange die Zertifikatsnummer in src/data/bildungstraeger.ts fehlt.
+// noindex, solange die Zertifikatsnummer in src/data/bildungstraeger.ts fehlt.
 const noindex = !istVeroeffentlicht();
 ---
 
@@ -16,10 +16,6 @@ const noindex = !istVeroeffentlicht();
   description={description}
   lang={lang}
   noindex={noindex}
-  breadcrumbs={[
-    { name: 'Über die Academy', path: '/ber-die-akademie/' },
-    { name: 'Bildungsträger', path: '/bildungstraeger/' },
-  ]}
 >
   <BildungstraegerPage lang={lang} />
 </BaseLayout>

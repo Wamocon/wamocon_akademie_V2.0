@@ -1,5 +1,4 @@
 import {
-  bildungstraegerNav,
   defaultLang,
   langCodes,
   legalNav,
@@ -51,11 +50,6 @@ function flattenNav(items: NavLink[]): RouteGroup[] {
  */
 export const routeGroups: RouteGroup[] = [
   ...flattenNav(nav),
-  // Listed unconditionally: while the page is hidden from `nav` its language
-  // switcher must still map onto the sibling pages instead of the home page.
-  ...(nav.some((item) => item.children?.some((child) => child.key === bildungstraegerNav.key))
-    ? []
-    : flattenNav([bildungstraegerNav])),
   ...Object.values(legalNav).map((item) => ({
     de: item.de.href,
     en: item.en.href,

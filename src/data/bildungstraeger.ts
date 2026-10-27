@@ -11,8 +11,8 @@
  * WO TRAGE ICH WAS EIN?
  * -------------------------------------------------------------------------
  *   Zertifikatsnummer .......... zertifikatsnummer
- *                                (leer = Seite bleibt versteckt: noindex, nicht
- *                                in Navigation, Footer und Sitemap)
+ *                                (leer = Seite bleibt noindex und fehlt in Sitemap
+ *                                und Chat-Wissen; der Reiter ist immer sichtbar)
  *   Gültigkeit ................. gueltigVon / gueltigBis (ISO 8601: '2026-11-01')
  *   Zertifikat ................. zertifikatDatei (Pfad unter /public, Bild oder PDF)
  *   Zertifikat-Vorschau ........ zertifikatBreite / zertifikatHoehe (Pixel, nur bei Bild)
@@ -84,7 +84,7 @@ export const bildungstraeger: {
   auditTermine: ['2026-10-05', '2026-10-14'],
 
   // TODO: OFFEN. Zertifikatsnummer der GZQ GmbH eintragen. Solange leer, bleibt
-  // die Seite versteckt (noindex, nicht in Navigation, Footer und Sitemap).
+  // die Seite noindex und fehlt in Sitemap und Chat-Wissen.
   zertifikatsnummer: '',
   // TODO: OFFEN. Gültigkeit laut Zertifikat, ISO 8601.
   gueltigVon: '',
