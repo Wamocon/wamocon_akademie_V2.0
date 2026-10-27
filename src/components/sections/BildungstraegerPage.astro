@@ -220,11 +220,16 @@ const copy = {
     ctaSeminar: 'Zum Seminar',
 
     sealsLabel: 'Zulassungen und Auszeichnungen',
-    sealAzav: ['AZAV-zugelassen', certNo ? `${bt.fachkundigeStelle.name} · Zertifikat ${certNoSeal}` : `${bt.fachkundigeStelle.name}, Fachbereich ${bt.fachbereich.nummer}`],
+    sealAzav: ['AZAV-zugelassen', certNo ? `Zertifikat ${certNoSeal}` : `${bt.fachkundigeStelle.name}, Fachbereich ${bt.fachbereich.nummer}`],
+    sealAzavRing: `ZUGELASSENER TRÄGER • ${bt.fachkundigeStelle.name.toUpperCase()} • ${certNo || 'AZAV'} • `,
+    sealCertLink: 'Zum AZAV-Zertifikat',
     // Akkreditierung über das German Testing Board laut WAMOCON-Unternehmensübersicht.
     sealIstqb: ['ISTQB® Accredited Training Provider', 'CTFL 4.0, akkreditiert über das German Testing Board (GTB)'],
+    sealIstqbRing: 'ACCREDITED TRAINING PROVIDER • GERMAN TESTING BOARD • ',
     // Bewertung wie im Footer der Website ausgewiesen.
-    sealGoogle: ['5,0 ★★★★★', 'Google-Bewertung'],
+    sealGoogle: ['5,0 von 5 Sternen', 'Google-Bewertung'],
+    sealGoogleRing: 'GOOGLE-BEWERTUNG • ★★★★★ • GOOGLE-BEWERTUNG • ★★★★★ • ',
+    rating: '5,0',
 
     // Werbeschild. Inhalte aus dem Kurs "ISTQB® CTFL + Praxistraining"
     // (audit/course-popup-copy.json) und den Trainingsunterlagen des Seminars.
@@ -335,8 +340,8 @@ const copy = {
     ],
 
     trainersEyebrow: 'Deine Trainer',
-    trainersLead: 'Lernen von',
-    trainersRest: 'Praktikern',
+    trainersLead: 'Lernen von Trainern,',
+    trainersRest: 'die selbst testen',
     trainersText: 'Du lernst Softwaretesting nicht von Theoretikern, sondern von den Testmanagern der WAMOCON, die selbst Projekte für große Unternehmen leiten. Heute testen sie auch KI-Systeme.',
     trainers: [
       {
@@ -435,6 +440,8 @@ const copy = {
     measuresCount: (n: number) => (n === 1 ? '1 Maßnahme' : `${n} Maßnahmen`),
     certAlt: `Zertifikat der Trägerzulassung nach AZAV, ausgestellt von der ${bt.fachkundigeStelle.name}`,
     certPdf: 'Zertifikat ansehen (PDF)',
+    certCaption: certNo ? `Zertifikat ${certNo} der ${bt.fachkundigeStelle.name}, ausgestellt am ${certIssued}` : '',
+    certOpen: 'Ganzes Zertifikat öffnen',
     factCourse: `${bt.seminar.titel}, ${bt.seminar.tage} Tage. Maßnahmenzulassung in Vorbereitung`,
     factDuration: '45 Seminartage in Vollzeit, in Präsenz in Eschborn oder live online',
     factBasis: 'Bildungsgutschein nach § 81 SGB III',
@@ -518,9 +525,14 @@ const copy = {
     ctaSeminar: 'See the seminar',
 
     sealsLabel: 'Approvals and awards',
-    sealAzav: ['Approved under AZAV', certNo ? `${bt.fachkundigeStelle.name} · certificate ${certNoSeal}` : `${bt.fachkundigeStelle.name}, field ${bt.fachbereich.nummer}`],
+    sealAzav: ['Approved under AZAV', certNo ? `Certificate ${certNoSeal}` : `${bt.fachkundigeStelle.name}, field ${bt.fachbereich.nummer}`],
+    sealAzavRing: `APPROVED PROVIDER • ${bt.fachkundigeStelle.name.toUpperCase()} • ${certNo || 'AZAV'} • `,
+    sealCertLink: 'View the AZAV certificate',
     sealIstqb: ['ISTQB® Accredited Training Provider', 'CTFL 4.0, accredited via the German Testing Board (GTB)'],
-    sealGoogle: ['5.0 ★★★★★', 'Google rating'],
+    sealIstqbRing: 'ACCREDITED TRAINING PROVIDER • GERMAN TESTING BOARD • ',
+    sealGoogle: ['5.0 out of 5 stars', 'Google rating'],
+    sealGoogleRing: 'GOOGLE RATING • ★★★★★ • GOOGLE RATING • ★★★★★ • ',
+    rating: '5.0',
 
     showcaseEyebrow: 'New in our programme',
     showcaseDays: 'days',
@@ -620,8 +632,8 @@ const copy = {
     ],
 
     trainersEyebrow: 'Your trainers',
-    trainersLead: 'Learn from',
-    trainersRest: 'practitioners',
+    trainersLead: 'Learn from trainers',
+    trainersRest: 'who test for a living',
     trainersText: 'You learn software testing from the WAMOCON test managers who lead projects for large companies themselves, not from theorists. Today they also test AI systems.',
     trainers: [
       {
@@ -717,6 +729,8 @@ const copy = {
     measuresCount: (n: number) => (n === 1 ? '1 course' : `${n} courses`),
     certAlt: `Certificate of the AZAV provider approval, issued by ${bt.fachkundigeStelle.name}`,
     certPdf: 'View certificate (PDF)',
+    certCaption: certNo ? `Certificate ${certNo} from ${bt.fachkundigeStelle.name}, issued on ${certIssued}` : '',
+    certOpen: 'Open full certificate',
     factCourse: `${bt.seminar.titel}, ${bt.seminar.tage} days. Course approval in preparation`,
     factDuration: '45 full-time seminar days, on site in Eschborn or live online',
     factBasis: 'Bildungsgutschein under § 81 SGB III',
@@ -797,9 +811,14 @@ const copy = {
     ctaSeminar: 'Семинарға өту',
 
     sealsLabel: 'Рұқсаттар мен марапаттар',
-    sealAzav: ['AZAV бойынша рұқсат', certNo ? `${bt.fachkundigeStelle.name} · сертификат ${certNoSeal}` : `${bt.fachkundigeStelle.name}, ${bt.fachbereich.nummer}-бағыт`],
+    sealAzav: ['AZAV бойынша рұқсат', certNo ? `Сертификат ${certNoSeal}` : `${bt.fachkundigeStelle.name}, ${bt.fachbereich.nummer}-бағыт`],
+    sealAzavRing: `РҰҚСАТ АЛҒАН ҰЙЫМ • ${bt.fachkundigeStelle.name.toUpperCase()} • ${certNo || 'AZAV'} • `,
+    sealCertLink: 'AZAV сертификатына өту',
     sealIstqb: ['ISTQB® Accredited Training Provider', 'CTFL 4.0, German Testing Board (GTB) арқылы аккредиттелген'],
-    sealGoogle: ['5,0 ★★★★★', 'Google бағасы'],
+    sealIstqbRing: 'ACCREDITED TRAINING PROVIDER • GERMAN TESTING BOARD • ',
+    sealGoogle: ['5 жұлдыздан 5,0', 'Google бағасы'],
+    sealGoogleRing: 'GOOGLE БАҒАСЫ • ★★★★★ • GOOGLE БАҒАСЫ • ★★★★★ • ',
+    rating: '5,0',
 
     showcaseEyebrow: 'Бағдарламадағы жаңалық',
     showcaseDays: 'күн',
@@ -899,8 +918,8 @@ const copy = {
     ],
 
     trainersEyebrow: 'Тренерлеріңіз',
-    trainersLead: 'Практиктерден',
-    trainersRest: 'үйреніңіз',
+    trainersLead: 'Өздері тестілейтін',
+    trainersRest: 'тренерлерден үйреніңіз',
     trainersText: 'Тестілеуді теоретиктерден емес, ірі компаниялардың жобаларын өздері басқаратын WAMOCON тестілеу менеджерлерінен үйренесіз. Бүгін олар KI жүйелерін де тестілейді.',
     trainers: [
       {
@@ -996,6 +1015,8 @@ const copy = {
     measuresCount: (n: number) => `${n} курс`,
     certAlt: `${bt.fachkundigeStelle.name} берген AZAV бойынша ұйымға рұқсат сертификаты`,
     certPdf: 'Сертификатты қарау (PDF)',
+    certCaption: certNo ? `${bt.fachkundigeStelle.name} берген ${certNo} сертификаты, ${certIssued}` : '',
+    certOpen: 'Сертификатты толық ашу',
     factCourse: `${bt.seminar.titel}, ${bt.seminar.tage} күн. Курсқа рұқсат дайындалуда`,
     factDuration: 'Толық күндік 45 семинар күні, Эшборнда аудиторияда немесе тікелей онлайн',
     factBasis: '§ 81 SGB III бойынша Bildungsgutschein',
@@ -1136,6 +1157,20 @@ const proofRows: Array<[string, string]> = [
 const hasCertificate = bt.zertifikatDatei.trim() !== '';
 const certificateIsPdf = zertifikatIstPdf();
 const certificateHasSize = bt.zertifikatBreite !== null && bt.zertifikatHoehe !== null;
+// Preview image of the certificate: the dedicated preview, or the certificate
+// itself when it was supplied as an image.
+const certPreview = bt.zertifikatVorschau.trim() || (hasCertificate && !certificateIsPdf ? bt.zertifikatDatei : '');
+const certLink = hasCertificate ? bt.zertifikatDatei : certPreview;
+
+// Seal medals: a ring of text around a red centre. The ring path is a circle
+// of radius 46 in a 120 x 120 box, so its length is about 289 units.
+const ringPath = 'M 14,60 a 46,46 0 1,1 92,0 a 46,46 0 1,1 -92,0';
+const validityYears = bt.gueltigVon && bt.gueltigBis ? `${bt.gueltigVon.slice(0, 4)}–${bt.gueltigBis.slice(0, 4)}` : '';
+const medals = [
+  { key: 'azav', ring: c.sealAzavRing, main: 'AZAV', mainSize: 21, sub: validityYears || `FB ${bt.fachbereich.nummer}`, title: c.sealAzav[0], text: c.sealAzav[1], href: certPreview || hasCertificate ? '#zertifikat' : '' },
+  { key: 'istqb', ring: c.sealIstqbRing, main: 'ISTQB®', mainSize: 15, sub: 'CTFL 4.0', title: c.sealIstqb[0], text: c.sealIstqb[1], href: '' },
+  { key: 'google', ring: c.sealGoogleRing, main: c.rating, mainSize: 25, sub: '★★★★★', title: c.sealGoogle[0], text: c.sealGoogle[1], href: '' },
+];
 
 // ---------------------------------------------------------------------------
 // FAQ. Each answer stands on its own, names the subject in full and carries
@@ -1366,23 +1401,31 @@ const faq = pick(lang, {
   <!-- ============================================================== SEALS -->
   <section class="bt-seals" aria-label={c.sealsLabel}>
     <ul class="container bt-seals__list">
-      <li class="bt-seal bt-seal--text" data-reveal>
-        <strong>{c.sealAzav[0]}</strong>
-        <span>{c.sealAzav[1]}</span>
-      </li>
-      <li class="bt-seal bt-seal--text" data-reveal>
-        <strong>{c.sealIstqb[0]}</strong>
-        <span>{c.sealIstqb[1]}</span>
-      </li>
-      <li class="bt-seal bt-seal--text" data-reveal>
-        <strong>{c.sealGoogle[0]}</strong>
-        <span>{c.sealGoogle[1]}</span>
-      </li>
+      {medals.map((medal) => (
+        <li class:list={['bt-seal', 'bt-spot', { 'has-link': medal.href }]} data-reveal>
+          <span class="bt-seal__visual" aria-hidden="true">
+            <svg class="bt-medal" viewBox="0 0 120 120" focusable="false">
+              <defs><path id={`bt-medal-${medal.key}`} d={ringPath} /></defs>
+              <circle class="bt-medal__outer" cx="60" cy="60" r="58" />
+              <circle class="bt-medal__dash" cx="60" cy="60" r="38.5" />
+              <g class="bt-medal__ring">
+                <text><textPath href={`#bt-medal-${medal.key}`} textLength="286" lengthAdjust="spacingAndGlyphs">{medal.ring}</textPath></text>
+              </g>
+              <circle class="bt-medal__core" cx="60" cy="60" r="35" />
+              <text class="bt-medal__main" x="60" y="63" text-anchor="middle" style={`font-size:${medal.mainSize}px`}>{medal.main}</text>
+              <text class="bt-medal__sub" x="60" y="78" text-anchor="middle">{medal.sub}</text>
+            </svg>
+          </span>
+          <strong>{medal.title}</strong>
+          <span class="bt-seal__text">{medal.text}</span>
+          {medal.href && <a class="bt-seal__link" href={medal.href} aria-label={c.sealCertLink}></a>}
+        </li>
+      ))}
       {seals.map((seal) => (
-        <li class="bt-seal" data-reveal>
+        <li class="bt-seal bt-spot" data-reveal>
           {/* The visible caption names the seal, so the image itself is decorative. */}
-          <img src={seal.datei} alt="" width={seal.breite!} height={seal.hoehe!} loading="lazy" decoding="async" />
-          <span>{seal.label[lang]}</span>
+          <span class="bt-seal__visual"><img src={seal.datei} alt="" width={seal.breite!} height={seal.hoehe!} loading="lazy" decoding="async" /></span>
+          <strong>{seal.label[lang]}</strong>
         </li>
       ))}
     </ul>
@@ -1842,20 +1885,34 @@ const faq = pick(lang, {
   </section>
 
   <!-- ============================================================== PROOF -->
-  <section class="section surface-light bt-proof" aria-labelledby="bt-proof-title">
-    <div class:list={['container', 'bt-proof__grid', { 'has-certificate': hasCertificate && !certificateIsPdf }]}>
-      <div class="bt-proof__seal-wrap" data-reveal="zoom">
+  <section class="section surface-light bt-proof" id="zertifikat" aria-labelledby="bt-proof-title">
+    <div class="container bt-proof__grid">
+      <figure class:list={['bt-proof__visual', { 'has-doc': certPreview }]} data-reveal="zoom">
+        {certPreview && (
+          <a class="bt-proof__doc" href={certLink} target="_blank" rel="noopener">
+            <img
+              src={certPreview}
+              alt={c.certAlt}
+              width={certificateHasSize ? bt.zertifikatBreite! : undefined}
+              height={certificateHasSize ? bt.zertifikatHoehe! : undefined}
+              loading="lazy"
+              decoding="async"
+            />
+            <span class="bt-proof__doc-hint">{c.certOpen} <span aria-hidden="true">↗</span></span>
+          </a>
+        )}
         {showMark ? (
           <img class="bt-proof__mark" src={bt.zeichenDatei} alt={c.markAlt} width={bt.zeichenBreite ?? undefined} height={bt.zeichenHoehe ?? undefined} loading="lazy" />
         ) : (
-          <div class="bt-proof__seal" aria-hidden="true">
+          <div class:list={['bt-proof__seal', { 'is-stamp': certPreview }]} aria-hidden="true">
             <span>{c.proofSeal[0]}</span>
             <strong>✓</strong>
             <span>{c.proofSeal[1]}</span>
             <small>{c.proofSeal[2]}</small>
           </div>
         )}
-      </div>
+        {certPreview && c.certCaption && <figcaption>{c.certCaption}</figcaption>}
+      </figure>
       <div data-reveal>
         <p class="eyebrow">{c.proofEyebrow}</p>
         <h2 id="bt-proof-title"><span>{c.proofLead}</span> {c.proofRest}</h2>
@@ -1879,23 +1936,12 @@ const faq = pick(lang, {
             <dd><a href={company.phoneHref}>{company.phone}</a><br /><a href={company.emailHref}>{company.email}</a></dd>
           </div>
         </dl>
-        {hasCertificate && certificateIsPdf && (
+        {hasCertificate && (
           <div class="bt-proof__actions">
             <Button href={bt.zertifikatDatei} target="_blank">{c.certPdf}</Button>
           </div>
         )}
       </div>
-      {hasCertificate && !certificateIsPdf && (
-        <figure class="bt-proof__certificate" data-reveal>
-          <img
-            src={bt.zertifikatDatei}
-            alt={c.certAlt}
-            width={certificateHasSize ? bt.zertifikatBreite! : undefined}
-            height={certificateHasSize ? bt.zertifikatHoehe! : undefined}
-            loading="lazy"
-          />
-        </figure>
-      )}
     </div>
   </section>
 
@@ -2070,19 +2116,31 @@ const faq = pick(lang, {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: center;
-    gap: var(--space-xs);
-    padding: var(--space-sm);
+    gap: 6px;
+    padding: clamp(16px, 1.4vw, 22px);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-lg);
     background: var(--surface-card);
     text-align: left;
-    transition: transform var(--dur-med) var(--ease-out), border-color var(--dur-med) var(--ease-out);
+    transition: transform var(--dur-med) var(--ease-out), border-color var(--dur-med) var(--ease-out), box-shadow var(--dur-med) var(--ease-out);
   }
-  .bt-seal:hover { transform: translateY(-4px); border-color: var(--border-strong); }
-  .bt-seal img { width: auto; max-width: 100%; height: auto; max-height: 88px; border-radius: var(--radius-sm); }
-  .bt-seal span { color: var(--color-muted); font-size: var(--fs-xs); line-height: var(--lh-snug); }
-  .bt-seal--text strong { color: var(--color-accent); font-size: var(--fs-body); line-height: var(--lh-snug); }
+  .bt-seal:hover { transform: translateY(-4px); border-color: var(--color-accent-surface); box-shadow: var(--shadow-card), var(--shadow-accent); }
+  /* Every seal shares one visual height, so medals and logos line up. */
+  .bt-seal__visual { display: flex; align-items: center; height: 96px; margin-bottom: 6px; }
+  .bt-seal__visual img { width: auto; max-width: 100%; height: auto; max-height: 96px; border-radius: var(--radius-sm); }
+  .bt-seal strong { color: var(--color-text); font-size: var(--fs-sm); font-weight: var(--fw-semibold); line-height: var(--lh-snug); }
+  .bt-seal__text { color: var(--color-muted); font-size: var(--fs-xs); line-height: var(--lh-snug); }
+  .bt-seal__link { position: absolute; inset: 0; z-index: 1; border-radius: inherit; }
+  .bt-seal__link:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+  .bt-medal { width: 96px; height: 96px; overflow: visible; filter: drop-shadow(0 8px 18px rgba(244, 14, 14, 0.28)); }
+  .bt-medal__outer { fill: var(--color-bg-elevated); stroke: var(--color-accent); stroke-width: 1.5; }
+  .bt-medal__dash { fill: none; stroke: rgba(255, 255, 255, 0.35); stroke-width: 0.8; stroke-dasharray: 1.5 2.5; }
+  .bt-medal__ring { transform-box: view-box; transform-origin: 60px 60px; animation: bt-spin 48s linear infinite; }
+  .bt-medal__ring text { fill: rgba(255, 255, 255, 0.82); font-family: var(--font-sans); font-size: 7.6px; font-weight: var(--fw-bold); letter-spacing: 0.06em; }
+  .bt-medal__core { fill: var(--color-accent-surface); stroke: rgba(255, 255, 255, 0.25); stroke-width: 1; }
+  .bt-medal__main { fill: var(--color-text); font-family: var(--font-sans); font-weight: var(--fw-extrabold); letter-spacing: 0.02em; }
+  .bt-medal__sub { fill: rgba(255, 255, 255, 0.88); font-family: var(--font-sans); font-size: 7.5px; font-weight: var(--fw-semibold); letter-spacing: 0.08em; }
+  .bt-seal.has-link strong::after { content: ' ↗'; color: var(--color-accent); }
 
   /* ---- Showcase ------------------------------------------------------------- */
   .bt-showcase { position: relative; z-index: 1; padding-block: 0 var(--space-lg); }
@@ -2412,10 +2470,29 @@ const faq = pick(lang, {
   .bt-refs__source { margin-top: var(--space-sm); color: var(--color-text-subtle); font-size: var(--fs-xs); }
 
   /* ---- Proof: quality seal on a light surface ---------------------------------- */
-  .bt-proof__grid { display: grid; grid-template-columns: minmax(240px, 0.5fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); align-items: start; }
-  .bt-proof__seal-wrap { position: sticky; top: calc(var(--header-height) + var(--space-md)); }
-  .bt-proof__grid.has-certificate { grid-template-columns: minmax(200px, 0.4fr) minmax(0, 1fr) minmax(0, 0.8fr); }
-  .bt-proof__seal-wrap { display: grid; place-items: center; }
+  .bt-proof__grid { display: grid; grid-template-columns: minmax(280px, 0.62fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); align-items: start; }
+  .bt-proof__visual { position: sticky; top: calc(var(--header-height) + var(--space-md)); display: grid; justify-items: center; max-width: 460px; margin: 0; }
+  /* The certificate as a sheet of paper, slightly turned; it straightens on
+     hover and opens the full certificate. */
+  .bt-proof__doc {
+    position: relative;
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 40px 70px -30px rgba(17, 24, 39, 0.55), 0 0 0 1px rgba(17, 24, 39, 0.08);
+    transform: perspective(1400px) rotateY(9deg) rotateZ(-2.5deg);
+    transition: transform 0.6s var(--ease-out), box-shadow 0.6s var(--ease-out);
+  }
+  .bt-proof__doc::after { content: ''; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.55) 50%, transparent 65%); background-size: 250% 100%; background-position: 120% 0; transition: background-position 1s var(--ease-out); pointer-events: none; }
+  .bt-proof__doc:hover, .bt-proof__doc:focus-visible { transform: none; box-shadow: 0 50px 90px -30px rgba(17, 24, 39, 0.6), 0 0 0 1px rgba(17, 24, 39, 0.08); }
+  .bt-proof__doc:hover::after { background-position: -40% 0; }
+  .bt-proof__doc:focus-visible { outline: 3px solid var(--color-accent-surface); outline-offset: 4px; }
+  .bt-proof__doc img { display: block; width: 100%; height: auto; }
+  .bt-proof__doc-hint { position: absolute; left: 50%; bottom: 16px; z-index: 1; padding: 0.5rem 1rem; border-radius: var(--radius-pill); background: rgba(17, 24, 39, 0.88); color: #fff; font-size: var(--fs-xs); font-weight: var(--fw-semibold); white-space: nowrap; opacity: 0; translate: -50% 8px; transition: opacity var(--dur-med) var(--ease-out), translate var(--dur-med) var(--ease-out); }
+  .bt-proof__doc:hover .bt-proof__doc-hint, .bt-proof__doc:focus-visible .bt-proof__doc-hint { opacity: 1; translate: -50% 0; }
+  .bt-proof__visual figcaption { margin-top: var(--space-md); color: var(--color-muted-dark); font-size: var(--fs-xs); text-align: left; justify-self: start; }
   .bt-proof__seal {
     position: relative;
     display: grid;
@@ -2438,6 +2515,13 @@ const faq = pick(lang, {
   .bt-proof__seal span:nth-of-type(2) { font-size: var(--fs-xs); font-weight: var(--fw-bold); line-height: var(--lh-snug); letter-spacing: 0.08em; text-transform: uppercase; }
   .bt-proof__seal small { color: var(--color-muted-dark); font-size: var(--fs-xs); }
   .bt-proof__mark { width: auto; height: auto; max-height: 200px; }
+  /* With the certificate shown, the seal becomes a stamp on its corner. */
+  .bt-proof__seal.is-stamp { position: absolute; right: -36px; bottom: 56px; z-index: 2; width: 156px; height: 156px; aspect-ratio: auto; gap: 2px; padding: 0; border-width: 4px; rotate: -12deg; box-shadow: 0 18px 30px -12px rgba(17, 24, 39, 0.5); }
+  .bt-proof__seal.is-stamp::after { inset: 8px; }
+  .bt-proof__seal.is-stamp span:first-child { font-size: 1.35rem; }
+  .bt-proof__seal.is-stamp strong { width: 30px; height: 30px; font-size: 0.95rem; }
+  .bt-proof__seal.is-stamp span:nth-of-type(2), .bt-proof__seal.is-stamp small { font-size: 0.58rem; }
+  .bt-proof__seal.is-stamp span:nth-of-type(2) { max-width: 74%; }
   .bt-proof h2 { margin-top: var(--space-sm); color: var(--color-text-dark); font-size: var(--fs-h1); line-height: var(--lh-tight); }
   .bt-proof h2 span { color: var(--color-accent-surface); }
   .bt-proof .eyebrow { color: var(--color-accent-surface); }
@@ -2449,8 +2533,6 @@ const faq = pick(lang, {
   .bt-proof__list a { text-decoration: underline; text-underline-offset: 0.2em; }
   .bt-proof__list a:hover { color: var(--color-accent-surface); }
   .bt-proof__actions { margin-top: var(--space-md); }
-  .bt-proof__certificate { display: grid; place-items: center; overflow: hidden; border-radius: var(--radius-md); background: var(--color-surface-soft); box-shadow: var(--shadow-card); }
-  .bt-proof__certificate img { width: auto; max-width: 100%; height: auto; max-height: 640px; object-fit: contain; }
 
   /* ---- Groups --------------------------------------------------------------- */
   .bt-groups__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 2.5vw, 40px); }
@@ -2602,10 +2684,16 @@ const faq = pick(lang, {
   }
   @media (max-width: 900px) {
     .bt-showcase__top, .bt-calendar__grid, .bt-formats__grid, .bt-fund__grid, .bt-trainers__grid,
-    .bt-why__grid, .bt-proof__grid, .bt-proof__grid.has-certificate, .bt-groups__grid, .bt-approved__grid, .bt-entry__grid {
+    .bt-why__grid, .bt-proof__grid, .bt-groups__grid, .bt-approved__grid, .bt-entry__grid {
       grid-template-columns: minmax(0, 1fr);
     }
-    .bt-proof__seal-wrap { position: static; justify-items: start; }
+    /* Relative, not static: the stamp stays anchored to the certificate. */
+    .bt-proof__visual { position: relative; top: auto; justify-items: start; width: min(100%, 360px); }
+    .bt-proof__doc { transform: rotateZ(-1.5deg); }
+    .bt-proof__seal.is-stamp { right: -6px; bottom: 64px; width: 124px; height: 124px; }
+    .bt-proof__seal.is-stamp span:first-child { font-size: 1.1rem; }
+    .bt-proof__seal.is-stamp strong { width: 24px; height: 24px; font-size: 0.8rem; }
+    .bt-proof__seal.is-stamp span:nth-of-type(2), .bt-proof__seal.is-stamp small { font-size: 0.5rem; }
     .bt-proof__seal { width: 220px; }
     /* The orbit needs room for its labels; on narrower screens the industries
        become a wrap of chips above the panel. */
@@ -2650,7 +2738,7 @@ const faq = pick(lang, {
   @media (prefers-reduced-motion: reduce) {
     .bt-new, .bt-aurora span, .bt-hero__media img, .bt-format::before, .bt-refs__track ul, .bt-calendar__pending span,
     .bt-calendar__facts li, .bt-proof__seal::after, .is-open .bt-fund__check, .bt-hero::after, .bt-hero h1 span,
-    .bt-quiz__result, .bt-trainer__body, .bt-sectors__floor, .bt-orbit__ring--outer, .bt-orbit__spin, .bt-orbit__beam.is-active,
+    .bt-quiz__result, .bt-trainer__body, .bt-sectors__floor, .bt-medal__ring, .bt-orbit__ring--outer, .bt-orbit__spin, .bt-orbit__beam.is-active,
     .bt-orbit__core, .bt-orbit__node.is-active .bt-orbit__dot { animation: none; }
     .bt-orbit { transform: none; }
   }

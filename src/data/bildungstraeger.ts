@@ -17,7 +17,9 @@
  *   Ausgestellt am ............. zertifikatAusgestellt (ISO 8601)
  *   Einschränkungen ............ einschraenkungen (laut Anhang, z. B. 'keine')
  *   Zertifikat ................. zertifikatDatei (Pfad unter /public, Bild oder PDF)
- *   Zertifikat-Vorschau ........ zertifikatBreite / zertifikatHoehe (Pixel, nur bei Bild)
+ *   Zertifikat-Vorschau ........ zertifikatVorschau + zertifikatBreite / zertifikatHoehe
+ *                                (Bild der ersten Seite; erscheint auf der Seite und
+ *                                öffnet beim Klick das Zertifikat)
  *   Zeichen der GZQ ............ zeichenDatei, zeichenBreite, zeichenHoehe
  *                                + zeichenNutzungsregelnGeprueft
  *                                (beides nötig, sonst erscheint nur Text)
@@ -108,6 +110,7 @@ export const bildungstraeger: {
   zertifikatAusgestellt: string;
   einschraenkungen: string;
   zertifikatDatei: string;
+  zertifikatVorschau: string;
   zertifikatBreite: number | null;
   zertifikatHoehe: number | null;
   zeichenDatei: string;
@@ -145,9 +148,10 @@ export const bildungstraeger: {
   // Anhang, Zentrale Eschborn, FB4: Einschränkungen „keine“.
   einschraenkungen: 'keine',
   zertifikatDatei: '/docs/azav-zertifikat-z-001806-1.pdf',
-  // TODO: OFFEN. Pixelmaße des Zertifikatsbilds (verhindert Layout-Sprünge).
-  zertifikatBreite: null,
-  zertifikatHoehe: null,
+  // Seite 1 des Zertifikats als Bild, gerendert aus dem PDF.
+  zertifikatVorschau: '/images/academy/azav-zertifikat-z-001806-1.webp',
+  zertifikatBreite: 1100,
+  zertifikatHoehe: 1556,
   // TODO: OFFEN. Zeichen der fachkundigen Stelle unverändert unter /public ablegen.
   zeichenDatei: '',
   // TODO: OFFEN. Pixelmaße der Zeichen-Datei, damit sie unverzerrt und ohne
