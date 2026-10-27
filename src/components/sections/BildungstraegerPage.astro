@@ -1495,12 +1495,9 @@ const faq = pick(lang, {
                       row.value
                     )}
                     {row.kind === 'goal' && (
-                      <span class="bt-glance__badge" title="ISTQB® CTFL">
-                        <svg viewBox="0 0 40 40" aria-hidden="true" focusable="false">
-                          <circle class="bt-glance__badge-bg" cx="20" cy="20" r="19" />
-                          <circle class="bt-glance__badge-ring" cx="20" cy="20" r="15.5" />
-                          <text x="20" y="23.4" text-anchor="middle">CTFL</text>
-                        </svg>
+                      <span class="bt-glance__badge">
+                        {/* Official ISTQB® CTFL logo (supplied by the team); the row text names it. */}
+                        <img src="/images/badge-istqb-ctfl.webp" alt="" width="236" height="192" loading="lazy" decoding="async" />
                       </span>
                     )}
                   </dd>
@@ -2249,11 +2246,9 @@ const faq = pick(lang, {
   .bt-glance div:first-child { border-top: 0; }
   .bt-glance dt { color: var(--color-muted); font-size: var(--fs-sm); }
   .bt-glance dd { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
-  .bt-glance__badge { display: inline-grid; flex: 0 0 auto; }
-  .bt-glance__badge svg { width: 34px; height: 34px; filter: drop-shadow(0 4px 10px rgba(29, 79, 145, 0.55)); }
-  .bt-glance__badge-bg { fill: var(--color-blue); }
-  .bt-glance__badge-ring { fill: none; stroke: rgba(255, 255, 255, 0.6); stroke-width: 1; stroke-dasharray: 1.5 2; }
-  .bt-glance__badge text { fill: var(--color-text); font-family: var(--font-sans); font-size: 9.5px; font-weight: var(--fw-extrabold); letter-spacing: 0.04em; }
+  /* The logo is blue on white, so it sits on a small white card. */
+  .bt-glance__badge { display: inline-grid; flex: 0 0 auto; padding: 5px 7px; border-radius: var(--radius-sm); background: var(--color-surface); box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.6); }
+  .bt-glance__badge img { display: block; width: auto; height: 48px; }
   .bt-glance div.is-price { margin-inline: calc(var(--space-sm) * -1); padding-inline: var(--space-sm); border-top-color: transparent; border-radius: var(--radius-md); background: rgba(244, 14, 14, 0.12); }
   .bt-glance div.is-price + div { border-top-color: transparent; }
   .bt-glance__price { color: var(--color-accent); font-size: var(--fs-h3); font-weight: var(--fw-extrabold); line-height: 1; }
