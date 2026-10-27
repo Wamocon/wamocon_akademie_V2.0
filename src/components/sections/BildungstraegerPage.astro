@@ -57,7 +57,7 @@ const copy = {
     heroLead: 'Zugelassener Bildungsträger',
     heroRest: 'nach AZAV',
     heroText:
-      'Die WAMOCON Academy GmbH ist als Träger nach AZAV zugelassen. Sobald ein Kurs zugelassen ist, kann deine Weiterbildung mit einem Bildungsgutschein gefördert werden.',
+      'Die WAMOCON Academy GmbH ist als Träger nach AZAV zugelassen. Für unser 45-Tage-Seminar ist die Maßnahmenzulassung in Vorbereitung. Dann kann deine Teilnahme mit Bildungsgutschein gefördert werden.',
     ctaPlanned: 'Beratung und Vormerkung anfragen',
     ctaApproved: 'Förderberatung anfragen',
     ctaCourses: 'Zu den Kursen',
@@ -66,14 +66,41 @@ const copy = {
     // (audit/course-popup-copy.json, #popup:ISTQB-CTFL-Praxistraining-1-de).
     showcaseEyebrow: 'Unser Seminar',
     showcaseDays: 'Tage',
-    showcaseSub: 'Dieses Seminar ist die geplante Weiterbildung „Abschluss Softwaretester:in ISTQB® Zertifikat“.',
+    showcaseSub: 'Unser Seminar zum Abschluss Softwaretester:in ISTQB® Zertifikat, in Präsenz oder online.',
     showcaseText:
       'In 45 Tagen lernst du die Inhalte des ISTQB® Certified Tester Foundation Level Schritt für Schritt. Jeden Tag übst du praxisnah in unserer Lernplattform DiTeLe. Am Ende steht die intensive Vorbereitung auf die ISTQB®-Prüfung.',
     showcaseStagesLabel: 'Ablauf in vier Etappen',
     showcaseStages: ['Inhalte kennenlernen', 'Grundverständnis schaffen', 'Grundverständnis festigen', 'Intensive Vorbereitung auf die ISTQB® CTFL Prüfung'],
     stageRange: (from: number, to: number) => `Tag ${from} bis ${to}`,
-    showcaseStatusPlanned: 'Noch ohne Maßnahmenzulassung. Eine Förderung mit Bildungsgutschein ist erst nach der Zulassung möglich.',
+    showcaseStatusPlanned: 'Die Maßnahmenzulassung ist in Vorbereitung, die Unterlagen sind weitgehend fertig. Das Seminar startet erst nach der Zulassung, damit deine Teilnahme mit Bildungsgutschein gefördert werden kann.',
     showcaseStatusApproved: 'Kann mit Bildungsgutschein gefördert werden. Die Entscheidung trifft die Agentur für Arbeit.',
+
+    // Kalender. Verknappung nur mit Fakten aus src/data/bildungstraeger.ts.
+    calEyebrow: 'Nächster Seminarstart',
+    calLead: (year: number) => `Für ${year} ist nur noch`,
+    calRest: 'ein Start geplant',
+    calTextPending:
+      'Das 45-Tage-Seminar startet, sobald die Maßnahme zugelassen ist. So kannst du deinen Bildungsgutschein von Anfang an nutzen. Der genaue Termin folgt in Kürze. Wer vorgemerkt ist, erfährt ihn zuerst.',
+    calTextSet: (date: string) => `Das 45-Tage-Seminar startet am ${date}. Sichere dir jetzt deinen Platz.`,
+    calPending: 'Termin folgt in Kürze',
+    calLast: (year: number) => `Letzter Start ${year}`,
+    calSeats: (n: number) => `Mindestens ${n} Plätze vor Ort garantiert`,
+    calStart: 'Seminarstart',
+    weekdays: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
+
+    // Vorteile. Abgeleitet aus den Trainingsunterlagen des 45-Tage-Seminars
+    // (Struktur, Umfang, Ausstattung), ohne Inhalte daraus zu veröffentlichen.
+    benefitsLead: 'Was dir das 45-Tage-Seminar',
+    benefitsRest: 'bringt',
+    benefits: [
+      // Quelle: § 83 Abs. 1 SGB III.
+      ['Förderung durch die Agentur für Arbeit', 'Mit einem Bildungsgutschein kann die Agentur für Arbeit Lehrgangskosten, Fahrkosten, Kinderbetreuung sowie Unterkunft und Verpflegung bei auswärtiger Unterbringung übernehmen. Sie entscheidet im Einzelfall.'],
+      ['Einstieg ins Berufsleben', 'Du brauchst keine IT-Vorkenntnisse. In 45 Tagen wirst du Schritt für Schritt auf die Arbeit als Softwaretester vorbereitet. Bei Bewerbungen und Vorstellungsgesprächen unterstützen wir dich.'],
+      ['International gefragte Qualifikation', 'Das Seminar deckt alle prüfungsrelevanten Inhalte des aktuellen ISTQB® Certified Tester Foundation Level ab. Viele Unternehmen nennen dieses Zertifikat in ihren Stellenausschreibungen.'],
+      ['Drei Durchgänge durch den Stoff', 'Du gehst alle Inhalte dreimal durch, jedes Mal mit neuen Praxisaufgaben. Jeder Tag beginnt mit einer Zusammenfassung des Vortags. So festigst du dein Wissen bis zur Prüfung.'],
+      ['Praxis statt Auswendiglernen', 'Zahlreiche Beispiele und Szenarien aus echten Projekten. Du lernst Begriffe nicht nur kennen, du wendest sie an. Jeden Tag übst du zusätzlich in unserer Lernplattform DiTeLe.'],
+      ['Feste Struktur, alle Fragen geklärt', 'Das Seminar läuft in Vollzeit mit festem Tagesplan. Vor Ort lernst du an Arbeitsplätzen mit zwei Monitoren, online direkt im Browser. Nach dem Unterricht bleiben die Trainer da, bis alle Fragen geklärt sind.'],
+    ],
 
     trustLabel: 'Zulassung und Kennzahlen',
     trustAzav: ['AZAV', `Trägerzulassung, Fachbereich ${bt.fachbereich.nummer}: berufliche Weiterbildung`],
@@ -95,12 +122,12 @@ const copy = {
       'Die WAMOCON Academy erfüllt die gesetzlichen Anforderungen an einen Bildungsträger in der Arbeitsförderung. Das ist die erste von zwei Voraussetzungen für eine Förderung.',
     // Quelle: § 179 SGB III (Maßnahmezulassung).
     measureTitle: 'Maßnahmenzulassung',
-    measureStatusPlanned: 'Noch nicht erteilt',
+    measureStatusPlanned: 'In Vorbereitung',
     measureStatusApproved: 'Liegt vor',
     measureText:
       'Zusätzlich braucht jeder einzelne Kurs eine eigene Zulassung. Geprüft werden Inhalte, Methoden und Lehrorganisation, die Ausstattung sowie angemessene Kosten und Dauer.',
     measureMeaningPlanned:
-      'Für unsere Kurse liegt noch keine Maßnahmenzulassung vor. Einen Bildungsgutschein kannst du bei uns deshalb noch nicht einlösen. Eine Beratung und Vormerkung ist schon jetzt möglich.',
+      'Die Maßnahmenzulassung für unser 45-Tage-Seminar ist in Vorbereitung, die Unterlagen sind weitgehend fertig. Das Seminar startet erst nach der Zulassung. Dann kannst du deinen Bildungsgutschein bei uns einlösen.',
     measureMeaningApproved:
       'Die unten genannten Kurse haben eine Maßnahmenzulassung. Mit einem Bildungsgutschein kann deine Teilnahme an diesen Kursen gefördert werden.',
     // Quelle: § 81 Abs. 1 Nr. 3 SGB III, § 176 Abs. 2 SGB III.
@@ -131,17 +158,17 @@ const copy = {
       ['Nachbefragung nach dem Kurs', 'Nach Kursende sowie nach 3 und 6 Monaten ist eine Nachbefragung zu deinem beruflichen Verbleib vorgesehen.'],
     ],
 
-    coursesLeadPlanned: 'Geplante Weiterbildung',
+    coursesLeadPlanned: 'Unser 45-Tage-Seminar',
     coursesLeadApproved: 'Zugelassene Weiterbildung',
     coursesRest: 'in Präsenz oder online',
     coursesNotePlanned:
-      'Diese Weiterbildung hat noch keine Maßnahmenzulassung. Eine Förderung mit Bildungsgutschein ist erst nach der Maßnahmenzulassung möglich. Termine nennen wir, sobald sie feststehen. Du kannst dich schon jetzt beraten lassen und vormerken.',
+      'Die Maßnahmenzulassung ist in Vorbereitung, die Unterlagen sind weitgehend fertig. Das Seminar startet erst nach der Zulassung. So kann deine Teilnahme mit Bildungsgutschein gefördert werden. Lass dich jetzt vormerken.',
     coursesNoteApproved:
       'Diese Kurse haben eine Maßnahmenzulassung. Deine Teilnahme kann mit einem Bildungsgutschein gefördert werden. Die Entscheidung trifft die Agentur für Arbeit.',
     variants: 'Zwei Varianten derselben Weiterbildung',
     format: { praesenz: 'Präsenz', online: 'Online' } as Record<MassnahmeFormat, string>,
-    statusPlanned: 'In Vorbereitung',
-    planNote: 'Noch ohne Maßnahmenzulassung',
+    statusPlanned: 'Zulassung in Vorbereitung',
+    planNote: 'Start nach der Maßnahmenzulassung',
     measureNumber: 'Maßnahmenummer',
     duration: 'Dauer',
     place: 'Ort',
@@ -172,7 +199,7 @@ const copy = {
     firstApproval: 'Erstzulassung',
     areaValue: `Fachbereich ${bt.fachbereich.nummer}: ${bt.fachbereich.bezeichnung}`,
     validityRange: (from: string, to: string) => `${from} bis ${to}`,
-    measuresNone: 'noch keine',
+    measuresNone: 'in Vorbereitung',
     measuresCount: (n: number) => (n === 1 ? '1 Maßnahme' : `${n} Maßnahmen`),
     certAlt: `Zertifikat der Trägerzulassung nach AZAV, ausgestellt von der ${bt.fachkundigeStelle.name}`,
     certPdf: 'Zertifikat ansehen (PDF)',
@@ -192,7 +219,7 @@ const copy = {
     faqIntro: 'Antworten auf die Fragen, die uns zur Förderung einer Weiterbildung bei der WAMOCON Academy am häufigsten gestellt werden.',
     bylineRole: 'Geschäftsführer der WAMOCON Academy GmbH',
 
-    formIntroPlanned: `Wir beraten dich zur geplanten Weiterbildung und merken dich vor. Sobald der Kurs zugelassen ist, melden wir uns bei dir. Ruf uns an unter ${company.phone} oder hinterlasse unten deine Kontaktdaten.`,
+    formIntroPlanned: `Wir beraten dich zum 45-Tage-Seminar und merken dich vor. Sobald der Starttermin feststeht, erfährst du ihn als Erstes. Ruf uns an unter ${company.phone} oder hinterlasse unten deine Kontaktdaten.`,
     formIntroApproved: `Wir beraten dich zur Förderung mit Bildungsgutschein und zu den nächsten Schritten. Ruf uns an unter ${company.phone} oder hinterlasse unten deine Kontaktdaten.`,
   },
 
@@ -204,21 +231,44 @@ const copy = {
     heroRest: 'under AZAV',
     // AZAV and Bildungsgutschein are explained on first use.
     heroText:
-      'WAMOCON Academy GmbH is approved under AZAV, the German approval scheme for funded training. Approved courses can be funded with a Bildungsgutschein (education voucher).',
+      'WAMOCON Academy GmbH is approved under AZAV, the German approval scheme for funded training. Course approval for our 45-day seminar is in preparation. It can then be funded with a Bildungsgutschein (education voucher).',
     ctaPlanned: 'Get advice and pre-register',
     ctaApproved: 'Request funding advice',
     ctaCourses: 'See the courses',
 
     showcaseEyebrow: 'Our seminar',
     showcaseDays: 'days',
-    showcaseSub: 'This seminar is the planned training "Abschluss Softwaretester:in ISTQB® Zertifikat".',
+    showcaseSub: 'Our seminar leading to the "Abschluss Softwaretester:in ISTQB® Zertifikat", on site or online.',
     showcaseText:
       'Over 45 days you work through the content of the ISTQB® Certified Tester Foundation Level step by step. Every day you practise in our DiTeLe learning platform. The final stage is intensive preparation for the ISTQB® exam.',
     showcaseStagesLabel: 'Four stages',
     showcaseStages: ['Getting to know the content', 'Building a solid understanding', 'Consolidating your understanding', 'Intensive preparation for the ISTQB® CTFL exam'],
     stageRange: (from: number, to: number) => `Days ${from} to ${to}`,
-    showcaseStatusPlanned: 'No course approval yet. Funding with a Bildungsgutschein is only possible after the approval.',
+    showcaseStatusPlanned: 'Course approval is in preparation and the documents are largely complete. The seminar starts only after approval, so that your participation can be funded with a Bildungsgutschein.',
     showcaseStatusApproved: 'Can be funded with a Bildungsgutschein. The decision is made by the Agentur für Arbeit.',
+
+    calEyebrow: 'Next seminar start',
+    calLead: (year: number) => `Only one more start`,
+    calRest: 'planned this year',
+    calTextPending:
+      'The 45-day seminar starts as soon as the course is approved, so you can use your Bildungsgutschein from day one. The exact date will be announced shortly. Pre-registered participants hear it first.',
+    calTextSet: (date: string) => `The 45-day seminar starts on ${date}. Secure your place now.`,
+    calPending: 'Date coming soon',
+    calLast: (year: number) => `Last start in ${year}`,
+    calSeats: (n: number) => `At least ${n} on-site places guaranteed`,
+    calStart: 'Seminar start',
+    weekdays: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
+
+    benefitsLead: 'What the 45-day seminar',
+    benefitsRest: 'gives you',
+    benefits: [
+      ['Funding from the Agentur für Arbeit', 'With a Bildungsgutschein, the Agentur für Arbeit can cover course fees, travel costs, childcare, and accommodation and meals away from home. It decides case by case.'],
+      ['A route into work', 'No prior IT knowledge is required. Over 45 days you are prepared step by step for working as a software tester. We support you with applications and job interviews.'],
+      ['An internationally sought-after qualification', 'The seminar covers all exam-relevant content of the current ISTQB® Certified Tester Foundation Level. Many companies name this certificate in their job postings.'],
+      ['Three passes through the material', 'You work through all content three times, each time with new practical tasks. Every day starts with a recap of the previous day. That way your knowledge holds up in the exam.'],
+      ['Practice, not memorising', 'Numerous examples and scenarios from real projects. You do not just learn the terms, you apply them. Every day you also practise in our DiTeLe learning platform.'],
+      ['Clear structure, every question answered', 'The seminar runs full time with a fixed daily schedule. On site you learn at workstations with two monitors, online straight in your browser. After class the trainers stay until every question is answered.'],
+    ],
 
     trustLabel: 'Approval and key figures',
     trustAzav: ['AZAV', `Provider approval, field ${bt.fachbereich.nummer}: vocational further training`],
@@ -239,12 +289,12 @@ const copy = {
       'WAMOCON Academy meets the legal requirements for an education provider in employment promotion. This is the first of two conditions for funding.',
     // Source: § 179 SGB III.
     measureTitle: 'Course approval',
-    measureStatusPlanned: 'Not yet granted',
+    measureStatusPlanned: 'In preparation',
     measureStatusApproved: 'Granted',
     measureText:
       'In addition, every single course needs its own approval. The review covers content, methods and teaching organisation, facilities, and reasonable cost and duration.',
     measureMeaningPlanned:
-      'Our courses do not have a course approval yet. You therefore cannot redeem a Bildungsgutschein with us yet. You can already get advice and pre-register.',
+      'Course approval for our 45-day seminar is in preparation and the documents are largely complete. The seminar starts only after approval. You can then redeem your Bildungsgutschein with us.',
     measureMeaningApproved:
       'The courses listed below have a course approval. Your participation in these courses can be funded with a Bildungsgutschein.',
     // Source: § 81 (1) no. 3 SGB III, § 176 (2) SGB III.
@@ -275,17 +325,17 @@ const copy = {
       ['Follow-up after the course', 'A follow-up survey on your career path is planned at the end of the course and after 3 and 6 months.'],
     ],
 
-    coursesLeadPlanned: 'Planned training',
+    coursesLeadPlanned: 'Our 45-day seminar',
     coursesLeadApproved: 'Approved training',
     coursesRest: 'on site or online',
     coursesNotePlanned:
-      'This training does not have a course approval yet. Funding with a Bildungsgutschein is only possible after the course approval. We will announce dates once they are fixed. You can already get advice and pre-register.',
+      'Course approval is in preparation and the documents are largely complete. The seminar starts only after approval, so your participation can be funded with a Bildungsgutschein. Pre-register now.',
     coursesNoteApproved:
       'These courses have a course approval. Your participation can be funded with a Bildungsgutschein. The decision is made by the Agentur für Arbeit.',
     variants: 'Two formats of the same training',
     format: { praesenz: 'On site', online: 'Online' } as Record<MassnahmeFormat, string>,
-    statusPlanned: 'In preparation',
-    planNote: 'No course approval yet',
+    statusPlanned: 'Approval in preparation',
+    planNote: 'Starts after course approval',
     measureNumber: 'Course approval number',
     duration: 'Duration',
     place: 'Location',
@@ -315,7 +365,7 @@ const copy = {
     firstApproval: 'initial approval',
     areaValue: `Field ${bt.fachbereich.nummer}: vocational further training (${bt.fachbereich.bezeichnung})`,
     validityRange: (from: string, to: string) => `${from} to ${to}`,
-    measuresNone: 'none yet',
+    measuresNone: 'in preparation',
     measuresCount: (n: number) => (n === 1 ? '1 course' : `${n} courses`),
     certAlt: `Certificate of the AZAV provider approval, issued by ${bt.fachkundigeStelle.name}`,
     certPdf: 'View certificate (PDF)',
@@ -332,7 +382,7 @@ const copy = {
     faqIntro: 'Answers to the questions we are asked most often about funded training at WAMOCON Academy.',
     bylineRole: 'Managing Director of WAMOCON Academy GmbH',
 
-    formIntroPlanned: `We advise you on the planned training and pre-register you. As soon as the course is approved, we will get in touch. Call us on ${company.phone} or leave your contact details below.`,
+    formIntroPlanned: `We advise you on the 45-day seminar and pre-register you. As soon as the start date is fixed, you will be the first to know. Call us on ${company.phone} or leave your contact details below.`,
     formIntroApproved: `We advise you on funding with a Bildungsgutschein and on the next steps. Call us on ${company.phone} or leave your contact details below.`,
   },
 
@@ -344,21 +394,44 @@ const copy = {
     heroLead: 'AZAV бойынша рұқсат алған',
     heroRest: 'білім беру ұйымы',
     heroText:
-      'WAMOCON Academy GmbH AZAV бойынша рұқсат алды. AZAV дегеніміз мемлекет қаржыландыратын оқуға рұқсат беру туралы неміс ережесі. Курс рұқсат алған соң оны Bildungsgutschein (білім беру ваучері) арқылы қаржыландыруға болады.',
+      'WAMOCON Academy GmbH AZAV бойынша рұқсат алды. AZAV дегеніміз мемлекет қаржыландыратын оқуға рұқсат беру туралы неміс ережесі. 45 күндік семинарымызға рұқсат дайындалуда, кейін оны Bildungsgutschein (білім беру ваучері) арқылы қаржыландыруға болады.',
     ctaPlanned: 'Кеңес алу және алдын ала тіркелу',
     ctaApproved: 'Қаржыландыру бойынша кеңес алу',
     ctaCourses: 'Курстарға өту',
 
     showcaseEyebrow: 'Біздің семинар',
     showcaseDays: 'күн',
-    showcaseSub: 'Бұл семинар жоспарланған «Abschluss Softwaretester:in ISTQB® Zertifikat» оқу бағдарламасы.',
+    showcaseSub: '«Abschluss Softwaretester:in ISTQB® Zertifikat» біліктілігіне апаратын семинарымыз, аудиторияда немесе онлайн.',
     showcaseText:
       '45 күн ішінде ISTQB® Certified Tester Foundation Level мазмұнын кезең-кезеңімен меңгересіз. Күн сайын DiTeLe оқу платформасында тәжірибелік жаттығу орындайсыз. Соңғы кезең ISTQB® емтиханына қарқынды дайындыққа арналған.',
     showcaseStagesLabel: 'Төрт кезең',
     showcaseStages: ['Мазмұнмен танысу', 'Негізгі түсінік қалыптастыру', 'Түсінікті бекіту', 'ISTQB® CTFL емтиханына қарқынды дайындық'],
     stageRange: (from: number, to: number) => `${from}-күннен ${to}-күнге дейін`,
-    showcaseStatusPlanned: 'Курсқа рұқсат әлі жоқ. Bildungsgutschein арқылы қаржыландыру тек рұқсат берілгеннен кейін мүмкін.',
+    showcaseStatusPlanned: 'Курсқа рұқсат дайындалуда, құжаттар негізінен дайын. Қатысуыңызды Bildungsgutschein арқылы қаржыландыру үшін семинар рұқсат берілгеннен кейін ғана басталады.',
     showcaseStatusApproved: 'Bildungsgutschein арқылы қаржыландыруға болады. Шешімді Agentur für Arbeit қабылдайды.',
+
+    calEyebrow: 'Семинардың келесі басталуы',
+    calLead: (year: number) => `${year} жылы тек`,
+    calRest: 'бір басталу жоспарланған',
+    calTextPending:
+      '45 күндік семинар курсқа рұқсат берілісімен басталады. Осылайша Bildungsgutschein ваучерін алғашқы күннен пайдалана аласыз. Нақты күні жақында жарияланады. Алдын ала тіркелгендер оны бірінші біледі.',
+    calTextSet: (date: string) => `45 күндік семинар ${date} басталады. Орныңызды қазір брондаңыз.`,
+    calPending: 'Күні жақында белгілі болады',
+    calLast: (year: number) => `${year} жылғы соңғы басталу`,
+    calSeats: (n: number) => `Аудиторияда кемінде ${n} орынға кепілдік`,
+    calStart: 'Семинардың басталуы',
+    weekdays: ['Дс', 'Сс', 'Ср', 'Бс', 'Жм', 'Сб', 'Жс'],
+
+    benefitsLead: '45 күндік семинар',
+    benefitsRest: 'сізге не береді',
+    benefits: [
+      ['Agentur für Arbeit қаржыландыруы', 'Bildungsgutschein бойынша Agentur für Arbeit курс ақысын, жол шығынын, балаларды күтуді, сондай-ақ басқа жерде тұру мен тамақтануды өтей алады. Шешімді әр жағдайда жеке қабылдайды.'],
+      ['Кәсіби өмірге алғашқы қадам', 'IT саласындағы алдын ала білім қажет емес. 45 күн ішінде тестілеуші болып жұмыс істеуге кезең-кезеңімен дайындаламыз. Өтініш беру мен жұмыс сұхбатында сізді қолдаймыз.'],
+      ['Халықаралық сұранысқа ие біліктілік', 'Семинар ағымдағы ISTQB® Certified Tester Foundation Level емтиханына қажет барлық мазмұнды қамтиды. Көптеген компания бұл сертификатты жұмыс талаптарында атайды.'],
+      ['Материалды үш рет өту', 'Барлық мазмұнды үш рет өтесіз, әр жолы жаңа тәжірибелік тапсырмалармен. Әр күн алдыңғы күннің қорытындысынан басталады. Осылайша біліміңізді емтиханға дейін бекітесіз.'],
+      ['Жаттау емес, тәжірибе', 'Нақты жобалардан алынған көптеген мысал мен сценарий. Ұғымдарды тек біліп қоймай, оларды қолданасыз. Күн сайын DiTeLe оқу платформасында қосымша жаттығасыз.'],
+      ['Нақты құрылым, барлық сұраққа жауап', 'Семинар толық күн форматында, тұрақты кестемен өтеді. Аудиторияда екі мониторлы жұмыс орнында, онлайн тікелей браузерде оқисыз. Сабақтан кейін тренерлер барлық сұраққа жауап бергенше қалады.'],
+    ],
 
     trustLabel: 'Рұқсат және көрсеткіштер',
     trustAzav: ['AZAV', `Ұйымға рұқсат, ${bt.fachbereich.nummer}-бағыт: кәсіптік біліктілікті арттыру`],
@@ -376,12 +449,12 @@ const copy = {
     providerMeaning:
       'WAMOCON Academy жұмыспен қамтуға жәрдемдесу саласындағы білім беру ұйымына қойылатын заң талаптарына сай. Бұл қаржыландырудың екі шартының біріншісі.',
     measureTitle: 'Курсқа берілетін рұқсат',
-    measureStatusPlanned: 'Әлі берілмеген',
+    measureStatusPlanned: 'Дайындалуда',
     measureStatusApproved: 'Бар',
     measureText:
       'Сонымен қатар әр курсқа жеке рұқсат қажет. Мазмұны, әдістері мен оқуды ұйымдастыру, жабдықталуы, сондай-ақ құны мен ұзақтығының орындылығы тексеріледі.',
     measureMeaningPlanned:
-      'Біздің курстарға әлі рұқсат берілген жоқ. Сондықтан Bildungsgutschein ваучерін бізде әзірге пайдалана алмайсыз. Кеңес алып, алдын ала тіркелу қазірдің өзінде мүмкін.',
+      '45 күндік семинарымызға рұқсат дайындалуда, құжаттар негізінен дайын. Семинар рұқсат берілгеннен кейін ғана басталады. Сонда Bildungsgutschein ваучерін бізде пайдалана аласыз.',
     measureMeaningApproved:
       'Төменде көрсетілген курстардың рұқсаты бар. Бұл курстарға қатысуыңызды Bildungsgutschein арқылы қаржыландыруға болады.',
     meaningRule:
@@ -408,17 +481,17 @@ const copy = {
       ['Курстан кейінгі сауалнама', 'Курс аяқталғанда, сондай-ақ 3 және 6 айдан кейін кәсіби жолыңыз туралы сауалнама жүргізу көзделген.'],
     ],
 
-    coursesLeadPlanned: 'Жоспарланған оқу',
+    coursesLeadPlanned: '45 күндік семинарымыз',
     coursesLeadApproved: 'Рұқсаты бар оқу',
     coursesRest: 'аудиторияда немесе онлайн',
     coursesNotePlanned:
-      'Бұл оқу бағдарламасының әлі рұқсаты жоқ. Bildungsgutschein арқылы қаржыландыру тек курсқа рұқсат берілгеннен кейін мүмкін. Күндерін белгіленген соң жариялаймыз. Кеңес алып, алдын ала тіркелу қазірдің өзінде мүмкін.',
+      'Курсқа рұқсат дайындалуда, құжаттар негізінен дайын. Семинар рұқсат берілгеннен кейін ғана басталады. Осылайша қатысуыңызды Bildungsgutschein арқылы қаржыландыруға болады. Қазір алдын ала тіркеліңіз.',
     coursesNoteApproved:
       'Бұл курстардың рұқсаты бар. Қатысуыңызды Bildungsgutschein арқылы қаржыландыруға болады. Шешімді Agentur für Arbeit қабылдайды.',
     variants: 'Бір оқу бағдарламасының екі нұсқасы',
     format: { praesenz: 'Аудиторияда', online: 'Онлайн' } as Record<MassnahmeFormat, string>,
-    statusPlanned: 'Дайындалуда',
-    planNote: 'Курсқа рұқсат әлі жоқ',
+    statusPlanned: 'Рұқсат дайындалуда',
+    planNote: 'Курсқа рұқсат берілген соң басталады',
     measureNumber: 'Рұқсат нөмірі',
     duration: 'Ұзақтығы',
     place: 'Өтетін жері',
@@ -448,7 +521,7 @@ const copy = {
     firstApproval: 'алғашқы рұқсат',
     areaValue: `${bt.fachbereich.nummer}-бағыт: кәсіптік біліктілікті арттыру (${bt.fachbereich.bezeichnung})`,
     validityRange: (from: string, to: string) => `${from} бастап ${to} дейін`,
-    measuresNone: 'әзірге жоқ',
+    measuresNone: 'дайындалуда',
     measuresCount: (n: number) => `${n} курс`,
     certAlt: `${bt.fachkundigeStelle.name} берген AZAV бойынша ұйымға рұқсат сертификаты`,
     certPdf: 'Сертификатты қарау (PDF)',
@@ -465,13 +538,37 @@ const copy = {
     faqIntro: 'WAMOCON Academy-де оқуды қаржыландыру туралы бізге ең жиі қойылатын сұрақтардың жауаптары.',
     bylineRole: 'WAMOCON Academy GmbH атқарушы директоры',
 
-    formIntroPlanned: `Жоспарланған оқу бойынша кеңес беріп, сізді алдын ала тіркейміз. Курсқа рұқсат берілген соң сізге хабарласамыз. Бізге ${company.phone} нөмірі бойынша қоңырау шалыңыз немесе төменде байланыс деректеріңізді қалдырыңыз.`,
+    formIntroPlanned: `45 күндік семинар бойынша кеңес беріп, сізді алдын ала тіркейміз. Басталу күні белгілі болысымен оны бірінші болып білесіз. Бізге ${company.phone} нөмірі бойынша қоңырау шалыңыз немесе төменде байланыс деректеріңізді қалдырыңыз.`,
     formIntroApproved: `Bildungsgutschein арқылы қаржыландыру және келесі қадамдар бойынша кеңес береміз. Бізге ${company.phone} нөмірі бойынша қоңырау шалыңыз немесе төменде байланыс деректеріңізді қалдырыңыз.`,
   },
 } as const;
 
 const c = copy[lang];
 const cta = approved ? c.ctaApproved : c.ctaPlanned;
+
+// Calendar. Until a start date is entered, the configured months render
+// greyed out under a "date coming soon" label; once it is set, only that
+// month is shown with the start day highlighted.
+const ns = bt.naechsterStart;
+const startSet = ns.datum.trim() !== '';
+const calendarMonths = (startSet ? [ns.datum.slice(0, 7)] : ns.kalenderMonate).map((ym) => {
+  const [year, month] = ym.split('-').map(Number);
+  const first = new Date(Date.UTC(year, month - 1, 1));
+  const days = new Date(Date.UTC(year, month, 0)).getUTCDate();
+  const offset = (first.getUTCDay() + 6) % 7; // weeks start on Monday
+  const cells: Array<number | null> = [
+    ...Array<null>(offset).fill(null),
+    ...Array.from({ length: days }, (_, i) => i + 1),
+  ];
+  while (cells.length % 7) cells.push(null);
+  const weeks = Array.from({ length: cells.length / 7 }, (_, i) => cells.slice(i * 7, i * 7 + 7));
+  return {
+    key: ym,
+    label: new Intl.DateTimeFormat(intlLocale, { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(first),
+    weeks,
+    startDay: startSet && ns.datum.startsWith(ym) ? Number(ns.datum.slice(8, 10)) : null,
+  };
+});
 const stats = home.hero.stats.map((stat) => [stat.value, stat[lang]] as const);
 const trust = [c.trustAzav, c.trustIstqb, ...stats];
 
@@ -521,7 +618,7 @@ const faq = pick(lang, {
       question: 'Kann ich schon jetzt einen Bildungsgutschein bei euch einlösen?',
       answer: approved
         ? `Ja, für die Kurse mit Maßnahmenzulassung (${c.stand}). Die WAMOCON Academy GmbH ist als Bildungsträger nach AZAV zugelassen. Zugelassen sind folgende Kurse: ${approvedNames}. Für diese Kurse kannst du einen Bildungsgutschein der Agentur für Arbeit einlösen. Ob du einen Bildungsgutschein bekommst, entscheidet die Agentur für Arbeit. Gern beraten wir dich vorher zum Ablauf.`
-        : `Nein, noch nicht (${c.stand}). Die WAMOCON Academy GmbH ist als Bildungsträger nach AZAV zugelassen. Für die geplante Weiterbildung ${plannedName} liegt aber noch keine Maßnahmenzulassung vor. Einen Bildungsgutschein kannst du erst einlösen, wenn auch der Kurs zugelassen ist. Sobald die erste Maßnahme zugelassen ist, ist das bei uns möglich. Du kannst dich schon jetzt beraten lassen und für die Weiterbildung vormerken.`,
+        : `Bald (${c.stand}). Die WAMOCON Academy GmbH ist als Bildungsträger nach AZAV zugelassen. Die Maßnahmenzulassung für das 45-Tage-Seminar ${plannedName} ist in Vorbereitung, die Unterlagen sind weitgehend fertig. Das Seminar startet erst, wenn die Maßnahme zugelassen ist. Dann kannst du deinen Bildungsgutschein bei uns einlösen. Für ${ns.jahr} ist nur noch ein Start geplant. Lass dich deshalb schon jetzt beraten und vormerken.`,
     },
     {
       question: 'Welche Kosten können übernommen werden?',
@@ -537,7 +634,7 @@ const faq = pick(lang, {
       question: 'Gibt es den Kurs auch online?',
       answer: approved
         ? `Die Formate stehen bei jedem zugelassenen Kurs auf dieser Seite (${c.stand}). Die WAMOCON Academy plant die Weiterbildung ${plannedName} in zwei Varianten: in Präsenz und online. Welche Variante zu dir passt, besprechen wir gern in der Beratung.`
-        : `Ja, die Weiterbildung ${plannedName} ist in zwei Varianten geplant: in Präsenz und online (${c.stand}). Beide Varianten haben noch keine Maßnahmenzulassung. Eine Förderung mit Bildungsgutschein ist deshalb noch nicht möglich. Welche Variante zu dir passt, besprechen wir gern in der Beratung.`,
+        : `Ja, das 45-Tage-Seminar ${plannedName} gibt es in Präsenz und online (${c.stand}). Für beide Varianten ist die Maßnahmenzulassung in Vorbereitung. Vor Ort sind mindestens ${ns.plaetzeVorOrt} Plätze garantiert. Online nimmst du direkt im Browser teil. Welche Variante zu dir passt, besprechen wir gern in der Beratung.`,
     },
     {
       question: 'Was passiert nach der Prüfung?',
@@ -566,7 +663,7 @@ const faq = pick(lang, {
       question: 'Can I already redeem a Bildungsgutschein with you?',
       answer: approved
         ? `Yes, for the courses with a course approval (${c.stand}). WAMOCON Academy GmbH is approved as an education provider under AZAV. The following courses are approved: ${approvedNames}. You can redeem a Bildungsgutschein from the Agentur für Arbeit for these courses. Whether you receive a voucher is decided by the Agentur für Arbeit. We are happy to advise you on the process beforehand.`
-        : `No, not yet (${c.stand}). WAMOCON Academy GmbH is approved as an education provider under AZAV. However, the planned training ${plannedName} does not have a course approval yet. A Bildungsgutschein can only be redeemed once the course itself is approved. As soon as the first course is approved, this will be possible with us. You can already get advice and pre-register for the training.`,
+        : `Soon (${c.stand}). WAMOCON Academy GmbH is approved as an education provider under AZAV. Course approval for the 45-day seminar ${plannedName} is in preparation and the documents are largely complete. The seminar starts only once the course is approved. You can then redeem your Bildungsgutschein with us. Only one more start is planned for ${ns.jahr}, so get advice and pre-register now.`,
     },
     {
       question: 'Which costs can be covered?',
@@ -580,7 +677,7 @@ const faq = pick(lang, {
       question: 'Is the course also available online?',
       answer: approved
         ? `The format is shown for every approved course on this page (${c.stand}). WAMOCON Academy plans the training ${plannedName} in two formats: on site and online. We are happy to discuss which format suits you in a consultation.`
-        : `Yes, the training ${plannedName} is planned in two formats: on site and online (${c.stand}). Neither format has a course approval yet. Funding with a Bildungsgutschein is therefore not possible yet. We are happy to discuss which format suits you in a consultation.`,
+        : `Yes, the 45-day seminar ${plannedName} runs on site and online (${c.stand}). Course approval is in preparation for both formats. At least ${ns.plaetzeVorOrt} on-site places are guaranteed. Online you take part directly in your browser. We are happy to discuss which format suits you in a consultation.`,
     },
     {
       question: 'What happens after the exam?',
@@ -609,7 +706,7 @@ const faq = pick(lang, {
       question: 'Bildungsgutschein ваучерін бізде қазір пайдалануға бола ма?',
       answer: approved
         ? `Иә, рұқсаты бар курстар үшін болады (${c.stand}). WAMOCON Academy GmbH AZAV бойынша білім беру ұйымы ретінде рұқсат алған. Рұқсаты бар курстар: ${approvedNames}. Бұл курстарға Agentur für Arbeit берген ваучерді пайдалана аласыз. Ваучер беру туралы шешімді Agentur für Arbeit қабылдайды. Алдын ала тәртібі бойынша кеңес береміз.`
-        : `Жоқ, әзірге болмайды (${c.stand}). WAMOCON Academy GmbH AZAV бойынша білім беру ұйымы ретінде рұқсат алған. Бірақ жоспарланған ${plannedName} оқу бағдарламасының әлі рұқсаты жоқ. Ваучерді курстың өзі рұқсат алған соң ғана пайдалануға болады. Алғашқы курс рұқсат алысымен бізде бұл мүмкін болады. Қазірдің өзінде кеңес алып, оқуға алдын ала тіркеле аласыз.`,
+        : `Жақында болады (${c.stand}). WAMOCON Academy GmbH AZAV бойынша білім беру ұйымы ретінде рұқсат алған. ${plannedName} 45 күндік семинарына рұқсат дайындалуда, құжаттар негізінен дайын. Семинар курсқа рұқсат берілгеннен кейін ғана басталады. Сонда Bildungsgutschein ваучерін бізде пайдалана аласыз. ${ns.jahr} жылы тек бір басталу жоспарланған, сондықтан қазір кеңес алып, алдын ала тіркеліңіз.`,
     },
     {
       question: 'Қандай шығындар өтелуі мүмкін?',
@@ -623,7 +720,7 @@ const faq = pick(lang, {
       question: 'Курс онлайн форматта да бар ма?',
       answer: approved
         ? `Әр рұқсаты бар курстың форматы осы бетте көрсетілген (${c.stand}). WAMOCON Academy ${plannedName} оқу бағдарламасын екі нұсқада жоспарлап отыр: аудиторияда және онлайн. Қай нұсқа сізге сай екенін кеңес кезінде талқылаймыз.`
-        : `Иә, ${plannedName} оқу бағдарламасы екі нұсқада жоспарланған: аудиторияда және онлайн (${c.stand}). Екі нұсқаның да әлі рұқсаты жоқ. Сондықтан Bildungsgutschein арқылы қаржыландыру әзірге мүмкін емес. Қай нұсқа сізге сай екенін кеңес кезінде талқылаймыз.`,
+        : `Иә, ${plannedName} 45 күндік семинары аудиторияда да, онлайн да өтеді (${c.stand}). Екі нұсқаға да рұқсат дайындалуда. Аудиторияда кемінде ${ns.plaetzeVorOrt} орынға кепілдік беріледі. Онлайн форматта тікелей браузерде қатысасыз. Қай нұсқа сізге сай екенін кеңес кезінде талқылаймыз.`,
     },
     {
       question: 'Емтиханнан кейін не болады?',
@@ -710,6 +807,64 @@ const faq = pick(lang, {
           </ol>
         </div>
       </article>
+    </div>
+  </section>
+
+  <section class="section bt-calendar" id="termine" aria-labelledby="bt-calendar-title">
+    <div class="container bt-calendar__grid">
+      <div class="bt-calendar__copy" data-reveal>
+        <p class="eyebrow">{c.calEyebrow}</p>
+        <h2 id="bt-calendar-title"><span>{c.calLead(ns.jahr)}</span> {c.calRest}</h2>
+        <p class="bt-calendar__text">{startSet ? c.calTextSet(formatDate(ns.datum)) : c.calTextPending}</p>
+        <ul class="bt-calendar__facts">
+          <li>{c.calLast(ns.jahr)}</li>
+          <li>{c.calSeats(ns.plaetzeVorOrt)}</li>
+        </ul>
+        <Button href={`#${formAnchor}`}>{cta}</Button>
+      </div>
+      <div class:list={['bt-calendar__board', { 'is-pending': !startSet }]} data-reveal>
+        <div class="bt-calendar__months" aria-hidden={startSet ? undefined : 'true'}>
+          {calendarMonths.map((month) => (
+            <table class="bt-cal">
+              <caption>{month.label}</caption>
+              <thead>
+                <tr>{c.weekdays.map((day) => <th scope="col">{day}</th>)}</tr>
+              </thead>
+              <tbody>
+                {month.weeks.map((week) => (
+                  <tr>
+                    {week.map((day) =>
+                      day === month.startDay ? (
+                        <td class="is-start"><span class="bt-cal__label">{c.calStart}: </span>{day}</td>
+                      ) : (
+                        <td>{day ?? ''}</td>
+                      ),
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ))}
+        </div>
+        {!startSet && <p class="bt-calendar__pending"><span>{c.calPending}</span></p>}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bt-benefits" aria-labelledby="bt-benefits-title">
+    <div class="container">
+      <div class="bt-head" data-reveal>
+        <h2 id="bt-benefits-title"><span>{c.benefitsLead}</span> {c.benefitsRest}</h2>
+      </div>
+      <div class="bt-cards bt-cards--three">
+        {c.benefits.map(([title, text], index) => (
+          <article class="bt-card" data-reveal>
+            <span class="bt-steps__number">{String(index + 1).padStart(2, '0')}</span>
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </article>
+        ))}
+      </div>
     </div>
   </section>
 
@@ -1059,6 +1214,86 @@ const faq = pick(lang, {
   .bt-showcase__stages h4 { font-size: var(--fs-h5); }
   .bt-showcase .bt-steps__number { flex: 0 0 auto; }
 
+  /* ---- Calendar: next seminar start ----------------------------------------
+     A real month grid. While the date is open the grid is greyed out under a
+     "date coming soon" label, so the scarcity message ("one start left this
+     year") stays truthful without inventing a date. */
+  .bt-calendar { background: var(--color-bg-elevated); }
+  .bt-calendar__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+  }
+  .bt-calendar__copy h2 { margin-top: var(--space-sm); font-size: var(--fs-h1); line-height: var(--lh-tight); }
+  .bt-calendar__copy h2 span { display: block; color: var(--color-accent); }
+  .bt-calendar__text { max-width: 56ch; margin-top: 1.2rem; color: var(--color-muted); font-size: var(--fs-lead); line-height: var(--lh-relaxed); }
+  .bt-calendar__facts { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-block: var(--space-md); }
+  .bt-calendar__facts li {
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-pill);
+    color: var(--color-text);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+  }
+  .bt-calendar__facts li:first-child { border-color: var(--color-accent-surface); background: var(--color-accent-surface); }
+  .bt-calendar__board {
+    position: relative;
+    padding: clamp(20px, 2.4vw, 36px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-card);
+    box-shadow: var(--shadow-card);
+  }
+  .bt-calendar__months { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: var(--space-md); }
+  .bt-cal { width: 100%; border-collapse: separate; border-spacing: 4px; text-align: center; font-variant-numeric: tabular-nums; }
+  .bt-cal caption {
+    padding: 0 4px var(--space-xs);
+    color: var(--color-text);
+    font-size: var(--fs-h5);
+    font-weight: var(--fw-semibold);
+    text-align: left;
+  }
+  .bt-cal th { padding-bottom: 4px; color: var(--color-muted); font-size: var(--fs-xs); font-weight: var(--fw-semibold); }
+  .bt-cal td {
+    height: 2.25rem;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--color-text);
+    font-size: var(--fs-sm);
+  }
+  .bt-cal td:empty { background: transparent; }
+  .bt-cal td.is-start {
+    background: var(--color-accent-surface);
+    font-weight: var(--fw-bold);
+    box-shadow: var(--shadow-accent);
+  }
+  .bt-cal__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .is-pending .bt-cal { opacity: 0.35; filter: grayscale(1); }
+  .bt-calendar__pending { position: absolute; inset: 0; display: grid; place-items: center; padding: var(--space-sm); pointer-events: none; }
+  .bt-calendar__pending span {
+    padding: 0.7rem 1.4rem;
+    border: 1px solid var(--color-accent-surface);
+    border-radius: var(--radius-pill);
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    text-align: center;
+    box-shadow: var(--shadow-accent);
+  }
+
+  /* Benefit cards carry the step badge so the six reasons read as a list. */
+  .bt-benefits .bt-card .bt-steps__number { margin-bottom: var(--space-sm); }
+
   /* ---- Trust bar (pattern: AcademyHome .online-course__facts) ------------- */
   .bt-trust { padding-block: 0 var(--space-lg); }
   .bt-trust__list {
@@ -1329,6 +1564,7 @@ const faq = pick(lang, {
   }
 
   @media (max-width: 900px) {
+    .bt-calendar__grid,
     .bt-showcase__panel,
     .bt-meaning__grid,
     .bt-proof__grid,
@@ -1352,6 +1588,7 @@ const faq = pick(lang, {
     .bt-proof__list div { grid-template-columns: minmax(0, 1fr); }
     .bt-hero__actions :global(.btn),
     .bt-showcase__actions :global(.btn),
+    .bt-calendar__copy :global(.btn),
     .bt-courses__actions :global(.btn) { width: 100%; }
     /* Long labels wrap on a phone; the button's line-height of 1 would stack
        the two lines on top of each other. */

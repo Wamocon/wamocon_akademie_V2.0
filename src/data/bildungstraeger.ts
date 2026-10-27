@@ -62,6 +62,23 @@ export type Seminar = {
   etappen: Array<[number, number]>;
 };
 
+/**
+ * Nächster Seminarstart für den Kalender auf der Seite. Solange `datum` leer
+ * ist, zeigt der Kalender die Monate aus `kalenderMonate` ausgegraut mit
+ * „Termin folgt in Kürze“. Ist ein Datum eingetragen, wird nur dessen Monat
+ * gezeigt und der Starttag hervorgehoben.
+ *
+ * WICHTIG: `startsImJahr` und `plaetzeVorOrt` werden als Verknappung beworben
+ * („nur noch ein Start“, „mindestens 12 Plätze“). Sie müssen jederzeit stimmen.
+ */
+export type NaechsterStart = {
+  datum: string;
+  kalenderMonate: string[];
+  jahr: number;
+  startsImJahr: number;
+  plaetzeVorOrt: number;
+};
+
 export const bildungstraeger: {
   fachkundigeStelle: { name: string; ort: string; url: string; urlLabel: string };
   zulassungsart: string;
@@ -84,6 +101,7 @@ export const bildungstraeger: {
   massnahmen: Massnahme[];
   massnahmenGeplant: MassnahmeGeplant[];
   seminar: Seminar;
+  naechsterStart: NaechsterStart;
 } = {
   fachkundigeStelle: {
     name: 'GZQ GmbH',
@@ -137,6 +155,18 @@ export const bildungstraeger: {
     titel: 'ISTQB® CTFL + Praxistraining',
     tage: 45,
     etappen: [[1, 14], [15, 28], [29, 42], [43, 45]],
+  },
+
+  // Das Seminar startet erst nach der Maßnahmenzulassung, damit es mit
+  // Bildungsgutschein besucht werden kann. Für 2026 ist nur noch ein Start geplant.
+  naechsterStart: {
+    // TODO: OFFEN. Starttermin als ISO 8601, z. B. '2026-12-01'.
+    datum: '',
+    // Monate, die ausgegraut gezeigt werden, solange das Datum offen ist.
+    kalenderMonate: ['2026-11', '2026-12'],
+    jahr: 2026,
+    startsImJahr: 1,
+    plaetzeVorOrt: 12,
   },
 };
 
