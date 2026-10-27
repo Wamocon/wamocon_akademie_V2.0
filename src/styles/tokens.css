@@ -43,6 +43,10 @@
   --color-accent-hover: var(--color-accent-surface-hover);
   /* ISTQB / certification accent, Academy-only. */
   --color-blue: #1d4f91;
+  /* Signal orange for "new" highlights on the AZAV page (team request 10/2026).
+     It always carries dark text: #111827 on #ff8a1f is 7.4:1. */
+  --color-signal: #ff8a1f;
+  --color-signal-soft: #ffb35c;
 
   /* ---- Lines and borders -------------------------------------------------- */
   --color-line: rgba(255, 255, 255, 0.2);

@@ -64,6 +64,8 @@ export type Seminar = {
   tage: number;
   /** Etappen als [erster Tag, letzter Tag]. */
   etappen: Array<[number, number]>;
+  /** Regulärpreis ohne Bildungsgutschein in Euro. */
+  preisRegulaer: number;
 };
 
 /**
@@ -179,6 +181,9 @@ export const bildungstraeger: {
     titel: 'ISTQB® CTFL + Praxistraining',
     tage: 45,
     etappen: [[1, 14], [15, 28], [29, 42], [43, 45]],
+    // Regulärpreis laut Team (27.10.2026). Mit bewilligtem Bildungsgutschein
+    // übernimmt die Agentur für Arbeit die Lehrgangskosten (§ 83 SGB III).
+    preisRegulaer: 6000,
   },
 
   // Das Seminar startet erst nach der Maßnahmenzulassung, damit es mit
@@ -256,8 +261,8 @@ export function zertifikatIstPdf(): boolean {
 }
 
 /**
- * schema.org-Kurs für das 45-Tage-Seminar (SEO und GEO). Bewusst ohne Preis
- * und ohne Förderaussage; ein Starttermin erscheint erst, wenn er feststeht.
+ * schema.org-Kurs für das 45-Tage-Seminar (SEO und GEO). Mit Regulärpreis,
+ * bewusst ohne Förderaussage; ein Starttermin erscheint erst, wenn er feststeht.
  */
 export function seminarSchema(origin: string, url: string, inLanguage: string, description: string) {
   const { seminar, naechsterStart } = bildungstraeger;
@@ -278,6 +283,7 @@ export function seminarSchema(origin: string, url: string, inLanguage: string, d
     educationalLevel: 'Beginner',
     teaches: ['Software testing fundamentals', 'Test design techniques', 'Test management', 'Test tools', 'ISTQB Certified Tester Foundation Level 4.0'],
     hasCourseInstance: [instance('onsite'), instance('online')],
+    offers: { '@type': 'Offer', price: seminar.preisRegulaer, priceCurrency: 'EUR', category: 'Regular price without education voucher' },
   };
 }
 

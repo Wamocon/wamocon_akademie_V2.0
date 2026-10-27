@@ -57,6 +57,12 @@ const certIssued = bt.zertifikatAusgestellt ? formatDate(bt.zertifikatAusgestell
 // Non-breaking hyphens keep the number on one line in the narrow seal card.
 const certNoSeal = certNo.replace(/-/g, '‑');
 
+// Prices for the glance box.
+const euro = new Intl.NumberFormat(intlLocale, { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+const regularPrice = euro.format(bt.seminar.preisRegulaer);
+const zeroPrice = euro.format(0);
+type GlanceRow = { term: string; value: string; kind?: 'goal' | 'price' | 'regular'; small?: string };
+
 // Countries with WAMOCON projects (WAMOCON company overview, October 2026).
 const projectCountries = ['DE', 'CH', 'KZ', 'US', 'TR', 'IN'];
 const regionNames = new Intl.DisplayNames([intlLocale, 'en'], { type: 'region' });
@@ -210,6 +216,7 @@ const copy = {
     markText: `Zugelassen durch die ${bt.fachkundigeStelle.name}`,
     markAlt: `Zeichen der fachkundigen Stelle ${bt.fachkundigeStelle.name}`,
     heroKicker: 'Zugelassener Bildungsträger nach AZAV',
+    heroTrust: [['ISTQB®', 'Accredited Training Provider', ''], ['AZAV', certNo ? `Trägerzulassung ${certNoSeal}` : 'Trägerzulassung', '#zertifikat']],
     heroLead: 'In 45 Tagen zum',
     heroRest: 'ISTQB® Softwaretester',
     heroText: 'Unser neues Seminar in Präsenz oder live online. Mit Bildungsgutschein kostenfrei für dich.*',
@@ -240,14 +247,16 @@ const copy = {
       'Du lernst den kompletten Stoff des ISTQB® Certified Tester Foundation Level. Nicht im Schnelldurchlauf, sondern in 45 Tagen mit täglicher Praxis. So gehst du gut vorbereitet in die Prüfung und in deinen ersten Job.',
     glanceLabel: 'Auf einen Blick',
     glance: [
-      ['Dauer', '45 Seminartage in Vollzeit'],
-      ['Format', 'Präsenz oder live online'],
-      ['Ziel', 'ISTQB® Certified Tester Foundation Level'],
-      ['Voraussetzungen', 'Keine IT-Vorkenntnisse nötig'],
-      ['Förderung', 'Bildungsgutschein, nach der Maßnahmenzulassung'],
+      { term: 'Dauer', value: '45 Tage' },
+      { term: 'Format', value: 'Präsenz oder live online' },
+      { term: 'Ziel', value: 'ISTQB® Certified Tester Foundation Level', kind: 'goal' },
+      { term: 'Voraussetzungen', value: 'Keine IT-Vorkenntnisse nötig' },
+      { term: 'Kosten', value: `${zeroPrice}*`, small: 'mit Bildungsgutschein der Bundesagentur für Arbeit', kind: 'price' },
+      { term: 'Regulärpreis', value: regularPrice, small: 'ohne Bildungsgutschein', kind: 'regular' },
     ],
+    // Quelle: § 83 Abs. 1 SGB III (Lehrgangskosten).
+    glanceNote: '* Sobald die Maßnahmenzulassung vorliegt und die Agentur für Arbeit deinen Bildungsgutschein bewilligt. Dann übernimmt sie die Lehrgangskosten.',
     showcaseStagesLabel: 'So ist das Seminar aufgebaut',
-    showcaseStagesIntro: 'Wir arbeiten nach dem Spiralprinzip. Du gehst den Lehrplan dreimal durch, und jede Runde hat ein eigenes Ziel.',
     showcaseStages: [
       ['Verstehen', 'Alle Kapitel des Lehrplans, die Fachbegriffe und Methoden im Überblick.'],
       ['Anwenden', 'Derselbe Stoff an Aufgaben aus echten Testprojekten.'],
@@ -455,16 +464,15 @@ const copy = {
     // Quelle: § 81 Abs. 1 Nr. 1 SGB III; arbeitsagentur.de.
     groupsNote: 'Gefördert werden kann die Weiterbildung zum Beispiel, wenn du arbeitslos bist oder dir Arbeitslosigkeit droht. Das prüft die Agentur für Arbeit.',
 
-    // Warum Softwaretesting. Copywriting nach der Marktanalyse, ohne Gehalts- oder Quotenangaben.
-    entryEyebrow: 'Warum Softwaretesting',
-    entryLead: 'Dein Weg in die IT,',
-    entryRest: 'ohne Informatikstudium',
-    entryText: 'Du willst in die IT, aber nicht jahrelang studieren oder Programmier-Theorie pauken? Softwaretesting setzt auf strukturiertes Denken und klare Methoden. Genau das lernst du bei uns.',
-    entryPoints: [
-      ['Methoden statt Code-Marathon', 'Du prüfst Software systematisch nach festen Verfahren. Dafür brauchst du kein Informatikstudium.'],
-      ['Ein Zertifikat mit Gewicht', 'ISTQB® ist das international verbreitete Zertifizierungsschema für Softwaretester und in vielen Stellenanzeigen gefragt.'],
-      ['Gefragt auch bei KI', 'Jede Software und jedes KI-System muss getestet werden. Unser Team prüft heute auch KI-Lösungen.'],
-    ],
+    // Dein persönlicher Einstieg. Das Risiko ist sachlich formuliert, ohne Quoten
+    // oder Gehaltsangaben; die Stellenanzeigen-Aussage steht auch auf /istqb-zertifizierung/.
+    entryEyebrow: 'Dein persönlicher Einstieg',
+    entryLead: 'In 45 Tagen',
+    entryRest: 'zu deinem Neustart in der IT',
+    entryText: 'Du willst in die IT, aber nicht jahrelang studieren? Mit unserer Weiterbildung kommst du in 45 Tagen zum ISTQB® Zertifikat und zu echter Projektpraxis. Softwaretesting setzt auf strukturiertes Denken und klare Methoden, und es wird überall gebraucht, auch bei KI.',
+    entryWithout: ['Ohne Weiterbildung', ['Kein anerkannter Nachweis für deine Bewerbung', 'Keine Praxis aus echten IT-Projekten', 'Viele Stellenanzeigen im Softwaretesting nennen das ISTQB® Zertifikat', 'Du riskierst, im Bewerbungsprozess gar nicht erst berücksichtigt zu werden']],
+    entryWith: ['Mit dem 45-Tage-Seminar', ['ISTQB® Certified Tester Foundation Level', 'Praxis an Fällen aus Großprojekten', 'Begleitung bis zur Bewerbung', 'Mit Bildungsgutschein förderfähig, sobald die Maßnahme zugelassen ist']],
+    entryBridge: '45 Tage',
 
     compareLead: 'Was dich bei uns',
     compareRest: 'erwartet',
@@ -515,6 +523,7 @@ const copy = {
     markText: `Approved by ${bt.fachkundigeStelle.name}`,
     markAlt: `Mark of the certification body ${bt.fachkundigeStelle.name}`,
     heroKicker: 'Approved education provider under AZAV',
+    heroTrust: [['ISTQB®', 'Accredited Training Provider', ''], ['AZAV', certNo ? `provider approval ${certNoSeal}` : 'provider approval', '#zertifikat']],
     heroLead: 'Become an ISTQB®',
     heroRest: 'software tester in 45 days',
     // AZAV and Bildungsgutschein are explained on first use.
@@ -541,14 +550,15 @@ const copy = {
       'You learn the complete ISTQB® Certified Tester Foundation Level syllabus. Not as a crash course, but over 45 days with daily practice. That way you go into the exam and your first job well prepared.',
     glanceLabel: 'At a glance',
     glance: [
-      ['Duration', '45 full-time seminar days'],
-      ['Format', 'On site or live online'],
-      ['Goal', 'ISTQB® Certified Tester Foundation Level'],
-      ['Requirements', 'No prior IT knowledge needed'],
-      ['Funding', 'Bildungsgutschein, after course approval'],
+      { term: 'Duration', value: '45 days' },
+      { term: 'Format', value: 'On site or live online' },
+      { term: 'Goal', value: 'ISTQB® Certified Tester Foundation Level', kind: 'goal' },
+      { term: 'Requirements', value: 'No prior IT knowledge needed' },
+      { term: 'Cost', value: `${zeroPrice}*`, small: 'with a Bildungsgutschein from the Federal Employment Agency', kind: 'price' },
+      { term: 'Regular price', value: regularPrice, small: 'without a Bildungsgutschein', kind: 'regular' },
     ],
+    glanceNote: '* Once the course approval is granted and the Agentur für Arbeit approves your Bildungsgutschein. It then covers the course fees.',
     showcaseStagesLabel: 'How the seminar is structured',
-    showcaseStagesIntro: 'We teach using the spiral principle. You work through the syllabus three times, and each round has its own goal.',
     showcaseStages: [
       ['Understand', 'Every chapter of the syllabus, the key terms and methods at a glance.'],
       ['Apply', 'The same content, now with tasks from real testing projects.'],
@@ -743,15 +753,13 @@ const copy = {
     ],
     groupsNote: 'Funding is possible, for example, if you are unemployed or at risk of losing your job. The Agentur für Arbeit assesses this.',
 
-    entryEyebrow: 'Why software testing',
-    entryLead: 'Your route into IT,',
-    entryRest: 'without a computer science degree',
-    entryText: 'You want to work in IT but not study for years or cram programming theory? Software testing rewards structured thinking and clear methods. That is exactly what you learn with us.',
-    entryPoints: [
-      ['Methods, not a coding marathon', 'You check software systematically using defined techniques. No computer science degree required.'],
-      ['A certificate that counts', 'ISTQB® is the internationally widespread certification scheme for software testers and appears in many job postings.'],
-      ['In demand for AI too', 'Every piece of software and every AI system has to be tested. Our team tests AI solutions today as well.'],
-    ],
+    entryEyebrow: 'Your personal fresh start',
+    entryLead: 'In 45 days',
+    entryRest: 'to your new start in IT',
+    entryText: 'You want to work in IT but not study for years? Our training takes you to the ISTQB® certificate and real project practice in 45 days. Software testing rewards structured thinking and clear methods, and it is needed everywhere, AI included.',
+    entryWithout: ['Without training', ['No recognised proof for your application', 'No practice from real IT projects', 'Many software testing job ads name the ISTQB® certificate', 'You risk not being considered in the application process at all']],
+    entryWith: ['With the 45-day seminar', ['ISTQB® Certified Tester Foundation Level', 'Practice with cases from large projects', 'Support up to your application', 'Fundable with a Bildungsgutschein once the course is approved']],
+    entryBridge: '45 days',
 
     compareLead: 'What to expect',
     compareRest: 'with us',
@@ -802,6 +810,7 @@ const copy = {
     markText: `${bt.fachkundigeStelle.name} рұқсат берген`,
     markAlt: `${bt.fachkundigeStelle.name} сараптама органының белгісі`,
     heroKicker: 'AZAV бойынша рұқсат алған білім беру ұйымы',
+    heroTrust: [['ISTQB®', 'Accredited Training Provider', ''], ['AZAV', certNo ? `ұйымға рұқсат ${certNoSeal}` : 'ұйымға рұқсат', '#zertifikat']],
     heroLead: '45 күнде',
     heroRest: 'ISTQB® тестілеуші болыңыз',
     heroText: 'Аудиторияда немесе тікелей онлайн өтетін жаңа семинарымыз. Bildungsgutschein (неміс білім беру ваучері) арқылы сіз үшін тегін.*',
@@ -827,14 +836,15 @@ const copy = {
       'ISTQB® Certified Tester Foundation Level бағдарламасын толық меңгересіз. Асығыс емес, күнделікті тәжірибемен 45 күн ішінде. Осылайша емтиханға да, алғашқы жұмысыңызға да жақсы дайындалып барасыз.',
     glanceLabel: 'Қысқаша',
     glance: [
-      ['Ұзақтығы', 'Толық күндік 45 семинар күні'],
-      ['Формат', 'Аудиторияда немесе тікелей онлайн'],
-      ['Мақсат', 'ISTQB® Certified Tester Foundation Level'],
-      ['Талаптар', 'IT бойынша алдын ала білім қажет емес'],
-      ['Қаржыландыру', 'Bildungsgutschein, курсқа рұқсат берілгеннен кейін'],
+      { term: 'Ұзақтығы', value: '45 күн' },
+      { term: 'Формат', value: 'Аудиторияда немесе тікелей онлайн' },
+      { term: 'Мақсат', value: 'ISTQB® Certified Tester Foundation Level', kind: 'goal' },
+      { term: 'Талаптар', value: 'IT бойынша алдын ала білім қажет емес' },
+      { term: 'Құны', value: `${zeroPrice}*`, small: 'Федералдық жұмыспен қамту агенттігінің Bildungsgutschein ваучерімен', kind: 'price' },
+      { term: 'Толық бағасы', value: regularPrice, small: 'Bildungsgutschein-сіз', kind: 'regular' },
     ],
+    glanceNote: '* Курсқа рұқсат берілгеннен кейін және Agentur für Arbeit Bildungsgutschein ваучеріңізді мақұлдаса. Сонда курс ақысын ол өтейді.',
     showcaseStagesLabel: 'Семинардың құрылымы',
-    showcaseStagesIntro: 'Біз спиральдық қағидат бойынша оқытамыз. Бағдарламаны үш рет өтесіз, әр айналымның өз мақсаты бар.',
     showcaseStages: [
       ['Түсіну', 'Бағдарламаның барлық тараулары, негізгі терминдер мен әдістер.'],
       ['Қолдану', 'Сол мазмұн, енді нақты тестілеу жобаларының тапсырмаларымен.'],
@@ -1029,15 +1039,13 @@ const copy = {
     ],
     groupsNote: 'Оқу, мысалы, жұмыссыз болсаңыз немесе жұмыссыз қалу қаупі болса, қаржыландырылуы мүмкін. Мұны Agentur für Arbeit тексереді.',
 
-    entryEyebrow: 'Неге тестілеу',
-    entryLead: 'IT саласына жол,',
-    entryRest: 'информатика мамандығынсыз',
-    entryText: 'IT саласында жұмыс істегіңіз келеді, бірақ жылдар бойы оқып, бағдарламалау теориясын жаттағыңыз келмей ме? Тестілеу құрылымды ойлау мен нақты әдістерге сүйенеді. Біз дәл соны үйретеміз.',
-    entryPoints: [
-      ['Код марафоны емес, әдістер', 'Бағдарламаны белгіленген әдістермен жүйелі тексересіз. Информатика мамандығы қажет емес.'],
-      ['Салмағы бар сертификат', 'ISTQB® тестілеушілерге арналған халықаралық кең таралған сертификаттау схемасы, көптеген жұмыс хабарландыруында сұралады.'],
-      ['KI үшін де сұранысқа ие', 'Әр бағдарлама мен әр KI жүйесі тестілеуді қажет етеді. Командамыз бүгін KI шешімдерін де тексереді.'],
-    ],
+    entryEyebrow: 'Жеке бастамаңыз',
+    entryLead: '45 күнде',
+    entryRest: 'IT саласындағы жаңа бастамаңызға',
+    entryText: 'IT саласына кіргіңіз келеді, бірақ жылдар бойы оқығыңыз келмей ме? Біздің оқу бағдарламамыз 45 күнде ISTQB® сертификатына және нақты жоба тәжірибесіне жеткізеді. Тестілеу құрылымды ойлау мен нақты әдістерге сүйенеді және барлық жерде, соның ішінде KI саласында да қажет.',
+    entryWithout: ['Оқусыз', ['Өтінішіңізге танылған растама жоқ', 'Нақты IT жобаларынан тәжірибе жоқ', 'Тестілеу саласындағы көп хабарландыру ISTQB® сертификатын атайды', 'Іріктеуде мүлде ескерілмеу қаупі бар']],
+    entryWith: ['45 күндік семинармен', ['ISTQB® Certified Tester Foundation Level', 'Ірі жобалардағы жағдайлармен тәжірибе', 'Өтініш беруге дейін қолдау', 'Курсқа рұқсат берілгеннен кейін Bildungsgutschein арқылы қаржыландыруға болады']],
+    entryBridge: '45 күн',
 
     compareLead: 'Бізде сізді',
     compareRest: 'не күтеді',
@@ -1083,6 +1091,7 @@ const copy = {
 } as const;
 
 const c = copy[lang];
+const glanceRows = c.glance as ReadonlyArray<GlanceRow>;
 const cta = approved ? c.ctaApproved : c.ctaPlanned;
 const formats = [...new Set(bt.massnahmenGeplant.map((m) => m.format))];
 const seals = bt.siegel.filter((s) => s.datei.trim() !== '' && s.breite !== null && s.hoehe !== null);
@@ -1200,7 +1209,7 @@ const faq = pick(lang, {
     {
       question: 'Ist das Seminar mit Bildungsgutschein kostenfrei?',
       // Quelle: § 83 Abs. 1 SGB III; arbeitsagentur.de.
-      answer: `Ja, wenn die Agentur für Arbeit deinen Bildungsgutschein bewilligt (${c.stand}). Dann übernimmt sie die Lehrgangskosten des 45-Tage-Seminars, sobald die Maßnahmenzulassung vorliegt. § 83 SGB III nennt außerdem Fahrkosten, Kosten für auswärtige Unterbringung und Verpflegung sowie Kosten für die Betreuung von Kindern. Welche Kosten in deinem Fall übernommen werden, entscheidet die Agentur für Arbeit. Sprich das im Beratungsgespräch an und lass dir die Förderung vor deiner Anmeldung schriftlich bestätigen.`,
+      answer: `Ja, wenn die Agentur für Arbeit deinen Bildungsgutschein bewilligt (${c.stand}). Dann übernimmt sie die Lehrgangskosten des 45-Tage-Seminars, sobald die Maßnahmenzulassung vorliegt. Ohne Bildungsgutschein kostet das Seminar regulär ${regularPrice}. § 83 SGB III nennt außerdem Fahrkosten, Kosten für auswärtige Unterbringung und Verpflegung sowie Kosten für die Betreuung von Kindern. Welche Kosten in deinem Fall übernommen werden, entscheidet die Agentur für Arbeit. Sprich das im Beratungsgespräch an und lass dir die Förderung vor deiner Anmeldung schriftlich bestätigen.`,
     },
     {
       question: 'Muss ich zuerst zur Agentur für Arbeit?',
@@ -1262,7 +1271,7 @@ const faq = pick(lang, {
     },
     {
       question: 'Is the seminar free with a Bildungsgutschein?',
-      answer: `Yes, if the Agentur für Arbeit approves your Bildungsgutschein (${c.stand}). It then covers the course fees of the 45-day seminar once the course approval is in place. § 83 SGB III also lists travel costs, accommodation and meals away from home, and childcare. Which costs are covered in your case is decided by the Agentur für Arbeit. Raise it in your consultation and get the funding confirmed in writing before you register.`,
+      answer: `Yes, if the Agentur für Arbeit approves your Bildungsgutschein (${c.stand}). It then covers the course fees of the 45-day seminar once the course approval is in place. Without a Bildungsgutschein the regular price is ${regularPrice}. § 83 SGB III also lists travel costs, accommodation and meals away from home, and childcare. Which costs are covered in your case is decided by the Agentur für Arbeit. Raise it in your consultation and get the funding confirmed in writing before you register.`,
     },
     {
       question: 'Do I have to go to the Agentur für Arbeit first?',
@@ -1321,7 +1330,7 @@ const faq = pick(lang, {
     },
     {
       question: 'Bildungsgutschein арқылы семинар тегін бе?',
-      answer: `Иә, егер Agentur für Arbeit ваучеріңізді мақұлдаса (${c.stand}). Курсқа рұқсат берілген соң ол 45 күндік семинардың курс ақысын өтейді. § 83 SGB III бұдан бөлек жол шығынын, басқа жерде тұру мен тамақтануды және балаларды күту шығынын атайды. Сіздің жағдайыңызда қандай шығын өтелетінін Agentur für Arbeit шешеді. Мұны кеңес кезінде сұраңыз және тіркелмес бұрын қаржыландыруды жазбаша растатып алыңыз.`,
+      answer: `Иә, егер Agentur für Arbeit ваучеріңізді мақұлдаса (${c.stand}). Курсқа рұқсат берілген соң ол 45 күндік семинардың курс ақысын өтейді. Bildungsgutschein-сіз семинардың толық бағасы ${regularPrice}. § 83 SGB III бұдан бөлек жол шығынын, басқа жерде тұру мен тамақтануды және балаларды күту шығынын атайды. Сіздің жағдайыңызда қандай шығын өтелетінін Agentur für Arbeit шешеді. Мұны кеңес кезінде сұраңыз және тіркелмес бұрын қаржыландыруды жазбаша растатып алыңыз.`,
     },
     {
       question: 'Алдымен Agentur für Arbeit-ке бару керек пе?',
@@ -1388,6 +1397,17 @@ const faq = pick(lang, {
           )}
         </div>
         <h1 id="bt-hero-title"><span>{c.heroLead}</span> {c.heroRest}</h1>
+        <ul class="bt-hero__trust">
+          {c.heroTrust.map(([label, text, href]) => {
+            const inner = (
+              <>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3 20 6v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z" /><path d="m9 12 2 2 4-4" /></svg>
+                <span><strong>{label}</strong> {text}</span>
+              </>
+            );
+            return <li>{href ? <a href={href}>{inner}</a> : <span>{inner}</span>}</li>;
+          })}
+        </ul>
         <p class="bt-hero__lead">{c.heroText}</p>
         <div class="bt-hero__actions">
           <Button href={`#${formAnchor}`} size="lg">{cta}</Button>
@@ -1438,27 +1458,52 @@ const faq = pick(lang, {
         <div class="bt-aurora" aria-hidden="true"><span></span><span></span></div>
         <div class="bt-showcase__top">
           <div class="bt-showcase__intro">
-            <p class="bt-showcase__eyebrow"><span class="bt-new">{c.showcaseEyebrow}</span></p>
-            <p class="bt-showcase__days"><strong>{bt.seminar.tage}</strong> <span>{c.showcaseDays}</span></p>
+            <p class="bt-showcase__eyebrow"><span class="bt-signal">{c.showcaseEyebrow}</span></p>
+            <p class="bt-showcase__days"><strong data-count-to={bt.seminar.tage} data-count-suffix="">{bt.seminar.tage}</strong> <span>{c.showcaseDays}</span></p>
             <h2 id="bt-showcase-title">{bt.seminar.titel}</h2>
             <p class="bt-showcase__sub">{c.showcaseSub}</p>
             <p class="bt-showcase__text">{c.showcaseText}</p>
+            <p class="bt-showcase__status">{approved ? c.showcaseStatusApproved : c.showcaseStatusPlanned}</p>
+            <div class="bt-showcase__cta"><Button href={`#${formAnchor}`}>{cta}</Button></div>
           </div>
           <div class="bt-glance">
             <h3>{c.glanceLabel}</h3>
             <dl>
-              {c.glance.map(([term, value]) => <div><dt>{term}</dt><dd>{value}</dd></div>)}
+              {glanceRows.map((row) => (
+                <div class:list={[row.kind && `is-${row.kind}`]}>
+                  <dt>{row.term}</dt>
+                  <dd>
+                    {row.kind === 'price' || row.kind === 'regular' ? (
+                      <>
+                        <strong class="bt-glance__price">{row.value}</strong>
+                        <span class="bt-glance__small">{row.small}</span>
+                      </>
+                    ) : (
+                      row.value
+                    )}
+                    {row.kind === 'goal' && (
+                      <span class="bt-glance__badge" title="ISTQB® CTFL">
+                        <svg viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+                          <circle class="bt-glance__badge-bg" cx="20" cy="20" r="19" />
+                          <circle class="bt-glance__badge-ring" cx="20" cy="20" r="15.5" />
+                          <text x="20" y="23.4" text-anchor="middle">CTFL</text>
+                        </svg>
+                      </span>
+                    )}
+                  </dd>
+                </div>
+              ))}
             </dl>
+            <p class="bt-glance__note">{c.glanceNote}</p>
           </div>
         </div>
         <div class="bt-stages">
           <div class="bt-stages__head">
             <h3>{c.showcaseStagesLabel}</h3>
-            <p class="bt-stages__intro">{c.showcaseStagesIntro}</p>
           </div>
           <ol>
             {bt.seminar.etappen.map(([from, to], index) => (
-              <li>
+              <li style={`--i:${index}`}>
                 <span class="bt-num">{String(index + 1).padStart(2, '0')}</span>
                 <p class="bt-stages__range">{c.stageRange(from, to)}</p>
                 <h4>{c.showcaseStages[index][0]}</h4>
@@ -1467,24 +1512,18 @@ const faq = pick(lang, {
             ))}
           </ol>
         </div>
-        <div class="bt-showcase__foot">
-          <p class="bt-showcase__status">{approved ? c.showcaseStatusApproved : c.showcaseStatusPlanned}</p>
-          <Button href={`#${formAnchor}`}>{cta}</Button>
-        </div>
       </article>
     </div>
   </section>
 
   <!-- =========================================================== CALENDAR -->
-  <section class="section bt-calendar" id="termine" aria-labelledby="bt-calendar-title">
+  <section class="section bt-alt bt-calendar" id="termine" aria-labelledby="bt-calendar-title">
     <div class="container bt-calendar__grid">
       <div class="bt-calendar__copy" data-reveal>
         <p class="eyebrow">{c.calEyebrow}</p>
         <h2 id="bt-calendar-title"><span>{c.calLead(ns.jahr)}</span> {c.calRest}</h2>
         <p class="bt-calendar__text">{startSet ? c.calTextSet(formatDate(ns.datum)) : c.calTextPending}</p>
-        <ul class="bt-calendar__facts">
-          <li>{c.calLast(ns.jahr)}</li>
-        </ul>
+        <p class="bt-calendar__status"><span class="bt-dot" aria-hidden="true"></span>{c.calLast(ns.jahr)}</p>
         <Button href={`#${formAnchor}`}>{cta}</Button>
       </div>
       <div class:list={['bt-calendar__board', { 'is-pending': !startSet }]} data-reveal="right">
@@ -1516,8 +1555,124 @@ const faq = pick(lang, {
     </div>
   </section>
 
+  <!-- ============================================================= ENTRY -->
+  <section class="section bt-entry" aria-labelledby="bt-entry-title">
+    <div class="bt-aurora" aria-hidden="true"><span></span><span></span></div>
+    <div class="container bt-entry__grid">
+      <div class="bt-head" data-reveal="left">
+        <p class="eyebrow">{c.entryEyebrow}</p>
+        <h2 id="bt-entry-title"><span>{c.entryLead}</span> {c.entryRest}</h2>
+        <p>{c.entryText}</p>
+      </div>
+      <div class="bt-versus" data-reveal="right">
+        <div class="bt-versus__card is-without">
+          <h3><span class="bt-versus__icon" aria-hidden="true">×</span>{c.entryWithout[0]}</h3>
+          <ul>{c.entryWithout[1].map((point) => <li>{point}</li>)}</ul>
+        </div>
+        <div class="bt-versus__bridge" aria-hidden="true"><span>{c.entryBridge} ↓</span></div>
+        <div class="bt-versus__card is-with bt-spot">
+          <h3><span class="bt-versus__icon" aria-hidden="true">✓</span>{c.entryWith[0]}</h3>
+          <ul>{c.entryWith[1].map((point) => <li>{point}</li>)}</ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================= GROUPS -->
+  <section class="section bt-alt bt-groups" aria-labelledby="bt-groups-title">
+    <div class="container">
+      <div class="bt-head" data-reveal>
+        <h2 id="bt-groups-title"><span>{c.groupsLead}</span> {c.groupsRest}</h2>
+      </div>
+      <div class="bt-groups__grid">
+        {c.groups.map(([title, text], index) => (
+          <article class="bt-group bt-spot" data-reveal>
+            <span class="bt-num">{String(index + 1).padStart(2, '0')}</span>
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </article>
+        ))}
+      </div>
+      <p class="bt-groups__note" data-reveal>{c.groupsNote}</p>
+    </div>
+  </section>
+
+  <!-- ============================================================== PROOF -->
+  <section class="section surface-light bt-proof" id="zertifikat" aria-labelledby="bt-proof-title">
+    <div class="container bt-proof__grid">
+      <figure class:list={['bt-proof__visual', { 'has-doc': certPreview }]} data-reveal="zoom">
+        {certPreview && (
+          <a class="bt-proof__doc" href={certLink} target="_blank" rel="noopener">
+            <img
+              src={certPreview}
+              alt={c.certAlt}
+              width={certificateHasSize ? bt.zertifikatBreite! : undefined}
+              height={certificateHasSize ? bt.zertifikatHoehe! : undefined}
+              loading="lazy"
+              decoding="async"
+            />
+            <span class="bt-proof__doc-hint">{c.certOpen} <span aria-hidden="true">↗</span></span>
+          </a>
+        )}
+        {showMark ? (
+          <img class="bt-proof__mark" src={bt.zeichenDatei} alt={c.markAlt} width={bt.zeichenBreite ?? undefined} height={bt.zeichenHoehe ?? undefined} loading="lazy" />
+        ) : (
+          <div class:list={['bt-proof__seal', { 'is-stamp': certPreview }]} aria-hidden="true">
+            <span>{c.proofSeal[0]}</span>
+            <strong>✓</strong>
+            <span>{c.proofSeal[1]}</span>
+            <small>{c.proofSeal[2]}</small>
+          </div>
+        )}
+        {certPreview && c.certCaption && <figcaption>{c.certCaption}</figcaption>}
+      </figure>
+      <div data-reveal>
+        <p class="eyebrow">{c.proofEyebrow}</p>
+        <h2 id="bt-proof-title"><span>{c.proofLead}</span> {c.proofRest}</h2>
+        <p class="bt-proof__text">{c.proofText}</p>
+        <dl class="bt-proof__list">
+          <div><dt>{c.proofRows.provider}</dt><dd>{company.name}, {company.street}, {company.city}</dd></div>
+          <div><dt>{c.proofRows.course}</dt><dd>{c.factCourse}</dd></div>
+          <div><dt>{c.proofRows.duration}</dt><dd>{c.factDuration}</dd></div>
+          <div><dt>{c.proofRows.basis}</dt><dd>{c.factBasis}</dd></div>
+          <div>
+            <dt>{c.proofRows.body}</dt>
+            <dd>
+              {bt.fachkundigeStelle.name}, {bt.fachkundigeStelle.ort}<br />
+              {bt.fachkundigeStelle.akkreditierung && <>{c.bodyAccredited(bt.fachkundigeStelle.akkreditierung)}<br /></>}
+              <a href={bt.fachkundigeStelle.url} target="_blank" rel="noopener noreferrer">{bt.fachkundigeStelle.urlLabel}</a>
+            </dd>
+          </div>
+          {proofRows.map(([label, value]) => <div><dt>{label}</dt><dd>{value}</dd></div>)}
+          <div>
+            <dt>{c.proofRows.contact}</dt>
+            <dd><a href={company.phoneHref}>{company.phone}</a><br /><a href={company.emailHref}>{company.email}</a></dd>
+          </div>
+        </dl>
+        {hasCertificate && (
+          <div class="bt-proof__actions">
+            <Button href={bt.zertifikatDatei} target="_blank">{c.certPdf}</Button>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ WHY -->
+  <section class="section bt-why" aria-labelledby="bt-why-title">
+    <div class="container bt-why__grid">
+      <div class="bt-why__copy" data-reveal="left">
+        <h2 id="bt-why-title"><span>{c.whyLead}</span> {c.whyRest}</h2>
+        <p>{c.whyText}</p>
+      </div>
+      <dl class="bt-why__facts" data-reveal="right">
+        {c.whyFacts.map(([value, label]) => <div class="bt-spot"><dt>{value}</dt><dd>{label}</dd></div>)}
+      </dl>
+    </div>
+  </section>
+
   <!-- ============================================================ FORMATS -->
-  <section class="section bt-formats" aria-labelledby="bt-formats-title">
+  <section class="section bt-alt bt-formats" aria-labelledby="bt-formats-title">
     <div class="bt-aurora" aria-hidden="true"><span></span><span></span></div>
     <div class="container">
       <div class="bt-head" data-reveal>
@@ -1565,95 +1720,6 @@ const faq = pick(lang, {
     </div>
   </section>
 
-  <!-- ============================================================ KNOW-HOW -->
-  <section class="section bt-know" aria-labelledby="bt-know-title">
-    <div class="container">
-      <div class="bt-head" data-reveal>
-        <p class="eyebrow">{c.knowEyebrow}</p>
-        <h2 id="bt-know-title"><span>{c.knowLead}</span> {c.knowRest}</h2>
-        <p>{c.knowText}</p>
-      </div>
-      <ul class="bt-kpis" aria-label={c.kpiLabel}>
-        {c.kpis.map(([value, suffix, label]) => (
-          <li class="bt-spot" data-reveal>
-            <strong data-count-to={value} data-count-suffix={suffix}>{numberFormat.format(value as number)}{suffix}</strong>
-            <span>{label}</span>
-          </li>
-        ))}
-      </ul>
-      <div class="bt-tiles">
-        {c.knowTiles.map(([title, text], index) => (
-          <article class="bt-tile bt-spot" data-reveal>
-            <span class="bt-num">{String(index + 1).padStart(2, '0')}</span>
-            <h3>{title}</h3>
-            <p>{text}</p>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================= ENTRY -->
-  <section class="section bt-entry" aria-labelledby="bt-entry-title">
-    <div class="bt-aurora" aria-hidden="true"><span></span><span></span></div>
-    <div class="container bt-entry__grid">
-      <div class="bt-head" data-reveal="left">
-        <p class="eyebrow">{c.entryEyebrow}</p>
-        <h2 id="bt-entry-title"><span>{c.entryLead}</span> {c.entryRest}</h2>
-        <p>{c.entryText}</p>
-      </div>
-      <ol class="bt-entry__points">
-        {c.entryPoints.map(([title, text], index) => (
-          <li class="bt-spot" data-reveal="right">
-            <span class="bt-num">{String(index + 1).padStart(2, '0')}</span>
-            <div>
-              <h3>{title}</h3>
-              <p>{text}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
-    </div>
-  </section>
-
-  <!-- ========================================================== COMPARE -->
-  <section class="section bt-compare" aria-labelledby="bt-compare-title">
-    <div class="container">
-      <div class="bt-head" data-reveal>
-        <h2 id="bt-compare-title"><span>{c.compareLead}</span> {c.compareRest}</h2>
-        <p>{c.compareText}</p>
-      </div>
-      <div class="bt-compare__wrap" data-reveal>
-        <table class="bt-compare__table">
-          <thead>
-            <tr>
-              <td></td>
-              {c.compareCols.map((col, index) => <th scope="col" class:list={{ 'is-ours': index === 0 }}>{col}</th>)}
-            </tr>
-          </thead>
-          <tbody>
-            {c.compareRows.map(([label, ...cells]) => (
-              <tr>
-                <th scope="row">{label}</th>
-                {cells.map((cell, index) => (
-                  <td class:list={{ 'is-ours': index === 0 }}>
-                    {cell === 'yes' ? (
-                      <span class="bt-mark bt-mark--yes"><span aria-hidden="true">✓</span><span class="bt-sr">{c.compareYes}</span></span>
-                    ) : cell === 'no' ? (
-                      <span class="bt-mark bt-mark--no"><span aria-hidden="true">×</span><span class="bt-sr">{c.compareNo}</span></span>
-                    ) : (
-                      cell
-                    )}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
   <!-- ============================================================ FUNDING -->
   <section class="section bt-fund" aria-labelledby="bt-fund-title">
     <div class="container bt-fund__grid">
@@ -1679,7 +1745,7 @@ const faq = pick(lang, {
   </section>
 
   <!-- ============================================================== STEPS -->
-  <section class="section bt-steps" aria-labelledby="bt-steps-title">
+  <section class="section bt-alt bt-steps" aria-labelledby="bt-steps-title">
     <div class="container">
       <div class="bt-head" data-reveal>
         <h2 id="bt-steps-title"><span>{c.stepsLead}</span> {c.stepsRest}</h2>
@@ -1734,37 +1800,31 @@ const faq = pick(lang, {
     </div>
   </section>
 
-  <!-- ============================================================ SUPPORT -->
-  <section class="section bt-support" aria-labelledby="bt-support-title">
+  <!-- ============================================================ KNOW-HOW -->
+  <section class="section bt-alt bt-know" aria-labelledby="bt-know-title">
     <div class="container">
       <div class="bt-head" data-reveal>
-        <h2 id="bt-support-title"><span>{c.supportLead}</span> {c.supportRest}</h2>
-        <p>{c.supportIntro}</p>
+        <p class="eyebrow">{c.knowEyebrow}</p>
+        <h2 id="bt-know-title"><span>{c.knowLead}</span> {c.knowRest}</h2>
+        <p>{c.knowText}</p>
       </div>
-      <div class="bt-cards">
-        {c.support.map(([title, text], index) => (
-          <article class:list={['bt-card', 'bt-spot', { 'bt-card--feature': index === c.support.length - 1 }]} data-reveal>
+      <ul class="bt-kpis" aria-label={c.kpiLabel}>
+        {c.kpis.map(([value, suffix, label]) => (
+          <li class="bt-spot" data-reveal>
+            <strong data-count-to={value} data-count-suffix={suffix}>{numberFormat.format(value as number)}{suffix}</strong>
+            <span>{label}</span>
+          </li>
+        ))}
+      </ul>
+      <div class="bt-tiles">
+        {c.knowTiles.map(([title, text], index) => (
+          <article class="bt-tile bt-spot" data-reveal>
             <span class="bt-num">{String(index + 1).padStart(2, '0')}</span>
-            <div>
-              <h3>{title}</h3>
-              <p>{text}</p>
-            </div>
+            <h3>{title}</h3>
+            <p>{text}</p>
           </article>
         ))}
       </div>
-    </div>
-  </section>
-
-  <!-- ================================================================ WHY -->
-  <section class="section bt-why" aria-labelledby="bt-why-title">
-    <div class="container bt-why__grid">
-      <div class="bt-why__copy" data-reveal="left">
-        <h2 id="bt-why-title"><span>{c.whyLead}</span> {c.whyRest}</h2>
-        <p>{c.whyText}</p>
-      </div>
-      <dl class="bt-why__facts" data-reveal="right">
-        {c.whyFacts.map(([value, label]) => <div class="bt-spot"><dt>{value}</dt><dd>{label}</dd></div>)}
-      </dl>
     </div>
   </section>
 
@@ -1884,88 +1944,67 @@ const faq = pick(lang, {
     </div>
   </section>
 
-  <!-- ============================================================== PROOF -->
-  <section class="section surface-light bt-proof" id="zertifikat" aria-labelledby="bt-proof-title">
-    <div class="container bt-proof__grid">
-      <figure class:list={['bt-proof__visual', { 'has-doc': certPreview }]} data-reveal="zoom">
-        {certPreview && (
-          <a class="bt-proof__doc" href={certLink} target="_blank" rel="noopener">
-            <img
-              src={certPreview}
-              alt={c.certAlt}
-              width={certificateHasSize ? bt.zertifikatBreite! : undefined}
-              height={certificateHasSize ? bt.zertifikatHoehe! : undefined}
-              loading="lazy"
-              decoding="async"
-            />
-            <span class="bt-proof__doc-hint">{c.certOpen} <span aria-hidden="true">↗</span></span>
-          </a>
-        )}
-        {showMark ? (
-          <img class="bt-proof__mark" src={bt.zeichenDatei} alt={c.markAlt} width={bt.zeichenBreite ?? undefined} height={bt.zeichenHoehe ?? undefined} loading="lazy" />
-        ) : (
-          <div class:list={['bt-proof__seal', { 'is-stamp': certPreview }]} aria-hidden="true">
-            <span>{c.proofSeal[0]}</span>
-            <strong>✓</strong>
-            <span>{c.proofSeal[1]}</span>
-            <small>{c.proofSeal[2]}</small>
-          </div>
-        )}
-        {certPreview && c.certCaption && <figcaption>{c.certCaption}</figcaption>}
-      </figure>
-      <div data-reveal>
-        <p class="eyebrow">{c.proofEyebrow}</p>
-        <h2 id="bt-proof-title"><span>{c.proofLead}</span> {c.proofRest}</h2>
-        <p class="bt-proof__text">{c.proofText}</p>
-        <dl class="bt-proof__list">
-          <div><dt>{c.proofRows.provider}</dt><dd>{company.name}, {company.street}, {company.city}</dd></div>
-          <div><dt>{c.proofRows.course}</dt><dd>{c.factCourse}</dd></div>
-          <div><dt>{c.proofRows.duration}</dt><dd>{c.factDuration}</dd></div>
-          <div><dt>{c.proofRows.basis}</dt><dd>{c.factBasis}</dd></div>
-          <div>
-            <dt>{c.proofRows.body}</dt>
-            <dd>
-              {bt.fachkundigeStelle.name}, {bt.fachkundigeStelle.ort}<br />
-              {bt.fachkundigeStelle.akkreditierung && <>{c.bodyAccredited(bt.fachkundigeStelle.akkreditierung)}<br /></>}
-              <a href={bt.fachkundigeStelle.url} target="_blank" rel="noopener noreferrer">{bt.fachkundigeStelle.urlLabel}</a>
-            </dd>
-          </div>
-          {proofRows.map(([label, value]) => <div><dt>{label}</dt><dd>{value}</dd></div>)}
-          <div>
-            <dt>{c.proofRows.contact}</dt>
-            <dd><a href={company.phoneHref}>{company.phone}</a><br /><a href={company.emailHref}>{company.email}</a></dd>
-          </div>
-        </dl>
-        {hasCertificate && (
-          <div class="bt-proof__actions">
-            <Button href={bt.zertifikatDatei} target="_blank">{c.certPdf}</Button>
-          </div>
-        )}
+  <!-- ========================================================== COMPARE -->
+  <section class="section bt-alt bt-compare" aria-labelledby="bt-compare-title">
+    <div class="container">
+      <div class="bt-head" data-reveal>
+        <h2 id="bt-compare-title"><span>{c.compareLead}</span> {c.compareRest}</h2>
+        <p>{c.compareText}</p>
+      </div>
+      <div class="bt-compare__wrap" data-reveal>
+        <table class="bt-compare__table">
+          <thead>
+            <tr>
+              <td></td>
+              {c.compareCols.map((col, index) => <th scope="col" class:list={{ 'is-ours': index === 0 }}>{col}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {c.compareRows.map(([label, ...cells]) => (
+              <tr>
+                <th scope="row">{label}</th>
+                {cells.map((cell, index) => (
+                  <td class:list={{ 'is-ours': index === 0 }}>
+                    {cell === 'yes' ? (
+                      <span class="bt-mark bt-mark--yes"><span aria-hidden="true">✓</span><span class="bt-sr">{c.compareYes}</span></span>
+                    ) : cell === 'no' ? (
+                      <span class="bt-mark bt-mark--no"><span aria-hidden="true">×</span><span class="bt-sr">{c.compareNo}</span></span>
+                    ) : (
+                      cell
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
 
-  <!-- ============================================================= GROUPS -->
-  <section class="section bt-groups" aria-labelledby="bt-groups-title">
+  <!-- ============================================================ SUPPORT -->
+  <section class="section bt-support" aria-labelledby="bt-support-title">
     <div class="container">
       <div class="bt-head" data-reveal>
-        <h2 id="bt-groups-title"><span>{c.groupsLead}</span> {c.groupsRest}</h2>
+        <h2 id="bt-support-title"><span>{c.supportLead}</span> {c.supportRest}</h2>
+        <p>{c.supportIntro}</p>
       </div>
-      <div class="bt-groups__grid">
-        {c.groups.map(([title, text], index) => (
-          <article class="bt-group bt-spot" data-reveal>
+      <div class="bt-cards">
+        {c.support.map(([title, text], index) => (
+          <article class:list={['bt-card', 'bt-spot', { 'bt-card--feature': index === c.support.length - 1 }]} data-reveal>
             <span class="bt-num">{String(index + 1).padStart(2, '0')}</span>
-            <h3>{title}</h3>
-            <p>{text}</p>
+            <div>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </div>
           </article>
         ))}
       </div>
-      <p class="bt-groups__note" data-reveal>{c.groupsNote}</p>
     </div>
   </section>
 
   <!-- ====================================================== FUNDING CHECK -->
-  <section class="section bt-check" aria-labelledby="bt-quiz-title">
+  <section class="section bt-alt bt-check" aria-labelledby="bt-quiz-title">
     <div class="bt-aurora" aria-hidden="true"><span></span><span></span></div>
     <div class="container">
       <form class="bt-quiz" data-bt-quiz data-reveal aria-labelledby="bt-quiz-title">
@@ -2036,6 +2075,8 @@ const faq = pick(lang, {
      or opacity based and switches off under prefers-reduced-motion. */
   .bt-page { position: relative; background: var(--color-bg); overflow: hidden; }
   .bt-page ol { list-style: none; }
+  /* Alternating section surface, set per section in the markup. */
+  .bt-alt { background: var(--color-bg-elevated); }
   .bt-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
   /* ---- Shared bits ---------------------------------------------------------- */
@@ -2105,6 +2146,11 @@ const faq = pick(lang, {
   .bt-hero__kicker img { width: auto; height: auto; max-height: 48px; }
   .bt-hero h1 { margin: 0 0 1rem; font-size: var(--fs-hero); line-height: var(--lh-display); letter-spacing: var(--tracking-display); }
   .bt-hero h1 span { display: block; color: var(--color-accent); }
+  .bt-hero__trust { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 1.25rem; }
+  .bt-hero__trust li > * { display: inline-flex; align-items: center; gap: 8px; padding: 0.45rem 1rem 0.45rem 0.7rem; border: 1px solid var(--border-strong); border-radius: var(--radius-pill); background: rgba(16, 16, 16, 0.6); font-size: var(--fs-sm); line-height: var(--lh-snug); transition: border-color var(--dur-fast) var(--ease-out); }
+  .bt-hero__trust a:hover, .bt-hero__trust a:focus-visible { border-color: var(--color-accent); }
+  .bt-hero__trust svg { flex: 0 0 auto; width: 20px; height: 20px; color: var(--color-accent); }
+  .bt-hero__trust strong { font-weight: var(--fw-bold); }
   .bt-hero__lead { max-width: 54ch; font-size: var(--fs-lead); line-height: var(--lh-relaxed); }
   .bt-hero__actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: 1.75rem; }
   .bt-hero__note { max-width: 80ch; margin-top: var(--space-sm); color: var(--color-text-subtle); font-size: var(--fs-xs); line-height: var(--lh-body); }
@@ -2135,7 +2181,8 @@ const faq = pick(lang, {
   .bt-medal { width: 96px; height: 96px; overflow: visible; filter: drop-shadow(0 8px 18px rgba(244, 14, 14, 0.28)); }
   .bt-medal__outer { fill: var(--color-bg-elevated); stroke: var(--color-accent); stroke-width: 1.5; }
   .bt-medal__dash { fill: none; stroke: rgba(255, 255, 255, 0.35); stroke-width: 0.8; stroke-dasharray: 1.5 2.5; }
-  .bt-medal__ring { transform-box: view-box; transform-origin: 60px 60px; animation: bt-spin 48s linear infinite; }
+  .bt-medal__ring { transform-box: view-box; transform-origin: 60px 60px; }
+  .bt-seal:hover .bt-medal__ring { animation: bt-spin 14s linear infinite; }
   .bt-medal__ring text { fill: rgba(255, 255, 255, 0.82); font-family: var(--font-sans); font-size: 7.6px; font-weight: var(--fw-bold); letter-spacing: 0.06em; }
   .bt-medal__core { fill: var(--color-accent-surface); stroke: rgba(255, 255, 255, 0.25); stroke-width: 1; }
   .bt-medal__main { fill: var(--color-text); font-family: var(--font-sans); font-weight: var(--fw-extrabold); letter-spacing: 0.02em; }
@@ -2150,15 +2197,21 @@ const faq = pick(lang, {
     gap: clamp(28px, 3.5vw, 56px);
     overflow: hidden;
     padding: clamp(28px, 4vw, 64px);
-    border: 1px solid var(--color-accent-surface);
+    /* A light runs around the border: a conic gradient on the border box. */
+    border: 2px solid transparent;
     border-radius: var(--radius-lg);
-    background: var(--surface-card);
+    background:
+      linear-gradient(var(--color-bg-elevated), var(--color-bg-elevated)) padding-box,
+      conic-gradient(from var(--bt-angle), var(--color-accent-surface), rgba(212, 0, 0, 0.18) 25%, var(--color-signal) 50%, rgba(212, 0, 0, 0.18) 75%, var(--color-accent-surface)) border-box;
     box-shadow: var(--shadow-card), var(--shadow-accent);
+    animation: bt-angle 10s linear infinite;
   }
-  .bt-showcase__top, .bt-stages, .bt-showcase__foot { position: relative; z-index: 1; }
+  .bt-showcase__top, .bt-stages { position: relative; z-index: 1; }
+  .bt-signal { position: relative; display: inline-flex; align-items: center; gap: 8px; overflow: hidden; padding: 0.5rem 1.1rem; border-radius: var(--radius-pill); background: linear-gradient(90deg, var(--color-signal), var(--color-signal-soft)); color: var(--color-text-dark); font-size: var(--fs-xs); font-weight: var(--fw-extrabold); letter-spacing: var(--tracking-wide); text-transform: uppercase; animation: bt-signal 2.6s var(--ease-out) infinite; }
+  .bt-signal::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--color-text-dark); }
+  .bt-signal::after { content: ''; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.55) 50%, transparent 70%); background-size: 250% 100%; animation: bt-sweep 4.5s ease-in-out infinite; pointer-events: none; }
   .bt-showcase__top { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(2rem, 5vw, 5rem); align-items: stretch; }
   .bt-showcase__eyebrow { display: flex; }
-  .bt-showcase__eyebrow .bt-new { padding: 0.45rem 1rem; font-size: var(--fs-xs); }
   .bt-showcase__days { display: flex; align-items: baseline; gap: var(--space-xs); margin-top: var(--space-sm); }
   .bt-showcase__days strong { color: var(--color-accent); font-size: var(--fs-display); font-weight: var(--fw-bold); line-height: var(--lh-display); letter-spacing: var(--tracking-display); }
   .bt-showcase__days span { font-size: var(--fs-h3); font-weight: var(--fw-semibold); }
@@ -2173,9 +2226,19 @@ const faq = pick(lang, {
   .bt-glance div { display: grid; grid-template-columns: minmax(120px, 0.45fr) minmax(0, 1fr); gap: var(--space-sm); padding-block: 0.75rem; border-top: 1px solid var(--border-subtle); }
   .bt-glance div:first-child { border-top: 0; }
   .bt-glance dt { color: var(--color-muted); font-size: var(--fs-sm); }
-  .bt-glance dd { font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
+  .bt-glance dd { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
+  .bt-glance__badge { display: inline-grid; flex: 0 0 auto; }
+  .bt-glance__badge svg { width: 34px; height: 34px; filter: drop-shadow(0 4px 10px rgba(29, 79, 145, 0.55)); }
+  .bt-glance__badge-bg { fill: var(--color-blue); }
+  .bt-glance__badge-ring { fill: none; stroke: rgba(255, 255, 255, 0.6); stroke-width: 1; stroke-dasharray: 1.5 2; }
+  .bt-glance__badge text { fill: var(--color-text); font-family: var(--font-sans); font-size: 9.5px; font-weight: var(--fw-extrabold); letter-spacing: 0.04em; }
+  .bt-glance div.is-price { margin-inline: calc(var(--space-sm) * -1); padding-inline: var(--space-sm); border-top-color: transparent; border-radius: var(--radius-md); background: rgba(244, 14, 14, 0.12); }
+  .bt-glance div.is-price + div { border-top-color: transparent; }
+  .bt-glance__price { color: var(--color-accent); font-size: var(--fs-h3); font-weight: var(--fw-extrabold); line-height: 1; }
+  .is-regular .bt-glance__price { color: var(--color-text); font-size: var(--fs-h5); }
+  .bt-glance__small { color: var(--color-muted); font-size: var(--fs-xs); font-weight: var(--fw-medium); }
+  .bt-glance__note { margin-top: var(--space-sm); color: var(--color-text-subtle); font-size: var(--fs-2xs); line-height: var(--lh-snug); }
   .bt-stages__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px var(--space-md); margin-bottom: var(--space-sm); }
-  .bt-stages__intro { max-width: 70ch; color: var(--color-muted); font-size: var(--fs-sm); line-height: var(--lh-snug); }
   .bt-stages ol { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-sm); }
   .bt-stages li { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: clamp(18px, 1.6vw, 24px); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: rgba(255, 255, 255, 0.035); transition: transform var(--dur-med) var(--ease-out), border-color var(--dur-med) var(--ease-out); }
   .bt-stages li:hover { transform: translateY(-4px); border-color: var(--color-accent); }
@@ -2185,18 +2248,22 @@ const faq = pick(lang, {
   .bt-stages p { color: var(--color-muted); font-size: var(--fs-sm); line-height: var(--lh-snug); }
   .bt-stages .bt-stages__range { color: var(--color-accent); font-size: var(--fs-2xs); font-weight: var(--fw-semibold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
   .bt-stages h4 { font-size: var(--fs-h4); }
-  .bt-showcase__foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-sm) var(--space-md); padding-top: clamp(20px, 2vw, 32px); border-top: 1px solid var(--border-subtle); }
-  .bt-showcase__status { max-width: 72ch; padding-left: var(--space-sm); border-left: 2px solid var(--color-accent); font-size: var(--fs-sm); }
+  /* The four stages light up one after another, like a path through the seminar. */
+  .bt-stages li { animation: bt-stage 8s var(--ease-out) infinite; animation-delay: calc(var(--i, 0) * 2s); }
+  .bt-stages li:not(:last-child)::after { background: linear-gradient(90deg, var(--color-accent-surface), var(--color-signal), var(--color-accent-surface)); background-size: 200% 100%; animation: bt-flow 2.4s linear infinite; }
+  /* Status and CTA close the intro column; the CTA sits at its foot so both
+     columns end on the same line. */
+  .bt-showcase__intro { display: flex; flex-direction: column; align-items: flex-start; }
+  .bt-showcase__cta { margin-top: auto; padding-top: var(--space-md); }
+  .bt-showcase__status { margin-top: var(--space-md); max-width: 62ch; padding-left: var(--space-sm); border-left: 2px solid var(--color-accent); font-size: var(--fs-sm); }
 
   /* ---- Calendar --------------------------------------------------------------- */
-  .bt-calendar { background: var(--color-bg-elevated); }
   .bt-calendar__grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
   .bt-calendar__copy h2 { margin-top: var(--space-sm); font-size: var(--fs-h1); line-height: var(--lh-tight); }
   .bt-calendar__copy h2 span { display: block; color: var(--color-accent); }
   .bt-calendar__text { max-width: 56ch; margin-top: 1.2rem; color: var(--color-muted); font-size: var(--fs-lead); line-height: var(--lh-relaxed); }
-  .bt-calendar__facts { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-block: var(--space-md); }
-  .bt-calendar__facts li { padding: 0.4rem 1rem; border: 1px solid var(--border-strong); border-radius: var(--radius-pill); font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
-  .bt-calendar__facts li:first-child { border-color: var(--color-accent-surface); background: var(--color-accent-surface); animation: bt-pulse 2.6s var(--ease-out) infinite; }
+  .bt-calendar__status { display: flex; align-items: center; gap: 12px; margin-block: var(--space-md); color: var(--color-accent); font-size: var(--fs-sm); font-weight: var(--fw-bold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+  .bt-dot { flex: 0 0 auto; width: 10px; height: 10px; border-radius: 50%; background: var(--color-accent); animation: bt-ping 1.8s ease-out infinite; }
   .bt-calendar__board { position: relative; padding: clamp(20px, 2.4vw, 36px); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow-card); }
   .bt-calendar__months { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: var(--space-md); }
   .bt-cal { width: 100%; border-collapse: separate; border-spacing: 4px; text-align: center; font-variant-numeric: tabular-nums; }
@@ -2245,7 +2312,6 @@ const faq = pick(lang, {
   .bt-approved__facts dt::after { content: ':'; }
 
   /* ---- Know-how ---------------------------------------------------------------- */
-  .bt-know { background: var(--color-bg-elevated); }
   .bt-kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(12px, 1.4vw, 24px); margin-bottom: clamp(32px, 3vw, 56px); }
   .bt-kpis li { display: flex; flex-direction: column; gap: var(--space-xs); padding: clamp(18px, 1.6vw, 28px); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow-card); }
   .bt-kpis strong { color: var(--color-accent); font-size: var(--fs-h3); font-weight: var(--fw-bold); line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -2274,7 +2340,6 @@ const faq = pick(lang, {
   .bt-fund__note { grid-column: 1 / -1; max-width: 100ch; color: var(--color-text-subtle); font-size: var(--fs-xs); line-height: var(--lh-body); }
 
   /* ---- Steps (pattern: AcademyHome .steps__list) ----------------------------- */
-  .bt-steps { background: var(--color-bg-elevated); }
   .bt-steps__list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(28px, 2.7vw, 46px); }
   .bt-steps__list li { position: relative; display: flex; flex-direction: column; gap: clamp(12px, 1vw, 18px); padding: clamp(22px, 1.8vw, 34px); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow-card); transition: transform var(--dur-med) var(--ease-out), border-color var(--dur-med) var(--ease-out); }
   .bt-steps__list li:hover { transform: translateY(-4px); border-color: var(--color-accent); }
@@ -2309,7 +2374,6 @@ const faq = pick(lang, {
   .bt-trainer__source:hover { color: var(--color-accent); }
 
   /* ---- Support -------------------------------------------------------------- */
-  .bt-support { background: var(--color-bg-elevated); }
   .bt-cards { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(20px, 2vw, 32px); }
   .bt-card { display: flex; flex-direction: column; gap: var(--space-sm); padding: clamp(24px, 2.4vw, 40px); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow-card); transition: transform var(--dur-med) var(--ease-out), border-color var(--dur-med) var(--ease-out); }
   .bt-cards > .bt-card { grid-column: span 2; }
@@ -2323,7 +2387,6 @@ const faq = pick(lang, {
   .bt-card--feature p { max-width: 90ch; color: var(--color-text); font-size: var(--fs-lead); line-height: var(--lh-relaxed); }
 
   /* ---- Why + industry network --------------------------------------------------- */
-  .bt-why { background: var(--color-bg-elevated); }
   .bt-why__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
   .bt-why__copy h2 { font-size: var(--fs-h1); line-height: var(--lh-tight); }
   .bt-why__copy h2 span { display: block; color: var(--color-accent); }
@@ -2365,12 +2428,15 @@ const faq = pick(lang, {
   .bt-sectors__countries li { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px 4px 4px; border: 1px solid var(--border-strong); border-radius: var(--radius-pill); font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
   .bt-sectors__countries li span { display: grid; min-width: 30px; height: 24px; place-items: center; border-radius: var(--radius-pill); background: var(--color-accent-surface); font-size: var(--fs-2xs); font-weight: var(--fw-bold); letter-spacing: 0.06em; }
   .bt-sectors__stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm); }
-  .bt-sectors__stats li { padding: clamp(16px, 1.6vw, 24px); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-card); backdrop-filter: blur(6px); }
+  .bt-sectors__stats li { padding: clamp(16px, 1.6vw, 24px); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-card); }
   .bt-sectors__stats strong { display: block; color: var(--color-accent); font-size: var(--fs-h2); font-weight: var(--fw-bold); line-height: 1; font-variant-numeric: tabular-nums; }
   .bt-sectors__stats span { display: block; margin-top: 6px; color: var(--color-muted); font-size: var(--fs-sm); line-height: var(--lh-snug); }
 
   .bt-explorer { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); gap: clamp(1.5rem, 3vw, 3rem); align-items: center; }
-  .bt-orbit { position: relative; aspect-ratio: 5 / 4; margin-block: 40px; transform: perspective(1400px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform 0.4s var(--ease-out); }
+  /* The tilt only applies while the pointer is on the orbit; a permanent 3D
+     transform would rasterise the labels and make them look soft. */
+  .bt-orbit { position: relative; aspect-ratio: 5 / 4; margin-block: 40px; transition: transform 0.4s var(--ease-out); }
+  .bt-orbit.is-tilting { transform: perspective(1400px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); }
   .bt-orbit__svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
   .bt-orbit__ring { fill: none; stroke: var(--color-accent); }
   .bt-orbit__ring--outer { stroke-width: 2; stroke-dasharray: 2 12; opacity: 0.55; animation: bt-dash 3s linear infinite; }
@@ -2482,7 +2548,7 @@ const faq = pick(lang, {
     border-radius: 6px;
     background: #fff;
     box-shadow: 0 40px 70px -30px rgba(17, 24, 39, 0.55), 0 0 0 1px rgba(17, 24, 39, 0.08);
-    transform: perspective(1400px) rotateY(9deg) rotateZ(-2.5deg);
+    transform: rotate(-2.5deg);
     transition: transform 0.6s var(--ease-out), box-shadow 0.6s var(--ease-out);
   }
   .bt-proof__doc::after { content: ''; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.55) 50%, transparent 65%); background-size: 250% 100%; background-position: 120% 0; transition: background-position 1s var(--ease-out); pointer-events: none; }
@@ -2590,14 +2656,25 @@ const faq = pick(lang, {
   .bt-entry { position: relative; overflow: hidden; }
   .bt-entry__grid { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
   .bt-entry__grid .bt-head { margin-bottom: 0; }
-  .bt-entry__points { display: grid; gap: var(--space-sm); }
-  .bt-entry__points li { display: flex; gap: var(--space-sm); padding: clamp(20px, 2vw, 32px); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow-card); transition: transform var(--dur-med) var(--ease-out), border-color var(--dur-med) var(--ease-out); }
-  .bt-entry__points li:hover { transform: translateX(6px); border-color: var(--color-accent); }
-  .bt-entry__points h3 { font-size: var(--fs-h4); }
-  .bt-entry__points p { margin-top: 4px; color: var(--color-muted); }
+  .bt-versus { display: grid; }
+  .bt-versus__card { padding: clamp(20px, 2.2vw, 32px); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); }
+  .bt-versus__card h3 { display: flex; align-items: center; gap: 10px; font-size: var(--fs-h4); }
+  .bt-versus__icon { display: grid; flex: 0 0 auto; width: 32px; height: 32px; place-items: center; border-radius: 50%; font-size: var(--fs-body); font-weight: var(--fw-bold); }
+  .bt-versus__card ul { display: grid; gap: 8px; margin-top: var(--space-sm); }
+  .bt-versus__card li { position: relative; padding-left: 26px; line-height: var(--lh-snug); }
+  .bt-versus__card li::before { position: absolute; top: 0; left: 0; font-weight: var(--fw-bold); }
+  .is-without { border-style: dashed; }
+  .is-without h3, .is-without li { color: var(--color-muted); }
+  .is-without .bt-versus__icon { border: 1px solid var(--border-strong); color: var(--color-muted); }
+  .is-without li::before { content: '×'; color: var(--color-muted); }
+  .is-with { border-color: var(--color-accent-surface); background: radial-gradient(80% 120% at 0% 0%, var(--glow-top), transparent 70%), var(--surface-card); box-shadow: var(--shadow-card), var(--shadow-accent); }
+  .is-with .bt-versus__icon { background: var(--color-accent-surface); color: var(--color-text); }
+  .is-with li::before { content: '✓'; color: var(--color-accent); }
+  .bt-versus__bridge { position: relative; display: grid; height: 64px; place-items: center; }
+  .bt-versus__bridge::before { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: linear-gradient(180deg, var(--border-strong), var(--color-accent)); }
+  .bt-versus__bridge span { position: relative; padding: 0.35rem 0.9rem; border-radius: var(--radius-pill); background: linear-gradient(90deg, var(--color-signal), var(--color-signal-soft)); color: var(--color-text-dark); font-size: var(--fs-xs); font-weight: var(--fw-extrabold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
 
   /* ---- Comparison table ------------------------------------------------------------ */
-  .bt-compare { background: var(--color-bg-elevated); }
   .bt-compare__wrap { overflow-x: auto; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow-card); }
   .bt-compare__table { width: 100%; min-width: 720px; border-collapse: collapse; }
   .bt-compare__table th, .bt-compare__table td { padding: var(--space-sm) clamp(14px, 1.6vw, 28px); border-bottom: 1px solid var(--border-subtle); text-align: center; font-size: var(--fs-sm); vertical-align: middle; }
@@ -2611,7 +2688,7 @@ const faq = pick(lang, {
   .bt-mark--no { border: 1px solid var(--border-strong); color: var(--color-muted); }
 
   /* ---- Funding check (quiz) --------------------------------------------------------- */
-  .bt-check { position: relative; overflow: hidden; background: var(--color-bg-elevated); }
+  .bt-check { position: relative; overflow: hidden; }
   .bt-check .container { position: relative; z-index: 1; }
   .bt-quiz { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(28px, 4vw, 72px); padding: clamp(24px, 3.5vw, 56px); border: 1px solid var(--color-accent-surface); border-radius: var(--radius-lg); background: var(--surface-card); box-shadow: var(--shadow-card), var(--shadow-accent); }
   .bt-quiz__head h2 { margin-top: var(--space-sm); font-size: var(--fs-h2); line-height: var(--lh-tight); }
@@ -2649,6 +2726,12 @@ const faq = pick(lang, {
   .bt-quiz__back:hover { color: var(--color-text); }
 
   /* ---- Motion ------------------------------------------------------------------ */
+  @property --bt-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+  @keyframes bt-angle { to { --bt-angle: 360deg; } }
+  @keyframes bt-signal { 0%, 100% { box-shadow: 0 8px 24px -8px rgba(255, 138, 31, 0.7), 0 0 0 0 rgba(255, 138, 31, 0.45); } 50% { box-shadow: 0 8px 24px -8px rgba(255, 138, 31, 0.7), 0 0 0 8px rgba(255, 138, 31, 0); } }
+  @keyframes bt-sweep { 0%, 55% { background-position: 120% 0; } 100% { background-position: -60% 0; } }
+  @keyframes bt-stage { 0%, 26%, 100% { border-color: var(--border-subtle); box-shadow: none; } 6%, 20% { border-color: var(--color-accent); box-shadow: 0 0 0 1px var(--color-accent), var(--shadow-accent); } }
+  @keyframes bt-ping { 0% { box-shadow: 0 0 0 0 rgba(244, 14, 14, 0.6); } 100% { box-shadow: 0 0 0 12px rgba(244, 14, 14, 0); } }
   @keyframes bt-grid { to { background-position: 280px 140px; } }
   @keyframes bt-floor { to { background-position: 0 72px; } }
   @keyframes bt-fill { to { transform: scaleX(1); } }
@@ -2724,7 +2807,6 @@ const faq = pick(lang, {
     .bt-steps__list li:last-child::after { content: none; }
     .bt-glance div, .bt-proof__list div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
     .bt-stages ol { grid-template-columns: minmax(0, 1fr); }
-    .bt-showcase__foot { align-items: flex-start; }
     .bt-sectors__head h2 { font-size: var(--fs-h1); }
     .bt-refs__track li { font-size: var(--fs-h4); }
     /* Long labels wrap on a phone; the button's line-height of 1 would stack
@@ -2737,7 +2819,7 @@ const faq = pick(lang, {
 
   @media (prefers-reduced-motion: reduce) {
     .bt-new, .bt-aurora span, .bt-hero__media img, .bt-format::before, .bt-refs__track ul, .bt-calendar__pending span,
-    .bt-calendar__facts li, .bt-proof__seal::after, .is-open .bt-fund__check, .bt-hero::after, .bt-hero h1 span,
+    .bt-dot, .bt-showcase__panel, .bt-signal, .bt-signal::after, .bt-stages li, .bt-stages li::after, .bt-proof__seal::after, .is-open .bt-fund__check, .bt-hero::after, .bt-hero h1 span,
     .bt-quiz__result, .bt-trainer__body, .bt-sectors__floor, .bt-medal__ring, .bt-orbit__ring--outer, .bt-orbit__spin, .bt-orbit__beam.is-active,
     .bt-orbit__core, .bt-orbit__node.is-active .bt-orbit__dot { animation: none; }
     .bt-orbit { transform: none; }
@@ -2882,10 +2964,12 @@ const faq = pick(lang, {
         const rect = orbit.getBoundingClientRect();
         const dx = (event.clientX - rect.left) / rect.width - 0.5;
         const dy = (event.clientY - rect.top) / rect.height - 0.5;
+        orbit.classList.add('is-tilting');
         orbit.style.setProperty('--ry', `${(dx * 10).toFixed(2)}deg`);
         orbit.style.setProperty('--rx', `${(-dy * 8).toFixed(2)}deg`);
       });
       orbit.addEventListener('pointerleave', () => {
+        orbit.classList.remove('is-tilting');
         orbit.style.removeProperty('--rx');
         orbit.style.removeProperty('--ry');
       });
