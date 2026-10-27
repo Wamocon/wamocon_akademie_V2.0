@@ -49,6 +49,18 @@ const reviewMonth = new Intl.DateTimeFormat(intlLocale, { month: 'long', year: '
   new Date(`${bt.auditTermine[bt.auditTermine.length - 1]}T00:00:00Z`),
 );
 
+// Certificate facts (src/data/bildungstraeger.ts). Empty until entered.
+const certNo = bt.zertifikatsnummer.trim();
+const certFrom = bt.gueltigVon ? formatDate(bt.gueltigVon) : '';
+const certUntil = bt.gueltigBis ? formatDate(bt.gueltigBis) : '';
+const certIssued = bt.zertifikatAusgestellt ? formatDate(bt.zertifikatAusgestellt) : '';
+// Non-breaking hyphens keep the number on one line in the narrow seal card.
+const certNoSeal = certNo.replace(/-/g, '‑');
+
+// Countries with WAMOCON projects (WAMOCON company overview, October 2026).
+const projectCountries = ['DE', 'CH', 'KZ', 'US', 'TR', 'IN'];
+const regionNames = new Intl.DisplayNames([intlLocale, 'en'], { type: 'region' });
+
 // The hero uses a real photo from a WAMOCON Academy seminar room.
 const heroImage = '/images/academy/tild3464-3762-4433-b130-323731353237__img52.jpg';
 
@@ -70,7 +82,7 @@ interface Sector {
   icon: string;
   name: Text;
   refs: string[];
-  project?: { year?: Text; text: Text };
+  projects?: Array<{ year?: Text; text: Text }>;
 }
 const sectors: Sector[] = [
   {
@@ -78,68 +90,72 @@ const sectors: Sector[] = [
     icon: 'energy',
     name: { de: 'Energie', en: 'Energy', kk: 'Энергетика' },
     refs: ['50Hertz Transmission', 'EnBW', 'BRUNATA-METRONA'],
-    project: {
+    projects: [{
       year: { de: '2010', en: '2010', kk: '2010' },
       text: { de: 'Unternehmensverzeichnis für einen deutschen Energieversorger', en: 'Company directory for a German energy supplier', kk: 'Неміс энергия жеткізушісіне арналған компания анықтамалығы' },
-    },
+    }],
   },
   {
     key: 'banken',
     icon: 'bank',
     name: { de: 'Banken und Finanzen', en: 'Banking and finance', kk: 'Банктер және қаржы' },
     refs: ['Deutsche Bank', 'DZ Bank', 'iBS Innovative Banking Solutions'],
-    project: {
+    projects: [{
       year: { de: 'seit 2018', en: 'since 2018', kk: '2018 жылдан бері' },
       text: { de: 'Einführung des Systems SAP BASS-SPAREN bei der iBS AG, ein SAP-Programm für Bausparkassen', en: 'Introduction of SAP BASS-SPAREN at iBS AG, an SAP programme for building societies', kk: 'iBS AG-де SAP BASS-SPAREN жүйесін енгізу, құрылыс жинақ кассаларына арналған SAP бағдарламасы' },
-    },
+    }],
   },
   {
     key: 'telekom',
     icon: 'signal',
     name: { de: 'Telekommunikation', en: 'Telecommunications', kk: 'Телекоммуникация' },
     refs: ['Deutsche Telekom', 'Telefónica Germany'],
-    project: {
+    projects: [{
       year: { de: '2023', en: '2023', kk: '2023' },
       text: { de: 'Testmanagement für einen europäischen Mobilfunkanbieter', en: 'Test management for a European mobile network operator', kk: 'Еуропалық мобильді байланыс операторы үшін тестілеуді басқару' },
-    },
+    }],
   },
   {
     key: 'versicherungen',
     icon: 'shield',
     name: { de: 'Versicherungen', en: 'Insurance', kk: 'Сақтандыру' },
     refs: ['R+V Versicherung'],
-    project: {
+    projects: [{
       year: { de: '2016', en: '2016', kk: '2016' },
       text: { de: 'SAP-HANA-Integration bei einem Versicherungsunternehmen', en: 'SAP HANA integration at an insurance company', kk: 'Сақтандыру компаниясында SAP HANA интеграциясы' },
-    },
+    }],
   },
   {
     key: 'automobil',
     icon: 'car',
     name: { de: 'Automobil', en: 'Automotive', kk: 'Автомобиль' },
     refs: ['Daimler', 'Mercedes-Benz Bank'],
-    project: {
+    projects: [{
       year: { de: '2013', en: '2013', kk: '2013' },
       text: { de: 'Testmanagement für das Bankensystem einer Automobilbank', en: 'Test management for the core banking system of an automotive bank', kk: 'Автомобиль банкінің банк жүйесі үшін тестілеуді басқару' },
-    },
+    }],
   },
   {
     key: 'industrie',
     icon: 'chip',
     name: { de: 'Industrie und Technologie', en: 'Industry and technology', kk: 'Өнеркәсіп және технология' },
     refs: ['Intel', 'Samsung Electronics', 'Hewlett-Packard', 'Phoenix Contact', 'KraussMaffei'],
-    project: {
+    projects: [{
       text: { de: 'Einführung eines SAP-ERP-Systems in 50 Ländern bei Phoenix Contact', en: 'Rollout of an SAP ERP system in 50 countries at Phoenix Contact', kk: 'Phoenix Contact компаниясында 50 елде SAP ERP жүйесін енгізу' },
-    },
+    }],
   },
   {
     key: 'logistik',
     icon: 'truck',
     name: { de: 'Verkehr und Logistik', en: 'Transport and logistics', kk: 'Көлік және логистика' },
     refs: ['Deutsche Bahn', 'VGF', 'Lekkerland'],
-    project: {
+    projects: [{
+      // WAMOCON-Unternehmensübersicht, Referenz IT-Consulting und SAP.
+      year: { de: 'seit 2017', en: 'since 2017', kk: '2017 жылдан бері' },
+      text: { de: 'Test- und Qualitätssicherung im Fahrplansystem eines großen Transportunternehmens', en: 'Testing and quality assurance for the timetable system of a major transport company', kk: 'Ірі көлік компаниясының кесте жүйесін тестілеу және сапасын қамтамасыз ету' },
+    }, {
       text: { de: 'Einführung von SAP ERP und SAP CRM bei Lekkerland', en: 'Introduction of SAP ERP and SAP CRM at Lekkerland', kk: 'Lekkerland компаниясында SAP ERP және SAP CRM енгізу' },
-    },
+    }],
   },
   {
     key: 'handel',
@@ -152,10 +168,10 @@ const sectors: Sector[] = [
     icon: 'pill',
     name: { de: 'Pharma und Gesundheit', en: 'Pharma and healthcare', kk: 'Фармацевтика және денсаулық' },
     refs: ['Roche Diagnostics'],
-    project: {
+    projects: [{
       year: { de: '2015', en: '2015', kk: '2015' },
       text: { de: 'SAP-Rollout bei einem internationalen Pharmaunternehmen', en: 'SAP rollout at an international pharmaceutical company', kk: 'Халықаралық фармацевтика компаниясында SAP енгізу' },
-    },
+    }],
   },
   {
     key: 'verwaltung',
@@ -204,8 +220,9 @@ const copy = {
     ctaSeminar: 'Zum Seminar',
 
     sealsLabel: 'Zulassungen und Auszeichnungen',
-    sealAzav: ['AZAV-zugelassen', `${bt.fachkundigeStelle.name}, Fachbereich ${bt.fachbereich.nummer}`],
-    sealIstqb: ['ISTQB® Accredited Training Provider', 'CTFL 4.0 und Agile Tester 1.0 (deutsch)'],
+    sealAzav: ['AZAV-zugelassen', certNo ? `${bt.fachkundigeStelle.name} · Zertifikat ${certNoSeal}` : `${bt.fachkundigeStelle.name}, Fachbereich ${bt.fachbereich.nummer}`],
+    // Akkreditierung über das German Testing Board laut WAMOCON-Unternehmensübersicht.
+    sealIstqb: ['ISTQB® Accredited Training Provider', 'CTFL 4.0, akkreditiert über das German Testing Board (GTB)'],
     // Bewertung wie im Footer der Website ausgewiesen.
     sealGoogle: ['5,0 ★★★★★', 'Google-Bewertung'],
 
@@ -294,11 +311,11 @@ const copy = {
     // Quelle: § 176 und § 81 Abs. 1 Nr. 3 SGB III.
     fundText: 'Die Agentur für Arbeit kann deine Weiterbildung über einen Bildungsgutschein bezahlen. Dafür braucht es zwei Zulassungen nach der AZAV.',
     fundTiles: [
-      ['done', 'Erteilt', 'Bildungsträger zugelassen', `Geprüft und zugelassen durch die ${bt.fachkundigeStelle.name}.`],
+      ['done', 'Erteilt', 'Bildungsträger zugelassen', `Geprüft und zugelassen durch die ${bt.fachkundigeStelle.name}.${certNo && certUntil ? ` Zertifikat ${certNo}, gültig bis ${certUntil}.` : ''}`],
       ['open', 'In Vorbereitung', '45-Tage-Seminar', 'Maßnahmenzulassung in Vorbereitung, die Unterlagen sind weitgehend fertig.'],
     ],
     fundTilesApproved: [
-      ['done', 'Erteilt', 'Bildungsträger zugelassen', `Geprüft und zugelassen durch die ${bt.fachkundigeStelle.name}.`],
+      ['done', 'Erteilt', 'Bildungsträger zugelassen', `Geprüft und zugelassen durch die ${bt.fachkundigeStelle.name}.${certNo && certUntil ? ` Zertifikat ${certNo}, gültig bis ${certUntil}.` : ''}`],
       ['done', 'Erteilt', 'Maßnahme zugelassen', 'Unsere Weiterbildung ist für den Bildungsgutschein zugelassen.'],
     ],
     // Quelle: § 83 Abs. 1 SGB III.
@@ -365,6 +382,8 @@ const copy = {
     whyRest: 'die WAMOCON Academy',
     whyText: 'Hinter der Academy steht die WAMOCON GmbH, ein Unternehmen für IT-Testmanagement. Was deine Trainer dort jeden Tag in Kundenprojekten erleben, fließt direkt in den Unterricht ein.',
     whyFacts: [
+      // Quelle: WAMOCON-Unternehmensübersicht, Stand Oktober 2026.
+      ['500+', 'Teilnehmer in Kursen der WAMOCON Academy seit der Gründung 2021'],
       ['ISTQB®', 'Akkreditierter Trainingsanbieter für deutschsprachige CTFL 4.0- und Agile Tester 1.0-Materialien'],
       ['AZAV', `Zugelassener Bildungsträger, geprüft durch die ${bt.fachkundigeStelle.name}`],
       ['DiTeLe', 'Eigene Lernplattform mit über 300 Übungsfragen'],
@@ -373,23 +392,25 @@ const copy = {
 
     sectorsEyebrow: 'Branchenerfahrung',
     sectorsLead: 'Ein Team.',
-    sectorsRest: (n: number) => `${n} Branchen.`,
-    sectorsText: 'Von der Bank über den Energieversorger bis zur Bundesagentur für Arbeit: Seit 2007 testet die WAMOCON Software in ganz unterschiedlichen Branchen. Genau diese Erfahrung bringen deine Trainer ins Seminar.',
-    // Kennzahlen 100+ Kunden und 50+ neue KI-Apps: Startseite wamocon.com.
-    sectorsStats: ['Branchen', 'Referenzkunden, namentlich genannt', 'Kunden weltweit', 'neue KI-Apps'],
-    sectorsHint: 'Wähle eine Branche und sieh, für wen wir dort gearbeitet haben.',
+    // 15+ Branchen, 100+ Projekte seit 2007 und die Projektländer: WAMOCON-
+    // Unternehmensübersicht (Stand Oktober 2026). Referenzen: wamocon.com.
+    sectorsRest: 'Über 15 Branchen.',
+    sectorsText: 'Von der Bank über den Energieversorger bis zur Bundesagentur für Arbeit: Seit 2007 testet die WAMOCON Software in über 15 Branchen, mit Projekten in sechs Ländern. Genau diese Erfahrung bringen deine Trainer ins Seminar.',
+    sectorsStats: ['Branchen seit 2007', 'Referenzkunden, namentlich genannt', 'Projekte seit 2007', 'Länder mit Projekten'],
+    sectorsCountries: 'Projekte in',
+    sectorsHint: `Eine Auswahl von ${sectors.length} Branchen mit namentlichen Referenzen. Wähle eine Branche und sieh, für wen wir dort gearbeitet haben.`,
     sectorsTabsLabel: 'Branchen der WAMOCON',
     sectorsCore: 'seit 2007',
     refsLabel: 'Referenzen',
     projectLabel: 'Projektbeispiel',
     refsMarquee: 'Referenzen der WAMOCON GmbH',
-    sectorsSource: 'Quelle: wamocon.com, Stand Oktober 2026',
+    sectorsSource: 'Quelle: wamocon.com und WAMOCON-Unternehmensübersicht, Stand Oktober 2026',
 
     proofEyebrow: 'Qualitätssiegel und Fakten für Vermittlungsfachkräfte',
     proofLead: 'Geprüft.',
     proofRest: 'Zugelassen.',
     proofSeal: ['AZAV', 'Zulassung erhalten', bt.fachkundigeStelle.name],
-    proofText: `Die WAMOCON Academy GmbH hat die Trägerzulassung nach AZAV erhalten. Geprüft hat die ${bt.fachkundigeStelle.name} aus ${bt.fachkundigeStelle.ort}, eine akkreditierte fachkundige Stelle.`,
+    proofText: `Die WAMOCON Academy GmbH hat die Trägerzulassung nach AZAV erhalten. Geprüft hat die ${bt.fachkundigeStelle.name} aus ${bt.fachkundigeStelle.ort}, eine von der DAkkS akkreditierte fachkundige Stelle.${certFrom && certUntil ? ` Die Zulassung gilt vom ${certFrom} bis ${certUntil}.` : ''}`,
     proofRows: {
       provider: 'Bildungsträger',
       course: 'Maßnahme',
@@ -401,9 +422,13 @@ const copy = {
       area: 'Zugelassener Fachbereich',
       number: 'Zertifikatsnummer',
       validity: 'Gültigkeit',
+      issued: 'Ausgestellt am',
+      restrictions: 'Einschränkungen',
       measures: 'Zugelassene Maßnahmen',
     },
     firstApproval: 'Erstzulassung',
+    restrictionsNone: 'keine',
+    bodyAccredited: (id: string) => `von der DAkkS akkreditiert (${id})`,
     areaValue: `Fachbereich ${bt.fachbereich.nummer}: ${bt.fachbereich.bezeichnung}`,
     validityRange: (from: string, to: string) => `${from} bis ${to}`,
     measuresNone: 'in Vorbereitung',
@@ -493,8 +518,8 @@ const copy = {
     ctaSeminar: 'See the seminar',
 
     sealsLabel: 'Approvals and awards',
-    sealAzav: ['Approved under AZAV', `${bt.fachkundigeStelle.name}, field ${bt.fachbereich.nummer}`],
-    sealIstqb: ['ISTQB® Accredited Training Provider', 'CTFL 4.0 and Agile Tester 1.0 (German)'],
+    sealAzav: ['Approved under AZAV', certNo ? `${bt.fachkundigeStelle.name} · certificate ${certNoSeal}` : `${bt.fachkundigeStelle.name}, field ${bt.fachbereich.nummer}`],
+    sealIstqb: ['ISTQB® Accredited Training Provider', 'CTFL 4.0, accredited via the German Testing Board (GTB)'],
     sealGoogle: ['5.0 ★★★★★', 'Google rating'],
 
     showcaseEyebrow: 'New in our programme',
@@ -575,11 +600,11 @@ const copy = {
     fundRest: 'with a Bildungsgutschein*',
     fundText: 'The Agentur für Arbeit, the local office of the German Federal Employment Agency, can pay for your training with a Bildungsgutschein. Two approvals under AZAV are needed for this.',
     fundTiles: [
-      ['done', 'Granted', 'Education provider approved', `Reviewed and approved by ${bt.fachkundigeStelle.name}.`],
+      ['done', 'Granted', 'Education provider approved', `Reviewed and approved by ${bt.fachkundigeStelle.name}.${certNo && certUntil ? ` Certificate ${certNo}, valid until ${certUntil}.` : ''}`],
       ['open', 'In preparation', '45-day seminar', 'Course approval in preparation, the documents are largely complete.'],
     ],
     fundTilesApproved: [
-      ['done', 'Granted', 'Education provider approved', `Reviewed and approved by ${bt.fachkundigeStelle.name}.`],
+      ['done', 'Granted', 'Education provider approved', `Reviewed and approved by ${bt.fachkundigeStelle.name}.${certNo && certUntil ? ` Certificate ${certNo}, valid until ${certUntil}.` : ''}`],
       ['done', 'Granted', 'Course approved', 'Our training is approved for the Bildungsgutschein.'],
     ],
     fundNote:
@@ -642,6 +667,7 @@ const copy = {
     whyRest: 'WAMOCON Academy',
     whyText: 'The academy is backed by WAMOCON GmbH, an IT test-management company. What your trainers experience there every day in client projects goes straight into the classroom.',
     whyFacts: [
+      ['500+', 'participants in WAMOCON Academy courses since it was founded in 2021'],
       ['ISTQB®', 'Accredited training provider for German-language CTFL 4.0 and Agile Tester 1.0 materials'],
       ['AZAV', `Approved education provider, reviewed by ${bt.fachkundigeStelle.name}`],
       ['DiTeLe', 'Our own learning platform with more than 300 practice questions'],
@@ -650,22 +676,23 @@ const copy = {
 
     sectorsEyebrow: 'Industry experience',
     sectorsLead: 'One team.',
-    sectorsRest: (n: number) => `${n} industries.`,
-    sectorsText: 'From banks and energy suppliers to the German Federal Employment Agency: since 2007 WAMOCON has been testing software across very different industries. That is exactly the experience your trainers bring into the seminar.',
-    sectorsStats: ['industries', 'clients named as references', 'clients worldwide', 'new AI apps'],
-    sectorsHint: 'Pick an industry and see who we have worked for there.',
+    sectorsRest: 'More than 15 industries.',
+    sectorsText: 'From banks and energy suppliers to the German Federal Employment Agency: since 2007 WAMOCON has been testing software in more than 15 industries, with projects in six countries. That is exactly the experience your trainers bring into the seminar.',
+    sectorsStats: ['industries since 2007', 'clients named as references', 'projects since 2007', 'countries with projects'],
+    sectorsCountries: 'Projects in',
+    sectorsHint: `A selection of ${sectors.length} industries with named references. Pick one and see who we have worked for there.`,
     sectorsTabsLabel: 'WAMOCON industries',
     sectorsCore: 'since 2007',
     refsLabel: 'References',
     projectLabel: 'Project example',
     refsMarquee: 'WAMOCON GmbH references',
-    sectorsSource: 'Source: wamocon.com, as of October 2026',
+    sectorsSource: 'Source: wamocon.com and the WAMOCON company overview, as of October 2026',
 
     proofEyebrow: 'Quality seal and facts for employment advisers',
     proofLead: 'Reviewed.',
     proofRest: 'Approved.',
     proofSeal: ['AZAV', 'Approval granted', bt.fachkundigeStelle.name],
-    proofText: `WAMOCON Academy GmbH has received its provider approval under AZAV. The review was carried out by ${bt.fachkundigeStelle.name} from ${bt.fachkundigeStelle.ort}, an accredited certification body.`,
+    proofText: `WAMOCON Academy GmbH has received its provider approval under AZAV. The review was carried out by ${bt.fachkundigeStelle.name} from ${bt.fachkundigeStelle.ort}, a certification body accredited by DAkkS, the German national accreditation body.${certFrom && certUntil ? ` The approval is valid from ${certFrom} to ${certUntil}.` : ''}`,
     proofRows: {
       provider: 'Education provider',
       course: 'Course',
@@ -677,9 +704,13 @@ const copy = {
       area: 'Approved field',
       number: 'Certificate number',
       validity: 'Valid',
+      issued: 'Issued on',
+      restrictions: 'Restrictions',
       measures: 'Approved courses',
     },
     firstApproval: 'initial approval',
+    restrictionsNone: 'none',
+    bodyAccredited: (id: string) => `accredited by DAkkS (${id})`,
     areaValue: `Field ${bt.fachbereich.nummer}: vocational further training (${bt.fachbereich.bezeichnung})`,
     validityRange: (from: string, to: string) => `${from} to ${to}`,
     measuresNone: 'in preparation',
@@ -766,8 +797,8 @@ const copy = {
     ctaSeminar: 'Семинарға өту',
 
     sealsLabel: 'Рұқсаттар мен марапаттар',
-    sealAzav: ['AZAV бойынша рұқсат', `${bt.fachkundigeStelle.name}, ${bt.fachbereich.nummer}-бағыт`],
-    sealIstqb: ['ISTQB® Accredited Training Provider', 'CTFL 4.0 және Agile Tester 1.0 (неміс тілі)'],
+    sealAzav: ['AZAV бойынша рұқсат', certNo ? `${bt.fachkundigeStelle.name} · сертификат ${certNoSeal}` : `${bt.fachkundigeStelle.name}, ${bt.fachbereich.nummer}-бағыт`],
+    sealIstqb: ['ISTQB® Accredited Training Provider', 'CTFL 4.0, German Testing Board (GTB) арқылы аккредиттелген'],
     sealGoogle: ['5,0 ★★★★★', 'Google бағасы'],
 
     showcaseEyebrow: 'Бағдарламадағы жаңалық',
@@ -848,11 +879,11 @@ const copy = {
     fundRest: 'тегін қатысыңыз*',
     fundText: 'Agentur für Arbeit, яғни Германияның жұмыспен қамту агенттігінің жергілікті бөлімі, оқуыңызды Bildungsgutschein арқылы төлей алады. Ол үшін AZAV бойынша екі рұқсат қажет.',
     fundTiles: [
-      ['done', 'Берілді', 'Білім беру ұйымына рұқсат', `${bt.fachkundigeStelle.name} тексеріп, рұқсат берді.`],
+      ['done', 'Берілді', 'Білім беру ұйымына рұқсат', `${bt.fachkundigeStelle.name} тексеріп, рұқсат берді.${certNo && certUntil ? ` Сертификат ${certNo}, ${certUntil} дейін жарамды.` : ''}`],
       ['open', 'Дайындалуда', '45 күндік семинар', 'Курсқа рұқсат дайындалуда, құжаттар негізінен дайын.'],
     ],
     fundTilesApproved: [
-      ['done', 'Берілді', 'Білім беру ұйымына рұқсат', `${bt.fachkundigeStelle.name} тексеріп, рұқсат берді.`],
+      ['done', 'Берілді', 'Білім беру ұйымына рұқсат', `${bt.fachkundigeStelle.name} тексеріп, рұқсат берді.${certNo && certUntil ? ` Сертификат ${certNo}, ${certUntil} дейін жарамды.` : ''}`],
       ['done', 'Берілді', 'Курсқа рұқсат', 'Біздің оқу бағдарламамыз Bildungsgutschein үшін рұқсат алған.'],
     ],
     fundNote:
@@ -915,6 +946,7 @@ const copy = {
     whyRest: 'WAMOCON Academy',
     whyText: 'Академияның артында IT тестілеуді басқару компаниясы WAMOCON GmbH тұр. Тренерлеріңіз клиент жобаларында күн сайын көретін тәжірибе сабаққа тікелей енеді.',
     whyFacts: [
+      ['500+', '2021 жылы құрылғаннан бері WAMOCON Academy курстарының тыңдаушысы'],
       ['ISTQB®', 'Неміс тіліндегі CTFL 4.0 және Agile Tester 1.0 материалдары бойынша аккредиттелген оқыту провайдері'],
       ['AZAV', `${bt.fachkundigeStelle.name} тексерген, рұқсаты бар білім беру ұйымы`],
       ['DiTeLe', '300-ден астам сұрағы бар өз оқу платформамыз'],
@@ -923,22 +955,23 @@ const copy = {
 
     sectorsEyebrow: 'Салалық тәжірибе',
     sectorsLead: 'Бір команда.',
-    sectorsRest: (n: number) => `${n} сала.`,
-    sectorsText: 'Банктер мен энергия жеткізушілерден бастап Германияның Федералдық жұмыспен қамту агенттігіне дейін: WAMOCON 2007 жылдан бері әртүрлі салаларда бағдарламаларды тестілеп келеді. Тренерлеріңіз семинарға дәл осы тәжірибені әкеледі.',
-    sectorsStats: ['сала', 'атаулы референс-клиент', 'әлем бойынша клиент', 'жаңа KI қосымшасы'],
-    sectorsHint: 'Саланы таңдап, онда кімдермен жұмыс істегенімізді көріңіз.',
+    sectorsRest: '15-тен астам сала.',
+    sectorsText: 'Банктер мен энергия жеткізушілерден бастап Германияның Федералдық жұмыспен қамту агенттігіне дейін: WAMOCON 2007 жылдан бері 15-тен астам салада, алты елдегі жобаларда бағдарламаларды тестілеп келеді. Тренерлеріңіз семинарға дәл осы тәжірибені әкеледі.',
+    sectorsStats: ['сала, 2007 жылдан бері', 'атаулы референс-клиент', 'жоба, 2007 жылдан бері', 'жобалар жүргізілген ел'],
+    sectorsCountries: 'Жобалар жүргізілген елдер',
+    sectorsHint: `Атаулы референстері бар ${sectors.length} саланың іріктемесі. Саланы таңдап, онда кімдермен жұмыс істегенімізді көріңіз.`,
     sectorsTabsLabel: 'WAMOCON салалары',
     sectorsCore: '2007 жылдан бері',
     refsLabel: 'Референстер',
     projectLabel: 'Жоба мысалы',
     refsMarquee: 'WAMOCON GmbH референстері',
-    sectorsSource: 'Дереккөз: wamocon.com, 2026 жылғы қазан',
+    sectorsSource: 'Дереккөз: wamocon.com және WAMOCON компания шолуы, 2026 жылғы қазан',
 
     proofEyebrow: 'Сапа белгісі және кеңесшілерге арналған деректер',
     proofLead: 'Тексерілді.',
     proofRest: 'Рұқсат берілді.',
     proofSeal: ['AZAV', 'Рұқсат алынды', bt.fachkundigeStelle.name],
-    proofText: `WAMOCON Academy GmbH AZAV бойынша ұйымға берілетін рұқсатты алды. Тексеруді ${bt.fachkundigeStelle.ort} қаласындағы аккредиттелген сараптама органы ${bt.fachkundigeStelle.name} жүргізді.`,
+    proofText: `WAMOCON Academy GmbH AZAV бойынша ұйымға берілетін рұқсатты алды. Тексеруді ${bt.fachkundigeStelle.ort} қаласындағы аккредиттелген сараптама органы ${bt.fachkundigeStelle.name} жүргізді.${certFrom && certUntil ? ` Рұқсат ${certFrom} бастап ${certUntil} дейін жарамды.` : ''}`,
     proofRows: {
       provider: 'Білім беру ұйымы',
       course: 'Курс',
@@ -950,9 +983,13 @@ const copy = {
       area: 'Рұқсат берілген бағыт',
       number: 'Сертификат нөмірі',
       validity: 'Жарамдылық мерзімі',
+      issued: 'Берілген күні',
+      restrictions: 'Шектеулер',
       measures: 'Рұқсаты бар курстар',
     },
     firstApproval: 'алғашқы рұқсат',
+    restrictionsNone: 'жоқ',
+    bodyAccredited: (id: string) => `DAkkS аккредиттеген (${id})`,
     areaValue: `${bt.fachbereich.nummer}-бағыт: кәсіптік біліктілікті арттыру (${bt.fachbereich.bezeichnung})`,
     validityRange: (from: string, to: string) => `${from} бастап ${to} дейін`,
     measuresNone: 'дайындалуда',
@@ -1076,10 +1113,10 @@ const sparks = (radius: number, count: number) =>
     return { cx: Math.round(500 + Math.cos(angle) * radius), cy: Math.round(400 + Math.sin(angle) * radius) };
   });
 const sectorStats: Array<[number, string, string]> = [
-  [sectors.length, '', c.sectorsStats[0]],
+  [15, '+', c.sectorsStats[0]],
   [allRefs.length, '', c.sectorsStats[1]],
   [100, '+', c.sectorsStats[2]],
-  [50, '+', c.sectorsStats[3]],
+  [projectCountries.length, '', c.sectorsStats[3]],
 ];
 
 const validity =
@@ -1092,6 +1129,8 @@ const proofRows: Array<[string, string]> = [
   [c.proofRows.area, c.areaValue],
   [c.proofRows.number, bt.zertifikatsnummer],
   [c.proofRows.validity, validity],
+  [c.proofRows.issued, certIssued],
+  [c.proofRows.restrictions, bt.einschraenkungen === 'keine' ? c.restrictionsNone : bt.einschraenkungen],
   [c.proofRows.measures, approved ? c.measuresCount(bt.massnahmen.length) : c.measuresNone],
 ].filter(([, value]) => value) as Array<[string, string]>;
 const hasCertificate = bt.zertifikatDatei.trim() !== '';
@@ -1159,12 +1198,12 @@ const faq = pick(lang, {
     {
       question: 'In welchen Branchen hat WAMOCON Erfahrung?',
       // Quelle: wamocon.com, Startseite (Referenzen und FAQ).
-      answer: `Die WAMOCON GmbH, die Schwestergesellschaft der WAMOCON Academy, testet seit 2007 Software in ${sectors.length} Branchen (${c.stand}): ${listFormat.format(sectors.map((sector) => sector.name.de))}. Auf wamocon.com sind ${allRefs.length} Referenzkunden namentlich genannt, darunter Deutsche Bank, Deutsche Telekom, Deutsche Bahn, EnBW und die Bundesagentur für Arbeit. Die Trainer des 45-Tage-Seminars bringen Fälle aus diesen Projekten in den Unterricht ein.`,
+      answer: `Die WAMOCON GmbH, die Schwestergesellschaft der WAMOCON Academy, testet seit 2007 Software in über 15 Branchen und hat Projekte in sechs Ländern umgesetzt (${c.stand}). Dazu gehören ${listFormat.format(sectors.map((sector) => sector.name.de))}. Auf wamocon.com sind ${allRefs.length} Referenzkunden namentlich genannt, darunter Deutsche Bank, Deutsche Telekom, Deutsche Bahn, EnBW und die Bundesagentur für Arbeit. Die Trainer des 45-Tage-Seminars bringen Fälle aus diesen Projekten in den Unterricht ein.`,
     },
     {
       question: 'Wer hat die WAMOCON Academy geprüft?',
       // Quelle: § 176 und § 178 SGB III.
-      answer: `Geprüft hat uns die ${bt.fachkundigeStelle.name} aus ${bt.fachkundigeStelle.ort} (${c.stand}). Sie ist eine fachkundige Stelle, also eine akkreditierte Prüfstelle, die Bildungsträger und Kurse für die Arbeitsförderung zulässt. Die Prüfung fand im ${reviewMonth} statt. Daraufhin hat die WAMOCON Academy GmbH ihre Erstzulassung als Träger nach ${bt.paragraf} erhalten. Zugelassen ist der Fachbereich ${bt.fachbereich.nummer}, ${bt.fachbereich.bezeichnung}.`,
+      answer: `Geprüft hat uns die ${bt.fachkundigeStelle.name} aus ${bt.fachkundigeStelle.ort} (${c.stand}). Sie ist eine fachkundige Stelle, also eine akkreditierte Prüfstelle, die Bildungsträger und Kurse für die Arbeitsförderung zulässt. Die Prüfung fand im ${reviewMonth} statt. Daraufhin hat die WAMOCON Academy GmbH ihre Erstzulassung als Träger nach ${bt.paragraf} erhalten. Zugelassen ist der Fachbereich ${bt.fachbereich.nummer}, ${bt.fachbereich.bezeichnung}.${certNo && certFrom && certUntil ? ` Das Zertifikat trägt die Nummer ${certNo} und gilt vom ${certFrom} bis ${certUntil}.` : ''}`,
     },
     {
       question: 'Wie kann ich mich beschweren?',
@@ -1218,11 +1257,11 @@ const faq = pick(lang, {
     },
     {
       question: 'Which industries does WAMOCON have experience in?',
-      answer: `WAMOCON GmbH, the sister company of WAMOCON Academy, has been testing software in ${sectors.length} industries since 2007 (${c.stand}): ${listFormat.format(sectors.map((sector) => sector.name.en.toLowerCase()))}. wamocon.com names ${allRefs.length} reference clients, including Deutsche Bank, Deutsche Telekom, Deutsche Bahn, EnBW and the German Federal Employment Agency. The trainers of the 45-day seminar bring cases from these projects into the classroom.`,
+      answer: `WAMOCON GmbH, the sister company of WAMOCON Academy, has been testing software in more than 15 industries since 2007, with projects in six countries (${c.stand}). They include ${listFormat.format(sectors.map((sector) => sector.name.en.toLowerCase()))}. wamocon.com names ${allRefs.length} reference clients, including Deutsche Bank, Deutsche Telekom, Deutsche Bahn, EnBW and the German Federal Employment Agency. The trainers of the 45-day seminar bring cases from these projects into the classroom.`,
     },
     {
       question: 'Who reviewed WAMOCON Academy?',
-      answer: `We were reviewed by ${bt.fachkundigeStelle.name} from ${bt.fachkundigeStelle.ort} (${c.stand}). It is a fachkundige Stelle, an accredited certification body that approves education providers and courses for employment promotion in Germany. The review took place in ${reviewMonth}. WAMOCON Academy GmbH then received its initial approval as a provider under ${bt.paragraf}. The approved field is field ${bt.fachbereich.nummer}, vocational further training.`,
+      answer: `We were reviewed by ${bt.fachkundigeStelle.name} from ${bt.fachkundigeStelle.ort} (${c.stand}). It is a fachkundige Stelle, an accredited certification body that approves education providers and courses for employment promotion in Germany. The review took place in ${reviewMonth}. WAMOCON Academy GmbH then received its initial approval as a provider under ${bt.paragraf}. The approved field is field ${bt.fachbereich.nummer}, vocational further training.${certNo && certFrom && certUntil ? ` The certificate number is ${certNo}, valid from ${certFrom} to ${certUntil}.` : ''}`,
     },
     {
       question: 'How can I make a complaint?',
@@ -1277,11 +1316,11 @@ const faq = pick(lang, {
     },
     {
       question: 'WAMOCON қандай салаларда тәжірибе жинады?',
-      answer: `WAMOCON Academy-дің бауырлас компаниясы WAMOCON GmbH 2007 жылдан бері ${sectors.length} салада бағдарламаларды тестілеп келеді (${c.stand}): ${listFormat.format(sectors.map((sector) => sector.name.kk))}. wamocon.com сайтында ${allRefs.length} референс-клиент атап көрсетілген, олардың ішінде Deutsche Bank, Deutsche Telekom, Deutsche Bahn, EnBW және Германияның Федералдық жұмыспен қамту агенттігі бар. 45 күндік семинар тренерлері осы жобалардағы жағдайларды сабаққа әкеледі.`,
+      answer: `WAMOCON Academy-дің бауырлас компаниясы WAMOCON GmbH 2007 жылдан бері 15-тен астам салада бағдарламаларды тестілеп, алты елде жобалар жүргізді (${c.stand}). Олардың ішінде: ${listFormat.format(sectors.map((sector) => sector.name.kk))}. wamocon.com сайтында ${allRefs.length} референс-клиент атап көрсетілген, олардың ішінде Deutsche Bank, Deutsche Telekom, Deutsche Bahn, EnBW және Германияның Федералдық жұмыспен қамту агенттігі бар. 45 күндік семинар тренерлері осы жобалардағы жағдайларды сабаққа әкеледі.`,
     },
     {
       question: 'WAMOCON Academy-ді кім тексерді?',
-      answer: `Бізді ${bt.fachkundigeStelle.ort} қаласындағы ${bt.fachkundigeStelle.name} тексерді (${c.stand}). Ол fachkundige Stelle, яғни Германияда жұмыспен қамтуға жәрдемдесу үшін білім беру ұйымдары мен курстарға рұқсат беретін аккредиттелген сараптама органы. Тексеру ${reviewMonth} өтті. Содан кейін WAMOCON Academy GmbH ${bt.paragraf} бойынша ұйымға берілетін алғашқы рұқсатты алды. Рұқсат берілген бағыт: ${bt.fachbereich.nummer}-бағыт, кәсіптік біліктілікті арттыру.`,
+      answer: `Бізді ${bt.fachkundigeStelle.ort} қаласындағы ${bt.fachkundigeStelle.name} тексерді (${c.stand}). Ол fachkundige Stelle, яғни Германияда жұмыспен қамтуға жәрдемдесу үшін білім беру ұйымдары мен курстарға рұқсат беретін аккредиттелген сараптама органы. Тексеру ${reviewMonth} өтті. Содан кейін WAMOCON Academy GmbH ${bt.paragraf} бойынша ұйымға берілетін алғашқы рұқсатты алды. Рұқсат берілген бағыт: ${bt.fachbereich.nummer}-бағыт, кәсіптік біліктілікті арттыру.${certNo && certFrom && certUntil ? ` Сертификат нөмірі ${certNo}, ${certFrom} бастап ${certUntil} дейін жарамды.` : ''}`,
     },
     {
       question: 'Шағымды қалай беруге болады?',
@@ -1693,17 +1732,25 @@ const faq = pick(lang, {
       <div class="bt-sectors__head">
         <div class="bt-head" data-reveal="left">
           <p class="eyebrow">{c.sectorsEyebrow}</p>
-          <h2 id="bt-sectors-title"><span>{c.sectorsLead}</span> {c.sectorsRest(sectors.length)}</h2>
+          <h2 id="bt-sectors-title"><span>{c.sectorsLead}</span> {c.sectorsRest}</h2>
           <p>{c.sectorsText}</p>
         </div>
-        <ul class="bt-sectors__stats" data-reveal="right">
-          {sectorStats.map(([value, suffix, label]) => (
-            <li>
-              <strong data-count-to={value} data-count-suffix={suffix}>{value}{suffix}</strong>
-              <span>{label}</span>
-            </li>
-          ))}
-        </ul>
+        <div class="bt-sectors__facts" data-reveal="right">
+          <ul class="bt-sectors__stats">
+            {sectorStats.map(([value, suffix, label]) => (
+              <li>
+                <strong data-count-to={value} data-count-suffix={suffix}>{value}{suffix}</strong>
+                <span>{label}</span>
+              </li>
+            ))}
+          </ul>
+          <div class="bt-sectors__countries">
+            <p>{c.sectorsCountries}</p>
+            <ul>
+              {projectCountries.map((code) => <li><span aria-hidden="true">{code}</span>{regionNames.of(code)}</li>)}
+            </ul>
+          </div>
+        </div>
       </div>
 
       <div class="bt-explorer" data-reveal>
@@ -1766,12 +1813,12 @@ const faq = pick(lang, {
                 <h3>{sector.name[lang]}</h3>
                 <p class="bt-sector__label">{c.refsLabel}</p>
                 <ul class="bt-sector__refs">{sector.refs.map((ref) => <li>{ref}</li>)}</ul>
-                {sector.project && (
+                {sector.projects?.map((project) => (
                   <div class="bt-sector__project">
-                    <p class="bt-sector__label">{c.projectLabel}{sector.project.year ? ` · ${sector.project.year[lang]}` : ''}</p>
-                    <p>{sector.project.text[lang]}</p>
+                    <p class="bt-sector__label">{c.projectLabel}{project.year ? ` · ${project.year[lang]}` : ''}</p>
+                    <p>{project.text[lang]}</p>
                   </div>
-                )}
+                ))}
               </article>
             ))}
           </div>
@@ -1822,6 +1869,7 @@ const faq = pick(lang, {
             <dt>{c.proofRows.body}</dt>
             <dd>
               {bt.fachkundigeStelle.name}, {bt.fachkundigeStelle.ort}<br />
+              {bt.fachkundigeStelle.akkreditierung && <>{c.bodyAccredited(bt.fachkundigeStelle.akkreditierung)}<br /></>}
               <a href={bt.fachkundigeStelle.url} target="_blank" rel="noopener noreferrer">{bt.fachkundigeStelle.urlLabel}</a>
             </dd>
           </div>
@@ -2225,6 +2273,8 @@ const faq = pick(lang, {
   .bt-why__facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm); }
   .bt-why__facts div { padding: clamp(18px, 1.8vw, 28px); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-card); transition: border-color var(--dur-med) var(--ease-out); }
   .bt-why__facts div:hover { border-color: var(--color-accent); }
+  .bt-why__facts div:first-child { grid-column: 1 / -1; border-color: var(--color-accent-surface); background: radial-gradient(80% 140% at 0% 0%, var(--glow-top), transparent 70%), var(--surface-card); }
+  .bt-why__facts div:first-child dt { font-size: var(--fs-h1); }
   .bt-why__facts dt { color: var(--color-accent); font-size: var(--fs-h3); font-weight: var(--fw-bold); line-height: 1.1; }
   .bt-why__facts dd { margin-top: 4px; color: var(--color-muted); font-size: var(--fs-sm); line-height: var(--lh-snug); }
 
@@ -2250,6 +2300,12 @@ const faq = pick(lang, {
   .bt-sectors__head { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: clamp(2rem, 4vw, 4rem); align-items: end; margin-bottom: clamp(24px, 3vw, 48px); }
   .bt-sectors__head .bt-head { margin-bottom: 0; }
   .bt-sectors__head h2 { font-size: var(--fs-display); line-height: var(--lh-display); letter-spacing: var(--tracking-display); }
+  .bt-sectors__facts { display: grid; gap: var(--space-sm); }
+  .bt-sectors__countries { display: flex; flex-wrap: wrap; align-items: center; gap: 8px var(--space-sm); }
+  .bt-sectors__countries p { color: var(--color-muted); font-size: var(--fs-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+  .bt-sectors__countries ul { display: flex; flex-wrap: wrap; gap: 8px; }
+  .bt-sectors__countries li { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px 4px 4px; border: 1px solid var(--border-strong); border-radius: var(--radius-pill); font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
+  .bt-sectors__countries li span { display: grid; min-width: 30px; height: 24px; place-items: center; border-radius: var(--radius-pill); background: var(--color-accent-surface); font-size: var(--fs-2xs); font-weight: var(--fw-bold); letter-spacing: 0.06em; }
   .bt-sectors__stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm); }
   .bt-sectors__stats li { padding: clamp(16px, 1.6vw, 24px); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-card); backdrop-filter: blur(6px); }
   .bt-sectors__stats strong { display: block; color: var(--color-accent); font-size: var(--fs-h2); font-weight: var(--fw-bold); line-height: 1; font-variant-numeric: tabular-nums; }

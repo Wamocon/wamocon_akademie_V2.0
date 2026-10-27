@@ -14,6 +14,8 @@
  *                                (leer = Seite bleibt noindex und fehlt in Sitemap
  *                                und Chat-Wissen; der Reiter ist immer sichtbar)
  *   Gültigkeit ................. gueltigVon / gueltigBis (ISO 8601: '2026-11-01')
+ *   Ausgestellt am ............. zertifikatAusgestellt (ISO 8601)
+ *   Einschränkungen ............ einschraenkungen (laut Anhang, z. B. 'keine')
  *   Zertifikat ................. zertifikatDatei (Pfad unter /public, Bild oder PDF)
  *   Zertifikat-Vorschau ........ zertifikatBreite / zertifikatHoehe (Pixel, nur bei Bild)
  *   Zeichen der GZQ ............ zeichenDatei, zeichenBreite, zeichenHoehe
@@ -94,7 +96,7 @@ export type NaechsterStart = {
 };
 
 export const bildungstraeger: {
-  fachkundigeStelle: { name: string; ort: string; url: string; urlLabel: string };
+  fachkundigeStelle: { name: string; ort: string; url: string; urlLabel: string; akkreditierung: string };
   zulassungsart: string;
   paragraf: string;
   erstzulassung: boolean;
@@ -103,6 +105,8 @@ export const bildungstraeger: {
   zertifikatsnummer: string;
   gueltigVon: string;
   gueltigBis: string;
+  zertifikatAusgestellt: string;
+  einschraenkungen: string;
   zertifikatDatei: string;
   zertifikatBreite: number | null;
   zertifikatHoehe: number | null;
@@ -123,6 +127,8 @@ export const bildungstraeger: {
     ort: 'Saarbrücken',
     url: 'https://www.gzq.de/',
     urlLabel: 'www.gzq.de',
+    // Laut Zertifikat: von der DAkkS akkreditierte Zertifizierungsstelle.
+    akkreditierung: 'D-ZE-16064-02-00',
   },
   zulassungsart: 'Trägerzulassung nach AZAV',
   paragraf: '§ 178 SGB III',
@@ -130,16 +136,15 @@ export const bildungstraeger: {
   fachbereich: { nummer: 4, bezeichnung: 'Maßnahmen der beruflichen Weiterbildung' },
   auditTermine: ['2026-10-05', '2026-10-14'],
 
-  // TODO: OFFEN. Zertifikatsnummer der GZQ GmbH eintragen. Solange leer, bleibt
-  // die Seite noindex und fehlt in Sitemap und Chat-Wissen.
-  zertifikatsnummer: '',
-  // TODO: OFFEN. Gültigkeit laut Zertifikat, ISO 8601.
-  gueltigVon: '',
-  // TODO: OFFEN.
-  gueltigBis: '',
-  // TODO: OFFEN. Zertifikat als Bild (.png/.jpg/.webp) oder PDF unter /public,
-  // z. B. '/images/academy/azav-zertifikat.png'.
-  zertifikatDatei: '',
+  // Quelle: Zertifikat der GZQ GmbH vom 20.10.2026 (Seite 1 und Anhang).
+  // Mit der Nummer ist die Seite öffentlich: indexiert, in Sitemap und Chat-Wissen.
+  zertifikatsnummer: 'Z-001806-1',
+  gueltigVon: '2026-10-19',
+  gueltigBis: '2031-10-18',
+  zertifikatAusgestellt: '2026-10-20',
+  // Anhang, Zentrale Eschborn, FB4: Einschränkungen „keine“.
+  einschraenkungen: 'keine',
+  zertifikatDatei: '/docs/azav-zertifikat-z-001806-1.pdf',
   // TODO: OFFEN. Pixelmaße des Zertifikatsbilds (verhindert Layout-Sprünge).
   zertifikatBreite: null,
   zertifikatHoehe: null,
@@ -196,7 +201,8 @@ export const bildungstraeger: {
     },
     {
       key: 'zukunft',
-      label: { de: 'Unternehmen der Zukunft', en: 'Company of the Future', kk: 'Болашақ компаниясы' },
+      // Laut WAMOCON-Unternehmensübersicht (10/2026): nominiert als „Unternehmen der Zukunft“.
+      label: { de: 'Nominiert: Unternehmen der Zukunft', en: 'Nominated: Company of the Future', kk: 'Номинация: Болашақ компаниясы' },
       datei: '/images/badge-zukunft.webp',
       breite: 1052,
       hoehe: 1524,
