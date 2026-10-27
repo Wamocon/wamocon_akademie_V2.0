@@ -329,6 +329,8 @@ const copy = {
       abroad: ['Sprich mit uns', 'Der Bildungsgutschein ist ein Angebot der Agentur für Arbeit in Deutschland. Wir zeigen dir, welche Möglichkeiten du hast.'],
     },
     quizSubmit: 'Ergebnis anzeigen',
+    quizResultLabel: 'Deine Einschätzung',
+    quizBack: 'Antworten ändern',
     quizNote: 'Unverbindliche Orientierung. Deine Antworten bleiben in deinem Browser. Über die Förderung entscheidet die Agentur für Arbeit.',
 
     timelineLead: 'Projekte',
@@ -605,6 +607,8 @@ const copy = {
       abroad: ['Talk to us', 'The Bildungsgutschein is offered by the Agentur für Arbeit in Germany. We will show you which options you have.'],
     },
     quizSubmit: 'Show result',
+    quizResultLabel: 'Your assessment',
+    quizBack: 'Change answers',
     quizNote: 'Non-binding guidance. Your answers stay in your browser. The Agentur für Arbeit decides on funding.',
 
     timelineLead: 'Projects',
@@ -881,6 +885,8 @@ const copy = {
       abroad: ['Бізбен сөйлесіңіз', 'Bildungsgutschein Германиядағы Agentur für Arbeit ұсынатын мүмкіндік. Сізде қандай жол бар екенін көрсетеміз.'],
     },
     quizSubmit: 'Нәтижені көрсету',
+    quizResultLabel: 'Сіздің бағаңыз',
+    quizBack: 'Жауаптарды өзгерту',
     quizNote: 'Міндеттемесіз бағдар. Жауаптарыңыз браузеріңізде қалады. Қаржыландыру туралы шешімді Agentur für Arbeit қабылдайды.',
 
     timelineLead: 'Жобалар',
@@ -1662,7 +1668,8 @@ const faq = pick(lang, {
           <p>{c.quizText}</p>
           <p class="bt-quiz__note">{c.quizNote}</p>
         </div>
-        <div class="bt-quiz__body">
+        <div class="bt-quiz__body" data-bt-quiz-body>
+          <div class="bt-quiz__questions" data-bt-quiz-questions>
           {c.quizQuestions.map((question, qi) => (
             <fieldset>
               <legend><span class="bt-quiz__step" aria-hidden="true">{qi + 1}</span>{question.label}</legend>
@@ -1677,14 +1684,19 @@ const faq = pick(lang, {
             </fieldset>
           ))}
           <button type="submit" class="bt-quiz__submit">{c.quizSubmit} <span aria-hidden="true">→</span></button>
-          <div class="bt-quiz__result" role="status" aria-live="polite" hidden data-bt-quiz-result>
+          </div>
+          <div class="bt-quiz__result" role="status" aria-live="polite" tabindex="-1" hidden data-bt-quiz-result>
+            <p class="bt-quiz__result-label">{c.quizResultLabel}</p>
             {Object.entries(c.quizResults).map(([key, [title, text]]) => (
               <div data-result={key} hidden>
                 <strong>{title}</strong>
                 <p>{text}</p>
               </div>
             ))}
-            <Button href={`#${formAnchor}`}>{cta}</Button>
+            <div class="bt-quiz__result-actions">
+              <Button href={`#${formAnchor}`}>{cta}</Button>
+              <button type="button" class="bt-quiz__back" data-bt-quiz-back><span aria-hidden="true">←</span> {c.quizBack}</button>
+            </div>
           </div>
         </div>
       </form>
@@ -2137,7 +2149,12 @@ const faq = pick(lang, {
   .bt-quiz__head h2 span { display: block; color: var(--color-accent); }
   .bt-quiz__head > p:not(.eyebrow) { margin-top: var(--space-sm); color: var(--color-muted); font-size: var(--fs-lead); line-height: var(--lh-relaxed); }
   .bt-quiz__head > p.bt-quiz__note { margin-top: var(--space-md); padding-top: var(--space-sm); border-top: 1px solid var(--border-subtle); color: var(--color-text-subtle); font-size: var(--fs-xs); line-height: var(--lh-body); }
-  .bt-quiz__body { display: grid; align-content: start; gap: var(--space-md); }
+  /* Questions and result sit in the same grid cell: the cell is as tall as the
+     questions, so showing the result never changes the card's height. */
+  .bt-quiz__body { display: grid; }
+  .bt-quiz__questions, .bt-quiz__result { grid-area: 1 / 1; }
+  .bt-quiz__questions { display: grid; align-content: start; gap: var(--space-md); transition: opacity var(--dur-med) var(--ease-out), visibility var(--dur-med) var(--ease-out); }
+  .bt-quiz__body.is-done .bt-quiz__questions { visibility: hidden; opacity: 0; }
   .bt-quiz fieldset { min-width: 0; border: 0; }
   .bt-quiz legend { display: flex; align-items: center; gap: var(--space-xs); margin-bottom: var(--space-sm); font-size: var(--fs-h5); font-weight: var(--fw-semibold); }
   .bt-quiz__step { display: grid; width: 28px; height: 28px; flex: 0 0 auto; place-items: center; border-radius: var(--radius-pill); background: var(--color-accent-surface); font-size: var(--fs-xs); font-weight: var(--fw-bold); }
@@ -2152,9 +2169,15 @@ const faq = pick(lang, {
   .bt-quiz__options input:focus-visible + span { outline: 2px solid var(--color-accent); outline-offset: 3px; }
   .bt-quiz__submit { justify-self: start; min-height: var(--btn-h); padding-inline: var(--btn-pad-x); border-radius: var(--radius-pill); background: var(--color-text); color: var(--color-bg); font-size: var(--fs-sm); font-weight: var(--fw-semibold); transition: transform var(--dur-fast) var(--ease-out); }
   .bt-quiz__submit:hover { transform: translateY(-2px); }
-  .bt-quiz__result { display: grid; gap: var(--space-sm); justify-items: start; padding: var(--space-md); border-left: 3px solid var(--color-accent); border-radius: var(--radius-md); background: rgba(255, 255, 255, 0.04); animation: bt-pop var(--dur-med) var(--ease-out); }
-  .bt-quiz__result strong { color: var(--color-accent); font-size: var(--fs-h4); }
-  .bt-quiz__result p { margin-top: 4px; }
+  .bt-quiz__result { display: grid; align-content: center; justify-items: start; gap: var(--space-sm); padding: clamp(24px, 3vw, 48px); border: 1px solid var(--color-accent-surface); border-radius: var(--radius-md); background: radial-gradient(80% 120% at 0% 0%, var(--glow-top), transparent 70%), rgba(255, 255, 255, 0.03); animation: bt-pop var(--dur-med) var(--ease-out); }
+  .bt-quiz__result:focus { outline: none; }
+  .bt-quiz__result:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+  .bt-quiz__result-label { color: var(--color-accent); font-size: var(--fs-2xs); font-weight: var(--fw-semibold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+  .bt-quiz__result strong { display: block; font-size: var(--fs-h2); line-height: var(--lh-tight); }
+  .bt-quiz__result [data-result] p { max-width: 52ch; margin-top: var(--space-xs); color: var(--color-muted); font-size: var(--fs-lead); line-height: var(--lh-relaxed); }
+  .bt-quiz__result-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm) var(--space-md); margin-top: var(--space-xs); }
+  .bt-quiz__back { color: var(--color-muted); font-size: var(--fs-sm); font-weight: var(--fw-semibold); text-decoration: underline; text-underline-offset: 0.25em; transition: color var(--dur-fast) var(--ease-out); }
+  .bt-quiz__back:hover { color: var(--color-text); }
 
   /* ---- Timeline --------------------------------------------------------------------- */
   .bt-timeline { margin-top: clamp(48px, 6vw, 96px); }
@@ -2322,10 +2345,12 @@ const faq = pick(lang, {
   // Funding check. Pure orientation, nothing is sent or stored.
   const quiz = document.querySelector<HTMLFormElement>('[data-bt-quiz]');
   if (quiz) {
+    const body = quiz.querySelector<HTMLElement>('[data-bt-quiz-body]');
+    const questions = quiz.querySelector<HTMLElement>('[data-bt-quiz-questions]');
     const result = quiz.querySelector<HTMLElement>('[data-bt-quiz-result]');
     quiz.addEventListener('submit', (event) => {
       event.preventDefault();
-      if (!quiz.reportValidity() || !result) return;
+      if (!quiz.reportValidity() || !result || !body || !questions) return;
       const data = new FormData(quiz);
       const situation = String(data.get('situation'));
       const residence = String(data.get('residence'));
@@ -2333,11 +2358,24 @@ const faq = pick(lang, {
       result.querySelectorAll<HTMLElement>('[data-result]').forEach((block) => {
         block.hidden = block.dataset.result !== key;
       });
+      // The result takes the place of the questions; focus moves to it so
+      // keyboard and screen-reader users land on the answer.
+      body.classList.add('is-done');
+      questions.inert = true;
       result.hidden = false;
       result.style.animation = 'none';
       void result.offsetWidth;
       result.style.animation = '';
+      result.focus({ preventScroll: true });
       result.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' });
+    });
+    quiz.querySelector('[data-bt-quiz-back]')?.addEventListener('click', () => {
+      if (!result || !body || !questions) return;
+      quiz.reset();
+      result.hidden = true;
+      body.classList.remove('is-done');
+      questions.inert = false;
+      questions.querySelector<HTMLInputElement>('input')?.focus();
     });
   }
 </script>
