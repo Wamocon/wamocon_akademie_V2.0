@@ -174,20 +174,22 @@ const sectors: Sector[] = [
     key: 'logistik',
     icon: 'truck',
     name: { de: 'Verkehr und Logistik', en: 'Transport and logistics', kk: 'Көлік және логистика' },
-    refs: ['Deutsche Bahn', 'VGF', 'Lekkerland'],
+    refs: ['Deutsche Bahn', 'VGF'],
     projects: [{
       // WAMOCON-Unternehmensübersicht, Referenz IT-Consulting und SAP.
       year: { de: 'seit 2017', en: 'since 2017', kk: '2017 жылдан бері' },
       text: { de: 'Test- und Qualitätssicherung im Fahrplansystem eines großen Transportunternehmens', en: 'Testing and quality assurance for the timetable system of a major transport company', kk: 'Ірі көлік компаниясының кесте жүйесін тестілеу және сапасын қамтамасыз ету' },
-    }, {
-      text: { de: 'Einführung von SAP ERP und SAP CRM bei Lekkerland', en: 'Introduction of SAP ERP and SAP CRM at Lekkerland', kk: 'Lekkerland компаниясында SAP ERP және SAP CRM енгізу' },
     }],
   },
   {
+    // Lekkerland ist Großhändler, deshalb hier und nicht unter Logistik.
     key: 'handel',
     icon: 'cart',
-    name: { de: 'Handel', en: 'Retail', kk: 'Сауда' },
-    refs: ['Quelle'],
+    name: { de: 'Handel', en: 'Retail and wholesale', kk: 'Сауда' },
+    refs: ['Lekkerland', 'Quelle'],
+    projects: [{
+      text: { de: 'Einführung von SAP ERP und SAP CRM bei Lekkerland', en: 'Introduction of SAP ERP and SAP CRM at Lekkerland', kk: 'Lekkerland компаниясында SAP ERP және SAP CRM енгізу' },
+    }],
   },
   {
     key: 'pharma',
