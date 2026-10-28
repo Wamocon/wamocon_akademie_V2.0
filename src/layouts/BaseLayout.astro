@@ -102,8 +102,6 @@ const organization = {
           name: `${bildungstraeger.zulassungsart} (${bildungstraeger.paragraf})`,
           credentialCategory: 'Accreditation',
           identifier: bildungstraeger.zertifikatsnummer,
-          ...(bildungstraeger.gueltigVon ? { validFrom: bildungstraeger.gueltigVon } : {}),
-          ...(bildungstraeger.gueltigBis ? { expires: bildungstraeger.gueltigBis } : {}),
           recognizedBy: {
             '@type': 'Organization',
             name: bildungstraeger.fachkundigeStelle.name,

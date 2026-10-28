@@ -14,6 +14,7 @@
  *                                (leer = Seite bleibt noindex und fehlt in Sitemap
  *                                und Chat-Wissen; der Reiter ist immer sichtbar)
  *   Gültigkeit ................. gueltigVon / gueltigBis (ISO 8601: '2026-11-01')
+ *                                (nur zur Pflege, wird auf der Website nicht ausgegeben)
  *   Ausgestellt am ............. zertifikatAusgestellt (ISO 8601)
  *   Einschränkungen ............ einschraenkungen (laut Anhang, z. B. 'keine')
  *   Zertifikat ................. zertifikatDatei (Pfad unter /public, Bild oder PDF)
@@ -25,6 +26,8 @@
  *                                (beides nötig, sonst erscheint nur Text)
  *   Fachliche Prüfung .......... pruefdatum (ISO 8601)
  *   Zugelassene Maßnahmen ...... massnahmen (erst NACH der Maßnahmenzulassung)
+ *   Avatar-Video Begleitung .... begleitVideo.datei (+ poster, Pfad unter /public;
+ *                                leer = Platzhalter "Video folgt")
  *
  * WICHTIG zu den Maßnahmen: Ein Kurs darf erst in `massnahmen` stehen, wenn
  * für genau diesen Kurs eine Maßnahmenzulassung (§ 179 SGB III) mit Nummer
@@ -126,6 +129,7 @@ export const bildungstraeger: {
   seminar: Seminar;
   naechsterStart: NaechsterStart;
   siegel: Siegel[];
+  begleitVideo: { datei: string; poster: string; sprecher: string };
 } = {
   fachkundigeStelle: {
     name: 'GZQ GmbH',
@@ -233,6 +237,17 @@ export const bildungstraeger: {
       hoehe: null,
     },
   ],
+
+  // Avatar-Video (HeyGen) im Abschnitt "So begleiten wir dich": der Sprecher
+  // erklärt den Ablauf der Begleitung. Solange datei leer ist, zeigt die Seite
+  // einen Platzhalter.
+  begleitVideo: {
+    // TODO: OFFEN. Video als MP4 unter /public ablegen, z. B. '/videos/begleitung.mp4'.
+    datei: '',
+    // TODO: OFFEN. Standbild für das Video, z. B. '/images/academy/begleitung-poster.webp'.
+    poster: '',
+    sprecher: 'Waleri Moretz',
+  },
 };
 
 // ---------------------------------------------------------------------------
