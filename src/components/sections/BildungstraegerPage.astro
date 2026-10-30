@@ -60,6 +60,17 @@ const euro = new Intl.NumberFormat(intlLocale, { style: 'currency', currency: 'E
 const regularPrice = euro.format(bt.seminar.preisRegulaer);
 const zeroPrice = euro.format(0);
 
+// Hero photo reel: real photos from WAMOCON Academy seminars and the trainer
+// team, darkened and desaturated (public/images/academy/hero-slide-*.webp).
+// Each slide drifts slowly (Ken Burns) and wipes in diagonally.
+const heroSlides = [
+  { src: '/images/academy/hero-slide-1.webp', from: '50% 55%', to: '44% 48%' },
+  { src: '/images/academy/hero-slide-2.webp', from: '40% 40%', to: '52% 50%' },
+  { src: '/images/academy/hero-slide-3.webp', from: '60% 50%', to: '50% 42%' },
+  { src: '/images/academy/hero-slide-4.webp', from: '45% 60%', to: '55% 50%' },
+  { src: '/images/academy/hero-slide-5.webp', from: '50% 30%', to: '50% 40%' },
+];
+
 // Hero scene across the full width.
 // 1. Outline words drifting behind everything.
 const heroWords = `${regularPrice} → ${zeroPrice} · BILDUNGSGUTSCHEIN · ISTQB® · AZAV · `.repeat(2);
@@ -1649,6 +1660,15 @@ const faq = pick(lang, {
   <div class="bt-progress" aria-hidden="true"><span data-bt-progress></span></div>
   <!-- ================================================================ HERO -->
   <section class="bt-hero" aria-labelledby="bt-hero-title" data-bt-hero>
+    <div class="bt-hero__photos" aria-hidden="true" data-bt-photos>
+      {heroSlides.map((slide, i) => (
+        <div
+          class="bt-hero__photo"
+          data-src={i === 0 ? undefined : slide.src}
+          style={`--from:${slide.from};--to:${slide.to};${i === 0 ? `background-image:url(${slide.src})` : ''}`}
+        ></div>
+      ))}
+    </div>
     <div class="bt-hero__bg" aria-hidden="true"></div>
     {/* Decorative scene behind the text: everything in it is repeated in the copy. */}
     <div class="bt-hero__scene" aria-hidden="true">
@@ -2575,14 +2595,33 @@ const faq = pick(lang, {
   /* Animated background without canvas or transforms: a dot grid and a red
      light, both painted, whose position (--gx, --gy) the script moves. A
      canvas or transform layer here would cost the text its sharpness. */
+  /* Photo reel: each slide is a painted background (no transform, no
+     opacity animation), zooming via background-size and wiping in via a
+     moving mask. The script hands the classes on every 7 seconds. */
+  .bt-hero { background: var(--color-bg); }
+  .bt-hero__photos { position: absolute; inset: 0; z-index: -2; overflow: hidden; }
+  .bt-hero__photo { position: absolute; inset: 0; visibility: hidden; background-repeat: no-repeat; background-position: var(--from, 50% 50%); background-size: max(108%, 192svh) auto; }
+  .bt-hero__photo:first-child, .bt-hero__photo.is-in, .bt-hero__photo.is-out { visibility: visible; }
+  .bt-hero__photo.is-out { z-index: 1; animation: bt-kb 9s linear forwards; }
+  .bt-hero__photo.is-in {
+    z-index: 2;
+    -webkit-mask-image: linear-gradient(100deg, #000 40%, transparent 60%);
+    mask-image: linear-gradient(100deg, #000 40%, transparent 60%);
+    -webkit-mask-size: 300% 100%;
+    mask-size: 300% 100%;
+    animation: bt-kb 9s linear forwards, bt-wipe 1.6s var(--ease-out) forwards;
+  }
+  .bt-hero__photos.is-paused .bt-hero__photo { animation-play-state: paused; }
+  /* Grade over the photos: dark on the text side, the moving red light,
+     and a fade into the page at the bottom. */
   .bt-hero__bg {
     position: absolute;
     inset: 0;
     z-index: -1;
     background:
-      radial-gradient(circle at var(--gx, 72%) var(--gy, 48%), rgba(212, 0, 0, 0.32) 0, rgba(212, 0, 0, 0.09) 28%, transparent 58%),
-      linear-gradient(180deg, transparent 72%, var(--color-bg) 100%),
-      var(--color-bg);
+      radial-gradient(circle at var(--gx, 72%) var(--gy, 48%), rgba(212, 0, 0, 0.34) 0, rgba(212, 0, 0, 0.1) 30%, transparent 60%),
+      linear-gradient(90deg, rgba(16, 16, 16, 0.94) 0%, rgba(16, 16, 16, 0.78) 36%, rgba(16, 16, 16, 0.38) 68%, rgba(16, 16, 16, 0.5) 100%),
+      linear-gradient(180deg, rgba(16, 16, 16, 0.55) 0%, transparent 22%, transparent 70%, var(--color-bg) 100%);
   }
   .bt-hero__bg::before {
     content: '';
@@ -2630,7 +2669,7 @@ const faq = pick(lang, {
   .bt-hero__sticker.is-istqb { bottom: -64px; left: -64px; width: 118px; rotate: 8deg; animation-duration: 8s; }
 
   /* Outline words: a huge, faint marquee across the whole hero (moved by margin). */
-  .bt-hero__words { position: absolute; top: 15%; left: 0; display: flex; color: transparent; font-size: clamp(6rem, 17vw, 17rem); font-weight: var(--fw-extrabold); line-height: 1; letter-spacing: -0.03em; white-space: nowrap; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.075); }
+  .bt-hero__words { position: absolute; top: 15%; left: 0; display: flex; color: transparent; font-size: clamp(6rem, 17vw, 17rem); font-weight: var(--fw-extrabold); line-height: 1; letter-spacing: -0.03em; white-space: nowrap; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.06); }
   .bt-hero__words span { flex: 0 0 auto; }
   .bt-hero__words span:first-child { animation: bt-marquee-ml 140s linear infinite; }
 
@@ -3330,6 +3369,8 @@ const faq = pick(lang, {
   @keyframes bt-stamp { 0% { opacity: 0; transform: rotate(-20deg) scale(1.9); } 60% { opacity: 1; transform: rotate(-11deg) scale(0.94); } 100% { opacity: 1; transform: rotate(-12deg); } }
   @keyframes bt-blink { 50% { background: transparent; } }
   @keyframes bt-bob { 50% { margin-top: -14px; } }
+  @keyframes bt-kb { from { background-size: max(108%, 192svh) auto; background-position: var(--from); } to { background-size: max(122%, 217svh) auto; background-position: var(--to); } }
+  @keyframes bt-wipe { from { -webkit-mask-position: 100% 0; mask-position: 100% 0; } to { -webkit-mask-position: 0 0; mask-position: 0 0; } }
   @keyframes bt-journey { from { stroke-dashoffset: 70; } to { stroke-dashoffset: -930; } }
   @keyframes bt-milestone { 0%, 15%, 100% { border-color: rgba(255, 255, 255, 0.32); background: var(--color-bg); box-shadow: none; } 2%, 10% { border-color: var(--color-accent); background: var(--color-accent-surface); box-shadow: 0 0 0 6px rgba(244, 14, 14, 0.18), 0 0 26px rgba(244, 14, 14, 0.65); } }
   @keyframes bt-milestone-label { 2%, 10% { color: var(--color-text); } }
@@ -3405,6 +3446,7 @@ const faq = pick(lang, {
   }
   @media (max-width: 620px) {
     .bt-hero__scene { opacity: 0.13; }
+    .bt-hero__bg { background: linear-gradient(180deg, rgba(16, 16, 16, 0.78) 0%, rgba(16, 16, 16, 0.86) 60%, var(--color-bg) 100%); }
     .bt-hero__stage { bottom: -4%; right: -110px; width: 330px; }
     .bt-hero__inner { padding-top: 120px; }
     .bt-ticket { padding: 22px 20px 18px; }
@@ -3436,7 +3478,7 @@ const faq = pick(lang, {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .bt-new, .bt-aurora span, .bt-ticket__st.is-pending i, .bt-ticket-wrap, .bt-hero__sticker, .bt-hero__words span, .bt-hero__journey-pulse, .bt-hero__milestone i, .bt-hero__milestone b, .bt-format, .bt-refs__track ul, .bt-calendar__pending span,
+    .bt-new, .bt-aurora span, .bt-ticket__st.is-pending i, .bt-ticket-wrap, .bt-hero__sticker, .bt-hero__words span, .bt-hero__photo, .bt-hero__journey-pulse, .bt-hero__milestone i, .bt-hero__milestone b, .bt-format, .bt-refs__track ul, .bt-calendar__pending span,
     .bt-dot, .bt-showcase__panel, .bt-signal, .bt-signal::after, .bt-stages li, .bt-stages li::after, .bt-proof__seal::after, .is-open .bt-fund__check, .bt-hero h1 span,
     .bt-quiz__result, .bt-trainer__body, .bt-sectors__floor, .bt-orbit__ring--outer, .bt-orbit__sparks, .bt-orbit__beam.is-active,
     .bt-orbit__core, .bt-orbit__node.is-active .bt-orbit__dot { animation: none; }
@@ -3512,6 +3554,38 @@ const faq = pick(lang, {
       }, 950);
     }
 
+    // Photo reel: one slide every 7 s, the next one preloaded; pauses off screen.
+    const reel = hero.querySelector<HTMLElement>('[data-bt-photos]');
+    let reelTimer = 0;
+    const reelSlides = reel ? Array.from(reel.children) as HTMLElement[] : [];
+    let reelIndex = 0;
+    const loadSlide = (el?: HTMLElement) => {
+      if (el?.dataset.src && !el.style.backgroundImage) el.style.backgroundImage = `url(${el.dataset.src})`;
+    };
+    const nextSlide = () => {
+      const prev = reelSlides[reelIndex];
+      reelIndex = (reelIndex + 1) % reelSlides.length;
+      const el = reelSlides[reelIndex];
+      loadSlide(el);
+      loadSlide(reelSlides[(reelIndex + 1) % reelSlides.length]);
+      reelSlides.forEach((slide) => { if (slide !== prev && slide !== el) slide.classList.remove('is-in', 'is-out'); });
+      prev.classList.remove('is-in');
+      prev.classList.add('is-out');
+      el.classList.remove('is-out');
+      void el.offsetWidth;
+      el.classList.add('is-in');
+    };
+    const reelPlay = (on: boolean) => {
+      if (!reel || reduced || reelSlides.length < 2) return;
+      reel.classList.toggle('is-paused', !on);
+      window.clearInterval(reelTimer);
+      reelTimer = on ? window.setInterval(nextSlide, 7000) : 0;
+    };
+    if (reel && !reduced && reelSlides.length > 1) {
+      reelSlides[0].classList.add('is-out');
+      loadSlide(reelSlides[1]);
+    }
+
     if (!reduced && bg) {
       let visible = true;
       let running = false;
@@ -3532,7 +3606,8 @@ const faq = pick(lang, {
         running = true;
         requestAnimationFrame(loop);
       };
-      new IntersectionObserver((entries) => { visible = entries[0].isIntersecting; start(); }).observe(hero);
+      new IntersectionObserver((entries) => { visible = entries[0].isIntersecting; start(); reelPlay(visible && !document.hidden); }).observe(hero);
+      document.addEventListener('visibilitychange', () => reelPlay(visible && !document.hidden));
       document.addEventListener('visibilitychange', start);
       start();
     }
