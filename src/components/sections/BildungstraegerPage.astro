@@ -215,9 +215,11 @@ const copy = {
     markAlt: `Zeichen der fachkundigen Stelle ${bt.fachkundigeStelle.name}`,
     heroKicker: 'Zugelassener Bildungsträger nach AZAV',
     heroTrust: [['ISTQB®', 'Accredited Training Provider', ''], ['AZAV', certNo ? `Trägerzulassung ${certNoSeal}` : 'Trägerzulassung', '#zertifikat']],
-    heroLead: 'In 45 Tagen zum',
-    heroRest: 'ISTQB® Softwaretester',
-    heroText: 'Unser neues Seminar in Präsenz oder live online. Mit Bildungsgutschein kostenfrei für dich.*',
+    // Hook: Preisanker. Der Regulärpreis wird durchgestrichen, dann erscheint 0 €.
+    // Die Bedingung steht direkt darunter in heroNote (§ 83 SGB III).
+    heroLead: 'Werde Softwaretester.',
+    heroPrice: { before: 'Für', between: '' },
+    heroText: 'In 45 Tagen zum ISTQB® Zertifikat, in Präsenz oder live online. Mit Bildungsgutschein übernimmt die Agentur für Arbeit deine Lehrgangskosten.*',
     // Quelle: § 83 Abs. 1 SGB III (Lehrgangskosten).
     heroNote: '* Sobald die Maßnahmenzulassung vorliegt. Wird dein Bildungsgutschein bewilligt, übernimmt die Agentur für Arbeit die Lehrgangskosten.',
     // Hero-Gutschein: der Bildungsgutschein im Stil eines Testlaufs. Preis und
@@ -231,7 +233,6 @@ const copy = {
     ticketPending: 'IN VORBEREITUNG',
     ticketStamp: 'zugelassen',
     ticketFoot: '* Mit bewilligtem Bildungsgutschein, sobald die Maßnahme zugelassen ist (§ 81 SGB III).',
-    ticketAria: (price: string) => `Kosten mit Bildungsgutschein: 0 Euro statt regulär ${price}`,
     ctaPlanned: 'Beratung und Vormerkung anfragen',
     ctaApproved: 'Förderberatung anfragen',
     ctaSeminar: 'Zum Seminar',
@@ -596,10 +597,10 @@ const copy = {
     markAlt: `Mark of the certification body ${bt.fachkundigeStelle.name}`,
     heroKicker: 'Approved education provider under AZAV',
     heroTrust: [['ISTQB®', 'Accredited Training Provider', ''], ['AZAV', certNo ? `provider approval ${certNoSeal}` : 'provider approval', '#zertifikat']],
-    heroLead: 'Become an ISTQB®',
-    heroRest: 'software tester in 45 days',
-    // AZAV and Bildungsgutschein are explained on first use.
-    heroText: 'Our new seminar, on site or live online. Free for you with a Bildungsgutschein, a German education voucher.*',
+    heroLead: 'Become a software tester.',
+    heroPrice: { before: 'For', between: '' },
+    // AZAV and Bildungsgutschein are explained in the text below.
+    heroText: 'Get your ISTQB® certificate in 45 days, on site or live online. With a Bildungsgutschein, the German education voucher, the Agentur für Arbeit covers your course fees.*',
     heroNote: '* Once the course approval is granted. If your Bildungsgutschein is approved, the Agentur für Arbeit covers the course fees.',
     ticketHead: 'Bildungsgutschein',
     ticketSub: '45 days · on site or live online',
@@ -610,7 +611,6 @@ const copy = {
     ticketPending: 'IN PREPARATION',
     ticketStamp: 'approved',
     ticketFoot: '* With an approved Bildungsgutschein once the course is approved (§ 81 SGB III).',
-    ticketAria: (price: string) => `Cost with a Bildungsgutschein: 0 euros instead of the regular ${price}`,
     ctaPlanned: 'Get advice and pre-register',
     ctaApproved: 'Request funding advice',
     ctaSeminar: 'See the seminar',
@@ -952,9 +952,9 @@ const copy = {
     markAlt: `${bt.fachkundigeStelle.name} сараптама органының белгісі`,
     heroKicker: 'AZAV бойынша рұқсат алған білім беру ұйымы',
     heroTrust: [['ISTQB®', 'Accredited Training Provider', ''], ['AZAV', certNo ? `ұйымға рұқсат ${certNoSeal}` : 'ұйымға рұқсат', '#zertifikat']],
-    heroLead: '45 күнде',
-    heroRest: 'ISTQB® тестілеуші болыңыз',
-    heroText: 'Аудиторияда немесе тікелей онлайн өтетін жаңа семинарымыз. Bildungsgutschein (неміс білім беру ваучері) арқылы сіз үшін тегін.*',
+    heroLead: 'Бағдарламалық тестілеуші болыңыз.',
+    heroPrice: { before: '', between: 'орнына' },
+    heroText: '45 күнде ISTQB® сертификатына, аудиторияда немесе тікелей онлайн. Bildungsgutschein (неміс білім беру ваучері) арқылы курс ақысын Agentur für Arbeit өтейді.*',
     heroNote: '* Курсқа рұқсат берілгеннен кейін. Bildungsgutschein мақұлданса, курс ақысын Agentur für Arbeit өтейді.',
     ticketHead: 'Bildungsgutschein',
     ticketSub: '45 күн · аудиторияда немесе тікелей онлайн',
@@ -965,7 +965,6 @@ const copy = {
     ticketPending: 'ДАЙЫНДАЛУДА',
     ticketStamp: 'рұқсат',
     ticketFoot: '* Курсқа рұқсат берілгеннен кейін, мақұлданған Bildungsgutschein арқылы (§ 81 SGB III).',
-    ticketAria: (price: string) => `Bildungsgutschein арқылы құны: 0 евро, толық бағасы ${price}`,
     ctaPlanned: 'Кеңес алу және алдын ала тіркелу',
     ctaApproved: 'Қаржыландыру бойынша кеңес алу',
     ctaSeminar: 'Семинарға өту',
@@ -1625,6 +1624,49 @@ const faq = pick(lang, {
   <!-- ================================================================ HERO -->
   <section class="bt-hero" aria-labelledby="bt-hero-title" data-bt-hero>
     <div class="bt-hero__bg" aria-hidden="true"></div>
+    {/* Decorative scene behind the text: everything in it is repeated in the copy. */}
+    <div class="bt-hero__scene" aria-hidden="true">
+      <div class="container bt-hero__scene-inner">
+          <div class="bt-hero__stage">
+            <img class="bt-hero__sticker is-azav" src="/images/badge-azav-gzq.svg" alt="" width="801" height="597" decoding="async" />
+            <img class="bt-hero__sticker is-istqb" src="/images/badge-istqb-atp.webp" alt="" width="384" height="384" decoding="async" />
+            <div class="bt-ticket-wrap" data-bt-ticket>
+              <div class="bt-ticket__stamp" aria-hidden="true">
+                <b>AZAV</b>
+                <span>{c.ticketStamp}</span>
+                {certNo && <span>{certNoSeal}</span>}
+              </div>
+              <article class="bt-ticket">
+                <div class="bt-ticket__scan" aria-hidden="true"></div>
+                <p class="bt-ticket__head"><strong>{c.ticketHead}</strong><span>WAMOCON Academy</span></p>
+                <p class="bt-ticket__title">{bt.seminar.titel}</p>
+                <p class="bt-ticket__sub">{c.ticketSub}</p>
+                <div class="bt-ticket__price">
+                  <div>
+                    <p class="bt-ticket__label">{c.ticketLabel}</p>
+                    <p class="bt-ticket__amount"><span data-bt-amount data-from={bt.seminar.preisRegulaer}>{zeroPrice}</span><sup>*</sup></p>
+                  </div>
+                  <span class="bt-ticket__was">{c.ticketWas(regularPrice)}</span>
+                </div>
+                <div class="bt-ticket__perf" aria-hidden="true"></div>
+                <ul class="bt-ticket__checks">
+                  {c.ticketChecks.map(([label, sub], index) => (
+                    <li>
+                      <div class="bt-ticket__k">{label}<span>{sub}</span></div>
+                      {index === 2 && !approved ? (
+                        <span class="bt-ticket__st is-pending"><i aria-hidden="true"></i>{c.ticketPending}</span>
+                      ) : (
+                        <span class="bt-ticket__st is-pass"><span aria-hidden="true">✓ </span>{c.ticketPass}</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+                <p class="bt-ticket__foot">{c.ticketFoot}</p>
+              </article>
+            </div>
+          </div>
+      </div>
+    </div>
     <div class="container bt-hero__inner">
       <div class="bt-hero__copy">
         <div class="bt-hero__badges">
@@ -1638,7 +1680,12 @@ const faq = pick(lang, {
             <span class="bt-hero__kicker">{c.heroKicker}</span>
           )}
         </div>
-        <h1 id="bt-hero-title"><span>{c.heroLead}</span> {c.heroRest}</h1>
+        <h1 id="bt-hero-title">
+          <span class="bt-hero__hook">{c.heroLead}</span>
+          <span class="bt-hero__price">
+            {c.heroPrice.before && <>{c.heroPrice.before} </>}<del class="bt-hero__was">{regularPrice}</del>{c.heroPrice.between && <> {c.heroPrice.between}</>} <span class="bt-hero__now">{zeroPrice}</span><sup>*</sup>
+          </span>
+        </h1>
         <ul class="bt-hero__trust">
           {c.heroTrust.map(([label, text, href]) => {
             const inner = (
@@ -1656,42 +1703,6 @@ const faq = pick(lang, {
           <Button href={`#${seminarAnchor}`} size="lg" variant="outline">{c.ctaSeminar}</Button>
         </div>
         {!approved && <p class="bt-hero__note">{c.heroNote}</p>}
-      </div>
-      <div class="bt-hero__stage">
-        <div class="bt-ticket-wrap" data-bt-ticket>
-          <div class="bt-ticket__stamp" aria-hidden="true">
-            <b>AZAV</b>
-            <span>{c.ticketStamp}</span>
-            {certNo && <span>{certNoSeal}</span>}
-          </div>
-          <article class="bt-ticket" aria-label={c.ticketAria(regularPrice)}>
-            <div class="bt-ticket__scan" aria-hidden="true"></div>
-            <p class="bt-ticket__head"><strong>{c.ticketHead}</strong><span>WAMOCON Academy</span></p>
-            <p class="bt-ticket__title">{bt.seminar.titel}</p>
-            <p class="bt-ticket__sub">{c.ticketSub}</p>
-            <div class="bt-ticket__price">
-              <div>
-                <p class="bt-ticket__label">{c.ticketLabel}</p>
-                <p class="bt-ticket__amount"><span data-bt-amount data-from={bt.seminar.preisRegulaer}>{zeroPrice}</span><sup>*</sup></p>
-              </div>
-              <span class="bt-ticket__was">{c.ticketWas(regularPrice)}</span>
-            </div>
-            <div class="bt-ticket__perf" aria-hidden="true"></div>
-            <ul class="bt-ticket__checks">
-              {c.ticketChecks.map(([label, sub], index) => (
-                <li>
-                  <div class="bt-ticket__k">{label}<span>{sub}</span></div>
-                  {index === 2 && !approved ? (
-                    <span class="bt-ticket__st is-pending"><i aria-hidden="true"></i>{c.ticketPending}</span>
-                  ) : (
-                    <span class="bt-ticket__st is-pass"><span aria-hidden="true">✓ </span>{c.ticketPass}</span>
-                  )}
-                </li>
-              ))}
-            </ul>
-            <p class="bt-ticket__foot">{c.ticketFoot}</p>
-          </article>
-        </div>
       </div>
     </div>
   </section>
@@ -2543,13 +2554,23 @@ const faq = pick(lang, {
     background-position: 14px 14px;
     mask-image: radial-gradient(circle at var(--gx, 72%) var(--gy, 48%), rgba(0, 0, 0, 0.6) 0, rgba(0, 0, 0, 0.14) 45%, rgba(0, 0, 0, 0.07) 100%);
   }
-  .bt-hero__inner { position: relative; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: clamp(2rem, 4vw, 4.5rem); align-items: center; padding-block: clamp(130px, 17vh, 190px) clamp(40px, 6vh, 88px); }
-  .bt-hero__copy { min-width: 0; }
+  .bt-hero__inner { position: relative; z-index: 1; padding-block: clamp(130px, 17vh, 190px) clamp(40px, 6vh, 88px); }
+  .bt-hero__copy { min-width: 0; max-width: min(720px, 56%); }
+  /* Background scene: voucher and seals float behind the copy. A gradient
+     from the left keeps the text readable wherever they overlap. */
+  .bt-hero__scene { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+  .bt-hero__scene::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, var(--color-bg) 0%, rgba(16, 16, 16, 0.82) 34%, rgba(16, 16, 16, 0) 60%); }
+  .bt-hero__scene-inner { position: relative; height: 100%; }
   .bt-hero__badges { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xs) var(--space-sm); margin-bottom: 1.25rem; }
   .bt-hero__kicker { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--space-xs); color: var(--color-text); font-size: var(--fs-sm); font-weight: var(--fw-semibold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
   .bt-hero__kicker img { width: auto; height: auto; max-height: 48px; }
-  .bt-hero h1 { margin: 0 0 1rem; font-size: clamp(2.6rem, 5vw, 5.4rem); line-height: var(--lh-display); letter-spacing: var(--tracking-display); }
-  .bt-hero h1 span { display: block; color: var(--color-accent); }
+  .bt-hero h1 { margin: 0 0 1.25rem; font-size: clamp(2.6rem, 5.2vw, 5.2rem); line-height: var(--lh-display); letter-spacing: var(--tracking-display); }
+  .bt-hero h1 > span { display: block; }
+  .bt-hero__price { color: var(--color-accent); }
+  .bt-hero__was { position: relative; color: var(--color-text-subtle); text-decoration: none; }
+  .bt-hero__was::after { content: ''; position: absolute; top: 54%; left: -0.04em; right: -0.04em; height: 0.08em; border-radius: 0.04em; background: var(--color-accent); transform-origin: left center; }
+  .bt-hero__now { display: inline-block; }
+  .bt-hero__price sup { margin-left: 0.04em; color: var(--color-text-subtle); font-size: 0.38em; vertical-align: top; }
   .bt-hero__trust { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 1.25rem; }
   .bt-hero__trust li > * { display: inline-flex; align-items: center; gap: 8px; padding: 0.45rem 1rem 0.45rem 0.7rem; border: 1px solid var(--border-strong); border-radius: var(--radius-pill); background: rgba(16, 16, 16, 0.6); font-size: var(--fs-sm); line-height: var(--lh-snug); transition: border-color var(--dur-fast) var(--ease-out); }
   .bt-hero__trust a:hover, .bt-hero__trust a:focus-visible { border-color: var(--color-accent); }
@@ -2560,10 +2581,13 @@ const faq = pick(lang, {
   .bt-hero__note { max-width: 80ch; margin-top: var(--space-sm); color: var(--color-text-subtle); font-size: var(--fs-xs); line-height: var(--lh-body); }
 
   /* ---- Hero voucher: the Bildungsgutschein, checked like a test run ------------ */
-  .bt-hero__stage { display: flex; justify-content: center; min-width: 0; padding-top: 44px; perspective: 1100px; }
-  .bt-ticket-wrap { position: relative; width: 100%; max-width: 440px; transition: transform 0.5s var(--ease-out); }
-  /* 3D only while the pointer is on the hero; at rest the voucher is flat and sharp. */
-  .bt-ticket-wrap.is-tilting { transform: rotateY(var(--ty, 0deg)) rotateX(var(--tx, 0deg)); transition: transform 0.15s linear; }
+  /* The stage sits right of the copy; the pointer shifts it a little (margins,
+     so no layer forms) and its parts bob gently via margin-top. */
+  .bt-hero__stage { position: absolute; top: 50%; right: clamp(0px, 3vw, 56px); width: min(460px, 36vw); margin: var(--py, 0px) var(--px, 0px) 0 0; translate: 0 -46%; transition: margin 0.5s var(--ease-out); }
+  .bt-ticket-wrap { position: relative; rotate: -5deg; animation: bt-bob 7s ease-in-out infinite; }
+  .bt-hero__sticker { position: absolute; z-index: 3; height: auto; filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.55)); animation: bt-bob 6s ease-in-out infinite; }
+  .bt-hero__sticker.is-azav { top: -78px; left: -84px; width: 132px; rotate: -10deg; animation-delay: -2s; }
+  .bt-hero__sticker.is-istqb { bottom: -36px; left: -64px; width: 104px; rotate: 8deg; animation-duration: 8s; }
   .bt-ticket {
     position: relative;
     overflow: hidden;
@@ -2618,6 +2642,12 @@ const faq = pick(lang, {
   .is-playing .bt-ticket__was { animation: bt-fade-up 0.35s var(--ease-out) 2050ms backwards; }
   .is-playing .bt-ticket__was::after { animation: bt-strike 0.35s var(--ease-out) 2250ms backwards; }
   .is-playing .bt-ticket__stamp { animation: bt-stamp 0.45s var(--ease-out) 2450ms backwards; }
+  /* Headline hook: the regular price is struck through, then 0 € lands. */
+  .is-playing .bt-hero__was::after { animation: bt-strike 0.45s var(--ease-out) 750ms backwards; }
+  .is-playing .bt-hero__now { animation: bt-now 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 1150ms backwards; }
+  .is-playing .bt-hero__sticker { animation-name: bt-bob, bt-sticker-in; animation-duration: 6s, 0.5s; animation-timing-function: ease-in-out, var(--ease-out); animation-iteration-count: infinite, 1; animation-fill-mode: none, backwards; }
+  .is-playing .bt-hero__sticker.is-azav { animation-delay: -2s, 1.6s; }
+  .is-playing .bt-hero__sticker.is-istqb { animation-duration: 8s, 0.5s; animation-delay: 0s, 1.8s; }
 
   /* ---- Seals ------------------------------------------------------------------ */
   .bt-seals { position: relative; z-index: 1; padding-block: var(--space-md) var(--space-lg); }
@@ -3242,6 +3272,9 @@ const faq = pick(lang, {
   @keyframes bt-fade-up { from { opacity: 0; transform: translateY(6px); } }
   @keyframes bt-stamp { 0% { opacity: 0; transform: rotate(-20deg) scale(1.9); } 60% { opacity: 1; transform: rotate(-11deg) scale(0.94); } 100% { opacity: 1; transform: rotate(-12deg); } }
   @keyframes bt-blink { 50% { background: transparent; } }
+  @keyframes bt-bob { 50% { margin-top: -14px; } }
+  @keyframes bt-now { 0% { opacity: 0; transform: scale(1.7); } 60% { opacity: 1; transform: scale(0.94); } }
+  @keyframes bt-sticker-in { from { opacity: 0; } }
   @keyframes bt-pulse { 0%, 100% { box-shadow: var(--shadow-accent); } 50% { box-shadow: 0 0 0 6px rgba(244, 14, 14, 0.18), var(--shadow-accent); } }
   @keyframes bt-marquee-ml { to { margin-left: calc(-1 * var(--shift, 0px)); } }
   @keyframes bt-sparks-outer { to { stroke-dashoffset: -1382; } }
@@ -3256,6 +3289,12 @@ const faq = pick(lang, {
     .bt-kpis li:nth-child(n + 4) { grid-column: span 3; }
   }
   @media (max-width: 1050px) {
+    .bt-hero__copy { max-width: none; }
+    .bt-hero__scene { opacity: 0.28; }
+    /* On phones the voucher only hints at itself in the lower right corner. */
+    .bt-hero__scene::after { background: linear-gradient(180deg, rgba(16, 16, 16, 0.4), rgba(16, 16, 16, 0) 60%); }
+    .bt-hero__stage { top: auto; bottom: 6%; right: -40px; width: min(420px, 70vw); translate: none; }
+    .bt-hero__sticker { display: none; }
     .bt-steps__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .bt-steps__list li:nth-child(2n)::after { content: none; }
     .bt-tiles, .bt-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -3268,7 +3307,7 @@ const faq = pick(lang, {
     .bt-orbit { width: min(100%, 720px); }
   }
   @media (max-width: 900px) {
-    .bt-hero__inner, .bt-showcase__top, .bt-calendar__grid, .bt-formats__grid, .bt-fund__grid, .bt-trainers__grid,
+    .bt-showcase__top, .bt-calendar__grid, .bt-formats__grid, .bt-fund__grid, .bt-trainers__grid,
     .bt-why__grid, .bt-proof__grid, .bt-groups__grid, .bt-approved__grid, .bt-entry__grid, .bt-support__top, .bt-practice__top {
       grid-template-columns: minmax(0, 1fr);
     }
@@ -3299,6 +3338,8 @@ const faq = pick(lang, {
     .bt-orbit__node.is-active .bt-orbit__dot { transform: none; animation: none; }
   }
   @media (max-width: 620px) {
+    .bt-hero__scene { opacity: 0.13; }
+    .bt-hero__stage { bottom: -4%; right: -110px; width: 330px; }
     .bt-hero__inner { padding-top: 120px; }
     .bt-ticket { padding: 22px 20px 18px; }
     .bt-ticket__perf { margin-inline: -20px; }
@@ -3329,7 +3370,7 @@ const faq = pick(lang, {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .bt-new, .bt-aurora span, .bt-ticket__st.is-pending i, .bt-format, .bt-refs__track ul, .bt-calendar__pending span,
+    .bt-new, .bt-aurora span, .bt-ticket__st.is-pending i, .bt-ticket-wrap, .bt-hero__sticker, .bt-format, .bt-refs__track ul, .bt-calendar__pending span,
     .bt-dot, .bt-showcase__panel, .bt-signal, .bt-signal::after, .bt-stages li, .bt-stages li::after, .bt-proof__seal::after, .is-open .bt-fund__check, .bt-hero h1 span,
     .bt-quiz__result, .bt-trainer__body, .bt-sectors__floor, .bt-orbit__ring--outer, .bt-orbit__sparks, .bt-orbit__beam.is-active,
     .bt-orbit__core, .bt-orbit__node.is-active .bt-orbit__dot { animation: none; }
@@ -3430,16 +3471,20 @@ const faq = pick(lang, {
       start();
     }
 
-    if (!reduced && wrap && window.matchMedia('(hover: hover)').matches) {
+    // Depth: the scene drifts slightly against the pointer.
+    const stage = hero.querySelector<HTMLElement>('.bt-hero__stage');
+    if (!reduced && stage && window.matchMedia('(hover: hover)').matches) {
       hero.addEventListener('pointermove', (event) => {
-        const r = wrap.getBoundingClientRect();
-        const dx = Math.max(-1, Math.min(1, (event.clientX - (r.left + r.width / 2)) / r.width));
-        const dy = Math.max(-1, Math.min(1, (event.clientY - (r.top + r.height / 2)) / r.height));
-        wrap.classList.add('is-tilting');
-        wrap.style.setProperty('--ty', `${(dx * 7).toFixed(2)}deg`);
-        wrap.style.setProperty('--tx', `${(-dy * 6).toFixed(2)}deg`);
+        const r = hero.getBoundingClientRect();
+        const dx = (event.clientX - r.left) / r.width - 0.5;
+        const dy = (event.clientY - r.top) / r.height - 0.5;
+        stage.style.setProperty('--px', `${(dx * -28).toFixed(1)}px`);
+        stage.style.setProperty('--py', `${(dy * -20).toFixed(1)}px`);
       });
-      hero.addEventListener('pointerleave', () => wrap.classList.remove('is-tilting'));
+      hero.addEventListener('pointerleave', () => {
+        stage.style.removeProperty('--px');
+        stage.style.removeProperty('--py');
+      });
     }
   }
 
