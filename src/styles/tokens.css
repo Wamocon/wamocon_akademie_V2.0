@@ -51,6 +51,10 @@
      It always carries dark text: #111827 on #ff8a1f is 7.4:1. */
   --color-signal: #ff8a1f;
   --color-signal-soft: #ffb35c;
+  /* "PASS" state in the hero voucher on the AZAV page. */
+  --color-pass: #43c98a;
+  /* Monospace for test-report details; system fonts only (no external fonts). */
+  --font-mono: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
   /* Rating stars (Google review seal on the AZAV page). */
   --color-star: #fbbc04;
 
