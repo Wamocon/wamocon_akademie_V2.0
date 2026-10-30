@@ -60,39 +60,15 @@ const euro = new Intl.NumberFormat(intlLocale, { style: 'currency', currency: 'E
 const regularPrice = euro.format(bt.seminar.preisRegulaer);
 const zeroPrice = euro.format(0);
 
-// Hero photo reel: real photos from WAMOCON Academy seminars and the trainer
-// team, darkened and desaturated (public/images/academy/hero-slide-*.webp).
-// Each slide drifts slowly (Ken Burns) and wipes in diagonally.
-const heroSlides = [
-  { src: '/images/academy/hero-slide-1.webp', from: '50% 55%', to: '44% 48%' },
-  { src: '/images/academy/hero-slide-2.webp', from: '40% 40%', to: '52% 50%' },
-  { src: '/images/academy/hero-slide-3.webp', from: '60% 50%', to: '50% 42%' },
-  { src: '/images/academy/hero-slide-4.webp', from: '45% 60%', to: '55% 50%' },
-  { src: '/images/academy/hero-slide-5.webp', from: '50% 30%', to: '50% 40%' },
-];
-
-// Hero scene across the full width.
-// 1. Outline words drifting behind everything.
-const heroWords = `${regularPrice} → ${zeroPrice} · BILDUNGSGUTSCHEIN · ISTQB® · AZAV · `.repeat(2);
-// 2. "Your route" line: a smooth curve through five milestones in a 1600 x 200
-//    box. The SVG stretches to the hero width (preserveAspectRatio none), so
-//    milestones placed in percent sit exactly on the line.
-const journeyPoints: Array<[number, number]> = [[0, 170], [150, 140], [470, 100], [800, 138], [1130, 78], [1460, 108], [1600, 96]];
-const journeyPath = journeyPoints.reduce((d, p, i, a) => {
-  if (i === 0) return `M ${p[0]} ${p[1]}`;
-  const p0 = a[i - 2] ?? a[i - 1];
-  const p1 = a[i - 1];
-  const p3 = a[i + 1] ?? p;
-  const c1 = [p1[0] + (p[0] - p0[0]) / 6, p1[1] + (p[1] - p0[1]) / 6];
-  const c2 = [p[0] - (p3[0] - p1[0]) / 6, p[1] - (p3[1] - p1[1]) / 6];
-  return `${d} C ${c1[0].toFixed(1)} ${c1[1].toFixed(1)}, ${c2[0].toFixed(1)} ${c2[1].toFixed(1)}, ${p[0]} ${p[1]}`;
-}, '');
-// The light pulse needs 6 s for the whole line; a milestone lights up when it arrives.
-const journeyNodes = journeyPoints.slice(1, -1).map(([x, y]) => ({
-  x: ((x / 1600) * 100).toFixed(2),
-  y: ((y / 200) * 100).toFixed(2),
-  t: ((x / 1600) * 6).toFixed(2),
-}));
+// Hero photo wall: four strips of real photos from WAMOCON Academy (seminars,
+// trainers, participants from the video testimonials, the team), built as
+// rounded tiles with transparent gaps (public/images/academy/hero-wall-*.webp,
+// 480 x 2512 each). The ratio lets the script scroll each strip by exactly one
+// full length, so the loop is seamless.
+const heroWall = {
+  strips: [1, 2, 3, 4].map((n) => `/images/academy/hero-wall-${n}.webp`),
+  ratio: (2512 / 480).toFixed(4),
+};
 type GlanceRow = { term: string; value: string; kind?: 'goal' | 'price' | 'regular'; small?: string };
 
 // Countries with WAMOCON projects (WAMOCON company overview, October 2026).
@@ -247,8 +223,7 @@ const copy = {
     newBadge: 'Neu',
     markText: `Zugelassen durch die ${bt.fachkundigeStelle.name}`,
     markAlt: `Zeichen der fachkundigen Stelle ${bt.fachkundigeStelle.name}`,
-    heroKicker: 'Zugelassener Bildungsträger nach AZAV',
-    heroTrust: [['ISTQB®', 'Accredited Training Provider', ''], ['AZAV', certNo ? `Trägerzulassung ${certNoSeal}` : 'Trägerzulassung', '#zertifikat']],
+    heroKicker: 'Weiterbildung mit Bildungsgutschein',
     // Hook: Preisanker. Der Regulärpreis wird durchgestrichen, dann erscheint 0 €.
     // Die Bedingung steht direkt darunter in heroNote (§ 83 SGB III).
     heroLead: 'Werde Softwaretester.',
@@ -256,18 +231,6 @@ const copy = {
     heroText: 'In 45 Tagen zum ISTQB® Zertifikat, in Präsenz oder live online. Mit Bildungsgutschein übernimmt die Agentur für Arbeit deine Lehrgangskosten.*',
     // Quelle: § 83 Abs. 1 SGB III (Lehrgangskosten).
     heroNote: '* Sobald die Maßnahmenzulassung vorliegt. Wird dein Bildungsgutschein bewilligt, übernimmt die Agentur für Arbeit die Lehrgangskosten.',
-    // Hero-Gutschein: der Bildungsgutschein im Stil eines Testlaufs. Preis und
-    // Bedingung wie in "Auf einen Blick"; § 81 und § 83 SGB III.
-    ticketHead: 'Bildungsgutschein',
-    ticketSub: '45 Tage · Präsenz oder live online',
-    ticketLabel: 'Deine Lehrgangskosten',
-    ticketWas: (price: string) => `regulär ${price}`,
-    ticketChecks: [['ISTQB® Accredited Training Provider', 'CTFL 4.0 · German Testing Board'], ['AZAV-Trägerzulassung', certNo ? `${certNo} · ${bt.fachkundigeStelle.name}` : bt.fachkundigeStelle.name], ['Maßnahmenzulassung', '45-Tage-Seminar']],
-    ticketPass: 'PASS',
-    ticketPending: 'IN VORBEREITUNG',
-    ticketStamp: 'zugelassen',
-    ticketFoot: '* Mit bewilligtem Bildungsgutschein, sobald die Maßnahme zugelassen ist (§ 81 SGB III).',
-    journey: ['Beratung', 'Bildungsgutschein', '45-Tage-Seminar', 'ISTQB® Prüfung', 'Dein Einstieg in die IT'],
     ctaPlanned: 'Beratung und Vormerkung anfragen',
     ctaApproved: 'Förderberatung anfragen',
     ctaSeminar: 'Zum Seminar',
@@ -630,23 +593,12 @@ const copy = {
     newBadge: 'New',
     markText: `Approved by ${bt.fachkundigeStelle.name}`,
     markAlt: `Mark of the certification body ${bt.fachkundigeStelle.name}`,
-    heroKicker: 'Approved education provider under AZAV',
-    heroTrust: [['ISTQB®', 'Accredited Training Provider', ''], ['AZAV', certNo ? `provider approval ${certNoSeal}` : 'provider approval', '#zertifikat']],
+    heroKicker: 'Training with a Bildungsgutschein',
     heroLead: 'Become a software tester.',
     heroPrice: { before: 'For', between: '' },
     // AZAV and Bildungsgutschein are explained in the text below.
     heroText: 'Get your ISTQB® certificate in 45 days, on site or live online. With a Bildungsgutschein, the German education voucher, the Agentur für Arbeit covers your course fees.*',
     heroNote: '* Once the course approval is granted. If your Bildungsgutschein is approved, the Agentur für Arbeit covers the course fees.',
-    ticketHead: 'Bildungsgutschein',
-    ticketSub: '45 days · on site or live online',
-    ticketLabel: 'Your course fees',
-    ticketWas: (price: string) => `regular ${price}`,
-    ticketChecks: [['ISTQB® Accredited Training Provider', 'CTFL 4.0 · German Testing Board'], ['AZAV provider approval', certNo ? `${certNo} · ${bt.fachkundigeStelle.name}` : bt.fachkundigeStelle.name], ['Course approval', '45-day seminar']],
-    ticketPass: 'PASS',
-    ticketPending: 'IN PREPARATION',
-    ticketStamp: 'approved',
-    ticketFoot: '* With an approved Bildungsgutschein once the course is approved (§ 81 SGB III).',
-    journey: ['Consultation', 'Bildungsgutschein', '45-day seminar', 'ISTQB® exam', 'Your start in IT'],
     ctaPlanned: 'Get advice and pre-register',
     ctaApproved: 'Request funding advice',
     ctaSeminar: 'See the seminar',
@@ -986,22 +938,11 @@ const copy = {
     newBadge: 'Жаңа',
     markText: `${bt.fachkundigeStelle.name} рұқсат берген`,
     markAlt: `${bt.fachkundigeStelle.name} сараптама органының белгісі`,
-    heroKicker: 'AZAV бойынша рұқсат алған білім беру ұйымы',
-    heroTrust: [['ISTQB®', 'Accredited Training Provider', ''], ['AZAV', certNo ? `ұйымға рұқсат ${certNoSeal}` : 'ұйымға рұқсат', '#zertifikat']],
+    heroKicker: 'Bildungsgutschein арқылы оқу',
     heroLead: 'Бағдарламалық тестілеуші болыңыз.',
     heroPrice: { before: '', between: 'орнына' },
     heroText: '45 күнде ISTQB® сертификатына, аудиторияда немесе тікелей онлайн. Bildungsgutschein (неміс білім беру ваучері) арқылы курс ақысын Agentur für Arbeit өтейді.*',
     heroNote: '* Курсқа рұқсат берілгеннен кейін. Bildungsgutschein мақұлданса, курс ақысын Agentur für Arbeit өтейді.',
-    ticketHead: 'Bildungsgutschein',
-    ticketSub: '45 күн · аудиторияда немесе тікелей онлайн',
-    ticketLabel: 'Курс ақысы',
-    ticketWas: (price: string) => `толық бағасы ${price}`,
-    ticketChecks: [['ISTQB® Accredited Training Provider', 'CTFL 4.0 · German Testing Board'], ['AZAV бойынша ұйымға рұқсат', certNo ? `${certNo} · ${bt.fachkundigeStelle.name}` : bt.fachkundigeStelle.name], ['Курсқа рұқсат', '45 күндік семинар']],
-    ticketPass: 'PASS',
-    ticketPending: 'ДАЙЫНДАЛУДА',
-    ticketStamp: 'рұқсат',
-    ticketFoot: '* Курсқа рұқсат берілгеннен кейін, мақұлданған Bildungsgutschein арқылы (§ 81 SGB III).',
-    journey: ['Кеңес', 'Bildungsgutschein', '45 күндік семинар', 'ISTQB® емтиханы', 'IT саласына бастау'],
     ctaPlanned: 'Кеңес алу және алдын ала тіркелу',
     ctaApproved: 'Қаржыландыру бойынша кеңес алу',
     ctaSeminar: 'Семинарға өту',
@@ -1660,72 +1601,11 @@ const faq = pick(lang, {
   <div class="bt-progress" aria-hidden="true"><span data-bt-progress></span></div>
   <!-- ================================================================ HERO -->
   <section class="bt-hero" aria-labelledby="bt-hero-title" data-bt-hero>
-    <div class="bt-hero__photos" aria-hidden="true" data-bt-photos>
-      {heroSlides.map((slide, i) => (
-        <div
-          class="bt-hero__photo"
-          data-src={i === 0 ? undefined : slide.src}
-          style={`--from:${slide.from};--to:${slide.to};${i === 0 ? `background-image:url(${slide.src})` : ''}`}
-        ></div>
-      ))}
+    {/* Decorative: a tilted wall of real WAMOCON Academy photos, moving slowly. */}
+    <div class="bt-hero__wall" aria-hidden="true" data-bt-wall data-ratio={heroWall.ratio}>
+      {heroWall.strips.map((src) => <div class="bt-hero__strip" style={`background-image:url(${src})`}></div>)}
     </div>
     <div class="bt-hero__bg" aria-hidden="true"></div>
-    {/* Decorative scene behind the text: everything in it is repeated in the copy. */}
-    <div class="bt-hero__scene" aria-hidden="true">
-      <div class="bt-hero__words" data-marquee><span>{heroWords}</span><span>{heroWords}</span></div>
-      <div class="bt-hero__journey">
-        <svg viewBox="0 0 1600 200" preserveAspectRatio="none" focusable="false">
-          <path class="bt-hero__journey-line" d={journeyPath} vector-effect="non-scaling-stroke" />
-          <path class="bt-hero__journey-pulse" d={journeyPath} pathLength="1000" vector-effect="non-scaling-stroke" />
-        </svg>
-        {journeyNodes.map((node, i) => (
-          <span class="bt-hero__milestone" style={`left:${node.x}%;top:${node.y}%;--t:${node.t}s`}>
-            <i></i>
-            <b>{c.journey[i]}</b>
-          </span>
-        ))}
-      </div>
-      <div class="container bt-hero__scene-inner">
-          <div class="bt-hero__stage">
-            <img class="bt-hero__sticker is-azav" src="/images/badge-azav-gzq.svg" alt="" width="801" height="597" decoding="async" />
-            <img class="bt-hero__sticker is-istqb" src="/images/badge-istqb-atp.webp" alt="" width="384" height="384" decoding="async" />
-            <div class="bt-ticket-wrap" data-bt-ticket>
-              <div class="bt-ticket__stamp" aria-hidden="true">
-                <b>AZAV</b>
-                <span>{c.ticketStamp}</span>
-                {certNo && <span>{certNoSeal}</span>}
-              </div>
-              <article class="bt-ticket">
-                <div class="bt-ticket__scan" aria-hidden="true"></div>
-                <p class="bt-ticket__head"><strong>{c.ticketHead}</strong><span>WAMOCON Academy</span></p>
-                <p class="bt-ticket__title">{bt.seminar.titel}</p>
-                <p class="bt-ticket__sub">{c.ticketSub}</p>
-                <div class="bt-ticket__price">
-                  <div>
-                    <p class="bt-ticket__label">{c.ticketLabel}</p>
-                    <p class="bt-ticket__amount"><span data-bt-amount data-from={bt.seminar.preisRegulaer}>{zeroPrice}</span><sup>*</sup></p>
-                  </div>
-                  <span class="bt-ticket__was">{c.ticketWas(regularPrice)}</span>
-                </div>
-                <div class="bt-ticket__perf" aria-hidden="true"></div>
-                <ul class="bt-ticket__checks">
-                  {c.ticketChecks.map(([label, sub], index) => (
-                    <li>
-                      <div class="bt-ticket__k">{label}<span>{sub}</span></div>
-                      {index === 2 && !approved ? (
-                        <span class="bt-ticket__st is-pending"><i aria-hidden="true"></i>{c.ticketPending}</span>
-                      ) : (
-                        <span class="bt-ticket__st is-pass"><span aria-hidden="true">✓ </span>{c.ticketPass}</span>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-                <p class="bt-ticket__foot">{c.ticketFoot}</p>
-              </article>
-            </div>
-          </div>
-      </div>
-    </div>
     <div class="container bt-hero__inner">
       <div class="bt-hero__copy">
         <div class="bt-hero__badges">
@@ -1745,17 +1625,6 @@ const faq = pick(lang, {
             {c.heroPrice.before && <>{c.heroPrice.before} </>}<del class="bt-hero__was">{regularPrice}</del>{c.heroPrice.between && <> {c.heroPrice.between}</>} <span class="bt-hero__now">{zeroPrice}</span><sup>*</sup>
           </span>
         </h1>
-        <ul class="bt-hero__trust">
-          {c.heroTrust.map(([label, text, href]) => {
-            const inner = (
-              <>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3 20 6v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z" /><path d="m9 12 2 2 4-4" /></svg>
-                <span><strong>{label}</strong> {text}</span>
-              </>
-            );
-            return <li>{href ? <a href={href}>{inner}</a> : <span>{inner}</span>}</li>;
-          })}
-        </ul>
         <p class="bt-hero__lead">{c.heroText}</p>
         <div class="bt-hero__actions">
           <Button href={`#${formAnchor}`} size="lg">{cta}</Button>
@@ -2588,162 +2457,70 @@ const faq = pick(lang, {
   .bt-aurora span:first-child { top: -30%; left: -20%; }
   .bt-aurora span:last-child { right: -25%; bottom: -35%; background: radial-gradient(circle, var(--glow-side), transparent 60%); }
 
-  /* ---- Hero (pattern: AcademyHome full-bleed hero) -------------------------- */
+  /* ---- Hero: hook headline over a moving photo wall -------------------------- */
   /* minmax(0, 1fr): without it the long word "Softwaretester" sets the grid
      column's minimum width and pushes the whole copy past a phone screen. */
-  .bt-hero { position: relative; display: grid; min-height: 100svh; grid-template-columns: minmax(0, 1fr); align-items: center; overflow: hidden; isolation: isolate; }
-  /* Animated background without canvas or transforms: a dot grid and a red
-     light, both painted, whose position (--gx, --gy) the script moves. A
-     canvas or transform layer here would cost the text its sharpness. */
-  /* Photo reel: each slide is a painted background (no transform, no
-     opacity animation), zooming via background-size and wiping in via a
-     moving mask. The script hands the classes on every 7 seconds. */
-  .bt-hero { background: var(--color-bg); }
-  .bt-hero__photos { position: absolute; inset: 0; z-index: -2; overflow: hidden; }
-  .bt-hero__photo { position: absolute; inset: 0; visibility: hidden; background-repeat: no-repeat; background-position: var(--from, 50% 50%); background-size: max(108%, 192svh) auto; }
-  .bt-hero__photo:first-child, .bt-hero__photo.is-in, .bt-hero__photo.is-out { visibility: visible; }
-  .bt-hero__photo.is-out { z-index: 1; animation: bt-kb 9s linear forwards; }
-  .bt-hero__photo.is-in {
-    z-index: 2;
-    -webkit-mask-image: linear-gradient(100deg, #000 40%, transparent 60%);
-    mask-image: linear-gradient(100deg, #000 40%, transparent 60%);
-    -webkit-mask-size: 300% 100%;
-    mask-size: 300% 100%;
-    animation: bt-kb 9s linear forwards, bt-wipe 1.6s var(--ease-out) forwards;
+  .bt-hero { position: relative; display: grid; min-height: 100svh; grid-template-columns: minmax(0, 1fr); align-items: center; overflow: hidden; isolation: isolate; background: var(--color-bg); }
+  /* The wall: four strips, tilted once (a static rotation, no animation), each
+     scrolling its photos endlessly via background-position. Painted, not
+     composited, so the text above keeps its subpixel sharpness. --period is one
+     strip length in pixels (set by the script); --px/--py follow the pointer. */
+  .bt-hero__wall {
+    position: absolute;
+    z-index: -2;
+    top: -38%;
+    bottom: -38%;
+    left: 38%;
+    right: -16%;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(14px, 1.3vw, 24px);
+    margin: var(--py, 0px) 0 0 var(--px, 0px);
+    rotate: -10deg;
+    transition: margin 0.8s var(--ease-out);
   }
-  .bt-hero__photos.is-paused .bt-hero__photo { animation-play-state: paused; }
-  /* Grade over the photos: dark on the text side, the moving red light,
-     and a fade into the page at the bottom. */
+  .bt-hero__strip { background-repeat: repeat-y; background-size: 100% auto; animation: bt-strip 72s linear infinite; }
+  .bt-hero__strip:nth-child(2) { animation-duration: 86s; animation-direction: reverse; animation-delay: -30s; }
+  .bt-hero__strip:nth-child(3) { animation-duration: 64s; animation-delay: -12s; }
+  .bt-hero__strip:nth-child(4) { animation-duration: 78s; animation-direction: reverse; animation-delay: -50s; }
+  .bt-hero__wall.is-paused .bt-hero__strip { animation-play-state: paused; }
+  /* Grade: solid on the text side, opening up towards the photos, a red light
+     over the wall and a fade into the page at the bottom. */
   .bt-hero__bg {
     position: absolute;
     inset: 0;
     z-index: -1;
+    pointer-events: none;
     background:
-      radial-gradient(circle at var(--gx, 72%) var(--gy, 48%), rgba(212, 0, 0, 0.34) 0, rgba(212, 0, 0, 0.1) 30%, transparent 60%),
-      linear-gradient(90deg, rgba(16, 16, 16, 0.94) 0%, rgba(16, 16, 16, 0.78) 36%, rgba(16, 16, 16, 0.38) 68%, rgba(16, 16, 16, 0.5) 100%),
-      linear-gradient(180deg, rgba(16, 16, 16, 0.55) 0%, transparent 22%, transparent 70%, var(--color-bg) 100%);
+      radial-gradient(55% 65% at 80% 40%, rgba(212, 0, 0, 0.3), transparent 70%),
+      linear-gradient(90deg, var(--color-bg) 0%, rgba(16, 16, 16, 0.97) 34%, rgba(16, 16, 16, 0.66) 52%, rgba(16, 16, 16, 0.2) 72%, rgba(16, 16, 16, 0.3) 100%),
+      linear-gradient(180deg, rgba(16, 16, 16, 0.75) 0%, transparent 22%, transparent 70%, var(--color-bg) 100%);
   }
-  .bt-hero__bg::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: radial-gradient(rgba(255, 255, 255, 0.55) 1px, transparent 1.4px);
-    background-size: 28px 28px;
-    background-position: 14px 14px;
-    mask-image: radial-gradient(circle at var(--gx, 72%) var(--gy, 48%), rgba(0, 0, 0, 0.6) 0, rgba(0, 0, 0, 0.14) 45%, rgba(0, 0, 0, 0.07) 100%);
-  }
-  .bt-hero__inner { position: relative; z-index: 3; padding-block: clamp(120px, 15vh, 170px) calc(clamp(110px, 15vh, 160px) + clamp(18px, 4vh, 48px) + 28px); }
-  .bt-hero__copy { min-width: 0; max-width: min(720px, 56%); }
-  /* Background scene: voucher and seals float behind the copy. A gradient
-     from the left keeps the text readable wherever they overlap. */
-  .bt-hero__scene { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
-  .bt-hero__scene::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, var(--color-bg) 0%, rgba(16, 16, 16, 0.82) 34%, rgba(16, 16, 16, 0) 60%); }
-  .bt-hero__scene-inner { position: relative; height: 100%; }
+  .bt-hero__inner { position: relative; padding-block: clamp(120px, 15vh, 170px) clamp(48px, 8vh, 96px); }
+  .bt-hero__copy { min-width: 0; max-width: min(760px, 52%); }
   .bt-hero__badges { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xs) var(--space-sm); margin-bottom: 1.25rem; }
   .bt-hero__kicker { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--space-xs); color: var(--color-text); font-size: var(--fs-sm); font-weight: var(--fw-semibold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
   .bt-hero__kicker img { width: auto; height: auto; max-height: 48px; }
-  .bt-hero h1 { margin: 0 0 1.25rem; font-size: clamp(2.6rem, 5.2vw, 5.2rem); line-height: var(--lh-display); letter-spacing: var(--tracking-display); }
+  .bt-hero h1 { margin: 0 0 1.5rem; font-size: clamp(2.8rem, 5.6vw, 5.6rem); line-height: var(--lh-display); letter-spacing: var(--tracking-display); }
   .bt-hero h1 > span { display: block; }
   .bt-hero__price { color: var(--color-accent); }
   .bt-hero__was { position: relative; color: var(--color-text-subtle); text-decoration: none; }
   .bt-hero__was::after { content: ''; position: absolute; top: 54%; left: -0.04em; right: -0.04em; height: 0.08em; border-radius: 0.04em; background: var(--color-accent); transform-origin: left center; }
   .bt-hero__now { display: inline-block; }
   .bt-hero__price sup { margin-left: 0.04em; color: var(--color-text-subtle); font-size: 0.38em; vertical-align: top; }
-  .bt-hero__trust { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 1.25rem; }
-  .bt-hero__trust li > * { display: inline-flex; align-items: center; gap: 8px; padding: 0.45rem 1rem 0.45rem 0.7rem; border: 1px solid var(--border-strong); border-radius: var(--radius-pill); background: rgba(16, 16, 16, 0.6); font-size: var(--fs-sm); line-height: var(--lh-snug); transition: border-color var(--dur-fast) var(--ease-out); }
-  .bt-hero__trust a:hover, .bt-hero__trust a:focus-visible { border-color: var(--color-accent); }
-  .bt-hero__trust svg { flex: 0 0 auto; width: 20px; height: 20px; color: var(--color-accent); }
-  .bt-hero__trust strong { font-weight: var(--fw-bold); }
   .bt-hero__lead { max-width: 54ch; font-size: var(--fs-lead); line-height: var(--lh-relaxed); }
   .bt-hero__actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: 1.75rem; }
   .bt-hero__note { max-width: 80ch; margin-top: var(--space-sm); color: var(--color-text-subtle); font-size: var(--fs-xs); line-height: var(--lh-body); }
 
-  /* ---- Hero voucher: the Bildungsgutschein, checked like a test run ------------ */
-  /* The stage sits right of the copy; the pointer shifts it a little (margins,
-     so no layer forms) and its parts bob gently via margin-top. */
-  /* Width also follows the viewport height, so voucher and seals never reach the header. */
-  .bt-hero__stage { position: absolute; top: 52%; right: clamp(-24px, 1vw, 40px); z-index: 2; width: min(540px, 39vw, 58vh); margin: var(--py, 0px) var(--px, 0px) 0 0; translate: 0 -48%; transition: margin 0.5s var(--ease-out); }
-  .bt-ticket-wrap { position: relative; rotate: -5deg; scale: 1.12; transform-origin: right center; animation: bt-bob 7s ease-in-out infinite; }
-  .bt-hero__sticker { position: absolute; z-index: 3; height: auto; filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.55)); animation: bt-bob 6s ease-in-out infinite; }
-  .bt-hero__sticker.is-azav { top: -54px; left: -58px; width: 142px; rotate: -10deg; animation-delay: -2s; }
-  .bt-hero__sticker.is-istqb { bottom: -64px; left: -64px; width: 118px; rotate: 8deg; animation-duration: 8s; }
-
-  /* Outline words: a huge, faint marquee across the whole hero (moved by margin). */
-  .bt-hero__words { position: absolute; top: 15%; left: 0; display: flex; color: transparent; font-size: clamp(6rem, 17vw, 17rem); font-weight: var(--fw-extrabold); line-height: 1; letter-spacing: -0.03em; white-space: nowrap; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.06); }
-  .bt-hero__words span { flex: 0 0 auto; }
-  .bt-hero__words span:first-child { animation: bt-marquee-ml 140s linear infinite; }
-
-  /* "Your route" across the full width: a red pulse runs along the line and
-     each milestone lights up as it passes (stroke offset and colours: painted). */
-  .bt-hero__journey { position: absolute; left: 0; right: 0; bottom: clamp(18px, 4vh, 48px); z-index: 2; height: clamp(110px, 15vh, 160px); }
-  .bt-hero__journey svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-  .bt-hero__journey-line { fill: none; stroke: rgba(255, 255, 255, 0.16); stroke-width: 2; stroke-dasharray: 2 9; }
-  .bt-hero__journey-pulse { fill: none; stroke: var(--color-accent); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 70 930; filter: drop-shadow(0 0 6px var(--color-accent)); animation: bt-journey 6s linear infinite; }
-  .bt-hero__milestone { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 10px; translate: -50% -9px; }
-  .bt-hero__milestone i { width: 18px; height: 18px; border: 2px solid rgba(255, 255, 255, 0.32); border-radius: 50%; background: var(--color-bg); animation: bt-milestone 6s linear infinite; animation-delay: var(--t); }
-  .bt-hero__milestone b { color: var(--color-muted); font-family: var(--font-mono); font-size: 11px; font-weight: var(--fw-semibold); letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; animation: bt-milestone-label 6s linear infinite; animation-delay: var(--t); }
-  .bt-hero__milestone:last-child i { width: 24px; height: 24px; border-color: var(--color-accent); }
-  .bt-hero__milestone:last-child b { color: var(--color-text); }
-  .bt-ticket {
-    position: relative;
-    overflow: hidden;
-    padding: 26px 26px 22px;
-    border: 1px solid var(--border-strong);
-    border-radius: 18px;
-    background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02) 55%), var(--color-bg-elevated);
-    box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.8);
-    /* Ticket notches left and right, level with the perforation (--notch). */
-    -webkit-mask: radial-gradient(circle 13px at 0 var(--notch, 58%), transparent 12.5px, #000 13px) left / 51% 100% no-repeat, radial-gradient(circle 13px at 100% var(--notch, 58%), transparent 12.5px, #000 13px) right / 51% 100% no-repeat;
-    mask: radial-gradient(circle 13px at 0 var(--notch, 58%), transparent 12.5px, #000 13px) left / 51% 100% no-repeat, radial-gradient(circle 13px at 100% var(--notch, 58%), transparent 12.5px, #000 13px) right / 51% 100% no-repeat;
-  }
-  .bt-ticket__head { display: flex; justify-content: space-between; gap: 12px; color: var(--color-text-subtle); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; }
-  .bt-ticket__head strong { color: var(--color-accent); font-weight: var(--fw-semibold); }
-  .bt-ticket__title { margin-top: 14px; font-size: 1.35rem; font-weight: var(--fw-bold); line-height: 1.25; }
-  .bt-ticket__sub { color: var(--color-muted); font-size: var(--fs-sm); }
-  .bt-ticket__price { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-top: 22px; }
-  .bt-ticket__label { color: var(--color-text-subtle); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
-  .bt-ticket__amount { font-size: clamp(3.4rem, 6vw, 4.75rem); font-weight: var(--fw-extrabold); line-height: 0.95; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .bt-ticket__amount sup { margin-left: 2px; color: var(--color-text-subtle); font-size: 0.36em; font-weight: var(--fw-semibold); vertical-align: top; }
-  .bt-ticket__was { position: relative; color: var(--color-text-subtle); font-size: 15px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .bt-ticket__was::after { content: ''; position: absolute; top: 52%; left: -3px; right: -3px; height: 2px; background: var(--color-accent); transform-origin: left center; }
-  .bt-ticket__perf { margin: 22px -26px 16px; border-top: 2px dashed var(--border-strong); }
-  .bt-ticket__checks { display: grid; gap: 10px; }
-  .bt-ticket__checks li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; font-size: 14px; }
-  .bt-ticket__k { min-width: 0; color: var(--color-muted); line-height: var(--lh-snug); }
-  .bt-ticket__k span { display: block; color: var(--color-text-subtle); font-family: var(--font-mono); font-size: 11px; }
-  .bt-ticket__st { padding: 3px 8px; border-radius: 6px; font-family: var(--font-mono); font-size: 11px; font-weight: var(--fw-semibold); letter-spacing: 0.08em; white-space: nowrap; }
-  .bt-ticket__st.is-pass { background: rgba(67, 201, 138, 0.12); color: var(--color-pass); }
-  .bt-ticket__st.is-pending { display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 179, 92, 0.12); color: var(--color-signal-soft); }
-  .bt-ticket__st.is-pending i { width: 6px; height: 6px; border-radius: 50%; background: var(--color-signal-soft); animation: bt-blink 1.6s ease-in-out infinite; }
-  .bt-ticket__foot { margin-top: 16px; color: var(--color-text-subtle); font-size: 11px; line-height: 1.45; }
-  .bt-ticket__scan { position: absolute; top: 0; left: 0; right: 0; height: 90px; opacity: 0; background: linear-gradient(180deg, transparent, rgba(255, 61, 61, 0.16) 70%, rgba(255, 61, 61, 0.55) 98%, transparent); pointer-events: none; }
-  .bt-ticket__stamp { position: absolute; top: -44px; right: -18px; z-index: 2; padding: 8px 14px; border: 3px solid var(--color-accent); border-radius: 12px; background: rgba(16, 16, 16, 0.85); box-shadow: 0 0 0 3px rgba(16, 16, 16, 0.85), inset 0 0 0 2px var(--color-accent); color: var(--color-accent); font-family: var(--font-mono); line-height: 1.15; text-align: center; text-transform: uppercase; transform: rotate(-12deg); pointer-events: none; }
-  .bt-ticket__stamp b { display: block; font-size: 18px; font-weight: var(--fw-semibold); letter-spacing: 0.12em; }
-  .bt-ticket__stamp span { display: block; font-size: 10px; letter-spacing: 0.16em; }
-
-  /* The hook plays once after load (the script adds .is-playing). Every step
-     runs a single time, so nothing keeps a layer alive afterwards. */
+  /* The hook plays once after load (the script adds .is-playing): the copy
+     rises in, the regular price is struck through, then 0 € lands. */
   .is-playing .bt-hero__copy > * { animation: bt-copy-in 0.6s var(--ease-out) backwards; }
-  .is-playing .bt-hero__copy > :nth-child(2) { animation-delay: 60ms; }
-  .is-playing .bt-hero__copy > :nth-child(3) { animation-delay: 120ms; }
-  .is-playing .bt-hero__copy > :nth-child(4) { animation-delay: 180ms; }
-  .is-playing .bt-hero__copy > :nth-child(5) { animation-delay: 240ms; }
-  .is-playing .bt-hero__copy > :nth-child(6) { animation-delay: 300ms; }
-  .is-playing .bt-ticket { animation: bt-rise 0.7s var(--ease-out) 150ms backwards, bt-press 0.35s var(--ease-out) 2550ms; }
-  .is-playing .bt-ticket__scan { animation: bt-scan 1.1s cubic-bezier(0.45, 0, 0.55, 1) 650ms; }
-  .is-playing .bt-ticket__checks li { animation: bt-tick 0.35s var(--ease-out) backwards; }
-  .is-playing .bt-ticket__checks li:nth-child(1) { animation-delay: 900ms; }
-  .is-playing .bt-ticket__checks li:nth-child(2) { animation-delay: 1050ms; }
-  .is-playing .bt-ticket__checks li:nth-child(3) { animation-delay: 1200ms; }
-  .is-playing .bt-ticket__was { animation: bt-fade-up 0.35s var(--ease-out) 2050ms backwards; }
-  .is-playing .bt-ticket__was::after { animation: bt-strike 0.35s var(--ease-out) 2250ms backwards; }
-  .is-playing .bt-ticket__stamp { animation: bt-stamp 0.45s var(--ease-out) 2450ms backwards; }
-  /* Headline hook: the regular price is struck through, then 0 € lands. */
+  .is-playing .bt-hero__copy > :nth-child(2) { animation-delay: 80ms; }
+  .is-playing .bt-hero__copy > :nth-child(3) { animation-delay: 160ms; }
+  .is-playing .bt-hero__copy > :nth-child(4) { animation-delay: 240ms; }
+  .is-playing .bt-hero__copy > :nth-child(5) { animation-delay: 320ms; }
   .is-playing .bt-hero__was::after { animation: bt-strike 0.45s var(--ease-out) 750ms backwards; }
   .is-playing .bt-hero__now { animation: bt-now 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 1150ms backwards; }
-  .is-playing .bt-hero__sticker { animation-name: bt-bob, bt-sticker-in; animation-duration: 6s, 0.5s; animation-timing-function: ease-in-out, var(--ease-out); animation-iteration-count: infinite, 1; animation-fill-mode: none, backwards; }
-  .is-playing .bt-hero__sticker.is-azav { animation-delay: -2s, 1.6s; }
-  .is-playing .bt-hero__sticker.is-istqb { animation-duration: 8s, 0.5s; animation-delay: 0s, 1.8s; }
 
   /* ---- Seals ------------------------------------------------------------------ */
   .bt-seals { position: relative; z-index: 1; padding-block: var(--space-md) var(--space-lg); }
@@ -3360,22 +3137,9 @@ const faq = pick(lang, {
   @keyframes bt-flow { to { background-position: -200% 0; } }
   @keyframes bt-pop { from { opacity: 0; transform: translateY(8px); } }
   @keyframes bt-copy-in { from { opacity: 0; transform: translateY(14px); } }
-  @keyframes bt-rise { from { opacity: 0; transform: translateY(40px) rotateX(18deg) scale(0.96); } }
-  @keyframes bt-press { 40% { transform: scale(0.985); } }
-  @keyframes bt-scan { 0% { opacity: 1; transform: translateY(-90px); } 85% { opacity: 1; } 100% { opacity: 0; transform: translateY(var(--scan-end, 520px)); } }
-  @keyframes bt-tick { from { opacity: 0; transform: translateX(-8px); } }
   @keyframes bt-strike { from { transform: scaleX(0); } }
-  @keyframes bt-fade-up { from { opacity: 0; transform: translateY(6px); } }
-  @keyframes bt-stamp { 0% { opacity: 0; transform: rotate(-20deg) scale(1.9); } 60% { opacity: 1; transform: rotate(-11deg) scale(0.94); } 100% { opacity: 1; transform: rotate(-12deg); } }
-  @keyframes bt-blink { 50% { background: transparent; } }
-  @keyframes bt-bob { 50% { margin-top: -14px; } }
-  @keyframes bt-kb { from { background-size: max(108%, 192svh) auto; background-position: var(--from); } to { background-size: max(122%, 217svh) auto; background-position: var(--to); } }
-  @keyframes bt-wipe { from { -webkit-mask-position: 100% 0; mask-position: 100% 0; } to { -webkit-mask-position: 0 0; mask-position: 0 0; } }
-  @keyframes bt-journey { from { stroke-dashoffset: 70; } to { stroke-dashoffset: -930; } }
-  @keyframes bt-milestone { 0%, 15%, 100% { border-color: rgba(255, 255, 255, 0.32); background: var(--color-bg); box-shadow: none; } 2%, 10% { border-color: var(--color-accent); background: var(--color-accent-surface); box-shadow: 0 0 0 6px rgba(244, 14, 14, 0.18), 0 0 26px rgba(244, 14, 14, 0.65); } }
-  @keyframes bt-milestone-label { 2%, 10% { color: var(--color-text); } }
+  @keyframes bt-strip { to { background-position: 0 calc(-1 * var(--period, 0px)); } }
   @keyframes bt-now { 0% { opacity: 0; transform: scale(1.7); } 60% { opacity: 1; transform: scale(0.94); } }
-  @keyframes bt-sticker-in { from { opacity: 0; } }
   @keyframes bt-pulse { 0%, 100% { box-shadow: var(--shadow-accent); } 50% { box-shadow: 0 0 0 6px rgba(244, 14, 14, 0.18), var(--shadow-accent); } }
   @keyframes bt-marquee-ml { to { margin-left: calc(-1 * var(--shift, 0px)); } }
   @keyframes bt-sparks-outer { to { stroke-dashoffset: -1382; } }
@@ -3389,19 +3153,11 @@ const faq = pick(lang, {
     .bt-kpis li { grid-column: span 2; }
     .bt-kpis li:nth-child(n + 4) { grid-column: span 3; }
   }
-  @media (min-width: 1051px) and (max-height: 860px) {
-    .bt-hero__journey { display: none; }
-    .bt-hero__inner { padding-bottom: clamp(40px, 6vh, 88px); }
-  }
   @media (max-width: 1050px) {
+    /* The wall moves behind the full width, the shade covers it more. */
     .bt-hero__copy { max-width: none; }
-    .bt-hero__scene { opacity: 0.28; }
-    /* On phones the voucher only hints at itself in the lower right corner. */
-    .bt-hero__scene::after { background: linear-gradient(180deg, rgba(16, 16, 16, 0.4), rgba(16, 16, 16, 0) 60%); }
-    .bt-hero__stage { top: auto; bottom: 6%; right: -40px; width: min(420px, 70vw); translate: none; }
-    .bt-hero__sticker, .bt-hero__journey { display: none; }
-    .bt-hero__inner { padding-bottom: clamp(40px, 6vh, 88px); }
-    .bt-hero__words { top: auto; bottom: 8%; -webkit-text-stroke-color: rgba(255, 255, 255, 0.06); }
+    .bt-hero__wall { left: -12%; right: -36%; }
+    .bt-hero__bg { background: linear-gradient(180deg, rgba(16, 16, 16, 0.8) 0%, rgba(16, 16, 16, 0.86) 55%, var(--color-bg) 100%); }
     .bt-steps__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .bt-steps__list li:nth-child(2n)::after { content: none; }
     .bt-tiles, .bt-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -3445,13 +3201,7 @@ const faq = pick(lang, {
     .bt-orbit__node.is-active .bt-orbit__dot { transform: none; animation: none; }
   }
   @media (max-width: 620px) {
-    .bt-hero__scene { opacity: 0.13; }
-    .bt-hero__bg { background: linear-gradient(180deg, rgba(16, 16, 16, 0.78) 0%, rgba(16, 16, 16, 0.86) 60%, var(--color-bg) 100%); }
-    .bt-hero__stage { bottom: -4%; right: -110px; width: 330px; }
     .bt-hero__inner { padding-top: 120px; }
-    .bt-ticket { padding: 22px 20px 18px; }
-    .bt-ticket__perf { margin-inline: -20px; }
-    .bt-ticket__stamp { top: -40px; right: -4px; }
     .bt-hero h1 { font-size: var(--fs-h1); overflow-wrap: break-word; hyphens: auto; }
     .bt-tiles, .bt-cards, .bt-steps__list, .bt-why__facts, .bt-quiz__options { grid-template-columns: minmax(0, 1fr); }
     .bt-quiz__options.is-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -3478,7 +3228,7 @@ const faq = pick(lang, {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .bt-new, .bt-aurora span, .bt-ticket__st.is-pending i, .bt-ticket-wrap, .bt-hero__sticker, .bt-hero__words span, .bt-hero__photo, .bt-hero__journey-pulse, .bt-hero__milestone i, .bt-hero__milestone b, .bt-format, .bt-refs__track ul, .bt-calendar__pending span,
+    .bt-new, .bt-aurora span, .bt-hero__strip, .bt-format, .bt-refs__track ul, .bt-calendar__pending span,
     .bt-dot, .bt-showcase__panel, .bt-signal, .bt-signal::after, .bt-stages li, .bt-stages li::after, .bt-proof__seal::after, .is-open .bt-fund__check, .bt-hero h1 span,
     .bt-quiz__result, .bt-trainer__body, .bt-sectors__floor, .bt-orbit__ring--outer, .bt-orbit__sparks, .bt-orbit__beam.is-active,
     .bt-orbit__core, .bt-orbit__node.is-active .bt-orbit__dot { animation: none; }
@@ -3518,114 +3268,34 @@ const faq = pick(lang, {
     counters.forEach((el) => observer.observe(el));
   }
 
-  // Hero hook. The voucher plays its test run once: scan, checks, the price
-  // counts down from the regular price to 0, the stamp lands. The background
-  // light drifts via two custom properties (painted, about 30 fps, only while
-  // the hero is on screen). Reduced motion: final state, no movement.
+  // Hero. The headline hook plays once. The photo wall scrolls each strip by
+  // exactly one strip length (seamless loop), pauses while off screen or in a
+  // background tab and drifts slightly against the pointer.
   const hero = document.querySelector<HTMLElement>('[data-bt-hero]');
-  if (hero) {
-    const bg = hero.querySelector<HTMLElement>('.bt-hero__bg');
-    const wrap = hero.querySelector<HTMLElement>('[data-bt-ticket]');
-    const ticket = wrap?.querySelector<HTMLElement>('.bt-ticket');
-    const amount = hero.querySelector<HTMLElement>('[data-bt-amount]');
-    const setNotch = () => {
-      const perf = ticket?.querySelector<HTMLElement>('.bt-ticket__perf');
-      if (ticket && perf) ticket.style.setProperty('--notch', `${perf.offsetTop + 1}px`);
-    };
-    setNotch();
-    window.addEventListener('resize', setNotch, { passive: true });
-
-    if (!reduced && ticket && amount) {
-      ticket.style.setProperty('--scan-end', `${ticket.offsetHeight}px`);
-      const from = Number(amount.dataset.from) || 0;
-      const finalText = amount.textContent;
-      const euro = new Intl.NumberFormat(document.documentElement.lang || 'de', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
-      amount.textContent = euro.format(from);
-      hero.classList.add('is-playing');
-      window.setTimeout(() => {
-        const start = performance.now();
-        const step = (now: number) => {
-          const p = Math.min(1, (now - start) / 1100);
-          const eased = 1 - Math.pow(1 - p, 3);
-          amount.textContent = p < 1 ? euro.format(Math.round((from * (1 - eased)) / 50) * 50) : finalText;
-          if (p < 1) requestAnimationFrame(step);
-        };
-        requestAnimationFrame(step);
-      }, 950);
-    }
-
-    // Photo reel: one slide every 7 s, the next one preloaded; pauses off screen.
-    const reel = hero.querySelector<HTMLElement>('[data-bt-photos]');
-    let reelTimer = 0;
-    const reelSlides = reel ? Array.from(reel.children) as HTMLElement[] : [];
-    let reelIndex = 0;
-    const loadSlide = (el?: HTMLElement) => {
-      if (el?.dataset.src && !el.style.backgroundImage) el.style.backgroundImage = `url(${el.dataset.src})`;
-    };
-    const nextSlide = () => {
-      const prev = reelSlides[reelIndex];
-      reelIndex = (reelIndex + 1) % reelSlides.length;
-      const el = reelSlides[reelIndex];
-      loadSlide(el);
-      loadSlide(reelSlides[(reelIndex + 1) % reelSlides.length]);
-      reelSlides.forEach((slide) => { if (slide !== prev && slide !== el) slide.classList.remove('is-in', 'is-out'); });
-      prev.classList.remove('is-in');
-      prev.classList.add('is-out');
-      el.classList.remove('is-out');
-      void el.offsetWidth;
-      el.classList.add('is-in');
-    };
-    const reelPlay = (on: boolean) => {
-      if (!reel || reduced || reelSlides.length < 2) return;
-      reel.classList.toggle('is-paused', !on);
-      window.clearInterval(reelTimer);
-      reelTimer = on ? window.setInterval(nextSlide, 7000) : 0;
-    };
-    if (reel && !reduced && reelSlides.length > 1) {
-      reelSlides[0].classList.add('is-out');
-      loadSlide(reelSlides[1]);
-    }
-
-    if (!reduced && bg) {
+  if (hero && !reduced) {
+    hero.classList.add('is-playing');
+    const wall = hero.querySelector<HTMLElement>('[data-bt-wall]');
+    if (wall) {
+      const strips = Array.from(wall.children) as HTMLElement[];
+      const ratio = Number(wall.dataset.ratio) || 1;
+      const measure = () => strips.forEach((strip) => strip.style.setProperty('--period', `${(strip.offsetWidth * ratio).toFixed(1)}px`));
+      measure();
+      window.addEventListener('resize', measure, { passive: true });
       let visible = true;
-      let running = false;
-      let last = 0;
-      const t0 = performance.now();
-      const loop = (now: number) => {
-        if (!visible || document.hidden) { running = false; return; }
-        if (now - last > 33) {
-          last = now;
-          const t = (now - t0) / 1000;
-          bg.style.setProperty('--gx', `${(72 + 9 * Math.sin(t * 0.35)).toFixed(2)}%`);
-          bg.style.setProperty('--gy', `${(48 + 8 * Math.cos(t * 0.28)).toFixed(2)}%`);
-        }
-        requestAnimationFrame(loop);
-      };
-      const start = () => {
-        if (running || !visible || document.hidden) return;
-        running = true;
-        requestAnimationFrame(loop);
-      };
-      new IntersectionObserver((entries) => { visible = entries[0].isIntersecting; start(); reelPlay(visible && !document.hidden); }).observe(hero);
-      document.addEventListener('visibilitychange', () => reelPlay(visible && !document.hidden));
-      document.addEventListener('visibilitychange', start);
-      start();
-    }
-
-    // Depth: the scene drifts slightly against the pointer.
-    const stage = hero.querySelector<HTMLElement>('.bt-hero__stage');
-    if (!reduced && stage && window.matchMedia('(hover: hover)').matches) {
-      hero.addEventListener('pointermove', (event) => {
-        const r = hero.getBoundingClientRect();
-        const dx = (event.clientX - r.left) / r.width - 0.5;
-        const dy = (event.clientY - r.top) / r.height - 0.5;
-        stage.style.setProperty('--px', `${(dx * -28).toFixed(1)}px`);
-        stage.style.setProperty('--py', `${(dy * -20).toFixed(1)}px`);
-      });
-      hero.addEventListener('pointerleave', () => {
-        stage.style.removeProperty('--px');
-        stage.style.removeProperty('--py');
-      });
+      const sync = () => wall.classList.toggle('is-paused', !visible || document.hidden);
+      new IntersectionObserver((entries) => { visible = entries[0].isIntersecting; sync(); }).observe(hero);
+      document.addEventListener('visibilitychange', sync);
+      if (window.matchMedia('(hover: hover)').matches) {
+        hero.addEventListener('pointermove', (event) => {
+          const r = hero.getBoundingClientRect();
+          wall.style.setProperty('--px', `${(((event.clientX - r.left) / r.width - 0.5) * -36).toFixed(1)}px`);
+          wall.style.setProperty('--py', `${(((event.clientY - r.top) / r.height - 0.5) * -24).toFixed(1)}px`);
+        });
+        hero.addEventListener('pointerleave', () => {
+          wall.style.removeProperty('--px');
+          wall.style.removeProperty('--py');
+        });
+      }
     }
   }
 
@@ -3747,7 +3417,7 @@ const faq = pick(lang, {
     }
   }
 
-  // Marquees (hero words, references): the first child moves left by exactly
+  // Marquees (references): the first child moves left by exactly
   // its own width, then the loop starts over seamlessly.
   document.querySelectorAll<HTMLElement>('[data-marquee]').forEach((track) => {
     const first = track.firstElementChild as HTMLElement | null;
