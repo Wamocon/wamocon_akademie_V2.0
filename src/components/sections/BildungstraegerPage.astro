@@ -59,6 +59,29 @@ const certNoSeal = certNo.replace(/-/g, '‑');
 const euro = new Intl.NumberFormat(intlLocale, { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
 const regularPrice = euro.format(bt.seminar.preisRegulaer);
 const zeroPrice = euro.format(0);
+
+// Hero scene across the full width.
+// 1. Outline words drifting behind everything.
+const heroWords = `${regularPrice} → ${zeroPrice} · BILDUNGSGUTSCHEIN · ISTQB® · AZAV · `.repeat(2);
+// 2. "Your route" line: a smooth curve through five milestones in a 1600 x 200
+//    box. The SVG stretches to the hero width (preserveAspectRatio none), so
+//    milestones placed in percent sit exactly on the line.
+const journeyPoints: Array<[number, number]> = [[0, 170], [150, 140], [470, 100], [800, 138], [1130, 78], [1460, 108], [1600, 96]];
+const journeyPath = journeyPoints.reduce((d, p, i, a) => {
+  if (i === 0) return `M ${p[0]} ${p[1]}`;
+  const p0 = a[i - 2] ?? a[i - 1];
+  const p1 = a[i - 1];
+  const p3 = a[i + 1] ?? p;
+  const c1 = [p1[0] + (p[0] - p0[0]) / 6, p1[1] + (p[1] - p0[1]) / 6];
+  const c2 = [p[0] - (p3[0] - p1[0]) / 6, p[1] - (p3[1] - p1[1]) / 6];
+  return `${d} C ${c1[0].toFixed(1)} ${c1[1].toFixed(1)}, ${c2[0].toFixed(1)} ${c2[1].toFixed(1)}, ${p[0]} ${p[1]}`;
+}, '');
+// The light pulse needs 6 s for the whole line; a milestone lights up when it arrives.
+const journeyNodes = journeyPoints.slice(1, -1).map(([x, y]) => ({
+  x: ((x / 1600) * 100).toFixed(2),
+  y: ((y / 200) * 100).toFixed(2),
+  t: ((x / 1600) * 6).toFixed(2),
+}));
 type GlanceRow = { term: string; value: string; kind?: 'goal' | 'price' | 'regular'; small?: string };
 
 // Countries with WAMOCON projects (WAMOCON company overview, October 2026).
@@ -233,6 +256,7 @@ const copy = {
     ticketPending: 'IN VORBEREITUNG',
     ticketStamp: 'zugelassen',
     ticketFoot: '* Mit bewilligtem Bildungsgutschein, sobald die Maßnahme zugelassen ist (§ 81 SGB III).',
+    journey: ['Beratung', 'Bildungsgutschein', '45-Tage-Seminar', 'ISTQB® Prüfung', 'Dein Einstieg in die IT'],
     ctaPlanned: 'Beratung und Vormerkung anfragen',
     ctaApproved: 'Förderberatung anfragen',
     ctaSeminar: 'Zum Seminar',
@@ -611,6 +635,7 @@ const copy = {
     ticketPending: 'IN PREPARATION',
     ticketStamp: 'approved',
     ticketFoot: '* With an approved Bildungsgutschein once the course is approved (§ 81 SGB III).',
+    journey: ['Consultation', 'Bildungsgutschein', '45-day seminar', 'ISTQB® exam', 'Your start in IT'],
     ctaPlanned: 'Get advice and pre-register',
     ctaApproved: 'Request funding advice',
     ctaSeminar: 'See the seminar',
@@ -965,6 +990,7 @@ const copy = {
     ticketPending: 'ДАЙЫНДАЛУДА',
     ticketStamp: 'рұқсат',
     ticketFoot: '* Курсқа рұқсат берілгеннен кейін, мақұлданған Bildungsgutschein арқылы (§ 81 SGB III).',
+    journey: ['Кеңес', 'Bildungsgutschein', '45 күндік семинар', 'ISTQB® емтиханы', 'IT саласына бастау'],
     ctaPlanned: 'Кеңес алу және алдын ала тіркелу',
     ctaApproved: 'Қаржыландыру бойынша кеңес алу',
     ctaSeminar: 'Семинарға өту',
@@ -1626,6 +1652,19 @@ const faq = pick(lang, {
     <div class="bt-hero__bg" aria-hidden="true"></div>
     {/* Decorative scene behind the text: everything in it is repeated in the copy. */}
     <div class="bt-hero__scene" aria-hidden="true">
+      <div class="bt-hero__words" data-marquee><span>{heroWords}</span><span>{heroWords}</span></div>
+      <div class="bt-hero__journey">
+        <svg viewBox="0 0 1600 200" preserveAspectRatio="none" focusable="false">
+          <path class="bt-hero__journey-line" d={journeyPath} vector-effect="non-scaling-stroke" />
+          <path class="bt-hero__journey-pulse" d={journeyPath} pathLength="1000" vector-effect="non-scaling-stroke" />
+        </svg>
+        {journeyNodes.map((node, i) => (
+          <span class="bt-hero__milestone" style={`left:${node.x}%;top:${node.y}%;--t:${node.t}s`}>
+            <i></i>
+            <b>{c.journey[i]}</b>
+          </span>
+        ))}
+      </div>
       <div class="container bt-hero__scene-inner">
           <div class="bt-hero__stage">
             <img class="bt-hero__sticker is-azav" src="/images/badge-azav-gzq.svg" alt="" width="801" height="597" decoding="async" />
@@ -2311,11 +2350,11 @@ const faq = pick(lang, {
 
       <div class="bt-refs" data-reveal>
         <p class="bt-refs__label">{c.refsMarquee}</p>
-        <div class="bt-refs__track">
+        <div class="bt-refs__track" data-marquee>
           <ul>{allRefs.map((name) => <li>{name}</li>)}</ul>
           <ul aria-hidden="true">{allRefs.map((name) => <li>{name}</li>)}</ul>
         </div>
-        <div class="bt-refs__track bt-refs__track--rev" aria-hidden="true">
+        <div class="bt-refs__track bt-refs__track--rev" aria-hidden="true" data-marquee>
           <ul>{[...allRefs].reverse().map((name) => <li>{name}</li>)}</ul>
           <ul>{[...allRefs].reverse().map((name) => <li>{name}</li>)}</ul>
         </div>
@@ -2554,7 +2593,7 @@ const faq = pick(lang, {
     background-position: 14px 14px;
     mask-image: radial-gradient(circle at var(--gx, 72%) var(--gy, 48%), rgba(0, 0, 0, 0.6) 0, rgba(0, 0, 0, 0.14) 45%, rgba(0, 0, 0, 0.07) 100%);
   }
-  .bt-hero__inner { position: relative; z-index: 1; padding-block: clamp(130px, 17vh, 190px) clamp(40px, 6vh, 88px); }
+  .bt-hero__inner { position: relative; z-index: 3; padding-block: clamp(120px, 15vh, 170px) calc(clamp(110px, 15vh, 160px) + clamp(18px, 4vh, 48px) + 28px); }
   .bt-hero__copy { min-width: 0; max-width: min(720px, 56%); }
   /* Background scene: voucher and seals float behind the copy. A gradient
      from the left keeps the text readable wherever they overlap. */
@@ -2583,11 +2622,29 @@ const faq = pick(lang, {
   /* ---- Hero voucher: the Bildungsgutschein, checked like a test run ------------ */
   /* The stage sits right of the copy; the pointer shifts it a little (margins,
      so no layer forms) and its parts bob gently via margin-top. */
-  .bt-hero__stage { position: absolute; top: 50%; right: clamp(0px, 3vw, 56px); width: min(460px, 36vw); margin: var(--py, 0px) var(--px, 0px) 0 0; translate: 0 -46%; transition: margin 0.5s var(--ease-out); }
-  .bt-ticket-wrap { position: relative; rotate: -5deg; animation: bt-bob 7s ease-in-out infinite; }
+  /* Width also follows the viewport height, so voucher and seals never reach the header. */
+  .bt-hero__stage { position: absolute; top: 52%; right: clamp(-24px, 1vw, 40px); z-index: 2; width: min(540px, 39vw, 58vh); margin: var(--py, 0px) var(--px, 0px) 0 0; translate: 0 -48%; transition: margin 0.5s var(--ease-out); }
+  .bt-ticket-wrap { position: relative; rotate: -5deg; scale: 1.12; transform-origin: right center; animation: bt-bob 7s ease-in-out infinite; }
   .bt-hero__sticker { position: absolute; z-index: 3; height: auto; filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.55)); animation: bt-bob 6s ease-in-out infinite; }
-  .bt-hero__sticker.is-azav { top: -78px; left: -84px; width: 132px; rotate: -10deg; animation-delay: -2s; }
-  .bt-hero__sticker.is-istqb { bottom: -36px; left: -64px; width: 104px; rotate: 8deg; animation-duration: 8s; }
+  .bt-hero__sticker.is-azav { top: -54px; left: -58px; width: 142px; rotate: -10deg; animation-delay: -2s; }
+  .bt-hero__sticker.is-istqb { bottom: -64px; left: -64px; width: 118px; rotate: 8deg; animation-duration: 8s; }
+
+  /* Outline words: a huge, faint marquee across the whole hero (moved by margin). */
+  .bt-hero__words { position: absolute; top: 15%; left: 0; display: flex; color: transparent; font-size: clamp(6rem, 17vw, 17rem); font-weight: var(--fw-extrabold); line-height: 1; letter-spacing: -0.03em; white-space: nowrap; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.075); }
+  .bt-hero__words span { flex: 0 0 auto; }
+  .bt-hero__words span:first-child { animation: bt-marquee-ml 140s linear infinite; }
+
+  /* "Your route" across the full width: a red pulse runs along the line and
+     each milestone lights up as it passes (stroke offset and colours: painted). */
+  .bt-hero__journey { position: absolute; left: 0; right: 0; bottom: clamp(18px, 4vh, 48px); z-index: 2; height: clamp(110px, 15vh, 160px); }
+  .bt-hero__journey svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .bt-hero__journey-line { fill: none; stroke: rgba(255, 255, 255, 0.16); stroke-width: 2; stroke-dasharray: 2 9; }
+  .bt-hero__journey-pulse { fill: none; stroke: var(--color-accent); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 70 930; filter: drop-shadow(0 0 6px var(--color-accent)); animation: bt-journey 6s linear infinite; }
+  .bt-hero__milestone { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 10px; translate: -50% -9px; }
+  .bt-hero__milestone i { width: 18px; height: 18px; border: 2px solid rgba(255, 255, 255, 0.32); border-radius: 50%; background: var(--color-bg); animation: bt-milestone 6s linear infinite; animation-delay: var(--t); }
+  .bt-hero__milestone b { color: var(--color-muted); font-family: var(--font-mono); font-size: 11px; font-weight: var(--fw-semibold); letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; animation: bt-milestone-label 6s linear infinite; animation-delay: var(--t); }
+  .bt-hero__milestone:last-child i { width: 24px; height: 24px; border-color: var(--color-accent); }
+  .bt-hero__milestone:last-child b { color: var(--color-text); }
   .bt-ticket {
     position: relative;
     overflow: hidden;
@@ -3273,6 +3330,9 @@ const faq = pick(lang, {
   @keyframes bt-stamp { 0% { opacity: 0; transform: rotate(-20deg) scale(1.9); } 60% { opacity: 1; transform: rotate(-11deg) scale(0.94); } 100% { opacity: 1; transform: rotate(-12deg); } }
   @keyframes bt-blink { 50% { background: transparent; } }
   @keyframes bt-bob { 50% { margin-top: -14px; } }
+  @keyframes bt-journey { from { stroke-dashoffset: 70; } to { stroke-dashoffset: -930; } }
+  @keyframes bt-milestone { 0%, 15%, 100% { border-color: rgba(255, 255, 255, 0.32); background: var(--color-bg); box-shadow: none; } 2%, 10% { border-color: var(--color-accent); background: var(--color-accent-surface); box-shadow: 0 0 0 6px rgba(244, 14, 14, 0.18), 0 0 26px rgba(244, 14, 14, 0.65); } }
+  @keyframes bt-milestone-label { 2%, 10% { color: var(--color-text); } }
   @keyframes bt-now { 0% { opacity: 0; transform: scale(1.7); } 60% { opacity: 1; transform: scale(0.94); } }
   @keyframes bt-sticker-in { from { opacity: 0; } }
   @keyframes bt-pulse { 0%, 100% { box-shadow: var(--shadow-accent); } 50% { box-shadow: 0 0 0 6px rgba(244, 14, 14, 0.18), var(--shadow-accent); } }
@@ -3288,13 +3348,19 @@ const faq = pick(lang, {
     .bt-kpis li { grid-column: span 2; }
     .bt-kpis li:nth-child(n + 4) { grid-column: span 3; }
   }
+  @media (min-width: 1051px) and (max-height: 860px) {
+    .bt-hero__journey { display: none; }
+    .bt-hero__inner { padding-bottom: clamp(40px, 6vh, 88px); }
+  }
   @media (max-width: 1050px) {
     .bt-hero__copy { max-width: none; }
     .bt-hero__scene { opacity: 0.28; }
     /* On phones the voucher only hints at itself in the lower right corner. */
     .bt-hero__scene::after { background: linear-gradient(180deg, rgba(16, 16, 16, 0.4), rgba(16, 16, 16, 0) 60%); }
     .bt-hero__stage { top: auto; bottom: 6%; right: -40px; width: min(420px, 70vw); translate: none; }
-    .bt-hero__sticker { display: none; }
+    .bt-hero__sticker, .bt-hero__journey { display: none; }
+    .bt-hero__inner { padding-bottom: clamp(40px, 6vh, 88px); }
+    .bt-hero__words { top: auto; bottom: 8%; -webkit-text-stroke-color: rgba(255, 255, 255, 0.06); }
     .bt-steps__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .bt-steps__list li:nth-child(2n)::after { content: none; }
     .bt-tiles, .bt-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -3370,7 +3436,7 @@ const faq = pick(lang, {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .bt-new, .bt-aurora span, .bt-ticket__st.is-pending i, .bt-ticket-wrap, .bt-hero__sticker, .bt-format, .bt-refs__track ul, .bt-calendar__pending span,
+    .bt-new, .bt-aurora span, .bt-ticket__st.is-pending i, .bt-ticket-wrap, .bt-hero__sticker, .bt-hero__words span, .bt-hero__journey-pulse, .bt-hero__milestone i, .bt-hero__milestone b, .bt-format, .bt-refs__track ul, .bt-calendar__pending span,
     .bt-dot, .bt-showcase__panel, .bt-signal, .bt-signal::after, .bt-stages li, .bt-stages li::after, .bt-proof__seal::after, .is-open .bt-fund__check, .bt-hero h1 span,
     .bt-quiz__result, .bt-trainer__body, .bt-sectors__floor, .bt-orbit__ring--outer, .bt-orbit__sparks, .bt-orbit__beam.is-active,
     .bt-orbit__core, .bt-orbit__node.is-active .bt-orbit__dot { animation: none; }
@@ -3606,9 +3672,10 @@ const faq = pick(lang, {
     }
   }
 
-  // Reference marquee: the first list moves left by exactly its own width.
-  document.querySelectorAll<HTMLElement>('.bt-refs__track').forEach((track) => {
-    const first = track.querySelector<HTMLElement>('ul');
+  // Marquees (hero words, references): the first child moves left by exactly
+  // its own width, then the loop starts over seamlessly.
+  document.querySelectorAll<HTMLElement>('[data-marquee]').forEach((track) => {
+    const first = track.firstElementChild as HTMLElement | null;
     if (!first) return;
     const measure = () => track.style.setProperty('--shift', `${first.offsetWidth}px`);
     measure();
