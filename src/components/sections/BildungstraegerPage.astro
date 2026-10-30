@@ -60,15 +60,20 @@ const euro = new Intl.NumberFormat(intlLocale, { style: 'currency', currency: 'E
 const regularPrice = euro.format(bt.seminar.preisRegulaer);
 const zeroPrice = euro.format(0);
 
-// Hero photo wall: four strips of real photos from WAMOCON Academy (seminars,
-// trainers, participants from the video testimonials, the team), built as
-// rounded tiles with transparent gaps (public/images/academy/hero-wall-*.webp,
-// 480 x 2512 each). The ratio lets the script scroll each strip by exactly one
-// full length, so the loop is seamless.
-const heroWall = {
-  strips: [1, 2, 3, 4].map((n) => `/images/academy/hero-wall-${n}.webp`),
-  ratio: (2512 / 480).toFixed(4),
-};
+// Hero wall: four tilted columns about the seminar and the Bildungsgutschein.
+// Seminar photos (public/images/academy/hero-tile-*.webp, 480 x 600) alternate
+// with content tiles built from the page copy, so every language gets its own
+// texts. Each column holds its tiles three times and scrolls by exactly one
+// set (seamless loop).
+type WallTile = { kind: string; n?: number; src?: string };
+const wallPhoto = (name: string): WallTile => ({ kind: 'photo', src: `/images/academy/hero-tile-${name}.webp` });
+const wallColumns: WallTile[][] = [
+  // The voucher opens the third column, the most visible one at load.
+  [{ kind: 'stage', n: 0 }, wallPhoto('seminar'), { kind: 'log' }, wallPhoto('tastatur'), { kind: 'support' }],
+  [{ kind: 'days' }, wallPhoto('flipchart'), { kind: 'quiz' }, { kind: 'route' }, { kind: 'stage', n: 1 }],
+  [{ kind: 'voucher' }, wallPhoto('beratung'), { kind: 'stage', n: 2 }, { kind: 'start' }, wallPhoto('laptop')],
+  [{ kind: 'goal' }, wallPhoto('trainer'), { kind: 'stage', n: 3 }, { kind: 'ditele' }, { kind: 'funding' }],
+];
 type GlanceRow = { term: string; value: string; kind?: 'goal' | 'price' | 'regular'; small?: string };
 
 // Countries with WAMOCON projects (WAMOCON company overview, October 2026).
@@ -231,6 +236,12 @@ const copy = {
     heroText: 'In 45 Tagen zum ISTQB® Zertifikat, in Präsenz oder live online. Mit Bildungsgutschein übernimmt die Agentur für Arbeit deine Lehrgangskosten.*',
     // Quelle: § 83 Abs. 1 SGB III (Lehrgangskosten).
     heroNote: '* Sobald die Maßnahmenzulassung vorliegt. Wird dein Bildungsgutschein bewilligt, übernimmt die Agentur für Arbeit die Lehrgangskosten.',
+    // Kacheln der Hero-Wand. Die Übungsfrage folgt dem CTFL-Lehrplan:
+    // Äquivalenzklassenbildung ist ein Black-Box-Verfahren, die beiden anderen
+    // sind White-Box-Überdeckungen.
+    wallQuiz: { label: 'Übungsfrage · ISTQB® CTFL', question: 'Welche Technik ist ein Black-Box-Verfahren?', options: ['Anweisungsüberdeckung', 'Äquivalenzklassenbildung', 'Entscheidungsüberdeckung'], correct: 1 },
+    wallLog: { title: 'Testprotokoll', cases: ['Login', 'Passwort vergessen', 'Warenkorb', 'Bezahlung'] },
+    wallFunding: 'Die Agentur für Arbeit übernimmt deine Lehrgangskosten.*',
     ctaPlanned: 'Beratung und Vormerkung anfragen',
     ctaApproved: 'Förderberatung anfragen',
     ctaSeminar: 'Zum Seminar',
@@ -599,6 +610,9 @@ const copy = {
     // AZAV and Bildungsgutschein are explained in the text below.
     heroText: 'Get your ISTQB® certificate in 45 days, on site or live online. With a Bildungsgutschein, the German education voucher, the Agentur für Arbeit covers your course fees.*',
     heroNote: '* Once the course approval is granted. If your Bildungsgutschein is approved, the Agentur für Arbeit covers the course fees.',
+    wallQuiz: { label: 'Practice question · ISTQB® CTFL', question: 'Which technique is a black-box technique?', options: ['Statement coverage', 'Equivalence partitioning', 'Decision coverage'], correct: 1 },
+    wallLog: { title: 'Test log', cases: ['Login', 'Forgot password', 'Shopping cart', 'Payment'] },
+    wallFunding: 'The Agentur für Arbeit covers your course fees.*',
     ctaPlanned: 'Get advice and pre-register',
     ctaApproved: 'Request funding advice',
     ctaSeminar: 'See the seminar',
@@ -943,6 +957,9 @@ const copy = {
     heroPrice: { before: '', between: 'орнына' },
     heroText: '45 күнде ISTQB® сертификатына, аудиторияда немесе тікелей онлайн. Bildungsgutschein (неміс білім беру ваучері) арқылы курс ақысын Agentur für Arbeit өтейді.*',
     heroNote: '* Курсқа рұқсат берілгеннен кейін. Bildungsgutschein мақұлданса, курс ақысын Agentur für Arbeit өтейді.',
+    wallQuiz: { label: 'Жаттығу сұрағы · ISTQB® CTFL', question: 'Қайсысы «қара жәшік» әдісі?', options: ['Операторларды қамту', 'Эквиваленттік кластарға бөлу', 'Шешімдерді қамту'], correct: 1 },
+    wallLog: { title: 'Тест хаттамасы', cases: ['Жүйеге кіру', 'Құпиясөзді қалпына келтіру', 'Себет', 'Төлем'] },
+    wallFunding: 'Курс ақысын Agentur für Arbeit өтейді.*',
     ctaPlanned: 'Кеңес алу және алдын ала тіркелу',
     ctaApproved: 'Қаржыландыру бойынша кеңес алу',
     ctaSeminar: 'Семинарға өту',
@@ -1279,6 +1296,8 @@ const copy = {
 
 const c = copy[lang];
 const glanceRows = c.glance as ReadonlyArray<GlanceRow>;
+const glanceOf = (kind: GlanceRow['kind']) => glanceRows.find((row) => row.kind === kind);
+const diteleFact = c.whyFacts.find(([key]) => key === 'DiTeLe');
 const p = c.practice;
 const cta = approved ? c.ctaApproved : c.ctaPlanned;
 const formats = [...new Set(bt.massnahmenGeplant.map((m) => m.format))];
@@ -1601,9 +1620,86 @@ const faq = pick(lang, {
   <div class="bt-progress" aria-hidden="true"><span data-bt-progress></span></div>
   <!-- ================================================================ HERO -->
   <section class="bt-hero" aria-labelledby="bt-hero-title" data-bt-hero>
-    {/* Decorative: a tilted wall of real WAMOCON Academy photos, moving slowly. */}
-    <div class="bt-hero__wall" aria-hidden="true" data-bt-wall data-ratio={heroWall.ratio}>
-      {heroWall.strips.map((src) => <div class="bt-hero__strip" style={`background-image:url(${src})`}></div>)}
+    {/* Decorative: a tilted, slowly moving wall about the seminar and the voucher. */}
+    <div class="bt-hero__wall" aria-hidden="true" data-bt-wall>
+      {wallColumns.map((column) => (
+        <div class="bt-hero__col">
+          <div class="bt-hero__track">
+            {[0, 1, 2].map((copyIndex) => column.map((tile) => (
+              tile.kind === 'photo' ? (
+                <img class="bt-wt bt-wt--photo" src={tile.src} alt="" width="480" height="600" decoding="async" data-copy={copyIndex} />
+              ) : tile.kind === 'voucher' ? (
+                <div class="bt-wt bt-wt--voucher" data-copy={copyIndex}>
+                  <p class="bt-wt__label">Bildungsgutschein</p>
+                  <p class="bt-wt__big">{zeroPrice}<sup>*</sup></p>
+                  <p class="bt-wt__small">{glanceOf('price')?.small}</p>
+                  <p class="bt-wt__was">{glanceOf('regular')?.term} <s>{regularPrice}</s></p>
+                </div>
+              ) : tile.kind === 'days' ? (
+                <div class="bt-wt bt-wt--days" data-copy={copyIndex}>
+                  <p class="bt-wt__huge">{bt.seminar.tage}</p>
+                  <p class="bt-wt__title">{c.showcaseDays}</p>
+                  <p class="bt-wt__small">{glanceRows[1]?.value}</p>
+                </div>
+              ) : tile.kind === 'stage' ? (
+                <div class="bt-wt bt-wt--stage" data-copy={copyIndex}>
+                  <span class="bt-wt__num">{String((tile.n ?? 0) + 1).padStart(2, '0')}</span>
+                  <p class="bt-wt__label">{c.stageRange(bt.seminar.etappen[tile.n ?? 0][0], bt.seminar.etappen[tile.n ?? 0][1])}</p>
+                  <p class="bt-wt__title">{c.showcaseStages[tile.n ?? 0][0]}</p>
+                  <span class="bt-wt__bar"><i style={`width:${Math.round((bt.seminar.etappen[tile.n ?? 0][1] / bt.seminar.tage) * 100)}%`}></i></span>
+                </div>
+              ) : tile.kind === 'quiz' ? (
+                <div class="bt-wt bt-wt--quiz" data-copy={copyIndex}>
+                  <p class="bt-wt__label">{c.wallQuiz.label}</p>
+                  <p class="bt-wt__q">{c.wallQuiz.question}</p>
+                  <ul>{c.wallQuiz.options.map((option, i) => <li class:list={{ 'is-correct': i === c.wallQuiz.correct }}>{option}</li>)}</ul>
+                </div>
+              ) : tile.kind === 'log' ? (
+                <div class="bt-wt bt-wt--log" data-copy={copyIndex}>
+                  <p class="bt-wt__label">{c.wallLog.title}</p>
+                  <ul>
+                    {c.wallLog.cases.map((name, i) => (
+                      <li><span>TC-{String(i + 1).padStart(2, '0')} {name}</span><b class:list={[i === 2 ? 'is-fail' : 'is-pass']}>{i === 2 ? 'FAIL' : 'PASS'}</b></li>
+                    ))}
+                  </ul>
+                </div>
+              ) : tile.kind === 'funding' ? (
+                <div class="bt-wt bt-wt--funding" data-copy={copyIndex}>
+                  <span class="bt-wt__icon">€</span>
+                  <p class="bt-wt__title">{c.wallFunding}</p>
+                </div>
+              ) : tile.kind === 'route' ? (
+                <div class="bt-wt bt-wt--route" data-copy={copyIndex}>
+                  <p class="bt-wt__label">{c.stepsLead}</p>
+                  <ol>{c.steps.map(([title], i) => <li class:list={{ 'is-next': i === c.steps.length - 1 }}>{title}</li>)}</ol>
+                </div>
+              ) : tile.kind === 'start' ? (
+                <div class="bt-wt bt-wt--start" data-copy={copyIndex}>
+                  <p class="bt-wt__label">{c.calEyebrow}</p>
+                  <p class="bt-wt__huge">{ns.jahr}</p>
+                  <p class="bt-wt__small"><span class="bt-dot"></span>{c.calLast(ns.jahr)}</p>
+                </div>
+              ) : tile.kind === 'goal' ? (
+                <div class="bt-wt bt-wt--goal" data-copy={copyIndex}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="9" r="6" /><path d="m9 14.5-1.5 7 4.5-2.5 4.5 2.5-1.5-7" /><path d="m9.5 9 1.8 1.8 3.2-3.3" /></svg>
+                  <p class="bt-wt__label">{glanceOf('goal')?.term}</p>
+                  <p class="bt-wt__title">ISTQB® Certified Tester Foundation Level</p>
+                </div>
+              ) : tile.kind === 'ditele' ? (
+                <div class="bt-wt bt-wt--ditele" data-copy={copyIndex}>
+                  <p class="bt-wt__huge">300+</p>
+                  <p class="bt-wt__small">{diteleFact?.[1]}</p>
+                </div>
+              ) : (
+                <div class="bt-wt bt-wt--support" data-copy={copyIndex}>
+                  <span class="bt-wt__icon">✓</span>
+                  <p class="bt-wt__title">{c.support[1][0]}</p>
+                </div>
+              )
+            )))}
+          </div>
+        </div>
+      ))}
     </div>
     <div class="bt-hero__bg" aria-hidden="true"></div>
     <div class="container bt-hero__inner">
@@ -2461,10 +2557,10 @@ const faq = pick(lang, {
   /* minmax(0, 1fr): without it the long word "Softwaretester" sets the grid
      column's minimum width and pushes the whole copy past a phone screen. */
   .bt-hero { position: relative; display: grid; min-height: 100svh; grid-template-columns: minmax(0, 1fr); align-items: center; overflow: hidden; isolation: isolate; background: var(--color-bg); }
-  /* The wall: four strips, tilted once (a static rotation, no animation), each
-     scrolling its photos endlessly via background-position. Painted, not
-     composited, so the text above keeps its subpixel sharpness. --period is one
-     strip length in pixels (set by the script); --px/--py follow the pointer. */
+  /* The wall: four columns, tilted once (a static rotation, no animation).
+     Each track moves by margin-top (layout and paint, no compositing), so the
+     text above keeps its subpixel sharpness. --shift is one tile set in pixels
+     (set by the script); --px/--py follow the pointer. */
   .bt-hero__wall {
     position: absolute;
     z-index: -2;
@@ -2479,11 +2575,49 @@ const faq = pick(lang, {
     rotate: -10deg;
     transition: margin 0.8s var(--ease-out);
   }
-  .bt-hero__strip { background-repeat: repeat-y; background-size: 100% auto; animation: bt-strip 72s linear infinite; }
-  .bt-hero__strip:nth-child(2) { animation-duration: 86s; animation-direction: reverse; animation-delay: -30s; }
-  .bt-hero__strip:nth-child(3) { animation-duration: 64s; animation-delay: -12s; }
-  .bt-hero__strip:nth-child(4) { animation-duration: 78s; animation-direction: reverse; animation-delay: -50s; }
-  .bt-hero__wall.is-paused .bt-hero__strip { animation-play-state: paused; }
+  .bt-hero__col { min-width: 0; overflow: hidden; contain: layout paint; }
+  .bt-hero__track { display: flex; flex-direction: column; gap: clamp(14px, 1.3vw, 24px); animation: bt-track 80s linear infinite; }
+  .bt-hero__col:nth-child(2) .bt-hero__track { animation-duration: 94s; animation-direction: reverse; animation-delay: -30s; }
+  .bt-hero__col:nth-child(3) .bt-hero__track { animation-duration: 72s; animation-delay: -14s; }
+  .bt-hero__col:nth-child(4) .bt-hero__track { animation-duration: 86s; animation-direction: reverse; animation-delay: -52s; }
+  .bt-hero__wall.is-paused .bt-hero__track { animation-play-state: paused; }
+
+  /* Wall tiles: seminar photos and content cards in the page's own style. */
+  .bt-wt { display: flex; flex-direction: column; gap: 6px; padding: clamp(14px, 1.3vw, 26px); border: 1px solid var(--border-subtle); border-radius: clamp(14px, 1.2vw, 22px); background: var(--color-bg-elevated); font-size: clamp(0.72rem, 0.85vw, 1rem); line-height: var(--lh-snug); }
+  .bt-wt--photo { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; padding: 0; object-fit: cover; }
+  .bt-wt p { margin: 0; }
+  .bt-wt__label { color: var(--color-accent); font-family: var(--font-mono); font-size: 0.72em; font-weight: var(--fw-semibold); letter-spacing: 0.12em; text-transform: uppercase; }
+  .bt-wt__title { font-size: 1.35em; font-weight: var(--fw-bold); line-height: 1.2; }
+  .bt-wt__small { color: var(--color-muted); font-size: 0.86em; }
+  .bt-wt__huge { color: var(--color-text); font-size: 3.6em; font-weight: var(--fw-extrabold); line-height: 0.95; letter-spacing: -0.03em; }
+  .bt-wt__big { font-size: 3em; font-weight: var(--fw-extrabold); line-height: 1; letter-spacing: -0.03em; }
+  .bt-wt__big sup { color: var(--color-text-subtle); font-size: 0.4em; vertical-align: top; }
+  .bt-wt__was { color: var(--color-text-subtle); font-size: 0.86em; }
+  .bt-wt__was s { text-decoration-color: var(--color-accent); text-decoration-thickness: 2px; }
+  .bt-wt__icon { display: grid; width: 2.6em; height: 2.6em; place-items: center; border-radius: 50%; background: var(--color-accent-surface); color: var(--color-text); font-size: 1.1em; font-weight: var(--fw-bold); }
+  .bt-wt__num { display: grid; width: 2.4em; height: 2.4em; place-items: center; border-radius: 50%; background: var(--color-accent-surface); font-weight: var(--fw-bold); }
+  .bt-wt__bar { display: block; height: 4px; margin-top: 4px; border-radius: var(--radius-pill); background: var(--border-subtle); }
+  .bt-wt__bar i { display: block; height: 100%; border-radius: inherit; background: var(--color-accent); }
+  .bt-wt--voucher { border: 2px dashed var(--color-accent); background: radial-gradient(90% 70% at 100% 0%, rgba(212, 0, 0, 0.45), transparent 70%), var(--color-bg-elevated); box-shadow: 0 0 60px -10px rgba(244, 14, 14, 0.55); }
+  .bt-wt--voucher .bt-wt__big { font-size: 3.8em; }
+  .bt-wt--days .bt-wt__huge { color: var(--color-accent); font-size: 4.6em; }
+  .bt-wt--quiz .bt-wt__q { font-weight: var(--fw-semibold); }
+  .bt-wt ul, .bt-wt ol { display: grid; gap: 6px; margin: 4px 0 0; padding: 0; list-style: none; }
+  .bt-wt--quiz li { padding: 0.45em 0.7em; border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--color-muted); font-size: 0.86em; }
+  .bt-wt--quiz li.is-correct { border-color: var(--color-pass); background: rgba(67, 201, 138, 0.12); color: var(--color-text); }
+  .bt-wt--quiz li.is-correct::after { content: ' ✓'; color: var(--color-pass); font-weight: var(--fw-bold); }
+  .bt-wt--log li { display: flex; justify-content: space-between; gap: 8px; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.78em; }
+  .bt-wt--log b { padding: 0 0.5em; border-radius: 4px; font-weight: var(--fw-semibold); }
+  .bt-wt--log .is-pass { background: rgba(67, 201, 138, 0.12); color: var(--color-pass); }
+  .bt-wt--log .is-fail { background: rgba(244, 14, 14, 0.14); color: var(--color-accent); }
+  .bt-wt--funding, .bt-wt--support { gap: 12px; }
+  .bt-wt--route li { position: relative; padding-left: 1.6em; color: var(--color-muted); font-size: 0.9em; }
+  .bt-wt--route li::before { content: '✓'; position: absolute; left: 0; color: var(--color-pass); font-weight: var(--fw-bold); }
+  .bt-wt--route li.is-next { color: var(--color-text); font-weight: var(--fw-semibold); }
+  .bt-wt--route li.is-next::before { content: '→'; color: var(--color-accent); }
+  .bt-wt--start .bt-wt__small { display: flex; align-items: center; gap: 8px; }
+  .bt-wt--goal svg { width: 2.6em; height: 2.6em; color: var(--color-accent); }
+  .bt-wt--ditele .bt-wt__huge { color: var(--color-accent); }
   /* Grade: solid on the text side, opening up towards the photos, a red light
      over the wall and a fade into the page at the bottom. */
   .bt-hero__bg {
@@ -3138,7 +3272,7 @@ const faq = pick(lang, {
   @keyframes bt-pop { from { opacity: 0; transform: translateY(8px); } }
   @keyframes bt-copy-in { from { opacity: 0; transform: translateY(14px); } }
   @keyframes bt-strike { from { transform: scaleX(0); } }
-  @keyframes bt-strip { to { background-position: 0 calc(-1 * var(--period, 0px)); } }
+  @keyframes bt-track { to { margin-top: calc(-1 * var(--shift, 0px)); } }
   @keyframes bt-now { 0% { opacity: 0; transform: scale(1.7); } 60% { opacity: 1; transform: scale(0.94); } }
   @keyframes bt-pulse { 0%, 100% { box-shadow: var(--shadow-accent); } 50% { box-shadow: 0 0 0 6px rgba(244, 14, 14, 0.18), var(--shadow-accent); } }
   @keyframes bt-marquee-ml { to { margin-left: calc(-1 * var(--shift, 0px)); } }
@@ -3228,7 +3362,7 @@ const faq = pick(lang, {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .bt-new, .bt-aurora span, .bt-hero__strip, .bt-format, .bt-refs__track ul, .bt-calendar__pending span,
+    .bt-new, .bt-aurora span, .bt-hero__track, .bt-format, .bt-refs__track ul, .bt-calendar__pending span,
     .bt-dot, .bt-showcase__panel, .bt-signal, .bt-signal::after, .bt-stages li, .bt-stages li::after, .bt-proof__seal::after, .is-open .bt-fund__check, .bt-hero h1 span,
     .bt-quiz__result, .bt-trainer__body, .bt-sectors__floor, .bt-orbit__ring--outer, .bt-orbit__sparks, .bt-orbit__beam.is-active,
     .bt-orbit__core, .bt-orbit__node.is-active .bt-orbit__dot { animation: none; }
@@ -3268,19 +3402,23 @@ const faq = pick(lang, {
     counters.forEach((el) => observer.observe(el));
   }
 
-  // Hero. The headline hook plays once. The photo wall scrolls each strip by
-  // exactly one strip length (seamless loop), pauses while off screen or in a
-  // background tab and drifts slightly against the pointer.
+  // Hero. The headline hook plays once. Each wall column scrolls by exactly
+  // one tile set (seamless loop), pauses while off screen or in a background
+  // tab and the wall drifts slightly against the pointer.
   const hero = document.querySelector<HTMLElement>('[data-bt-hero]');
   if (hero && !reduced) {
     hero.classList.add('is-playing');
     const wall = hero.querySelector<HTMLElement>('[data-bt-wall]');
     if (wall) {
-      const strips = Array.from(wall.children) as HTMLElement[];
-      const ratio = Number(wall.dataset.ratio) || 1;
-      const measure = () => strips.forEach((strip) => strip.style.setProperty('--period', `${(strip.offsetWidth * ratio).toFixed(1)}px`));
+      const tracks = Array.from(wall.querySelectorAll<HTMLElement>('.bt-hero__track'));
+      const measure = () => tracks.forEach((track) => {
+        const first = track.querySelector<HTMLElement>('[data-copy="0"]');
+        const next = track.querySelector<HTMLElement>('[data-copy="1"]');
+        if (first && next) track.style.setProperty('--shift', `${next.offsetTop - first.offsetTop}px`);
+      });
       measure();
       window.addEventListener('resize', measure, { passive: true });
+      document.fonts?.ready.then(measure);
       let visible = true;
       const sync = () => wall.classList.toggle('is-paused', !visible || document.hidden);
       new IntersectionObserver((entries) => { visible = entries[0].isIntersecting; sync(); }).observe(hero);
