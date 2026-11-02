@@ -42,10 +42,10 @@ export type NavLink = {
 /** The AZAV provider page, a top-level tab right after the online courses. */
 export const bildungstraegerNav: NavLink = {
   key: 'bildungstraeger',
-  de: { label: 'Bildungsträger', href: bildungstraegerHref.de },
-  en: { label: 'Education provider', href: bildungstraegerHref.en },
+  de: { label: 'AZAV-Bildungsträger', href: bildungstraegerHref.de },
+  en: { label: 'AZAV education provider', href: bildungstraegerHref.en },
   // Muttersprachliche Prüfung offen
-  kk: { label: 'Білім беру ұйымы', href: bildungstraegerHref.kk },
+  kk: { label: 'AZAV білім беру ұйымы', href: bildungstraegerHref.kk },
 };
 
 export const nav: NavLink[] = [
