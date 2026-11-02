@@ -1296,6 +1296,16 @@ const copy = {
 
 const c = copy[lang];
 const glanceRows = c.glance as ReadonlyArray<GlanceRow>;
+// Icons for the six DiTeLe feature cards, in the order of practice.features:
+// test environment, bug report, trainer feedback, practice, progress, revise.
+const practiceIcons = [
+  '<rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 8h18M8 21h8M12 18v3"/>',
+  '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>',
+  '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/>',
+  '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><path d="M12 12h.01"/>',
+  '<path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0z"/><path d="M17 5h3a3 3 0 0 1-3 4M7 5H4a3 3 0 0 0 3 4"/>',
+  '<path d="M4 12a8 8 0 0 1 13.7-5.7L20 8"/><path d="M20 3v5h-5M20 12a8 8 0 0 1-13.7 5.7L4 16"/><path d="M4 21v-5h5"/>',
+];
 const glanceOf = (kind: GlanceRow['kind']) => glanceRows.find((row) => row.kind === kind);
 const diteleFact = c.whyFacts.find(([key]) => key === 'DiTeLe');
 const p = c.practice;
@@ -1834,7 +1844,7 @@ const faq = pick(lang, {
           <h2 id="bt-practice-title"><span>{p.lead}</span> {p.rest}</h2>
           <p>{p.text}</p>
           <dl class="bt-practice__stats">
-            {p.stats.map(([value, label]) => <div><dt>{label}</dt><dd>{value}</dd></div>)}
+            {p.stats.map(([value, label]) => <div><dt>{label}</dt><dd data-count-to={value} data-count-suffix="">{value}</dd></div>)}
           </dl>
           <div class="bt-practice__actions">
             <Button href={p.demoHref} target="_blank">{p.ctaDemo}</Button>
@@ -1861,11 +1871,14 @@ const faq = pick(lang, {
         </figure>
       </div>
       <ol class="bt-practice__steps" aria-label={p.stepsLabel} data-reveal>
-        {p.steps.map(([step, detail], index) => <li><span>{pad2(index + 1)}</span><div><strong>{step}</strong><small>{detail}</small></div></li>)}
+        {p.steps.map(([step, detail], index) => <li style={`--i:${index}`}><span>{pad2(index + 1)}</span><div><strong>{step}</strong><small>{detail}</small></div></li>)}
       </ol>
       <div class="bt-practice__features">
-        {p.features.map(([title, text]) => (
+        {p.features.map(([title, text], index) => (
           <article class="bt-card bt-spot" data-reveal>
+            <span class="bt-practice__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false" set:html={practiceIcons[index]} />
+            </span>
             <h3>{title}</h3>
             <p>{text}</p>
           </article>
@@ -1888,16 +1901,16 @@ const faq = pick(lang, {
           <a class="bt-practice__link" href={p.rulesHref} target="_blank" rel="noopener">{p.rulesLink} <span aria-hidden="true">↗</span></a>
         </section>
         <div class="bt-practice__side" data-reveal="right">
-          <section class="bt-practice__courses" aria-labelledby="bt-courses-title">
+          <section class="bt-practice__courses bt-spot" aria-labelledby="bt-courses-title">
             <p class="bt-practice__kicker" id="bt-courses-title">{p.coursesLabel}</p>
             <ul>
               {p.courses.map(([name, text]) => <li><strong>{name}</strong><span>{text}</span></li>)}
             </ul>
           </section>
-          <section class="bt-practice__demo" aria-labelledby="bt-demo-title">
+          <section class="bt-practice__demo bt-spot" aria-labelledby="bt-demo-title">
             <h3 id="bt-demo-title">{p.demoTitle}</h3>
             <p>{p.demoText}</p>
-            <a class="bt-practice__link" href={p.demoHref} target="_blank" rel="noopener">{p.ctaDemo} <span aria-hidden="true">↗</span></a>
+            <Button href={p.demoHref} target="_blank">{p.ctaDemo}</Button>
           </section>
         </div>
       </div>
@@ -2894,34 +2907,52 @@ const faq = pick(lang, {
   .bt-diti h3 { margin: 2px 0 6px; font-size: var(--fs-h5); }
   .bt-diti p:not(.bt-diti__role) { color: var(--color-muted); font-size: var(--fs-xs); line-height: var(--lh-snug); }
   .bt-diti .bt-diti__note { margin-top: 6px; color: var(--color-text); }
-  .bt-practice__steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: clamp(2.5rem, 4vw, 3.5rem); counter-reset: none; }
-  .bt-practice__steps li { position: relative; display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-card); }
-  .bt-practice__steps strong { display: block; font-weight: var(--fw-semibold); }
-  .bt-practice__steps small { display: block; margin-top: 2px; color: var(--color-muted); font-size: var(--fs-xs); line-height: var(--lh-snug); }
-  .bt-practice__steps li span { flex: 0 0 auto; display: grid; width: 30px; height: 30px; place-items: center; border-radius: 50%; background: var(--color-accent-surface); color: #fff; font-size: var(--fs-2xs); font-weight: var(--fw-bold); }
-  .bt-practice__features { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; gap: clamp(16px, 1.6vw, 24px); margin-top: clamp(16px, 1.6vw, 24px); }
-  .bt-practice__features .bt-card { gap: var(--space-xs); }
-  .bt-practice__split { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(16px, 1.6vw, 24px); margin-top: clamp(16px, 1.6vw, 24px); }
+  /* Steps: four connected cards. A light flows along the connectors and the
+     cards light up one after another (painted border and shadow only). */
+  .bt-practice__steps { --gap: clamp(16px, 2vw, 32px); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap); margin-top: clamp(4rem, 7vw, 6.5rem); }
+  .bt-practice__steps li { position: relative; display: flex; align-items: center; gap: 16px; padding: clamp(18px, 1.8vw, 28px); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); animation: bt-stage 8s var(--ease-out) infinite; animation-delay: calc(var(--i, 0) * 2s); }
+  .bt-practice__steps li:not(:last-child)::after { content: ''; position: absolute; top: 50%; left: 100%; width: var(--gap); height: 2px; background: linear-gradient(90deg, var(--color-accent-surface), var(--color-signal), var(--color-accent-surface)); background-size: 200% 100%; animation: bt-flow 2.4s linear infinite; }
+  .bt-practice__steps strong { display: block; font-size: var(--fs-h5); font-weight: var(--fw-bold); }
+  .bt-practice__steps small { display: block; margin-top: 4px; color: var(--color-muted); font-size: var(--fs-sm); line-height: var(--lh-snug); }
+  .bt-practice__steps li span { flex: 0 0 auto; display: grid; width: 44px; height: 44px; place-items: center; border-radius: 50%; background: var(--color-accent-surface); color: #fff; font-size: var(--fs-sm); font-weight: var(--fw-bold); box-shadow: var(--shadow-accent); }
+
+  /* Feature cards: more room, an icon each, lift and red edge on hover. */
+  .bt-practice__features { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; gap: clamp(20px, 2.2vw, 36px); margin-top: clamp(3rem, 5vw, 4.5rem); }
+  .bt-practice__features .bt-card { gap: var(--space-sm); padding: clamp(28px, 2.8vw, 44px); transition: transform var(--dur-med) var(--ease-out), border-color var(--dur-med) var(--ease-out), box-shadow var(--dur-med) var(--ease-out); }
+  .bt-practice__features .bt-card:hover { transform: translateY(-6px); border-color: var(--color-accent); box-shadow: var(--shadow-card), var(--shadow-accent); }
+  .bt-practice__features .bt-card p { line-height: var(--lh-relaxed); }
+  .bt-practice__icon { display: grid; width: 52px; height: 52px; place-items: center; margin-bottom: 6px; border-radius: 16px; background: rgba(244, 14, 14, 0.12); color: var(--color-accent); transition: background var(--dur-med) var(--ease-out), color var(--dur-med) var(--ease-out); }
+  .bt-practice__icon svg { width: 26px; height: 26px; }
+  .bt-practice__features .bt-card:hover .bt-practice__icon { background: var(--color-accent-surface); color: #fff; }
+
+  /* AI rules, courses and demo. */
+  .bt-practice__split { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(20px, 2.4vw, 40px); margin-top: clamp(3rem, 5vw, 4.5rem); }
   .bt-practice__kicker { color: var(--color-accent); font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
-  .bt-practice__rules { padding: clamp(24px, 2.4vw, 36px); border: 1px solid var(--color-accent-surface); border-radius: var(--radius-lg); background: radial-gradient(70% 90% at 0% 0%, var(--glow-top), transparent 70%), var(--surface-card); }
-  .bt-practice__rules h3 { margin: 6px 0 8px; font-size: var(--fs-h4); }
-  .bt-practice__rules > p:not([class]) { color: var(--color-muted); }
-  .bt-practice__rules ul { display: grid; gap: 10px; margin: var(--space-sm) 0; }
-  .bt-practice__rules li { display: flex; gap: 10px; font-size: var(--fs-sm); line-height: var(--lh-snug); }
-  .bt-practice__rules li svg { flex: 0 0 auto; width: 18px; height: 18px; margin-top: 1px; color: var(--color-accent); }
-  .bt-practice__model { margin-bottom: 0.6rem; color: var(--color-muted); font-size: var(--fs-xs); }
-  .bt-practice__side { display: grid; gap: clamp(16px, 1.6vw, 24px); align-content: start; }
-  .bt-practice__courses, .bt-practice__demo { padding: clamp(22px, 2.2vw, 32px); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); }
-  .bt-practice__courses ul { display: grid; gap: 12px; margin-top: 12px; }
-  .bt-practice__courses li { display: grid; gap: 2px; padding-left: 14px; border-left: 2px solid var(--color-accent-surface); }
-  .bt-practice__courses li strong { font-weight: var(--fw-semibold); }
-  .bt-practice__courses li span { color: var(--color-muted); font-size: var(--fs-sm); line-height: var(--lh-snug); }
-  .bt-practice__demo h3 { font-size: var(--fs-h5); }
-  .bt-practice__demo p { margin: 6px 0 10px; color: var(--color-muted); font-size: var(--fs-sm); }
-  .bt-practice__facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; margin-top: clamp(16px, 1.6vw, 24px); overflow: hidden; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--border-subtle); }
-  .bt-practice__facts div { padding: 18px 20px; background: var(--surface-card); }
+  .bt-practice__rules { padding: clamp(28px, 3.2vw, 56px); border: 1px solid var(--color-accent-surface); border-radius: var(--radius-lg); background: radial-gradient(70% 90% at 0% 0%, var(--glow-top), transparent 70%), var(--surface-card); }
+  .bt-practice__rules h3 { margin: 10px 0 12px; font-size: var(--fs-h3); line-height: var(--lh-tight); }
+  .bt-practice__rules > p:not([class]) { color: var(--color-muted); line-height: var(--lh-relaxed); }
+  .bt-practice__rules ul { display: grid; gap: 16px; margin: var(--space-md) 0; }
+  .bt-practice__rules li { display: flex; gap: 12px; font-size: var(--fs-body); line-height: var(--lh-snug); }
+  .bt-practice__rules li svg { flex: 0 0 auto; width: 22px; height: 22px; padding: 3px; border-radius: 50%; background: rgba(244, 14, 14, 0.14); color: var(--color-accent); }
+  .bt-practice__model { margin-bottom: 1rem; color: var(--color-muted); font-size: var(--fs-xs); line-height: var(--lh-body); }
+  .bt-practice__side { display: grid; gap: clamp(20px, 2.4vw, 40px); align-content: start; }
+  .bt-practice__courses, .bt-practice__demo { padding: clamp(28px, 2.8vw, 44px); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-card); transition: border-color var(--dur-med) var(--ease-out); }
+  .bt-practice__courses:hover { border-color: var(--border-strong); }
+  .bt-practice__courses ul { display: grid; gap: 22px; margin-top: 20px; }
+  .bt-practice__courses li { display: grid; gap: 4px; padding-left: 18px; border-left: 2px solid var(--color-accent-surface); transition: border-color var(--dur-med) var(--ease-out); }
+  .bt-practice__courses li:hover { border-color: var(--color-accent); }
+  .bt-practice__courses li strong { font-size: var(--fs-h5); font-weight: var(--fw-semibold); }
+  .bt-practice__courses li span { color: var(--color-muted); font-size: var(--fs-sm); line-height: var(--lh-relaxed); }
+  .bt-practice__demo { border-color: var(--color-accent-surface); background: radial-gradient(90% 120% at 100% 0%, var(--glow-top), transparent 70%), var(--surface-card); box-shadow: var(--shadow-card), var(--shadow-accent); }
+  .bt-practice__demo h3 { font-size: var(--fs-h4); line-height: var(--lh-tight); }
+  .bt-practice__demo p { margin: 10px 0 22px; color: var(--color-muted); font-size: var(--fs-sm); line-height: var(--lh-relaxed); }
+
+  /* Key facts strip. */
+  .bt-practice__facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; margin-top: clamp(3rem, 5vw, 4.5rem); overflow: hidden; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--border-subtle); }
+  .bt-practice__facts div { padding: clamp(22px, 2.2vw, 34px); background: var(--surface-card); transition: background var(--dur-med) var(--ease-out); }
+  .bt-practice__facts div:hover { background: var(--surface-card-hover); }
   .bt-practice__facts dt { color: var(--color-accent); font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
-  .bt-practice__facts dd { margin-top: 4px; font-size: var(--fs-sm); line-height: var(--lh-snug); }
+  .bt-practice__facts dd { margin-top: 8px; font-size: var(--fs-body); line-height: var(--lh-snug); }
   .bt-support__top { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr); gap: clamp(2rem, 4vw, 4rem); align-items: center; margin-bottom: clamp(2rem, 3vw, 3rem); }
   .bt-support__top .bt-head { margin-bottom: 0; }
   .bt-video { overflow: hidden; margin: 0; aspect-ratio: 16 / 9; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: radial-gradient(80% 120% at 30% 0%, var(--glow-top), transparent 70%), var(--surface-card); box-shadow: var(--shadow-card); }
@@ -3311,6 +3342,7 @@ const faq = pick(lang, {
     .bt-practice__visual { margin-bottom: 0; }
     .bt-diti { position: relative; left: auto; bottom: auto; width: auto; margin: -1.5rem 0.75rem 0; }
     .bt-practice__steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .bt-practice__steps li::after, .bt-practice__steps li:not(:last-child)::after { display: none; }
     .bt-practice__features, .bt-practice__split { grid-template-columns: minmax(0, 1fr); }
     .bt-practice__facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     /* Relative, not static: the stamp stays anchored to the certificate. */
@@ -3335,6 +3367,7 @@ const faq = pick(lang, {
     .bt-orbit__node.is-active .bt-orbit__dot { transform: none; animation: none; }
   }
   @media (max-width: 620px) {
+    .bt-practice__steps, .bt-practice__facts { grid-template-columns: minmax(0, 1fr); }
     .bt-hero__inner { padding-top: 120px; }
     .bt-hero h1 { font-size: var(--fs-h1); overflow-wrap: break-word; hyphens: auto; }
     .bt-tiles, .bt-cards, .bt-steps__list, .bt-why__facts, .bt-quiz__options { grid-template-columns: minmax(0, 1fr); }
@@ -3362,7 +3395,7 @@ const faq = pick(lang, {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .bt-new, .bt-aurora span, .bt-hero__track, .bt-format, .bt-refs__track ul, .bt-calendar__pending span,
+    .bt-new, .bt-aurora span, .bt-hero__track, .bt-practice__steps li, .bt-practice__steps li::after, .bt-format, .bt-refs__track ul, .bt-calendar__pending span,
     .bt-dot, .bt-showcase__panel, .bt-signal, .bt-signal::after, .bt-stages li, .bt-stages li::after, .bt-proof__seal::after, .is-open .bt-fund__check, .bt-hero h1 span,
     .bt-quiz__result, .bt-trainer__body, .bt-sectors__floor, .bt-orbit__ring--outer, .bt-orbit__sparks, .bt-orbit__beam.is-active,
     .bt-orbit__core, .bt-orbit__node.is-active .bt-orbit__dot { animation: none; }
