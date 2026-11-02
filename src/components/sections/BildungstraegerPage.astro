@@ -67,13 +67,17 @@ const zeroPrice = euro.format(0);
 // set (seamless loop).
 type WallTile = { kind: string; n?: number; src?: string };
 const wallPhoto = (name: string): WallTile => ({ kind: 'photo', src: `/images/academy/hero-tile-${name}.webp` });
-const wallColumns: WallTile[][] = [
+const wallCore: WallTile[][] = [
   // The voucher opens the third column, the most visible one at load.
   [{ kind: 'stage', n: 0 }, wallPhoto('seminar'), { kind: 'log' }, wallPhoto('tastatur'), { kind: 'support' }],
   [{ kind: 'days' }, wallPhoto('flipchart'), { kind: 'quiz' }, { kind: 'route' }, { kind: 'stage', n: 1 }],
   [{ kind: 'voucher' }, wallPhoto('beratung'), { kind: 'stage', n: 2 }, { kind: 'start' }, wallPhoto('laptop')],
   [{ kind: 'goal' }, wallPhoto('trainer'), { kind: 'stage', n: 3 }, { kind: 'ditele' }, { kind: 'funding' }],
 ];
+const rotate = (tiles: WallTile[], by: number) => [...tiles.slice(by), ...tiles.slice(0, by)];
+// Left to right: three extra columns (mostly behind the copy), then the four
+// core columns; the voucher column lands right of centre.
+const wallColumns: WallTile[][] = [rotate(wallCore[3], 2), rotate(wallCore[1], 3), rotate(wallCore[0], 2), ...wallCore];
 type GlanceRow = { term: string; value: string; kind?: 'goal' | 'price' | 'regular'; small?: string };
 
 // Countries with WAMOCON projects (WAMOCON company overview, October 2026).
@@ -1999,7 +2003,7 @@ const faq = pick(lang, {
     <div class="container bt-proof__grid">
       <figure class:list={['bt-proof__visual', { 'has-doc': certPreview }]} data-reveal="zoom">
         {certPreview && (
-          <div class="bt-proof__doc">
+          <div class="bt-proof__doc" data-bt-doc>
             <img
               src={certPreview}
               alt={c.certAlt}
@@ -2571,10 +2575,10 @@ const faq = pick(lang, {
     z-index: -2;
     top: -38%;
     bottom: -38%;
-    left: 38%;
-    right: -16%;
+    left: -14%;
+    right: -14%;
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: clamp(14px, 1.3vw, 24px);
     margin: var(--py, 0px) 0 0 var(--px, 0px);
     rotate: -10deg;
@@ -2585,6 +2589,9 @@ const faq = pick(lang, {
   .bt-hero__col:nth-child(2) .bt-hero__track { animation-duration: 94s; animation-direction: reverse; animation-delay: -30s; }
   .bt-hero__col:nth-child(3) .bt-hero__track { animation-duration: 72s; animation-delay: -14s; }
   .bt-hero__col:nth-child(4) .bt-hero__track { animation-duration: 86s; animation-direction: reverse; animation-delay: -52s; }
+  .bt-hero__col:nth-child(5) .bt-hero__track { animation-duration: 76s; animation-delay: -40s; }
+  .bt-hero__col:nth-child(6) .bt-hero__track { animation-duration: 90s; animation-direction: reverse; animation-delay: -20s; }
+  .bt-hero__col:nth-child(7) .bt-hero__track { animation-duration: 68s; animation-delay: -8s; }
   .bt-hero__wall.is-paused .bt-hero__track { animation-play-state: paused; }
 
   /* Wall tiles: seminar photos and content cards in the page's own style. */
@@ -2632,7 +2639,13 @@ const faq = pick(lang, {
     pointer-events: none;
     background:
       radial-gradient(55% 65% at 80% 40%, rgba(212, 0, 0, 0.3), transparent 70%),
-      linear-gradient(90deg, var(--color-bg) 0%, rgba(16, 16, 16, 0.97) 34%, rgba(16, 16, 16, 0.66) 52%, rgba(16, 16, 16, 0.2) 72%, rgba(16, 16, 16, 0.3) 100%),
+      linear-gradient(90deg,
+        rgba(16, 16, 16, 0.5) 0,
+        rgba(16, 16, 16, 0.97) calc(var(--page-gutter) + var(--container-pad) * 2),
+        rgba(16, 16, 16, 0.97) calc(var(--page-gutter) + min(100vw, var(--container-max)) * 0.36),
+        rgba(16, 16, 16, 0.64) calc(var(--page-gutter) + min(100vw, var(--container-max)) * 0.52),
+        rgba(16, 16, 16, 0.2) calc(var(--page-gutter) + min(100vw, var(--container-max)) * 0.72),
+        rgba(16, 16, 16, 0.3) 100%),
       linear-gradient(180deg, rgba(16, 16, 16, 0.75) 0%, transparent 22%, transparent 70%, var(--color-bg) 100%);
   }
   .bt-hero__inner { position: relative; padding-block: clamp(120px, 15vh, 170px) clamp(48px, 8vh, 96px); }
@@ -3110,10 +3123,12 @@ const faq = pick(lang, {
   .bt-refs__source { margin-top: var(--space-sm); color: var(--color-text-subtle); font-size: var(--fs-xs); }
 
   /* ---- Proof: quality seal on a light surface ---------------------------------- */
-  .bt-proof__grid { display: grid; grid-template-columns: minmax(200px, 0.36fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); align-items: start; }
-  .bt-proof__visual { position: sticky; top: calc(var(--header-height) + var(--space-md)); display: grid; justify-items: center; width: 100%; max-width: 300px; margin: 0; justify-self: center; }
-  /* The certificate as a sheet of paper, slightly turned; it straightens on
-     hover and opens the full certificate. */
+  .bt-proof__grid { display: grid; grid-template-columns: minmax(280px, 0.62fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); align-items: start; }
+  .bt-proof__visual { position: sticky; top: calc(var(--header-height) + var(--space-md)); display: grid; justify-items: center; width: 100%; max-width: 500px; margin: 0; justify-self: center; perspective: 1200px; }
+  /* The certificate as a sheet of paper, slightly turned. On hover it tilts
+     towards the pointer in 3D, a light glare follows the pointer and a red
+     glow lights up its edge. View only: no link, no enlargement. The 3D
+     transform exists only while hovering, so the text stays sharp otherwise. */
   .bt-proof__doc {
     position: relative;
     display: block;
@@ -3125,6 +3140,10 @@ const faq = pick(lang, {
     transform: rotate(-2.5deg);
     transition: transform 0.6s var(--ease-out), box-shadow 0.6s var(--ease-out);
   }
+  .bt-proof__doc::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at var(--gx, 30%) var(--gy, 20%), rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 45%); opacity: 0; transition: opacity 0.4s var(--ease-out); pointer-events: none; mix-blend-mode: soft-light; }
+  .bt-proof__doc:hover { box-shadow: 0 50px 90px -30px rgba(17, 24, 39, 0.6), 0 0 0 2px rgba(212, 0, 0, 0.55), 0 0 70px rgba(244, 14, 14, 0.4); }
+  .bt-proof__doc:hover::after { opacity: 1; }
+  .bt-proof__doc.is-tilting { transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(1.03); transition: transform 0.12s linear, box-shadow 0.4s var(--ease-out); }
   /* View only: no link, no enlargement; the image cannot be dragged or
      right-clicked directly (pointer events go to the frame). */
   .bt-proof__doc img { display: block; width: 100%; height: auto; pointer-events: none; user-select: none; -webkit-user-drag: none; }
@@ -3152,11 +3171,11 @@ const faq = pick(lang, {
   .bt-proof__seal small { color: var(--color-muted-dark); font-size: var(--fs-xs); }
   .bt-proof__mark { width: auto; height: auto; max-height: 200px; }
   /* With the certificate shown, the seal becomes a stamp on its corner. */
-  .bt-proof__seal.is-stamp { position: absolute; right: -22px; bottom: 40px; z-index: 2; width: 112px; height: 112px; aspect-ratio: auto; gap: 2px; padding: 0; border-width: 4px; rotate: -12deg; box-shadow: 0 18px 30px -12px rgba(17, 24, 39, 0.5); }
+  .bt-proof__seal.is-stamp { position: absolute; right: -30px; bottom: 48px; z-index: 2; width: 150px; height: 150px; pointer-events: none; aspect-ratio: auto; gap: 2px; padding: 0; border-width: 4px; rotate: -12deg; box-shadow: 0 18px 30px -12px rgba(17, 24, 39, 0.5); }
   .bt-proof__seal.is-stamp::after { inset: 8px; }
-  .bt-proof__seal.is-stamp span:first-child { font-size: 1rem; }
-  .bt-proof__seal.is-stamp strong { width: 22px; height: 22px; font-size: 0.75rem; }
-  .bt-proof__seal.is-stamp span:nth-of-type(2), .bt-proof__seal.is-stamp small { font-size: 0.5rem; }
+  .bt-proof__seal.is-stamp span:first-child { font-size: 1.35rem; }
+  .bt-proof__seal.is-stamp strong { width: 30px; height: 30px; font-size: 0.95rem; }
+  .bt-proof__seal.is-stamp span:nth-of-type(2), .bt-proof__seal.is-stamp small { font-size: 0.6rem; }
   .bt-proof__seal.is-stamp span:nth-of-type(2) { max-width: 74%; }
   .bt-proof h2 { margin-top: var(--space-sm); color: var(--color-text-dark); font-size: var(--fs-h1); line-height: var(--lh-tight); }
   .bt-proof h2 span { color: var(--color-accent-surface); }
@@ -3309,7 +3328,7 @@ const faq = pick(lang, {
   @media (max-width: 1050px) {
     /* The wall moves behind the full width, the shade covers it more. */
     .bt-hero__copy { max-width: none; }
-    .bt-hero__wall { left: -12%; right: -36%; }
+    .bt-hero__wall { left: -40%; right: -40%; }
     .bt-hero__bg { background: linear-gradient(180deg, rgba(16, 16, 16, 0.8) 0%, rgba(16, 16, 16, 0.86) 55%, var(--color-bg) 100%); }
     .bt-steps__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .bt-steps__list li:nth-child(2n)::after { content: none; }
@@ -3334,9 +3353,9 @@ const faq = pick(lang, {
     .bt-practice__features, .bt-practice__split { grid-template-columns: minmax(0, 1fr); }
     .bt-practice__facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     /* Relative, not static: the stamp stays anchored to the certificate. */
-    .bt-proof__visual { position: relative; top: auto; justify-self: start; justify-items: start; width: min(100%, 220px); }
+    .bt-proof__visual { position: relative; top: auto; justify-self: start; justify-items: start; width: min(100%, 380px); }
     .bt-proof__doc { transform: rotateZ(-1.5deg); }
-    .bt-proof__seal.is-stamp { right: -10px; bottom: 36px; width: 100px; height: 100px; }
+    .bt-proof__seal.is-stamp { right: -10px; bottom: 36px; width: 118px; height: 118px; }
     .bt-proof__seal.is-stamp span:first-child { font-size: 0.9rem; }
     .bt-proof__seal.is-stamp strong { width: 20px; height: 20px; font-size: 0.7rem; }
     .bt-proof__seal.is-stamp span:nth-of-type(2), .bt-proof__seal.is-stamp small { font-size: 0.45rem; }
@@ -3456,6 +3475,22 @@ const faq = pick(lang, {
         });
       }
     }
+  }
+
+  // Certificate: 3D tilt and glare towards the pointer (hover devices only).
+  const doc = document.querySelector<HTMLElement>('[data-bt-doc]');
+  if (doc && !reduced && window.matchMedia('(hover: hover)').matches) {
+    doc.addEventListener('pointermove', (event) => {
+      const r = doc.getBoundingClientRect();
+      const x = (event.clientX - r.left) / r.width;
+      const y = (event.clientY - r.top) / r.height;
+      doc.classList.add('is-tilting');
+      doc.style.setProperty('--ry', `${((x - 0.5) * 16).toFixed(2)}deg`);
+      doc.style.setProperty('--rx', `${((0.5 - y) * 12).toFixed(2)}deg`);
+      doc.style.setProperty('--gx', `${(x * 100).toFixed(1)}%`);
+      doc.style.setProperty('--gy', `${(y * 100).toFixed(1)}%`);
+    });
+    doc.addEventListener('pointerleave', () => doc.classList.remove('is-tilting'));
   }
 
   // Scroll progress bar.

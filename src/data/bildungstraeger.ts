@@ -158,8 +158,8 @@ export const bildungstraeger: {
   // Seite 1 des Zertifikats als Bild, nur zur Ansicht und ohne Vergrößerung.
   // Der Zulassungszeitraum ist im Bild abgedeckt (Team, 02.11.2026).
   zertifikatVorschau: '/images/academy/azav-zertifikat-z-001806-1.webp',
-  zertifikatBreite: 760,
-  zertifikatHoehe: 1075,
+  zertifikatBreite: 1000,
+  zertifikatHoehe: 1415,
   // TODO: OFFEN. Zeichen der fachkundigen Stelle unverändert unter /public ablegen.
   zeichenDatei: '',
   // TODO: OFFEN. Pixelmaße der Zeichen-Datei, damit sie unverzerrt und ohne
