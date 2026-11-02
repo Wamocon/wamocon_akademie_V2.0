@@ -129,7 +129,7 @@ export const bildungstraeger: {
   seminar: Seminar;
   naechsterStart: NaechsterStart;
   siegel: Siegel[];
-  begleitVideo: { datei: string; poster: string; sprecher: string };
+  begleitVideo: { datei: string; poster: string; laenge: string; sprache: string };
 } = {
   fachkundigeStelle: {
     name: 'GZQ GmbH',
@@ -240,15 +240,18 @@ export const bildungstraeger: {
     },
   ],
 
-  // Avatar-Video (HeyGen) im Abschnitt "So begleiten wir dich": der Sprecher
-  // erklärt den Ablauf der Begleitung. Solange datei leer ist, zeigt die Seite
+  // Erklärvideo im Abschnitt "So begleiten wir dich" (vom Team geliefert,
+  // wamocon_seminar_kostenfrei_v03, mit KI erstellt und so gekennzeichnet).
+  // Es zeigt Förderweg, Begleitung und die Zeit nach dem Seminar und ersetzt
+  // die Kacheln dieses Abschnitts. Solange datei leer ist, zeigt die Seite
   // einen Platzhalter.
   begleitVideo: {
-    // TODO: OFFEN. Video als MP4 unter /public ablegen, z. B. '/videos/begleitung.mp4'.
-    datei: '',
-    // TODO: OFFEN. Standbild für das Video, z. B. '/images/academy/begleitung-poster.webp'.
-    poster: '',
-    sprecher: 'Waleri Moretz',
+    datei: '/media/bildungstraeger-begleitung.mp4',
+    // Standbild aus Sekunde 5 ("Softwaretester werden, ohne selbst zu zahlen?").
+    poster: '/images/academy/begleitung-poster.webp',
+    // Länge laut Datei: 35,9 s.
+    laenge: '0:36',
+    sprache: 'de',
   },
 };
 

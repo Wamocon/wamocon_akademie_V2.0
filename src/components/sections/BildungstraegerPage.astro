@@ -466,9 +466,13 @@ const copy = {
 
     supportLead: 'So begleiten wir dich',
     supportRest: 'während und nach dem Seminar',
-    supportIntro: 'Du bist bei uns nicht auf dich allein gestellt. Unsere Begleitung folgt einem festen, dokumentierten Ablauf.',
+    supportIntro: 'Du bist bei uns nicht auf dich allein gestellt. Wie wir dich vor, während und nach dem Seminar begleiten, zeigt dir das Video.',
     videoSoon: 'Video folgt',
-    videoTitle: (name: string) => `${name} erklärt dir den Ablauf`,
+    videoKicker: 'Video',
+    videoCta: 'In 36 Sekunden: dein Weg zum Softwaretester mit Bildungsgutschein',
+    videoPlay: 'Video abspielen',
+    videoAi: 'KI-generiert',
+    videoLang: '',
     support: [
       ['Persönliche Beratung', 'Vor dem Start und während des gesamten Seminars hast du uns als Ansprechpartner an deiner Seite.'],
       ['Unterstützung bei Bewerbungen', 'Wir helfen dir, überzeugende Bewerbungen für deinen Einstieg ins Softwaretesting zu erstellen.'],
@@ -819,9 +823,13 @@ const copy = {
 
     supportLead: 'How we support you',
     supportRest: 'during and after the seminar',
-    supportIntro: 'You are not on your own with us. Our support follows a fixed, documented procedure.',
+    supportIntro: 'You are not on your own with us. The video shows how we support you before, during and after the seminar.',
     videoSoon: 'Video coming soon',
-    videoTitle: (name: string) => `${name} walks you through the process`,
+    videoKicker: 'Video',
+    videoCta: 'In 36 seconds: your route to becoming a software tester with a Bildungsgutschein',
+    videoPlay: 'Play video',
+    videoAi: 'AI-generated',
+    videoLang: 'In German',
     support: [
       ['Personal advice', 'Before you start and throughout the seminar, we are your point of contact.'],
       ['Help with applications', 'We help you put together strong applications for your first role in software testing.'],
@@ -1164,9 +1172,13 @@ const copy = {
 
     supportLead: 'Сізді қалай',
     supportRest: 'семинар кезінде және одан кейін қолдаймыз',
-    supportIntro: 'Бізде сіз жалғыз қалмайсыз. Қолдауымыз белгіленген әрі құжатталған тәртіппен жүреді.',
+    supportIntro: 'Бізде сіз жалғыз қалмайсыз. Семинарға дейін, семинар кезінде және одан кейін сізді қалай қолдайтынымызды бейне көрсетеді.',
     videoSoon: 'Бейне жақында',
-    videoTitle: (name: string) => `${name} қолдау барысын түсіндіреді`,
+    videoKicker: 'Бейне',
+    videoCta: '36 секундта: Bildungsgutschein арқылы бағдарламалық тестілеуші болу жолы',
+    videoPlay: 'Бейнені ойнату',
+    videoAi: 'KI арқылы жасалған',
+    videoLang: 'Неміс тілінде',
     support: [
       ['Жеке кеңес', 'Басталар алдында да, бүкіл семинар барысында да біз сізге байланыс тұлғасы боламыз.'],
       ['Өтініш беруге көмек', 'Тестілеу саласындағы алғашқы жұмысыңызға сенімді өтініш дайындауға көмектесеміз.'],
@@ -2398,39 +2410,43 @@ const faq = pick(lang, {
   <!-- ============================================================ SUPPORT -->
   <section class="section bt-support" aria-labelledby="bt-support-title">
     <div class="container">
-      <div class="bt-support__top">
-        <div class="bt-head" data-reveal="left">
-          <h2 id="bt-support-title"><span>{c.supportLead}</span> {c.supportRest}</h2>
-          <p>{c.supportIntro}</p>
-        </div>
-        {/* Avatar video; a placeholder until the file is in place. */}
-        <figure class="bt-video" data-reveal="right">
+      <div class="bt-head" data-reveal>
+        <h2 id="bt-support-title"><span>{c.supportLead}</span> {c.supportRest}</h2>
+        <p>{c.supportIntro}</p>
+      </div>
+      {/* Explainer video, made with AI and labelled as such. The cover is a
+          button; it hides once the video plays. Without JavaScript the native
+          controls stay usable. */}
+      <figure class="bt-film" data-reveal="zoom" data-bt-film>
+        <div class="bt-film__frame">
           {video.datei ? (
-            <video controls playsinline preload="none" poster={video.poster || undefined} aria-label={c.videoTitle(video.sprecher)}>
-              <source src={video.datei} type="video/mp4" />
-            </video>
+            <>
+              <video class="bt-film__video" controls playsinline preload="none" poster={video.poster || undefined} aria-label={c.videoCta} data-bt-film-video>
+                <source src={video.datei} type="video/mp4" />
+              </video>
+              <button type="button" class="bt-film__cover" data-bt-film-play aria-label={`${c.videoPlay}: ${c.videoCta}`}>
+                {video.poster && <img src={video.poster} alt="" width="1280" height="720" loading="lazy" decoding="async" />}
+                <span class="bt-film__shade" aria-hidden="true"></span>
+                <span class="bt-film__play" aria-hidden="true">
+                  <i></i><i></i>
+                  <svg viewBox="0 0 24 24" focusable="false"><path d="M8 5.5v13l10.5-6.5z" /></svg>
+                </span>
+                <span class="bt-film__meta" aria-hidden="true">
+                  <span class="bt-film__kicker"><b>{c.videoKicker}</b> {video.laenge}{c.videoLang && <> · {c.videoLang}</>}</span>
+                  <strong>{c.videoCta}</strong>
+                </span>
+              </button>
+            </>
           ) : (
-            <div class="bt-video__placeholder">
-              <span class="bt-video__play" aria-hidden="true">
-                <svg viewBox="0 0 24 24" focusable="false"><path d="M8 5.5v13l10.5-6.5z" /></svg>
-              </span>
-              <span class="bt-video__soon">{c.videoSoon}</span>
-              <strong>{c.videoTitle(video.sprecher)}</strong>
+            <div class="bt-film__soon">
+              <span class="bt-film__play" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M8 5.5v13l10.5-6.5z" /></svg></span>
+              <strong>{c.videoSoon}</strong>
             </div>
           )}
-        </figure>
-      </div>
-      <div class="bt-cards">
-        {c.support.map(([title, text], index) => (
-          <article class:list={['bt-card', 'bt-spot', { 'bt-card--feature': index === c.support.length - 1 }]} data-reveal>
-            <span class="bt-num">{String(index + 1).padStart(2, '0')}</span>
-            <div>
-              <h3>{title}</h3>
-              <p>{text}</p>
-            </div>
-          </article>
-        ))}
-      </div>
+          <span class="bt-film__ai">{c.videoAi}</span>
+        </div>
+        {video.datei && <figcaption class="bt-film__mobile-title"><span class="bt-film__kicker"><b>{c.videoKicker}</b> {video.laenge}{c.videoLang && <> · {c.videoLang}</>}</span><strong>{c.videoCta}</strong></figcaption>}
+      </figure>
     </div>
   </section>
 
@@ -2959,15 +2975,44 @@ const faq = pick(lang, {
   .bt-practice__facts div:hover { background: var(--surface-card-hover); }
   .bt-practice__facts dt { color: var(--color-accent); font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
   .bt-practice__facts dd { margin-top: 8px; font-size: var(--fs-body); line-height: var(--lh-snug); }
-  .bt-support__top { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr); gap: clamp(2rem, 4vw, 4rem); align-items: center; margin-bottom: clamp(2rem, 3vw, 3rem); }
-  .bt-support__top .bt-head { margin-bottom: 0; }
-  .bt-video { overflow: hidden; margin: 0; aspect-ratio: 16 / 9; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: radial-gradient(80% 120% at 30% 0%, var(--glow-top), transparent 70%), var(--surface-card); box-shadow: var(--shadow-card); }
-  .bt-video video { display: block; width: 100%; height: 100%; object-fit: cover; }
-  .bt-video__placeholder { display: grid; height: 100%; place-content: center; justify-items: center; gap: 0.5rem; padding: var(--space-md); text-align: center; }
-  .bt-video__play { display: grid; width: 64px; height: 64px; margin-bottom: 0.4rem; place-items: center; border-radius: 50%; background: var(--color-accent-surface); box-shadow: var(--shadow-accent); }
-  .bt-video__play svg { width: 26px; height: 26px; margin-left: 3px; fill: #fff; }
-  .bt-video__soon { color: var(--color-accent); font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.12em; text-transform: uppercase; }
-  .bt-video__placeholder strong { color: var(--color-text); font-size: var(--fs-h5); line-height: var(--lh-snug); }
+  /* Explainer video: wide, with a light running around its frame, a dark
+     cover with a large pulsing play button and the title, and a small AI
+     label that stays visible while it plays. */
+  .bt-film { margin: 0; }
+  .bt-film__frame {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    border: 2px solid transparent;
+    border-radius: var(--radius-lg);
+    background:
+      linear-gradient(var(--color-bg), var(--color-bg)) padding-box,
+      conic-gradient(from var(--bt-angle), var(--color-accent-surface), rgba(212, 0, 0, 0.15) 25%, var(--color-signal) 50%, rgba(212, 0, 0, 0.15) 75%, var(--color-accent-surface)) border-box;
+    box-shadow: 0 50px 100px -40px rgba(0, 0, 0, 0.9), 0 0 90px -20px rgba(244, 14, 14, 0.45);
+    animation: bt-angle 8s linear infinite;
+  }
+  .bt-film__video { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; border-radius: calc(var(--radius-lg) - 2px); background: #000; }
+  .bt-film__cover { position: absolute; inset: 0; z-index: 1; display: none; width: 100%; padding: 0; border: 0; border-radius: calc(var(--radius-lg) - 2px); background: #000; color: var(--color-text); text-align: left; cursor: pointer; overflow: hidden; }
+  :global(.js) .bt-film__cover { display: block; }
+  .bt-film.is-playing .bt-film__cover { display: none; }
+  .bt-film__cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s var(--ease-out), filter 0.8s var(--ease-out); }
+  .bt-film__shade { position: absolute; inset: 0; background: radial-gradient(60% 60% at 50% 50%, rgba(16, 16, 16, 0.15), rgba(16, 16, 16, 0.55) 100%), linear-gradient(180deg, transparent 45%, rgba(10, 10, 10, 0.92) 100%); }
+  .bt-film__play { position: absolute; top: 50%; left: 50%; display: grid; width: clamp(84px, 9vw, 128px); height: clamp(84px, 9vw, 128px); place-items: center; border-radius: 50%; background: var(--color-accent-surface); box-shadow: 0 20px 50px -10px rgba(244, 14, 14, 0.75); translate: -50% -50%; transition: scale 0.4s var(--ease-out), background 0.4s var(--ease-out); }
+  .bt-film__play svg { position: relative; z-index: 1; width: 38%; height: 38%; margin-left: 6%; fill: #fff; }
+  .bt-film__play i { position: absolute; inset: 0; border: 2px solid var(--color-accent); border-radius: 50%; animation: bt-film-ring 2.4s var(--ease-out) infinite; }
+  .bt-film__play i + i { animation-delay: 1.2s; }
+  .bt-film__meta { position: absolute; left: clamp(20px, 3vw, 44px); right: clamp(20px, 3vw, 44px); bottom: clamp(18px, 2.6vw, 40px); display: grid; gap: 8px; }
+  .bt-film__kicker { color: var(--color-muted); font-size: var(--fs-sm); font-weight: var(--fw-semibold); letter-spacing: 0.06em; }
+  .bt-film__kicker b { margin-right: 6px; padding: 0.2rem 0.6rem; border-radius: var(--radius-pill); background: var(--color-accent-surface); color: #fff; font-size: var(--fs-2xs); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+  .bt-film__meta strong { max-width: 30ch; font-size: clamp(1.25rem, 2.4vw, 2.4rem); font-weight: var(--fw-bold); line-height: var(--lh-tight); }
+  .bt-film__cover:hover img, .bt-film__cover:focus-visible img { transform: scale(1.04); filter: brightness(1.1); }
+  .bt-film__cover:hover .bt-film__play, .bt-film__cover:focus-visible .bt-film__play { scale: 1.12; background: var(--color-accent); }
+  .bt-film__cover:focus-visible { outline: 3px solid var(--color-accent); outline-offset: -6px; }
+  .bt-film__ai { position: absolute; top: 12px; right: 12px; z-index: 2; padding: 0.15rem 0.5rem; border-radius: var(--radius-pill); background: rgba(10, 10, 10, 0.7); color: rgba(255, 255, 255, 0.75); font-size: 0.62rem; font-weight: var(--fw-semibold); letter-spacing: 0.04em; pointer-events: none; }
+  .bt-film__mobile-title { display: none; padding: 16px 4px 0; }
+  .bt-film__mobile-title strong { display: block; margin-top: 8px; font-size: var(--fs-h5); line-height: var(--lh-tight); }
+  .bt-film__soon { display: grid; height: 100%; place-content: center; justify-items: center; gap: 1rem; }
+  .bt-film__soon .bt-film__play { position: static; translate: none; }
   .bt-card h3 { margin-bottom: var(--space-xs); font-size: var(--fs-h4); line-height: var(--lh-snug); }
   .bt-card p { color: var(--color-muted); }
   .bt-card .bt-card__eyebrow { margin-bottom: var(--space-xs); color: var(--color-accent); font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
@@ -3302,6 +3347,7 @@ const faq = pick(lang, {
   /* ---- Motion ------------------------------------------------------------------ */
   @property --bt-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
   @keyframes bt-angle { to { --bt-angle: 360deg; } }
+  @keyframes bt-film-ring { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.7); opacity: 0; } }
   @keyframes bt-signal { 0%, 100% { box-shadow: 0 8px 24px -8px rgba(255, 138, 31, 0.7), 0 0 0 0 rgba(255, 138, 31, 0.45); } 50% { box-shadow: 0 8px 24px -8px rgba(255, 138, 31, 0.7), 0 0 0 8px rgba(255, 138, 31, 0); } }
   @keyframes bt-sweep { 0%, 55% { background-position: 120% 0; } 100% { background-position: -60% 0; } }
   @keyframes bt-stage { 0%, 26%, 100% { border-color: var(--border-subtle); box-shadow: none; } 6%, 20% { border-color: var(--color-accent); box-shadow: 0 0 0 1px var(--color-accent), var(--shadow-accent); } }
@@ -3344,7 +3390,7 @@ const faq = pick(lang, {
   }
   @media (max-width: 900px) {
     .bt-showcase__top, .bt-calendar__grid, .bt-formats__grid, .bt-fund__grid, .bt-trainers__grid,
-    .bt-why__grid, .bt-proof__grid, .bt-groups__grid, .bt-approved__grid, .bt-entry__grid, .bt-support__top, .bt-practice__top {
+    .bt-why__grid, .bt-proof__grid, .bt-groups__grid, .bt-approved__grid, .bt-entry__grid, .bt-practice__top {
       grid-template-columns: minmax(0, 1fr);
     }
     .bt-practice__visual { margin-bottom: 0; }
@@ -3375,6 +3421,11 @@ const faq = pick(lang, {
     .bt-orbit__node.is-active .bt-orbit__dot { transform: none; animation: none; }
   }
   @media (max-width: 620px) {
+    /* Phones: the frame is too low for title and play button, so the title
+       sits below the video and the cover only shows image and play button. */
+    .bt-film__meta { display: none; }
+    .bt-film__mobile-title { display: block; }
+    .bt-film__play { width: 72px; height: 72px; }
     .bt-practice__steps, .bt-practice__facts { grid-template-columns: minmax(0, 1fr); }
     .bt-hero__inner { padding-top: 120px; }
     .bt-hero h1 { font-size: var(--fs-h1); overflow-wrap: break-word; hyphens: auto; }
@@ -3403,7 +3454,7 @@ const faq = pick(lang, {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .bt-new, .bt-aurora span, .bt-hero__track, .bt-practice__steps li, .bt-practice__steps li::after, .bt-format, .bt-refs__track ul, .bt-calendar__pending span,
+    .bt-new, .bt-aurora span, .bt-film__frame, .bt-film__play i, .bt-hero__track, .bt-practice__steps li, .bt-practice__steps li::after, .bt-format, .bt-refs__track ul, .bt-calendar__pending span,
     .bt-dot, .bt-showcase__panel, .bt-signal, .bt-signal::after, .bt-stages li, .bt-stages li::after, .bt-proof__seal::after, .is-open .bt-fund__check, .bt-hero h1 span,
     .bt-quiz__result, .bt-trainer__body, .bt-sectors__floor, .bt-orbit__ring--outer, .bt-orbit__sparks, .bt-orbit__beam.is-active,
     .bt-orbit__core, .bt-orbit__node.is-active .bt-orbit__dot { animation: none; }
@@ -3492,6 +3543,23 @@ const faq = pick(lang, {
       doc.style.setProperty('--gy', `${(y * 100).toFixed(1)}%`);
     });
     doc.addEventListener('pointerleave', () => doc.classList.remove('is-tilting'));
+  }
+
+  // Explainer video: the cover starts playback with sound; at the end the
+  // cover returns so the video can be started again.
+  const film = document.querySelector<HTMLElement>('[data-bt-film]');
+  const filmVideo = film?.querySelector<HTMLVideoElement>('[data-bt-film-video]');
+  const filmPlay = film?.querySelector<HTMLButtonElement>('[data-bt-film-play]');
+  if (film && filmVideo && filmPlay) {
+    filmPlay.addEventListener('click', () => {
+      film.classList.add('is-playing');
+      filmVideo.play().catch(() => film.classList.remove('is-playing'));
+      filmVideo.focus({ preventScroll: true });
+    });
+    filmVideo.addEventListener('ended', () => {
+      film.classList.remove('is-playing');
+      filmVideo.currentTime = 0;
+    });
   }
 
   // Scroll progress bar.
