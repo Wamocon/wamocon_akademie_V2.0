@@ -2567,8 +2567,9 @@ const faq = pick(lang, {
      column's minimum width and pushes the whole copy past a phone screen. */
   .bt-hero { position: relative; display: grid; min-height: 100svh; grid-template-columns: minmax(0, 1fr); align-items: center; overflow: hidden; isolation: isolate; background: var(--color-bg); }
   /* The wall: four columns, tilted once (a static rotation, no animation).
-     Each track moves by margin-top (layout and paint, no compositing), so the
-     text above keeps its subpixel sharpness. --shift is one tile set in pixels
+     Each track moves by transform on the compositor (its own layer, painted
+     once), so the motion stays smooth even while the page is busy. --shift is
+     one tile set in pixels
      (set by the script); --px/--py follow the pointer. */
   .bt-hero__wall {
     position: absolute;
@@ -2580,12 +2581,12 @@ const faq = pick(lang, {
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: clamp(14px, 1.3vw, 24px);
-    margin: var(--py, 0px) 0 0 var(--px, 0px);
+    translate: var(--px, 0px) var(--py, 0px);
     rotate: -10deg;
-    transition: margin 0.8s var(--ease-out);
+    transition: translate 0.8s var(--ease-out);
   }
   .bt-hero__col { min-width: 0; overflow: hidden; contain: layout paint; }
-  .bt-hero__track { display: flex; flex-direction: column; gap: clamp(14px, 1.3vw, 24px); animation: bt-track 80s linear infinite; }
+  .bt-hero__track { display: flex; flex-direction: column; gap: clamp(14px, 1.3vw, 24px); will-change: transform; animation: bt-track 80s linear infinite; }
   .bt-hero__col:nth-child(2) .bt-hero__track { animation-duration: 94s; animation-direction: reverse; animation-delay: -30s; }
   .bt-hero__col:nth-child(3) .bt-hero__track { animation-duration: 72s; animation-delay: -14s; }
   .bt-hero__col:nth-child(4) .bt-hero__track { animation-duration: 86s; animation-direction: reverse; animation-delay: -52s; }
@@ -3310,7 +3311,7 @@ const faq = pick(lang, {
   @keyframes bt-pop { from { opacity: 0; transform: translateY(8px); } }
   @keyframes bt-copy-in { from { opacity: 0; transform: translateY(14px); } }
   @keyframes bt-strike { from { transform: scaleX(0); } }
-  @keyframes bt-track { to { margin-top: calc(-1 * var(--shift, 0px)); } }
+  @keyframes bt-track { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, calc(-1 * var(--shift, 0px)), 0); } }
   @keyframes bt-now { 0% { opacity: 0; transform: scale(1.7); } 60% { opacity: 1; transform: scale(0.94); } }
   @keyframes bt-pulse { 0%, 100% { box-shadow: var(--shadow-accent); } 50% { box-shadow: 0 0 0 6px rgba(244, 14, 14, 0.18), var(--shadow-accent); } }
   @keyframes bt-marquee-ml { to { margin-left: calc(-1 * var(--shift, 0px)); } }
