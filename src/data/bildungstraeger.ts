@@ -153,11 +153,13 @@ export const bildungstraeger: {
   zertifikatAusgestellt: '2026-10-20',
   // Anhang, Zentrale Eschborn, FB4: Einschränkungen „keine“.
   einschraenkungen: 'keine',
-  zertifikatDatei: '/docs/azav-zertifikat-z-001806-1.pdf',
-  // Seite 1 des Zertifikats als Bild, gerendert aus dem PDF.
+  // Bewusst kein Download (Team, 02.11.2026): keine PDF-Datei auf der Website.
+  zertifikatDatei: '',
+  // Seite 1 des Zertifikats als Bild, nur zur Ansicht und ohne Vergrößerung.
+  // Der Zulassungszeitraum ist im Bild abgedeckt (Team, 02.11.2026).
   zertifikatVorschau: '/images/academy/azav-zertifikat-z-001806-1.webp',
-  zertifikatBreite: 1100,
-  zertifikatHoehe: 1556,
+  zertifikatBreite: 760,
+  zertifikatHoehe: 1075,
   // TODO: OFFEN. Zeichen der fachkundigen Stelle unverändert unter /public ablegen.
   zeichenDatei: '',
   // TODO: OFFEN. Pixelmaße der Zeichen-Datei, damit sie unverzerrt und ohne

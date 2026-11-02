@@ -530,9 +530,7 @@ const copy = {
     measuresNone: 'in Vorbereitung',
     measuresCount: (n: number) => (n === 1 ? '1 Maßnahme' : `${n} Maßnahmen`),
     certAlt: `Zertifikat der Trägerzulassung nach AZAV, ausgestellt von der ${bt.fachkundigeStelle.name}`,
-    certPdf: 'Zertifikat ansehen (PDF)',
     certCaption: certNo ? `Zertifikat ${certNo} der ${bt.fachkundigeStelle.name}, ausgestellt am ${certIssued}` : '',
-    certOpen: 'Ganzes Zertifikat öffnen',
     factCourse: `${bt.seminar.titel}, ${bt.seminar.tage} Tage`,
     factDuration: '45 Seminartage in Vollzeit, in Präsenz in Eschborn oder live online',
     factBasis: 'Bildungsgutschein nach § 81 SGB III',
@@ -881,9 +879,7 @@ const copy = {
     measuresNone: 'in preparation',
     measuresCount: (n: number) => (n === 1 ? '1 course' : `${n} courses`),
     certAlt: `Certificate of the AZAV provider approval, issued by ${bt.fachkundigeStelle.name}`,
-    certPdf: 'View certificate (PDF)',
     certCaption: certNo ? `Certificate ${certNo} from ${bt.fachkundigeStelle.name}, issued on ${certIssued}` : '',
-    certOpen: 'Open full certificate',
     factCourse: `${bt.seminar.titel}, ${bt.seminar.tage} days`,
     factDuration: '45 full-time seminar days, on site in Eschborn or live online',
     factBasis: 'Bildungsgutschein under § 81 SGB III',
@@ -1228,9 +1224,7 @@ const copy = {
     measuresNone: 'дайындалуда',
     measuresCount: (n: number) => `${n} курс`,
     certAlt: `${bt.fachkundigeStelle.name} берген AZAV бойынша ұйымға рұқсат сертификаты`,
-    certPdf: 'Сертификатты қарау (PDF)',
     certCaption: certNo ? `${bt.fachkundigeStelle.name} берген ${certNo} сертификаты, ${certIssued}` : '',
-    certOpen: 'Сертификатты толық ашу',
     factCourse: `${bt.seminar.titel}, ${bt.seminar.tage} күн`,
     factDuration: 'Толық күндік 45 семинар күні, Эшборнда аудиторияда немесе тікелей онлайн',
     factBasis: '§ 81 SGB III бойынша Bildungsgutschein',
@@ -1400,7 +1394,6 @@ const certificateHasSize = bt.zertifikatBreite !== null && bt.zertifikatHoehe !=
 // Preview image of the certificate: the dedicated preview, or the certificate
 // itself when it was supplied as an image.
 const certPreview = bt.zertifikatVorschau.trim() || (hasCertificate && !certificateIsPdf ? bt.zertifikatDatei : '');
-const certLink = hasCertificate ? bt.zertifikatDatei : certPreview;
 
 // Lead seals. Both logos were supplied by the team (27.10.2026) and are shown
 // unchanged: the AZAV mark "Trägerzulassung" of the GZQ GmbH (vector) and the
@@ -2006,7 +1999,7 @@ const faq = pick(lang, {
     <div class="container bt-proof__grid">
       <figure class:list={['bt-proof__visual', { 'has-doc': certPreview }]} data-reveal="zoom">
         {certPreview && (
-          <a class="bt-proof__doc" href={certLink} target="_blank" rel="noopener">
+          <div class="bt-proof__doc">
             <img
               src={certPreview}
               alt={c.certAlt}
@@ -2014,9 +2007,9 @@ const faq = pick(lang, {
               height={certificateHasSize ? bt.zertifikatHoehe! : undefined}
               loading="lazy"
               decoding="async"
+              draggable="false"
             />
-            <span class="bt-proof__doc-hint">{c.certOpen} <span aria-hidden="true">↗</span></span>
-          </a>
+          </div>
         )}
         {showMark ? (
           <img class="bt-proof__mark" src={bt.zeichenDatei} alt={c.markAlt} width={bt.zeichenBreite ?? undefined} height={bt.zeichenHoehe ?? undefined} loading="lazy" />
@@ -2067,7 +2060,6 @@ const faq = pick(lang, {
             <a href={company.phoneHref}>{company.phone}</a>
             <a href={company.emailHref}>{company.email}</a>
           </p>
-          {hasCertificate && <Button href={bt.zertifikatDatei} target="_blank">{c.certPdf}</Button>}
         </div>
       </div>
     </div>
@@ -3133,13 +3125,9 @@ const faq = pick(lang, {
     transform: rotate(-2.5deg);
     transition: transform 0.6s var(--ease-out), box-shadow 0.6s var(--ease-out);
   }
-  .bt-proof__doc::after { content: ''; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.55) 50%, transparent 65%); background-size: 250% 100%; background-position: 120% 0; transition: background-position 1s var(--ease-out); pointer-events: none; }
-  .bt-proof__doc:hover, .bt-proof__doc:focus-visible { transform: none; box-shadow: 0 50px 90px -30px rgba(17, 24, 39, 0.6), 0 0 0 1px rgba(17, 24, 39, 0.08); }
-  .bt-proof__doc:hover::after { background-position: -40% 0; }
-  .bt-proof__doc:focus-visible { outline: 3px solid var(--color-accent-surface); outline-offset: 4px; }
-  .bt-proof__doc img { display: block; width: 100%; height: auto; }
-  .bt-proof__doc-hint { position: absolute; left: 50%; bottom: 16px; z-index: 1; padding: 0.5rem 1rem; border-radius: var(--radius-pill); background: rgba(17, 24, 39, 0.88); color: #fff; font-size: var(--fs-xs); font-weight: var(--fw-semibold); white-space: nowrap; opacity: 0; translate: -50% 8px; transition: opacity var(--dur-med) var(--ease-out), translate var(--dur-med) var(--ease-out); }
-  .bt-proof__doc:hover .bt-proof__doc-hint, .bt-proof__doc:focus-visible .bt-proof__doc-hint { opacity: 1; translate: -50% 0; }
+  /* View only: no link, no enlargement; the image cannot be dragged or
+     right-clicked directly (pointer events go to the frame). */
+  .bt-proof__doc img { display: block; width: 100%; height: auto; pointer-events: none; user-select: none; -webkit-user-drag: none; }
   .bt-proof__visual figcaption { margin-top: var(--space-md); color: var(--color-muted-dark); font-size: var(--fs-xs); text-align: left; justify-self: start; }
   .bt-proof__seal {
     position: relative;
