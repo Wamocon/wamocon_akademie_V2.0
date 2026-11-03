@@ -129,7 +129,7 @@ export const bildungstraeger: {
   seminar: Seminar;
   naechsterStart: NaechsterStart;
   siegel: Siegel[];
-  begleitVideo: { datei: string; poster: string; laenge: string; sprache: string };
+  begleitVideo: { datei: string; poster: string; laenge: string };
 } = {
   fachkundigeStelle: {
     name: 'GZQ GmbH',
@@ -251,7 +251,6 @@ export const bildungstraeger: {
     poster: '/images/academy/begleitung-poster.webp',
     // Länge laut Datei: 35,9 s.
     laenge: '0:36',
-    sprache: 'de',
   },
 };
 

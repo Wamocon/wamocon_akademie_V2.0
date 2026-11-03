@@ -96,7 +96,9 @@ const trainerSource = 'https://www.wamocon.com/ueber-uns/';
 // Kunden?", the SAP projects and the FAQ "Für welche Branchen und Kunden
 // arbeitet WAMOCON?"), retrieved 27.10.2026. All 24 named references appear
 // exactly once; the grouping into industries is ours. Dated project examples
-// come from the WAMOCON project history.
+// come from the WAMOCON project history and the milestones on
+// www.wamocon.com/ueber-uns/ (retrieved 03.11.2026). Industries without a
+// named reference are shown with such a project only.
 type Text = Record<Lang, string>;
 interface Sector {
   key: string;
@@ -157,23 +159,42 @@ const sectors: Sector[] = [
     }],
   },
   {
-    key: 'industrie',
-    icon: 'chip',
-    name: { de: 'Industrie und Technologie', en: 'Industry and technology', kk: 'Өнеркәсіп және технология' },
-    refs: ['Intel', 'Samsung Electronics', 'Hewlett-Packard', 'Phoenix Contact', 'KraussMaffei'],
+    key: 'elektro',
+    icon: 'cog',
+    name: { de: 'Elektrotechnik und Maschinenbau', en: 'Electrical engineering and machinery', kk: 'Электротехника және машина жасау' },
+    refs: ['Phoenix Contact', 'KraussMaffei'],
     projects: [{
       text: { de: 'Einführung eines SAP-ERP-Systems in 50 Ländern bei Phoenix Contact', en: 'Rollout of an SAP ERP system in 50 countries at Phoenix Contact', kk: 'Phoenix Contact компаниясында 50 елде SAP ERP жүйесін енгізу' },
+    }, {
+      year: { de: '2017', en: '2017', kk: '2017' },
+      text: { de: 'S/4HANA-Finanzlösung für ein führendes deutsches Unternehmen der Elektroindustrie', en: 'SAP S/4HANA finance solution for a leading German electrical-industry company', kk: 'Жетекші неміс электр өнеркәсібі компаниясына арналған SAP S/4HANA қаржы шешімі' },
     }],
+  },
+  {
+    key: 'technologie',
+    icon: 'chip',
+    name: { de: 'Technologie und Elektronik', en: 'Technology and electronics', kk: 'Технология және электроника' },
+    refs: ['Intel', 'Samsung Electronics', 'Hewlett-Packard'],
   },
   {
     key: 'logistik',
     icon: 'truck',
     name: { de: 'Verkehr und Logistik', en: 'Transport and logistics', kk: 'Көлік және логистика' },
-    refs: ['Deutsche Bahn', 'VGF'],
+    refs: ['Deutsche Bahn'],
     projects: [{
       // WAMOCON-Unternehmensübersicht, Referenz IT-Consulting und SAP.
       year: { de: 'seit 2017', en: 'since 2017', kk: '2017 жылдан бері' },
       text: { de: 'Test- und Qualitätssicherung im Fahrplansystem eines großen Transportunternehmens', en: 'Testing and quality assurance for the timetable system of a major transport company', kk: 'Ірі көлік компаниясының кесте жүйесін тестілеу және сапасын қамтамасыз ету' },
+    }],
+  },
+  {
+    key: 'nahverkehr',
+    icon: 'tram',
+    name: { de: 'Öffentlicher Nahverkehr', en: 'Public transport', kk: 'Қалалық қоғамдық көлік' },
+    refs: ['VGF'],
+    projects: [{
+      year: { de: '2011', en: '2011', kk: '2011' },
+      text: { de: 'Einführung von SAP ERP 6.0 FI/CO bei einem deutschen Nahverkehrsunternehmen', en: 'Introduction of SAP ERP 6.0 FI/CO at a German public transport company', kk: 'Неміс қоғамдық көлік компаниясында SAP ERP 6.0 FI/CO енгізу' },
     }],
   },
   {
@@ -207,6 +228,36 @@ const sectors: Sector[] = [
     icon: 'briefcase',
     name: { de: 'Beratung', en: 'Consulting', kk: 'Консалтинг' },
     refs: ['Capgemini', 'PwC'],
+    projects: [{
+      year: { de: '2012', en: '2012', kk: '2012' },
+      text: { de: 'Einführung von SAP MRS bei einem führenden internationalen Beratungsunternehmen', en: 'Introduction of SAP MRS at a leading international consulting firm', kk: 'Жетекші халықаралық консалтинг компаниясында SAP MRS енгізу' },
+    }],
+  },
+  {
+    key: 'software',
+    icon: 'code',
+    name: { de: 'Software und IT-Dienstleistung', en: 'Software and IT services', kk: 'Бағдарламалық жасақтама және IT қызметтері' },
+    refs: [],
+    projects: [{
+      year: { de: '2017', en: '2017', kk: '2017' },
+      text: { de: 'Skype-for-Business-Lösung für ein führendes deutsches IT-Systemhaus', en: 'Skype for Business solution for a leading German IT systems house', kk: 'Жетекші неміс IT жүйелік компаниясына арналған Skype for Business шешімі' },
+    }, {
+      year: { de: '2018', en: '2018', kk: '2018' },
+      text: { de: 'Einführung der SAP-BASS-Lösung bei einem deutschen Softwareunternehmen', en: 'Introduction of the SAP BASS solution at a German software company', kk: 'Неміс бағдарламалық жасақтама компаниясында SAP BASS шешімін енгізу' },
+    }],
+  },
+  {
+    key: 'bildung',
+    icon: 'cap',
+    name: { de: 'Bildung', en: 'Education', kk: 'Білім беру' },
+    refs: [],
+    projects: [{
+      year: { de: '2021', en: '2021', kk: '2021' },
+      text: { de: 'Einführung der Lernplattform DiTeLe in einem deutschen Ausbildungszentrum', en: 'Introduction of the DiTeLe learning platform at a German training centre', kk: 'Неміс оқу орталығында DiTeLe оқу платформасын енгізу' },
+    }, {
+      year: { de: '2023', en: '2023', kk: '2023' },
+      text: { de: 'Neues Seminar ISTQB® Certified Tester Foundation Level in einem deutschen Schulungszentrum', en: 'New ISTQB® Certified Tester Foundation Level seminar at a German training centre', kk: 'Неміс оқыту орталығында жаңа ISTQB® Certified Tester Foundation Level семинары' },
+    }],
   },
 ];
 // 24 x 24 line icons, drawn with currentColor.
@@ -222,6 +273,10 @@ const sectorIcons: Record<string, string> = {
   pill: '<path d="M10.5 3.5a5 5 0 0 1 7 7l-7 7a5 5 0 0 1-7-7l7-7zM7 10l7 7"/>',
   landmark: '<path d="M4 21V9l8-5 8 5v12M3 21h18M9 21v-6h6v6M9 11h.01M15 11h.01"/>',
   briefcase: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/>',
+  cog: '<circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="6.5"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
+  tram: '<rect x="5" y="4" width="14" height="13" rx="3"/><path d="M5 11h14M9 21l1.5-4M15 21l-1.5-4M9 2h6"/><circle cx="9" cy="14" r=".8"/><circle cx="15" cy="14" r=".8"/>',
+  code: '<path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/>',
+  cap: '<path d="M2 9l10-5 10 5-10 5-10-5z"/><path d="M6 11v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5M22 9v6"/>',
 };
 const allRefs = sectors.flatMap((sector) => sector.refs);
 const pad2 = (n: number) => String(n).padStart(2, '0');
@@ -296,7 +351,7 @@ const copy = {
       rest: 'Praxis in DiTeLe.',
       text: 'Zum 45-Tage-Seminar gehört DiTeLe, die Lernplattform der WAMOCON Academy für praktisches Softwaretesten. Dort testest du echte, laufende Webanwendungen, schreibst Fehlerberichte wie im Beruf und bekommst zu jeder Abgabe Feedback von deinen Trainern. Testen lernt man am besten, indem man testet.',
       shotAlt: 'Startseite der Lernplattform DiTeLe mit dem Leitsatz „Softwaretesten lernt man durch Testen.“',
-      stats: [['175', 'Aufgaben'], ['4', 'Kurse'], ['3', 'Sprachen']],
+      stats: [['175', 'Aufgaben'], ['4', 'Kurse']],
       stepsLabel: 'So läuft jede Aufgabe ab',
       steps: [
         ['Lernen', 'Kurze Einheiten aus Video, Skript und Quiz'],
@@ -337,7 +392,6 @@ const copy = {
         ['Praxis-UseCases', 'Testfälle aus der Praxis: Grenzwertanalyse, Äquivalenzklassen, Entscheidungstabellen und mehr.'],
       ],
       facts: [
-        ['Sprachen', 'Deutsch, Englisch und Russisch, jederzeit umschaltbar'],
         ['Vorkenntnisse', 'Keine Programmierkenntnisse nötig, sicherer Umgang mit dem Browser genügt'],
         ['Zugang', 'Konto und Kurse richten wir für dich ein'],
         ['Tempo', 'Du arbeitest in deinem Tempo, Fristen siehst du in der Kursübersicht'],
@@ -393,7 +447,7 @@ const copy = {
       [100, '+', 'IT-Projekte umgesetzt'],
       [5500, '+', 'Projekttage'],
       [100, '+', 'Kunden der WAMOCON GmbH weltweit'],
-      [450, '', 'Personen in Projektteams geleitet'],
+      [450, '', 'Projektmitarbeiter in einem Großprojekt geleitet'],
     ],
     knowTiles: [
       ['Praxis aus Großprojekten', 'Du arbeitest mit Fällen aus unseren Testprojekten in Mobilkommunikation, Finanzwesen, Energie und Automobilindustrie.'],
@@ -443,7 +497,7 @@ const copy = {
         role: 'Geschäftsführer, Testmanager, Testautomatisierer, Projektleiter, ISTQB®-Trainer und LaaJ-Architekt für KI-Qualitätssicherung',
         groups: [
           ['Werdegang', ['2007 Start im IT-Test bei einem internationalen IT-Unternehmen', 'Vom Softwaretester über agilen Tester, Testkoordinator und Testautomatisierer zum Testmanager und Projektmanager', 'Über 17 Jahre Praxiserfahrung in Kundenprojekten']],
-          ['Erfahrung', ['Leitet Teams mit bis zu 450 Personen', 'Spezialist für Planung und Umsetzung von IT-Testmanagement-Projekten', 'Workshops zu Softwaretests und persönliches Mentoring']],
+          ['Erfahrung', ['Hat ein Großprojekt mit 450 Projektmitarbeitern geleitet', 'Spezialist für Planung und Umsetzung von IT-Testmanagement-Projekten', 'Workshops zu Softwaretests und persönliches Mentoring']],
           ['Qualifikation', ['Alle Prüf- und Qualitätsmanagementaufgaben nach dem internationalen ISTQB®-Standard absolviert', 'ISTQB®-Trainer an der WAMOCON Academy']],
         ],
         alt: 'Porträt von Waleri Moretz',
@@ -472,7 +526,6 @@ const copy = {
     videoCta: 'In 36 Sekunden: dein Weg zum Softwaretester mit Bildungsgutschein',
     videoPlay: 'Video abspielen',
     videoAi: 'KI-generiert',
-    videoLang: '',
     support: [
       ['Persönliche Beratung', 'Vor dem Start und während des gesamten Seminars hast du uns als Ansprechpartner an deiner Seite.'],
       ['Unterstützung bei Bewerbungen', 'Wir helfen dir, überzeugende Bewerbungen für deinen Einstieg ins Softwaretesting zu erstellen.'],
@@ -496,14 +549,14 @@ const copy = {
 
     sectorsEyebrow: 'Branchenerfahrung',
     sectorsLead: 'Ein Team.',
-    // Die Branchenzahl ist die Zahl der Branchen mit namentlicher Referenz, die
-    // die Seite zeigt. 100+ Kunden, 100+ Projekte seit 2007 und die Projektländer:
+    // Die Branchenzahl ist die Zahl der Branchen, die die Seite zeigt, jede mit
+    // namentlicher Referenz oder datiertem Projekt von wamocon.com. 100+ Kunden, 100+ Projekte seit 2007 und die Projektländer:
     // WAMOCON-Unternehmensübersicht (Stand Oktober 2026). Referenzen: wamocon.com.
-    sectorsRest: `${sectors.length} Branchen.`,
-    sectorsText: `Seit 2007 testet die WAMOCON Software in ${sectors.length} Branchen und hat Projekte in sechs Ländern umgesetzt, für Banken und Energieversorger ebenso wie für die Bundesagentur für Arbeit. Aus diesen Projekten stammen die Fälle, mit denen du im Seminar arbeitest.`,
+    sectorsRest: `${sectors.length}+ Branchen.`,
+    sectorsText: `Seit 2007 testet die WAMOCON Software in mehr als ${sectors.length} Branchen und hat Projekte in sechs Ländern umgesetzt, für Banken und Energieversorger ebenso wie für die Bundesagentur für Arbeit. Aus diesen Projekten stammen die Fälle, mit denen du im Seminar arbeitest.`,
     sectorsStats: ['Branchen seit 2007', 'Kunden der WAMOCON GmbH weltweit', 'Projekte seit 2007', 'Länder mit Projekten'],
     sectorsCountries: 'Projekte in',
-    sectorsHint: 'Wähle eine Branche und sieh, für wen wir dort gearbeitet haben.',
+    sectorsHint: 'Wähle eine Branche und sieh, für wen und woran wir dort gearbeitet haben.',
     sectorsTabsLabel: 'Branchen der WAMOCON',
     sectorsCore: 'seit 2007',
     refsLabel: 'Referenzen',
@@ -662,7 +715,7 @@ const copy = {
       rest: 'Practice in DiTeLe.',
       text: 'The 45-day seminar includes DiTeLe, the WAMOCON Academy learning platform for hands-on software testing. There you test real, running web applications, write bug reports the way the job demands and get feedback from your trainers on every submission. You do not learn testing by memorising definitions, you learn it by testing.',
       shotAlt: 'Home page of the DiTeLe learning platform with the line "Softwaretesten lernt man durch Testen."',
-      stats: [['175', 'tasks'], ['4', 'courses'], ['3', 'languages']],
+      stats: [['175', 'tasks'], ['4', 'courses']],
       stepsLabel: 'How every task works',
       steps: [
         ['Learn', 'Short units of video, script and quiz'],
@@ -703,7 +756,6 @@ const copy = {
         ['Practical use cases', 'Test cases from practice: boundary value analysis, equivalence partitioning, decision tables and more.'],
       ],
       facts: [
-        ['Languages', 'German, English and Russian, switch at any time'],
         ['Prior knowledge', 'No programming needed, confident browser use is enough'],
         ['Access', 'We set up your account and courses for you'],
         ['Pace', 'You work at your own pace, deadlines are shown in the course overview'],
@@ -755,7 +807,7 @@ const copy = {
       [100, '+', 'IT projects delivered'],
       [5500, '+', 'project days'],
       [100, '+', 'WAMOCON GmbH clients worldwide'],
-      [450, '', 'people led in project teams'],
+      [450, '', 'project staff led on one large-scale project'],
     ],
     knowTiles: [
       ['Practice from large projects', 'Real cases from testing projects in mobile communications, finance, energy and automotive instead of textbook examples.'],
@@ -800,7 +852,7 @@ const copy = {
         role: 'Managing Director, test manager, test automation engineer, project lead, ISTQB® trainer and LaaJ architect for AI quality assurance',
         groups: [
           ['Career', ['2007 started in IT testing at an international IT company', 'From software tester to agile tester, test coordinator and test automation engineer, then test manager and project manager', 'More than 17 years of hands-on experience in client projects']],
-          ['Experience', ['Leads teams of up to 450 people', 'Specialist in planning and delivering IT test-management projects', 'Workshops on software testing and personal mentoring']],
+          ['Experience', ['Has led a large-scale project with 450 project staff', 'Specialist in planning and delivering IT test-management projects', 'Workshops on software testing and personal mentoring']],
           ['Qualifications', ['Completed all testing and quality-management tasks under the international ISTQB® standard', 'ISTQB® trainer at WAMOCON Academy']],
         ],
         alt: 'Portrait of Waleri Moretz',
@@ -829,7 +881,6 @@ const copy = {
     videoCta: 'In 36 seconds: your route to becoming a software tester with a Bildungsgutschein',
     videoPlay: 'Play video',
     videoAi: 'AI-generated',
-    videoLang: 'In German',
     support: [
       ['Personal advice', 'Before you start and throughout the seminar, we are your point of contact.'],
       ['Help with applications', 'We help you put together strong applications for your first role in software testing.'],
@@ -852,11 +903,11 @@ const copy = {
 
     sectorsEyebrow: 'Industry experience',
     sectorsLead: 'One team.',
-    sectorsRest: `${sectors.length} industries.`,
-    sectorsText: `From banks and energy suppliers to the German Federal Employment Agency: since 2007 WAMOCON has been testing software in ${sectors.length} industries, with projects in six countries. That is exactly the experience your trainers bring into the seminar.`,
+    sectorsRest: `${sectors.length}+ industries.`,
+    sectorsText: `From banks and energy suppliers to the German Federal Employment Agency: since 2007 WAMOCON has been testing software in more than ${sectors.length} industries, with projects in six countries. That is exactly the experience your trainers bring into the seminar.`,
     sectorsStats: ['industries since 2007', 'WAMOCON GmbH clients worldwide', 'projects since 2007', 'countries with projects'],
     sectorsCountries: 'Projects in',
-    sectorsHint: 'Pick an industry and see who we have worked for there.',
+    sectorsHint: 'Pick an industry and see who we have worked for there, and on what.',
     sectorsTabsLabel: 'WAMOCON industries',
     sectorsCore: 'since 2007',
     refsLabel: 'References',
@@ -1011,7 +1062,7 @@ const copy = {
       rest: 'Тәжірибе DiTeLe-де.',
       text: '45 күндік семинарға WAMOCON Academy-дің тәжірибелік тестілеуге арналған DiTeLe оқу платформасы кіреді. Онда нақты жұмыс істеп тұрған веб-қосымшаларды тестілейсіз, жұмыстағыдай қате туралы есептер жазасыз және әр тапсырма бойынша тренерлеріңізден кері байланыс аласыз. Тестілеуді анықтамаларды жаттап емес, тестілеу арқылы үйренесіз.',
       shotAlt: 'DiTeLe оқу платформасының басты беті',
-      stats: [['175', 'тапсырма'], ['4', 'курс'], ['3', 'тіл']],
+      stats: [['175', 'тапсырма'], ['4', 'курс']],
       stepsLabel: 'Әр тапсырма қалай өтеді',
       steps: [
         ['Үйрену', 'Бейне, конспект және тесттен тұратын қысқа сабақтар'],
@@ -1052,7 +1103,6 @@ const copy = {
         ['Тәжірибелік кейстер', 'Тәжірибеден алынған тест-кейстер: шекаралық мәндерді талдау, эквиваленттік кластар, шешім кестелері және т.б.'],
       ],
       facts: [
-        ['Тілдер', 'Неміс, ағылшын және орыс тілдері, кез келген уақытта ауыстыруға болады'],
         ['Алдын ала білім', 'Бағдарламалау қажет емес, браузерді сенімді пайдалану жеткілікті'],
         ['Қолжетімділік', 'Аккаунт пен курстарды біз дайындаймыз'],
         ['Қарқын', 'Өз қарқыныңызбен оқисыз, мерзімдер курс шолуында көрінеді'],
@@ -1104,7 +1154,7 @@ const copy = {
       [100, '+', 'жүзеге асырылған IT жоба'],
       [5500, '+', 'жоба күні'],
       [100, '+', 'WAMOCON GmbH клиенті әлем бойынша'],
-      [450, '', 'адамға дейінгі жоба командаларын басқару'],
+      [450, '', 'жоба қызметкері бір ірі жобада басқарылды'],
     ],
     knowTiles: [
       ['Ірі жобалардан алынған тәжірибе', 'Оқулық мысалдарының орнына мобильді байланыс, қаржы, энергетика және автомобиль саласындағы тестілеу жобаларынан нақты жағдайлар.'],
@@ -1149,7 +1199,7 @@ const copy = {
         role: 'Атқарушы директор, тестілеу менеджері, автоматтандыру маманы, жоба жетекшісі, ISTQB® тренері және KI сапасын қамтамасыз ету жөніндегі LaaJ сәулетшісі',
         groups: [
           ['Мансап жолы', ['2007 жылы халықаралық IT компаниясында IT тестілеуден бастады', 'Тестілеушіден agile тестілеушіге, тест үйлестірушіге және автоматтандыру маманына, кейін тестілеу менеджері мен жоба менеджеріне дейін', 'Клиент жобаларында 17 жылдан астам тәжірибе']],
-          ['Тәжірибе', ['450 адамға дейінгі командаларды басқарады', 'IT тестілеуді басқару жобаларын жоспарлау мен іске асыру маманы', 'Тестілеу бойынша семинарлар және жеке тәлімгерлік']],
+          ['Тәжірибе', ['450 жоба қызметкері бар ірі жобаны басқарған', 'IT тестілеуді басқару жобаларын жоспарлау мен іске асыру маманы', 'Тестілеу бойынша семинарлар және жеке тәлімгерлік']],
           ['Біліктілік', ['Халықаралық ISTQB® стандарты бойынша барлық тексеру және сапа менеджменті міндеттерін орындаған', 'WAMOCON Academy-дегі ISTQB® тренері']],
         ],
         alt: 'Waleri Moretz портреті',
@@ -1178,7 +1228,6 @@ const copy = {
     videoCta: '36 секундта: Bildungsgutschein арқылы бағдарламалық тестілеуші болу жолы',
     videoPlay: 'Бейнені ойнату',
     videoAi: 'KI арқылы жасалған',
-    videoLang: 'Неміс тілінде',
     support: [
       ['Жеке кеңес', 'Басталар алдында да, бүкіл семинар барысында да біз сізге байланыс тұлғасы боламыз.'],
       ['Өтініш беруге көмек', 'Тестілеу саласындағы алғашқы жұмысыңызға сенімді өтініш дайындауға көмектесеміз.'],
@@ -1201,11 +1250,11 @@ const copy = {
 
     sectorsEyebrow: 'Салалық тәжірибе',
     sectorsLead: 'Бір команда.',
-    sectorsRest: `${sectors.length} сала.`,
-    sectorsText: `Банктер мен энергия жеткізушілерден бастап Германияның Федералдық жұмыспен қамту агенттігіне дейін: WAMOCON 2007 жылдан бері ${sectors.length} салада, алты елдегі жобаларда бағдарламаларды тестілеп келеді. Тренерлеріңіз семинарға дәл осы тәжірибені әкеледі.`,
+    sectorsRest: `${sectors.length}+ сала.`,
+    sectorsText: `Банктер мен энергия жеткізушілерден бастап Германияның Федералдық жұмыспен қамту агенттігіне дейін: WAMOCON 2007 жылдан бері ${sectors.length}+ салада, алты елдегі жобаларда бағдарламаларды тестілеп келеді. Тренерлеріңіз семинарға дәл осы тәжірибені әкеледі.`,
     sectorsStats: ['сала, 2007 жылдан бері', 'WAMOCON GmbH клиенті әлем бойынша', 'жоба, 2007 жылдан бері', 'жобалар жүргізілген ел'],
     sectorsCountries: 'Жобалар жүргізілген елдер',
-    sectorsHint: 'Саланы таңдап, онда кімдермен жұмыс істегенімізді көріңіз.',
+    sectorsHint: 'Саланы таңдап, онда кімдермен және не бойынша жұмыс істегенімізді көріңіз.',
     sectorsTabsLabel: 'WAMOCON салалары',
     sectorsCore: '2007 жылдан бері',
     refsLabel: 'Референстер',
@@ -1355,7 +1404,7 @@ const orbitNodes = sectors.map((sector, i, all) => {
   const angle = (-90 + (360 / all.length) * i) * (Math.PI / 180);
   const cos = Math.cos(angle);
   const sin = Math.sin(angle);
-  const side = cos > 0.3 ? 'r' : cos < -0.3 ? 'l' : sin < 0 ? 't' : 'b';
+  const side = cos > 0.1 ? 'r' : cos < -0.1 ? 'l' : sin < 0 ? 't' : 'b';
   return {
     ...sector,
     side,
@@ -1376,7 +1425,7 @@ const floorLines: Array<[number, number, number, number]> = [
   }),
 ];
 const sectorStats: Array<[number, string, string]> = [
-  [sectors.length, '', c.sectorsStats[0]],
+  [sectors.length, '+', c.sectorsStats[0]],
   [100, '+', c.sectorsStats[1]],
   [100, '+', c.sectorsStats[2]],
   [projectCountries.length, '', c.sectorsStats[3]],
@@ -1471,7 +1520,7 @@ const faq = pick(lang, {
     {
       question: 'Was ist DiTeLe und was hat es mit dem Seminar zu tun?',
       // Quelle: www.ditele.de (Start, Über uns, FAQ, KI-Transparenz), abgerufen am 29.10.2026.
-      answer: `DiTeLe ist die Lernplattform der WAMOCON Academy GmbH für praktisches Softwaretesten und der Praxisteil des 45-Tage-Seminars (${c.stand}). Dort testest du laufende Webanwendungen direkt neben der Aufgabe, dokumentierst deine Funde als Fehlerbericht mit Schritten, erwartetem und tatsächlichem Verhalten und bekommst zu jeder Abgabe Feedback von deinen Trainern. Die Plattform umfasst 175 Aufgaben in vier Kursen und gibt es auf Deutsch, Englisch und Russisch. Der KI-Assistent Diti beantwortet Fragen zur Plattform und zu deinem Lernstand und hilft beim Formulieren von Fehlerberichten. Bewertet werden deine Abgaben nur von deinen Trainern. Eine kostenlose Demo ohne Anmeldung findest du auf ditele.de.`,
+      answer: `DiTeLe ist die Lernplattform der WAMOCON Academy GmbH für praktisches Softwaretesten und der Praxisteil des 45-Tage-Seminars (${c.stand}). Dort testest du laufende Webanwendungen direkt neben der Aufgabe, dokumentierst deine Funde als Fehlerbericht mit Schritten, erwartetem und tatsächlichem Verhalten und bekommst zu jeder Abgabe Feedback von deinen Trainern. Die Plattform umfasst 175 Aufgaben in vier Kursen. Der KI-Assistent Diti beantwortet Fragen zur Plattform und zu deinem Lernstand und hilft beim Formulieren von Fehlerberichten. Bewertet werden deine Abgaben nur von deinen Trainern. Eine kostenlose Demo ohne Anmeldung findest du auf ditele.de.`,
     },
     {
       question: 'Wie lange dauert die Weiterbildung zum Softwaretester?',
@@ -1495,7 +1544,7 @@ const faq = pick(lang, {
     {
       question: 'In welchen Branchen hat WAMOCON Erfahrung?',
       // Quelle: wamocon.com, Startseite (Referenzen und FAQ).
-      answer: `Die WAMOCON GmbH, die Schwestergesellschaft der WAMOCON Academy, testet seit 2007 Software in ${sectors.length} Branchen und hat Projekte in sechs Ländern umgesetzt (${c.stand}). Dazu gehören ${listFormat.format(sectors.map((sector) => sector.name.de))}. Zu den Kunden gehören Deutsche Bank, Deutsche Telekom, Deutsche Bahn, EnBW und die Bundesagentur für Arbeit. Die Trainer des 45-Tage-Seminars bringen Fälle aus diesen Projekten in den Unterricht ein.`,
+      answer: `Die WAMOCON GmbH, die Schwestergesellschaft der WAMOCON Academy, testet seit 2007 Software in mehr als ${sectors.length} Branchen und hat Projekte in sechs Ländern umgesetzt (${c.stand}). Dazu gehören ${listFormat.format(sectors.map((sector) => sector.name.de))}. Zu den Kunden gehören Deutsche Bank, Deutsche Telekom, Deutsche Bahn, EnBW und die Bundesagentur für Arbeit. Die Trainer des 45-Tage-Seminars bringen Fälle aus diesen Projekten in den Unterricht ein.`,
     },
     {
       question: 'Wer hat die WAMOCON Academy geprüft?',
@@ -1536,7 +1585,7 @@ const faq = pick(lang, {
     },
     {
       question: 'What is DiTeLe and how does it relate to the seminar?',
-      answer: `DiTeLe is the WAMOCON Academy GmbH learning platform for hands-on software testing and the practical part of the 45-day seminar (${c.stand}). There you test running web applications right next to the task, document your findings as bug reports with steps, expected and actual behaviour, and get feedback from your trainers on every submission. The platform has 175 tasks in four courses and is available in German, English and Russian. The AI assistant Diti answers questions about the platform and your progress and helps you phrase bug reports. Only your trainers assess your submissions. A free demo without sign-up is available on ditele.de.`,
+      answer: `DiTeLe is the WAMOCON Academy GmbH learning platform for hands-on software testing and the practical part of the 45-day seminar (${c.stand}). There you test running web applications right next to the task, document your findings as bug reports with steps, expected and actual behaviour, and get feedback from your trainers on every submission. The platform has 175 tasks in four courses. The AI assistant Diti answers questions about the platform and your progress and helps you phrase bug reports. Only your trainers assess your submissions. A free demo without sign-up is available on ditele.de.`,
     },
     {
       question: 'How long does the software tester training take?',
@@ -1558,7 +1607,7 @@ const faq = pick(lang, {
     },
     {
       question: 'Which industries does WAMOCON have experience in?',
-      answer: `WAMOCON GmbH, the sister company of WAMOCON Academy, has been testing software in ${sectors.length} industries since 2007, with projects in six countries (${c.stand}). They include ${listFormat.format(sectors.map((sector) => sector.name.en.toLowerCase()))}. Its clients include Deutsche Bank, Deutsche Telekom, Deutsche Bahn, EnBW and the German Federal Employment Agency. The trainers of the 45-day seminar bring cases from these projects into the classroom.`,
+      answer: `WAMOCON GmbH, the sister company of WAMOCON Academy, has been testing software in more than ${sectors.length} industries since 2007, with projects in six countries (${c.stand}). They include ${listFormat.format(sectors.map((sector) => sector.name.en.toLowerCase()))}. Its clients include Deutsche Bank, Deutsche Telekom, Deutsche Bahn, EnBW and the German Federal Employment Agency. The trainers of the 45-day seminar bring cases from these projects into the classroom.`,
     },
     {
       question: 'Who reviewed WAMOCON Academy?',
@@ -1599,7 +1648,7 @@ const faq = pick(lang, {
     },
     {
       question: 'DiTeLe деген не және оның семинарға қатысы қандай?',
-      answer: `DiTeLe – WAMOCON Academy GmbH-тің тәжірибелік тестілеуге арналған оқу платформасы және 45 күндік семинардың тәжірибелік бөлімі (${c.stand}). Онда тапсырманың қасында жұмыс істеп тұрған веб-қосымшаларды тестілеп, табылған қателерді қадамдары, күтілген және нақты нәтижесі бар есеп ретінде сипаттайсыз және әр тапсырма бойынша тренерлеріңізден кері байланыс аласыз. Платформада төрт курста 175 тапсырма бар, ол неміс, ағылшын және орыс тілдерінде қолжетімді. Diti KI көмекшісі платформа мен оқу барысыңыз туралы сұрақтарға жауап беріп, қате есептерін жазуға көмектеседі. Тапсырмаларыңызды тек тренерлеріңіз бағалайды. Тіркеусіз тегін демо ditele.de сайтында бар.`,
+      answer: `DiTeLe – WAMOCON Academy GmbH-тің тәжірибелік тестілеуге арналған оқу платформасы және 45 күндік семинардың тәжірибелік бөлімі (${c.stand}). Онда тапсырманың қасында жұмыс істеп тұрған веб-қосымшаларды тестілеп, табылған қателерді қадамдары, күтілген және нақты нәтижесі бар есеп ретінде сипаттайсыз және әр тапсырма бойынша тренерлеріңізден кері байланыс аласыз. Платформада төрт курста 175 тапсырма бар. Diti KI көмекшісі платформа мен оқу барысыңыз туралы сұрақтарға жауап беріп, қате есептерін жазуға көмектеседі. Тапсырмаларыңызды тек тренерлеріңіз бағалайды. Тіркеусіз тегін демо ditele.de сайтында бар.`,
     },
     {
       question: 'Тестілеуші біліктілігін арттыру қанша уақытқа созылады?',
@@ -1621,7 +1670,7 @@ const faq = pick(lang, {
     },
     {
       question: 'WAMOCON қандай салаларда тәжірибе жинады?',
-      answer: `WAMOCON Academy-дің бауырлас компаниясы WAMOCON GmbH 2007 жылдан бері ${sectors.length} салада бағдарламаларды тестілеп, алты елде жобалар жүргізді (${c.stand}). Олардың ішінде: ${listFormat.format(sectors.map((sector) => sector.name.kk))}. Клиенттерінің ішінде Deutsche Bank, Deutsche Telekom, Deutsche Bahn, EnBW және Германияның Федералдық жұмыспен қамту агенттігі бар. 45 күндік семинар тренерлері осы жобалардағы жағдайларды сабаққа әкеледі.`,
+      answer: `WAMOCON Academy-дің бауырлас компаниясы WAMOCON GmbH 2007 жылдан бері ${sectors.length}+ салада бағдарламаларды тестілеп, алты елде жобалар жүргізді (${c.stand}). Олардың ішінде: ${listFormat.format(sectors.map((sector) => sector.name.kk))}. Клиенттерінің ішінде Deutsche Bank, Deutsche Telekom, Deutsche Bahn, EnBW және Германияның Федералдық жұмыспен қамту агенттігі бар. 45 күндік семинар тренерлері осы жобалардағы жағдайларды сабаққа әкеледі.`,
     },
     {
       question: 'WAMOCON Academy-ді кім тексерді?',
@@ -2339,8 +2388,12 @@ const faq = pick(lang, {
                 </div>
                 <svg class="bt-sector__mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" set:html={sectorIcons[sector.icon]} />
                 <h3>{sector.name[lang]}</h3>
-                <p class="bt-sector__label">{c.refsLabel}</p>
-                <ul class="bt-sector__refs">{sector.refs.map((ref) => <li>{ref}</li>)}</ul>
+                {sector.refs.length > 0 && (
+                  <>
+                    <p class="bt-sector__label">{c.refsLabel}</p>
+                    <ul class="bt-sector__refs">{sector.refs.map((ref) => <li>{ref}</li>)}</ul>
+                  </>
+                )}
                 {sector.projects?.map((project) => (
                   <div class="bt-sector__project">
                     <p class="bt-sector__label">{c.projectLabel}{project.year ? ` · ${project.year[lang]}` : ''}</p>
@@ -2432,7 +2485,7 @@ const faq = pick(lang, {
                   <svg viewBox="0 0 24 24" focusable="false"><path d="M8 5.5v13l10.5-6.5z" /></svg>
                 </span>
                 <span class="bt-film__meta" aria-hidden="true">
-                  <span class="bt-film__kicker"><b>{c.videoKicker}</b> {video.laenge}{c.videoLang && <> · {c.videoLang}</>}</span>
+                  <span class="bt-film__kicker"><b>{c.videoKicker}</b> {video.laenge}</span>
                   <strong>{c.videoCta}</strong>
                 </span>
               </button>
@@ -2445,7 +2498,7 @@ const faq = pick(lang, {
           )}
           <span class="bt-film__ai">{c.videoAi}</span>
         </div>
-        {video.datei && <figcaption class="bt-film__mobile-title"><span class="bt-film__kicker"><b>{c.videoKicker}</b> {video.laenge}{c.videoLang && <> · {c.videoLang}</>}</span><strong>{c.videoCta}</strong></figcaption>}
+        {video.datei && <figcaption class="bt-film__mobile-title"><span class="bt-film__kicker"><b>{c.videoKicker}</b> {video.laenge}</span><strong>{c.videoCta}</strong></figcaption>}
       </figure>
     </div>
   </section>
@@ -2970,7 +3023,7 @@ const faq = pick(lang, {
   .bt-practice__demo p { margin: 10px 0 22px; color: var(--color-muted); font-size: var(--fs-sm); line-height: var(--lh-relaxed); }
 
   /* Key facts strip. */
-  .bt-practice__facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; margin-top: clamp(3rem, 5vw, 4.5rem); overflow: hidden; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--border-subtle); }
+  .bt-practice__facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin-top: clamp(3rem, 5vw, 4.5rem); overflow: hidden; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--border-subtle); }
   .bt-practice__facts div { padding: clamp(22px, 2.2vw, 34px); background: var(--surface-card); transition: background var(--dur-med) var(--ease-out); }
   .bt-practice__facts div:hover { background: var(--surface-card-hover); }
   .bt-practice__facts dt { color: var(--color-accent); font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
@@ -3399,6 +3452,7 @@ const faq = pick(lang, {
     .bt-practice__steps li::after, .bt-practice__steps li:not(:last-child)::after { display: none; }
     .bt-practice__features, .bt-practice__split { grid-template-columns: minmax(0, 1fr); }
     .bt-practice__facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .bt-practice__facts div:last-child:nth-child(odd) { grid-column: 1 / -1; }
     /* Relative, not static: the stamp stays anchored to the certificate. */
     .bt-proof__visual { position: relative; top: auto; justify-self: start; justify-items: start; width: min(100%, 380px); }
     .bt-proof__doc { transform: rotateZ(-1.5deg); }
