@@ -19,7 +19,8 @@ export const assets = {
   academyMark: img('tild3166-3165-4466-b539-623636316262__wamocon_academy-05.svg'),
   ditele: img('tild6230-6463-4530-a631-353632323538__-3_deu-1.svg'),
   appEn: img('tild6331-6362-4837-b333-343461653664__-3_eng_1.svg'),
-  badge: img('tild3666-6334-4662-a639-333936613364__ki-siegel_wamocon.png'),
+  // KI-Innovator-Siegel, gültig bis 12/2027. Pflege in src/data/bildungstraeger.ts.
+  badge: '/images/badge-ki-innovator-bis-12-2027.webp',
   footerLogo: img('tild3332-6361-4037-b230-633562663766__group_319.svg'),
   magazine: img('tild3736-3363-4433-b632-323661323435__wmc_magazin_eng_-_wm.jpg'),
   aboutHero: img('tild3838-3030-4564-a133-303164373338__hh.png'),

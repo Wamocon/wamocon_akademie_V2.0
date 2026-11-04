@@ -83,6 +83,12 @@ export type Siegel = {
   datei: string;
   breite: number | null;
   hoehe: number | null;
+  /**
+   * Seite des Ausstellers mit den Prüfkriterien. Die Siegelkarte verlinkt
+   * darauf (neuer Tab). Beim diind-Siegel Pflicht: Lizenzbedingungen § 2
+   * Abs. 1 verlangen bei werblicher Nutzung einen Verweis auf die Kriterien.
+   */
+  kriterienUrl?: string;
 };
 
 /**
@@ -206,13 +212,24 @@ export const bildungstraeger: {
 
   siegel: [
     {
-      // Auszeichnung des Deutschen Innovationsinstituts (diind), gültig bis
-      // 12/2025. Deshalb ausdrücklich als Auszeichnung 2025 beschriftet.
+      // Auszeichnung des Deutschen Innovationsinstituts (diind), Urkunde vom
+      // 02.11.2026, gültig bis einschließlich 12/2027 (Lizenzbedingungen § 3
+      // Abs. 2: bis zum letzten Tag des Monats). Quelle: Siegeldatei, Urkunde
+      // und Lizenzbedingungen (Stand Juli 2026) vom diind. Die Datei ist nur
+      // proportional verkleinert (3508 x 5079 auf 663 x 960, verlustfrei),
+      // wie § 1 Abs. 5 es erlaubt.
+      // Neue Siegel immer unter neuem Dateinamen ablegen: /images/ wird laut
+      // vercel.json ein Jahr lang unveränderlich gecacht.
+      // Beschriftung ohne Jahreszahl und in allen Sprachen mit dem offiziellen
+      // Namen der Auszeichnung (Team, 04.11.2026). Die Gültigkeit steht auf
+      // dem Siegel selbst.
       key: 'ki-innovator',
-      label: { de: 'KI-Innovator 2025', en: 'AI Innovator 2025', kk: 'KI-Innovator 2025' },
-      datei: '/images/badge-ki-siegel.png',
-      breite: 1680,
-      hoehe: 2432,
+      label: { de: 'KI-Innovator', en: 'KI-Innovator', kk: 'KI-Innovator' },
+      datei: '/images/badge-ki-innovator-bis-12-2027.webp',
+      breite: 663,
+      hoehe: 960,
+      // Abschnitt "Das Prüfverfahren der Auszeichnung KI Innovator" (geprüft 04.11.2026).
+      kriterienUrl: 'https://diind.de/auszeichnungen/der-pruefprozess/',
     },
     {
       key: 'zukunft',

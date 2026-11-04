@@ -308,6 +308,7 @@ const copy = {
     sealsLabel: 'Zulassungen und Auszeichnungen',
     sealAzav: ['AZAV-zugelassen', certNo ? `Zertifikat ${certNoSeal}` : `${bt.fachkundigeStelle.name}, Fachbereich ${bt.fachbereich.nummer}`],
     sealCertLink: 'Zum AZAV-Zertifikat',
+    sealCriteriaLink: (name: string) => `${name}: Prüfkriterien beim Aussteller (externe Seite, neuer Tab)`,
     // Akkreditierung über das German Testing Board laut WAMOCON-Unternehmensübersicht.
     sealIstqb: ['ISTQB® Accredited Training Provider', 'CTFL 4.0, akkreditiert über das German Testing Board (GTB)'],
     // Bewertung wie im Footer der Website ausgewiesen.
@@ -679,6 +680,7 @@ const copy = {
     sealsLabel: 'Approvals and awards',
     sealAzav: ['Approved under AZAV', certNo ? `Certificate ${certNoSeal}` : `${bt.fachkundigeStelle.name}, field ${bt.fachbereich.nummer}`],
     sealCertLink: 'View the AZAV certificate',
+    sealCriteriaLink: (name: string) => `${name}: assessment criteria on the issuer's website (external site, new tab)`,
     sealIstqb: ['ISTQB® Accredited Training Provider', 'CTFL 4.0, accredited via the German Testing Board (GTB)'],
     sealGoogle: ['5.0 out of 5 stars', 'Google rating'],
     rating: '5.0',
@@ -1026,6 +1028,8 @@ const copy = {
     sealsLabel: 'Рұқсаттар мен марапаттар',
     sealAzav: ['AZAV бойынша рұқсат', certNo ? `Сертификат ${certNoSeal}` : `${bt.fachkundigeStelle.name}, ${bt.fachbereich.nummer}-бағыт`],
     sealCertLink: 'AZAV сертификатына өту',
+    // Muttersprachliche Prüfung offen
+    sealCriteriaLink: (name: string) => `${name}: марапат берушінің сайтындағы бағалау критерийлері (сыртқы сайт, жаңа қойынды)`,
     sealIstqb: ['ISTQB® Accredited Training Provider', 'CTFL 4.0, German Testing Board (GTB) арқылы аккредиттелген'],
     sealGoogle: ['5 жұлдыздан 5,0', 'Google бағасы'],
     rating: '5,0',
@@ -1464,9 +1468,12 @@ const certPreview = bt.zertifikatVorschau.trim() || (hasCertificate && !certific
 // unchanged: the AZAV mark "Trägerzulassung" of the GZQ GmbH (vector) and the
 // ISTQB® Accredited Training Provider logo.
 const starPath = 'M12 2.5l2.9 6.06 6.6.8-4.87 4.55 1.24 6.55L12 17.27l-5.87 3.19 1.24-6.55L2.5 9.36l6.6-.8z';
-type Medal = { key: string; kind: 'image' | 'rating'; img: { src: string; w: number; h: number } | null; main: string; title: string; text: string; href: string };
+// `external` links open in a new tab; `linkLabel` names the link target (default: the AZAV certificate).
+type Medal = { key: string; kind: 'image' | 'rating'; img: { src: string; w: number; h: number } | null; main: string; title: string; text: string; href: string; linkLabel?: string; external?: boolean };
+// A seal with `kriterienUrl` links to the issuer's assessment criteria (diind licence, § 2 Abs. 1).
 const sealMedals: Medal[] = seals.map((seal) => ({
-  key: seal.key, kind: 'image', img: { src: seal.datei, w: seal.breite!, h: seal.hoehe! }, main: '', title: seal.label[lang], text: '', href: '',
+  key: seal.key, kind: 'image', img: { src: seal.datei, w: seal.breite!, h: seal.hoehe! }, main: '', title: seal.label[lang], text: '',
+  href: seal.kriterienUrl ?? '', linkLabel: seal.kriterienUrl ? c.sealCriteriaLink(seal.label[lang]) : undefined, external: Boolean(seal.kriterienUrl),
 }));
 const ratingMedal: Medal = { key: 'google', kind: 'rating', img: null, main: c.rating, title: c.sealGoogle[0], text: c.sealGoogle[1], href: '' };
 // The Google rating sits second to last, right before the final seal.
@@ -1822,7 +1829,15 @@ const faq = pick(lang, {
           {/* The visible caption names the seal, so the image itself is decorative. */}
           <strong>{medal.title}</strong>
           {medal.text && <span class="bt-seal__text">{medal.text}</span>}
-          {medal.href && <a class="bt-seal__link" href={medal.href} aria-label={c.sealCertLink}></a>}
+          {medal.href && (
+            <a
+              class="bt-seal__link"
+              href={medal.href}
+              aria-label={medal.linkLabel ?? c.sealCertLink}
+              target={medal.external ? '_blank' : undefined}
+              rel={medal.external ? 'noopener noreferrer' : undefined}
+            ></a>
+          )}
         </li>
       ))}
     </ul>
