@@ -57,7 +57,7 @@ export const nav: NavLink[] = [
   },
   {
     key: 'courses',
-    de: { label: 'Kurse', href: '/bildungsprogramme-fr-softwaretester/' },
+    de: { label: 'Seminare', href: '/bildungsprogramme-fr-softwaretester/' },
     en: { label: 'Courses', href: '/en/educational-programs/' },
     kk: { label: 'Курстар', href: '/kk/oqu-kurstary/' },
   },

@@ -110,7 +110,7 @@ export const coursePopupBlocks = (
 };
 
 const popupCategories = {
-  de: { team: 'Teamkurse', individual: 'Einzelkurse' },
+  de: { team: 'Teamseminare', individual: 'Einzelseminare' },
   en: { team: 'Team courses', individual: 'Individual courses' },
   kk: { team: 'Командалық курстар', individual: 'Жеке курстар' },
 } satisfies Record<Lang, { team: string; individual: string }>;
