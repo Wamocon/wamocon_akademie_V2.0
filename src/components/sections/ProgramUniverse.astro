@@ -140,9 +140,9 @@ const specs: Spec[] = [
   { id: 'ind-tae', art: 'tae-a', kind: 'tae', galaxy: 'individual', course: 2, box: [239.19, 82.65, 57.06, 57.15], label: [290, 54], m: [58, 6, 18], link: 'online' },
   { id: 'ind-coach', art: 'coach', kind: 'coach', galaxy: 'individual', course: 3, box: [33.03, 276.75, 78.04, 78.7], label: [112, 259], m: [56, 40, 20], link: 'booster' },
   { id: 'ind-scrum', art: 'scrum-a', kind: 'scrum', galaxy: 'individual', course: 4, box: [169.39, 330.5, 123.52, 65.67], label: [254, 300], m: [8, 66, 44], ring: true },
-  { id: 'team-ctfl', art: 'ctfl-s2', kind: 'ctfl', galaxy: 'team', course: 0, box: [540.41, 207.11, 31.66, 31.48], label: [574, 180], m: [42, 113, 11], link: 'cert' },
-  { id: 'team-praxis', art: 'ctfl-l2', kind: 'praxis', galaxy: 'team', course: 1, box: [604.93, 94.76, 184.36, 184.61], label: [812, 96], labelEnd: true, m: [56, 108, 42], link: 'cert' },
-  { id: 'team-tae', art: 'tae-b', kind: 'tae', galaxy: 'team', course: 2, box: [503.74, 72.45, 66.82, 56.06], label: [557, 45], m: [8, 110, 20], link: 'online' },
+  { id: 'team-ctfl', art: 'ctfl-s2', kind: 'ctfl', galaxy: 'team', course: 0, box: [540.41, 207.11, 31.66, 31.48], label: [574, 180], m: [47, 113, 11], link: 'cert' },
+  { id: 'team-praxis', art: 'ctfl-l2', kind: 'praxis', galaxy: 'team', course: 1, box: [604.93, 94.76, 184.36, 184.61], label: [812, 96], labelEnd: true, m: [59, 108, 39], link: 'cert' },
+  { id: 'team-tae', art: 'tae-b', kind: 'tae', galaxy: 'team', course: 2, box: [503.74, 72.45, 66.82, 56.06], label: [500, 133], m: [8, 110, 20], link: 'online' },
   { id: 'team-booster', art: 'booster', kind: 'booster', galaxy: 'team', course: 3, box: [628.19, 20.27, 93.16, 66.99], label: [729, 24], m: [4, 140, 26], link: 'booster' },
   { id: 'team-coach', art: 'team', kind: 'team', galaxy: 'team', course: 4, box: [693.31, 289.99, 89.36, 102.58], label: [640, 392], m: [74, 164, 22], link: 'booster' },
   { id: 'team-scrum', art: 'scrum-b', kind: 'scrum', galaxy: 'team', course: 5, box: [483.94, 287.57, 123.53, 65.6], label: [566, 257], m: [30, 166, 40], ring: true },
@@ -169,12 +169,17 @@ const bodies = specs.flatMap((s, i) => {
       `--x:${pct((x / W) * 100)}`,
       `--y:${pct((y / H) * 100)}`,
       `--w:${pct((w / W) * 100)}`,
-      `--ar:${+(w / h).toFixed(4)}`,
-      `--lx:${pct(((s.label[0] - x) / w) * 100)}`,
-      `--ly:${pct(((s.label[1] - y) / h) * 100)}`,
       `--mx:${pct(mx)}`,
       `--my:${pct((my / MH) * 100)}`,
       `--mw:${pct(mw)}`,
+      `--i:${i}`,
+    ].join(';'),
+    // Am Handy steht die Beschriftung mittig unter dem Planeten.
+    labelStyle: [
+      `--x:${pct((s.label[0] / W) * 100)}`,
+      `--y:${pct((s.label[1] / H) * 100)}`,
+      `--mx:${pct(mx + mw / 2)}`,
+      `--my:${pct(((my + (mw * h) / w + 1.2) / MH) * 100)}`,
       `--i:${i}`,
     ].join(';'),
   }];
@@ -226,7 +231,7 @@ const astroStyle = `--x:${pct((astro[0] / W) * 100)};--y:${pct((astro[1] / H) * 
     {bodies.map((b) => (
       <button
         type="button"
-        class:list={['uv-body', `uv-body--${b.galaxy}`, { 'uv-body--ring': b.ring, 'uv-body--big': b.kind === 'praxis', 'uv-body--label-end': b.labelEnd }]}
+        class:list={['uv-body', `uv-body--${b.galaxy}`, { 'uv-body--ring': b.ring, 'uv-body--big': b.kind === 'praxis' }]}
         style={b.style}
         data-uv-body={b.id}
         data-uv-duration={b.course.duration}
@@ -236,10 +241,6 @@ const astroStyle = `--x:${pct((astro[0] / W) * 100)};--y:${pct((astro[1] / H) * 
         <span class="uv-body__in">
           <span class="uv-body__bob">
             <img class="uv-body__art" src={art(b.art)} alt="" loading="lazy" decoding="async" draggable="false" />
-          </span>
-          <span class="uv-body__label" aria-hidden="true">
-            <strong>{c.short[b.kind]}<span class="uv-body__check">✓</span></strong>
-            <span>{b.course.duration}</span>
           </span>
         </span>
       </button>
@@ -254,6 +255,17 @@ const astroStyle = `--x:${pct((astro[0] / W) * 100)};--y:${pct((astro[1] / H) * 
         <span class="uv-bubble__tap">{c.bubbleTap}</span>
       </span>
     </span>
+
+    <!-- Alle Beschriftungen liegen in einer eigenen obersten Ebene, damit kein
+         Planet, Satellit, Asteroid und auch nicht der Astronaut sie verdeckt. -->
+    <div class="uv-labels" aria-hidden="true">
+      {bodies.map((b) => (
+        <span class:list={['uv-label', { 'uv-label--end': b.labelEnd }]} style={b.labelStyle} data-uv-label={b.id}>
+          <strong>{c.short[b.kind]}<span class="uv-label__check">✓</span></strong>
+          <span>{b.course.duration}</span>
+        </span>
+      ))}
+    </div>
   </div>
 
   <div class="uv-hud">
@@ -355,7 +367,7 @@ const astroStyle = `--x:${pct((astro[0] / W) * 100)};--y:${pct((astro[1] / H) * 
   .uv-galaxy {
     position: absolute;
     bottom: 3%;
-    z-index: 1;
+    z-index: 7;
     color: var(--color-text-subtle);
     font-size: clamp(10px, 1.15cqi, 14px);
     font-weight: var(--fw-semibold, 600);
@@ -390,7 +402,7 @@ const astroStyle = `--x:${pct((astro[0] / W) * 100)};--y:${pct((astro[1] / H) * 
 
   /* Die Sprechblase folgt dem Astronauten, dreht sich aber nicht mit. */
   .uv-bubble-anchor {
-    z-index: 6;
+    z-index: 8;
     aspect-ratio: 89.93 / 126.22;
     pointer-events: none;
   }
@@ -435,13 +447,13 @@ const astroStyle = `--x:${pct((astro[0] / W) * 100)};--y:${pct((astro[1] / H) * 
     position: absolute;
     left: 0;
     top: 0;
-    z-index: 6;
+    z-index: 9;
     padding: 0.3em 0.7em;
     border: 1px solid rgba(255, 61, 61, 0.55);
     border-radius: 999px;
-    background: rgba(8, 8, 10, 0.86);
+    background: #0b0b0d;
     color: #fff;
-    font-size: clamp(10px, 1.05cqi, 13px);
+    font-size: clamp(11px, 1.1cqi, 14px);
     font-weight: var(--fw-semibold, 600);
     white-space: nowrap;
     opacity: 0;
@@ -510,33 +522,47 @@ const astroStyle = `--x:${pct((astro[0] / W) * 100)};--y:${pct((astro[1] / H) * 
   }
   @keyframes uv-spin { to { transform: rotate(360deg); } }
 
-  .uv-body__label {
+  .uv-labels {
     position: absolute;
-    left: var(--lx);
-    top: var(--ly);
+    inset: 0;
+    z-index: 7;
+    pointer-events: none;
+  }
+  .uv-label {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
     display: grid;
     gap: 0.1em;
+    padding: 0.28em 0.6em 0.32em;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 9px;
+    background: rgba(8, 8, 10, 0.62);
     color: #fff;
-    font-size: clamp(10px, 1.62cqi, 19px);
+    font-size: clamp(10px, 1.5cqi, 18px);
     line-height: 1.15;
     text-align: left;
     white-space: nowrap;
-    pointer-events: none;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+    transition: border-color 0.3s ease, background 0.3s ease;
   }
-  .uv-body--label-end .uv-body__label {
+  .uv-label--end {
     text-align: right;
     transform: translateX(-100%);
   }
-  .uv-body__label strong { font-weight: var(--fw-bold, 700); }
-  .uv-body__label span { color: var(--color-muted); font-size: 0.78em; font-weight: 500; }
-  .uv-body__check {
+  .uv-label strong { font-weight: var(--fw-bold, 700); }
+  .uv-label > span { color: rgba(255, 255, 255, 0.78); font-size: 0.78em; font-weight: 500; }
+  .uv-label__check {
     display: none;
     margin-left: 0.35em;
-    color: var(--uv-red) !important;
-    font-size: 0.9em !important;
+    color: var(--uv-red);
+    font-size: 0.9em;
   }
-  .uv-body.is-visited .uv-body__check { display: inline; }
+  .uv-label.is-visited .uv-label__check { display: inline; }
+  .uv-label.is-active {
+    border-color: rgba(255, 61, 61, 0.7);
+    background: rgba(8, 8, 10, 0.82);
+  }
 
   .uv-astro {
     z-index: 5;
@@ -576,8 +602,11 @@ const astroStyle = `--x:${pct((astro[0] / W) * 100)};--y:${pct((astro[1] / H) * 
 
   /* Auftritt, sobald die Szene ins Bild kommt. */
   :global(.js) .uv:not(.is-live) .uv-body__in,
+  :global(.js) .uv:not(.is-live) .uv-label,
   :global(.js) .uv:not(.is-live) .uv-astro img { opacity: 0; }
   .uv.is-live .uv-body__in { animation: uv-enter 1.2s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--i) * 70ms); }
+  .uv.is-live .uv-label { animation: uv-label-in 0.6s ease-out both; animation-delay: calc(400ms + var(--i) * 70ms); }
+  @keyframes uv-label-in { from { opacity: 0; } to { opacity: 1; } }
   .uv.is-live .uv-astro img { animation: uv-astro-in 1.6s cubic-bezier(0.16, 1, 0.3, 1) both 0.35s; }
   @keyframes uv-enter {
     from { opacity: 0; transform: scale(0.55); filter: blur(6px); }
@@ -727,16 +756,15 @@ const astroStyle = `--x:${pct((astro[0] / W) * 100)};--y:${pct((astro[1] / H) * 
     .uv-galaxy { bottom: auto; font-size: 11px; }
     .uv-galaxy--a { top: 1.2%; }
     .uv-galaxy--b { top: 51.6%; left: 2.2%; right: auto; }
-    .uv-body__label {
-      left: 50%;
-      top: 100%;
-      margin-top: 4px;
-      font-size: 12px;
+    .uv-label,
+    .uv-label--end {
+      left: var(--mx);
+      top: var(--my);
+      padding: 0.2em 0.45em;
+      font-size: 11px;
       text-align: center;
       transform: translateX(-50%);
     }
-    .uv-body--ring .uv-body__label { margin-top: 0; }
-    .uv-body--label-end .uv-body__label { text-align: center; transform: translateX(-50%); }
     .uv-bubble { top: 100%; right: 20%; bottom: auto; left: auto; translate: none; font-size: 12px; transform-origin: right top; }
     .uv-card { grid-template-columns: minmax(0, 1fr); }
   }
@@ -746,16 +774,18 @@ const astroStyle = `--x:${pct((astro[0] / W) * 100)};--y:${pct((astro[1] / H) * 
     .uv-body__bob,
     .uv-path path,
     .uv.is-live .uv-body__in,
+    .uv.is-live .uv-label,
     .uv.is-live .uv-astro img,
     .uv-card { animation: none; }
     :global(.js) .uv:not(.is-live) .uv-body__in,
+    :global(.js) .uv:not(.is-live) .uv-label,
     :global(.js) .uv:not(.is-live) .uv-astro img { opacity: 1; }
     .uv-astro { cursor: default; }
   }
 </style>
 
 <script>
-  type Body = { el: HTMLButtonElement; id: string; cx: number; cy: number; r: number; d: number; dur: string };
+  type Body = { el: HTMLButtonElement; label: HTMLElement | null; id: string; cx: number; cy: number; r: number; d: number; dur: string };
   type Rock = { el: HTMLElement; hx: number; hy: number; r: number; x: number; y: number; vx: number; vy: number; a: number; va: number };
   type Star = { x: number; y: number; r: number; l: number; p: number; s: number; a: number };
   type Spark = { x: number; y: number; vx: number; vy: number; life: number; max: number; size: number; hue: number };
@@ -790,6 +820,7 @@ const astroStyle = `--x:${pct((astro[0] / W) * 100)};--y:${pct((astro[1] / H) * 
 
     const bodies: Body[] = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-uv-body]')).map((el) => ({
       el,
+      label: root.querySelector<HTMLElement>(`[data-uv-label="${el.dataset.uvBody}"]`),
       id: el.dataset.uvBody!,
       cx: 0,
       cy: 0,
@@ -847,6 +878,7 @@ const astroStyle = `--x:${pct((astro[0] / W) * 100)};--y:${pct((astro[1] / H) * 
         ax += hx - prevHx;
         ay += hy - prevHy;
       }
+      fitLabels();
       const count = Math.min(720, Math.round((W * H) / 1500));
       stars = Array.from({ length: count }, () => {
         const l = Math.random() < 0.7 ? 0 : Math.random() < 0.75 ? 1 : 2;
@@ -855,6 +887,28 @@ const astroStyle = `--x:${pct((astro[0] / W) * 100)};--y:${pct((astro[1] / H) * 
       if (mode === 'orbit' && active) startOrbit(active, orbitA);
       if (!running) draw(performance.now());
     };
+
+    // Beschriftungen nie über den Rand der Szene hinausragen lassen.
+    function fitLabels() {
+      const sr = scene.getBoundingClientRect();
+      for (const b of bodies) {
+        const el = b.label;
+        if (!el) continue;
+        el.style.marginLeft = '0px';
+        el.style.marginTop = '0px';
+        const r = el.getBoundingClientRect();
+        const left = r.left - sr.left;
+        const top = r.top - sr.top;
+        let sx = 0;
+        let sy = 0;
+        if (left < 6) sx = 6 - left;
+        else if (left + r.width > W - 6) sx = W - 6 - (left + r.width);
+        if (top < 6) sy = 6 - top;
+        else if (top + r.height > H - 6) sy = H - 6 - (top + r.height);
+        el.style.marginLeft = `${sx.toFixed(1)}px`;
+        el.style.marginTop = `${sy.toFixed(1)}px`;
+      }
+    }
 
     // ---- Zustand des Astronauten --------------------------------------------
     type Mode = 'home' | 'drag' | 'free' | 'fly' | 'orbit';
@@ -928,6 +982,7 @@ const astroStyle = `--x:${pct((astro[0] / W) * 100)};--y:${pct((astro[1] / H) * 
       if (visited.has(b.id)) return;
       visited.add(b.id);
       b.el.classList.add('is-visited');
+      b.label?.classList.add('is-visited');
       root.querySelector(`[data-uv-dot="${b.id}"]`)?.classList.add('is-on');
       if (countEl) countEl.textContent = String(visited.size);
       if (visited.size === bodies.length) {
@@ -938,7 +993,10 @@ const astroStyle = `--x:${pct((astro[0] / W) * 100)};--y:${pct((astro[1] / H) * 
     };
 
     const select = (b: Body, how: 'click' | 'dock') => {
-      for (const o of bodies) o.el.classList.toggle('is-active', o === b);
+      for (const o of bodies) {
+        o.el.classList.toggle('is-active', o === b);
+        o.label?.classList.toggle('is-active', o === b);
+      }
       active = b;
       showCard(b.id);
       markVisited(b);
@@ -951,7 +1009,10 @@ const astroStyle = `--x:${pct((astro[0] / W) * 100)};--y:${pct((astro[1] / H) * 
     };
 
     const deselect = () => {
-      for (const o of bodies) o.el.classList.remove('is-active');
+      for (const o of bodies) {
+        o.el.classList.remove('is-active');
+        o.label?.classList.remove('is-active');
+      }
       active = null;
       showCard('intro');
       hidePath();
@@ -986,7 +1047,11 @@ const astroStyle = `--x:${pct((astro[0] / W) * 100)};--y:${pct((astro[1] / H) * 
       pathEl.setAttribute('d', `M${ax.toFixed(1)} ${ay.toFixed(1)} Q${qx.toFixed(1)} ${qy.toFixed(1)} ${ex.toFixed(1)} ${ey.toFixed(1)}`);
       const lx = 0.25 * ax + 0.5 * qx + 0.25 * ex;
       const ly = 0.25 * ay + 0.5 * qy + 0.25 * ey;
-      pathLabel.style.transform = `translate(${lx.toFixed(1)}px, ${ly.toFixed(1)}px) translate(-50%, -50%)`;
+      const hw = pathLabel.offsetWidth / 2 + 6;
+      const hh = pathLabel.offsetHeight / 2 + 6;
+      const cxl = clamp(lx, hw, W - hw);
+      const cyl = clamp(ly, hh, H - hh);
+      pathLabel.style.transform = `translate(${cxl.toFixed(1)}px, ${cyl.toFixed(1)}px) translate(-50%, -50%)`;
       if (dist < b.r + ar * 1.6) {
         pathSvg.classList.remove('is-on');
         pathLabel.classList.remove('is-on');
@@ -1106,7 +1171,10 @@ const astroStyle = `--x:${pct((astro[0] / W) * 100)};--y:${pct((astro[1] / H) * 
       mode = 'free';
       freeSince = now;
       if (active) {
-        for (const o of bodies) o.el.classList.remove('is-active');
+        for (const o of bodies) {
+        o.el.classList.remove('is-active');
+        o.label?.classList.remove('is-active');
+      }
         active = null;
         showCard('intro');
       }
@@ -1277,7 +1345,9 @@ const astroStyle = `--x:${pct((astro[0] / W) * 100)};--y:${pct((astro[1] / H) * 
       if (bubbleAnchor) bubbleAnchor.style.transform = move;
 
       for (const b of bodies) {
-        b.el.style.transform = `translate3d(${(px * b.d).toFixed(2)}px, ${(py * b.d).toFixed(2)}px, 0)`;
+        const shift = `${(px * b.d).toFixed(2)}px ${(py * b.d).toFixed(2)}px`;
+        b.el.style.translate = shift;
+        if (b.label) b.label.style.translate = shift;
       }
 
       // Asteroiden: schweben, drehen sich, der Astronaut schubst sie an.
@@ -1384,13 +1454,18 @@ const astroStyle = `--x:${pct((astro[0] / W) * 100)};--y:${pct((astro[1] / H) * 
         mode = 'home';
         astro.style.transform = '';
         if (bubbleAnchor) bubbleAnchor.style.transform = '';
-        for (const b of bodies) b.el.style.transform = '';
+        for (const b of bodies) {
+          b.el.style.translate = '';
+          if (b.label) b.label.style.translate = '';
+        }
         for (const r of rocks) r.el.style.transform = '';
         draw(performance.now());
       } else wake();
     });
     new ResizeObserver(() => measure()).observe(scene);
     measure();
+    // Nach dem Laden der Schrift sind die Beschriftungen breiter: neu einpassen.
+    document.fonts?.ready.then(() => fitLabels());
   }
 
   const boot = () => document.querySelectorAll<HTMLElement>('[data-uv]').forEach(initUniverse);
