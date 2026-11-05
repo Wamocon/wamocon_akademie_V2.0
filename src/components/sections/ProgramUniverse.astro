@@ -1,0 +1,1399 @@
+---
+/**
+ * Seminar-Universum auf /bildungsprogramme-fr-softwaretester/.
+ *
+ * Ersetzt die statische Weltraum-Grafik. Jeder Planet ist ein Seminar aus
+ * programCourses, die Größe folgt wie im Original der Dauer. Klick (oder
+ * Enter) lässt den Astronauten hinfliegen und zeigt unten die Karte mit dem
+ * Kurs-Popup und einer passenden Seite. Den Astronauten kann man auch greifen
+ * und werfen: trifft er einen Planeten, dockt er dort an.
+ *
+ * Die Teile stammen aus der alten Grafik (public/images/academy/universe/),
+ * Positionen und Rahmen sind die Koordinaten der alten 823×447-Zeichnung.
+ * Fürs Handy gibt es eigene Positionen in einer Hochformat-Szene (100 × 200).
+ *
+ * Ohne JavaScript und bei "Bewegung reduzieren" bleibt alles an seinem Platz,
+ * die Planeten öffnen trotzdem ihre Karte.
+ */
+import { bildungstraegerHref } from '../../data/bildungstraeger';
+import { nav, type Lang } from '../../i18n/config';
+import { pick } from '../../i18n/utils';
+import type { ProgramCourse } from '../../data/programs';
+
+interface Props {
+  lang: Lang;
+  courses: { individual: ProgramCourse[]; team: ProgramCourse[] };
+  individualTitle: string;
+  teamTitle: string;
+  label: string;
+  popupId: (hook: string) => string;
+}
+
+const { lang, courses, individualTitle, teamTitle, label, popupId } = Astro.props;
+
+const art = (name: string) => `/images/academy/universe/${name}.svg`;
+const W = 823;
+const H = 447;
+const MH = 200;
+
+const navHref = (key: string) => nav.flatMap((item) => [item, ...(item.children ?? [])]).find((item) => item.key === key)![lang].href;
+
+const c = pick(lang, {
+  de: {
+    introKicker: 'Seminar-Universum',
+    introTitle: 'Wähle dein Ziel',
+    introText: 'Jeder Planet ist ein Seminar. Je größer der Planet, desto länger dauert es. Wähle einen Planeten oder wirf den Astronauten hinüber.',
+    goal: 'Ziel',
+    flight: 'Flugzeit',
+    details: 'Details & Anmeldung',
+    close: 'Zurück zur Übersicht',
+    progress: 'Entdeckt',
+    complete: 'Alle Ziele entdeckt. Du kennst jetzt das ganze Seminar-Universum.',
+    bubbleDrag: 'Wirf mich zu einem Planeten!',
+    bubbleTap: 'Tipp auf einen Planeten!',
+    short: { ctfl: 'ISTQB® CTFL', praxis: 'CTFL + Praxis', tae: 'Testautomatisierung', coach: 'Coaching 1:1', scrum: 'SCRUM', booster: 'Power Booster', team: 'Team Coaching' },
+    role: {
+      ctfl: 'Einstieg als Softwaretester',
+      praxis: 'Softwaretester mit Projektpraxis',
+      tae: 'Testautomatisierer',
+      coach: 'Dein persönlicher Weg',
+      scrum: 'Agile Projektarbeit nach SCRUM',
+      booster: 'Potenziale im Team erkennen',
+      team: 'Teams gezielt weiterentwickeln',
+    },
+    links: { cert: 'Zur ISTQB®-Zertifizierung', azav: 'Zum AZAV-Bildungsträger', online: 'Online Kurse ansehen', booster: '360° Booster System' },
+  },
+  en: {
+    introKicker: 'Course universe',
+    introTitle: 'Choose your destination',
+    introText: 'Every planet is a course. The bigger the planet, the longer the course. Pick a planet or throw the astronaut over.',
+    goal: 'Goal',
+    flight: 'Flight time',
+    details: 'Details & registration',
+    close: 'Back to the overview',
+    progress: 'Explored',
+    complete: 'All destinations explored. You now know the whole course universe.',
+    bubbleDrag: 'Throw me to a planet!',
+    bubbleTap: 'Tap a planet!',
+    short: { ctfl: 'ISTQB® CTFL', praxis: 'CTFL + practice', tae: 'Test automation', coach: 'Coaching 1:1', scrum: 'SCRUM', booster: 'Power Booster', team: 'Team coaching' },
+    role: {
+      ctfl: 'Start as a software tester',
+      praxis: 'Software tester with project practice',
+      tae: 'Test automation engineer',
+      coach: 'Your personal path',
+      scrum: 'Agile project work with SCRUM',
+      booster: 'Recognise potential in the team',
+      team: 'Develop teams in a targeted way',
+    },
+    links: { cert: 'About ISTQB® certification', azav: 'About the AZAV education provider', online: 'See online courses', booster: '360° Booster System' },
+  },
+  // Muttersprachliche Prüfung offen
+  kk: {
+    introKicker: 'Курстар әлемі',
+    introTitle: 'Мақсатыңызды таңдаңыз',
+    introText: 'Әр планета бір курсты білдіреді. Планета неғұрлым үлкен болса, курс соғұрлым ұзақ. Планетаны таңдаңыз немесе ғарышкерді соған қарай лақтырыңыз.',
+    goal: 'Мақсат',
+    flight: 'Ұшу уақыты',
+    details: 'Толығырақ және тіркелу',
+    close: 'Шолуға оралу',
+    progress: 'Ашылды',
+    complete: 'Барлық нысан ашылды. Енді сіз курстар әлемін толық білесіз.',
+    bubbleDrag: 'Мені планетаға лақтырыңыз!',
+    bubbleTap: 'Планетаны түртіңіз!',
+    short: { ctfl: 'ISTQB® CTFL', praxis: 'CTFL + тәжірибе', tae: 'Автоматтандыру', coach: 'Коучинг 1:1', scrum: 'SCRUM', booster: 'Power Booster', team: 'Командалық коучинг' },
+    role: {
+      ctfl: 'Тестілеуші ретінде бастау',
+      praxis: 'Жобалық тәжірибесі бар тестілеуші',
+      tae: 'Тестілеуді автоматтандыру маманы',
+      coach: 'Сіздің жеке жолыңыз',
+      scrum: 'SCRUM бойынша икемді жоба жұмысы',
+      booster: 'Командадағы әлеуетті анықтау',
+      team: 'Командаларды мақсатты дамыту',
+    },
+    links: { cert: 'ISTQB® сертификаттауы туралы', azav: 'AZAV білім беру ұйымы туралы', online: 'Онлайн курстарды қарау', booster: '360° Booster System' },
+  },
+});
+
+type Kind = keyof typeof c.short;
+type LinkKey = keyof typeof c.links;
+type Spec = {
+  id: string;
+  art: string;
+  kind: Kind;
+  galaxy: 'individual' | 'team';
+  course: number;
+  /** Rahmen in der alten Zeichnung: x, y, Breite, Höhe. */
+  box: [number, number, number, number];
+  /** Linke obere Ecke der Beschriftung in der alten Zeichnung. */
+  label: [number, number];
+  /** Beschriftung endet am Punkt statt dort zu beginnen (rechter Rand). */
+  labelEnd?: boolean;
+  /** Handy: x, y, Breite in Einheiten der Hochformat-Szene. */
+  m: [number, number, number];
+  link?: LinkKey;
+  ring?: boolean;
+};
+
+const specs: Spec[] = [
+  { id: 'ind-ctfl', art: 'ctfl-s', kind: 'ctfl', galaxy: 'individual', course: 0, box: [213.11, 202.23, 31.66, 31.48], label: [250, 172], m: [80, 22, 11], link: 'cert' },
+  { id: 'ind-praxis', art: 'ctfl-l', kind: 'praxis', galaxy: 'individual', course: 1, box: [40.02, 73.12, 184.33, 184.61], label: [158, 62], m: [2, 8, 44], link: 'azav' },
+  { id: 'ind-tae', art: 'tae-a', kind: 'tae', galaxy: 'individual', course: 2, box: [239.19, 82.65, 57.06, 57.15], label: [290, 54], m: [58, 6, 18], link: 'online' },
+  { id: 'ind-coach', art: 'coach', kind: 'coach', galaxy: 'individual', course: 3, box: [33.03, 276.75, 78.04, 78.7], label: [112, 259], m: [56, 40, 20], link: 'booster' },
+  { id: 'ind-scrum', art: 'scrum-a', kind: 'scrum', galaxy: 'individual', course: 4, box: [169.39, 330.5, 123.52, 65.67], label: [254, 300], m: [8, 66, 44], ring: true },
+  { id: 'team-ctfl', art: 'ctfl-s2', kind: 'ctfl', galaxy: 'team', course: 0, box: [540.41, 207.11, 31.66, 31.48], label: [574, 180], m: [42, 113, 11], link: 'cert' },
+  { id: 'team-praxis', art: 'ctfl-l2', kind: 'praxis', galaxy: 'team', course: 1, box: [604.93, 94.76, 184.36, 184.61], label: [812, 96], labelEnd: true, m: [56, 108, 42], link: 'cert' },
+  { id: 'team-tae', art: 'tae-b', kind: 'tae', galaxy: 'team', course: 2, box: [503.74, 72.45, 66.82, 56.06], label: [557, 45], m: [8, 110, 20], link: 'online' },
+  { id: 'team-booster', art: 'booster', kind: 'booster', galaxy: 'team', course: 3, box: [628.19, 20.27, 93.16, 66.99], label: [729, 24], m: [4, 140, 26], link: 'booster' },
+  { id: 'team-coach', art: 'team', kind: 'team', galaxy: 'team', course: 4, box: [693.31, 289.99, 89.36, 102.58], label: [640, 392], m: [74, 164, 22], link: 'booster' },
+  { id: 'team-scrum', art: 'scrum-b', kind: 'scrum', galaxy: 'team', course: 5, box: [483.94, 287.57, 123.53, 65.6], label: [566, 257], m: [30, 166, 40], ring: true },
+];
+
+const linkHref: Record<LinkKey, string> = {
+  cert: navHref('certification'),
+  azav: bildungstraegerHref[lang],
+  online: navHref('ditele'),
+  booster: navHref('booster'),
+};
+
+const pct = (n: number) => `${+n.toFixed(3)}%`;
+const bodies = specs.flatMap((s, i) => {
+  const course = courses[s.galaxy][s.course];
+  if (!course) return [];
+  const [x, y, w, h] = s.box;
+  const [mx, my, mw] = s.m;
+  return [{
+    ...s,
+    index: i,
+    course,
+    style: [
+      `--x:${pct((x / W) * 100)}`,
+      `--y:${pct((y / H) * 100)}`,
+      `--w:${pct((w / W) * 100)}`,
+      `--ar:${+(w / h).toFixed(4)}`,
+      `--lx:${pct(((s.label[0] - x) / w) * 100)}`,
+      `--ly:${pct(((s.label[1] - y) / h) * 100)}`,
+      `--mx:${pct(mx)}`,
+      `--my:${pct((my / MH) * 100)}`,
+      `--mw:${pct(mw)}`,
+      `--i:${i}`,
+    ].join(';'),
+  }];
+});
+
+// Asteroiden zwischen den beiden Galaxien. Am Handy nur die mit m-Position.
+const rocks: Array<{ n: number; box: [number, number, number, number]; m?: [number, number, number] }> = [
+  { n: 0, box: [395.43, 74.44, 59.77, 52.83], m: [4, 94, 9] },
+  { n: 1, box: [430.95, 352.24, 38.06, 38.83], m: [90, 103, 6] },
+  { n: 2, box: [440.89, 125.58, 29.39, 23.69] },
+  { n: 3, box: [379.86, 134.68, 32.84, 27.93], m: [80, 96, 7] },
+  { n: 4, box: [362.74, 357.81, 51.73, 43.91], m: [42, 100, 8] },
+  { n: 5, box: [382.39, 325.29, 27.08, 28.54] },
+  { n: 6, box: [432.52, 157.79, 17.9, 18.8] },
+  { n: 7, box: [447.01, 59.99, 18.42, 13.69] },
+  { n: 8, box: [443.76, 33.4, 18.42, 13.69] },
+  { n: 9, box: [449.34, 290.51, 9.45, 11.65], m: [66, 102, 3] },
+  { n: 10, box: [397.66, 283.78, 19.65, 24.52] },
+  { n: 11, box: [461.17, 316.03, 20.94, 26.14] },
+  { n: 12, box: [402.84, 42.21, 23.02, 21.87], m: [56, 96, 5] },
+];
+const rockStyle = (r: (typeof rocks)[number]) => {
+  const [x, y, w] = r.box;
+  const m = r.m ?? [0, 0, 0];
+  return `--x:${pct((x / W) * 100)};--y:${pct((y / H) * 100)};--w:${pct((w / W) * 100)};--mx:${pct(m[0])};--my:${pct((m[1] / MH) * 100)};--mw:${pct(m[2])}`;
+};
+
+const astro: [number, number, number, number] = [382.19, 183.94, 89.93, 126.22];
+const astroStyle = `--x:${pct((astro[0] / W) * 100)};--y:${pct((astro[1] / H) * 100)};--w:${pct((astro[2] / W) * 100)};--mx:${pct(62)};--my:${pct((70 / MH) * 100)};--mw:${pct(15)}`;
+---
+
+<div class="uv" data-uv>
+  <div class="uv-scene" data-uv-scene role="group" aria-label={label}>
+    <canvas class="uv-sky" data-uv-sky aria-hidden="true"></canvas>
+    <span class="uv-nebula uv-nebula--a" aria-hidden="true"></span>
+    <span class="uv-nebula uv-nebula--b" aria-hidden="true"></span>
+    <span class="uv-galaxy uv-galaxy--a" aria-hidden="true">{individualTitle}</span>
+    <span class="uv-galaxy uv-galaxy--b" aria-hidden="true">{teamTitle}</span>
+
+    {rocks.map((r) => (
+      <span class:list={['uv-rock', { 'uv-rock--m': r.m }]} style={rockStyle(r)} data-uv-rock aria-hidden="true">
+        <img src={art(`rock-${r.n}`)} alt="" loading="lazy" decoding="async" draggable="false" />
+      </span>
+    ))}
+
+    <svg class="uv-path" data-uv-path aria-hidden="true" focusable="false"><path d="" /></svg>
+    <span class="uv-path__label" data-uv-path-label aria-hidden="true"></span>
+
+    {bodies.map((b) => (
+      <button
+        type="button"
+        class:list={['uv-body', `uv-body--${b.galaxy}`, { 'uv-body--ring': b.ring, 'uv-body--big': b.kind === 'praxis', 'uv-body--label-end': b.labelEnd }]}
+        style={b.style}
+        data-uv-body={b.id}
+        data-uv-duration={b.course.duration}
+        aria-label={`${b.course.title}, ${b.course.duration}. ${b.galaxy === 'individual' ? individualTitle : teamTitle}`}
+        aria-controls={`uv-card-${b.id}`}
+      >
+        <span class="uv-body__in">
+          <span class="uv-body__bob">
+            <img class="uv-body__art" src={art(b.art)} alt="" loading="lazy" decoding="async" draggable="false" />
+          </span>
+          <span class="uv-body__label" aria-hidden="true">
+            <strong>{c.short[b.kind]}<span class="uv-body__check">✓</span></strong>
+            <span>{b.course.duration}</span>
+          </span>
+        </span>
+      </button>
+    ))}
+
+    <span class="uv-astro" style={astroStyle} data-uv-astro aria-hidden="true">
+      <img src={art('astronaut')} alt="" decoding="async" draggable="false" />
+    </span>
+    <span class="uv-bubble-anchor" style={astroStyle} data-uv-bubble-anchor aria-hidden="true">
+      <span class="uv-bubble" data-uv-bubble>
+        <span class="uv-bubble__drag">{c.bubbleDrag}</span>
+        <span class="uv-bubble__tap">{c.bubbleTap}</span>
+      </span>
+    </span>
+  </div>
+
+  <div class="uv-hud">
+    <div class="uv-hud__cards" aria-live="polite">
+      <div class="uv-card" data-uv-card="intro">
+        <p class="uv-card__kicker">{c.introKicker}</p>
+        <p class="uv-card__title">{c.introTitle}</p>
+        <p class="uv-card__text">{c.introText}</p>
+      </div>
+      {bodies.map((b) => (
+        <div class="uv-card" id={`uv-card-${b.id}`} data-uv-card={b.id} hidden>
+          <div class="uv-card__main">
+            <p class="uv-card__kicker">{b.galaxy === 'individual' ? individualTitle : teamTitle} · {c.goal}: {c.role[b.kind]}</p>
+            <p class="uv-card__title">{b.course.title}</p>
+            <p class="uv-card__meta"><span>{c.flight}: {b.course.duration}</span><span>{b.course.format}</span></p>
+          </div>
+          <div class="uv-card__actions">
+            <a class="uv-btn" href={b.course.hook} data-course-popup={popupId(b.course.hook)} aria-haspopup="dialog" aria-controls={popupId(b.course.hook)}>{c.details}</a>
+            {b.link && <a class="uv-btn uv-btn--ghost" href={linkHref[b.link]}>{c.links[b.link]}</a>}
+            <button type="button" class="uv-card__close" data-uv-close aria-label={c.close}><span aria-hidden="true">×</span></button>
+          </div>
+        </div>
+      ))}
+    </div>
+    <p class="uv-progress">
+      <span class="uv-progress__text" data-uv-progress>{c.progress}: <span data-uv-count>0</span> / {bodies.length}</span>
+      <span class="uv-progress__done" data-uv-done hidden>{c.complete}</span>
+      <span class="uv-progress__dots" aria-hidden="true">
+        {bodies.map((b) => <i data-uv-dot={b.id}></i>)}
+      </span>
+    </p>
+  </div>
+</div>
+
+<style>
+  .uv {
+    --uv-red: #ff3d3d;
+    --uv-red-deep: #f40e0e;
+    --uv-ink: #08080a;
+    --uv-hair: rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--uv-hair);
+    border-radius: var(--radius-md, 18px);
+    background: var(--uv-ink);
+  }
+
+  .uv-scene {
+    position: relative;
+    aspect-ratio: 823 / 447;
+    overflow: hidden;
+    container-type: inline-size;
+    isolation: isolate;
+    background:
+      radial-gradient(120% 90% at 50% 120%, rgba(244, 14, 14, 0.12), transparent 60%),
+      radial-gradient(80% 60% at 50% -20%, rgba(255, 255, 255, 0.05), transparent 70%),
+      var(--uv-ink);
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .uv-sky {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  /* Zwei Galaxien: links die Einzel-, rechts die Teamseminare. */
+  .uv-nebula {
+    position: absolute;
+    z-index: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: uv-nebula 18s ease-in-out infinite alternate;
+  }
+  .uv-nebula--a {
+    left: -6%;
+    top: 4%;
+    width: 52%;
+    height: 96%;
+    background: radial-gradient(closest-side, rgba(70, 70, 74, 0.6), rgba(48, 48, 48, 0.38) 45%, rgba(244, 14, 14, 0.06) 70%, transparent);
+  }
+  .uv-nebula--b {
+    left: 57%;
+    top: 0;
+    width: 46%;
+    height: 96%;
+    background: radial-gradient(closest-side, rgba(70, 70, 74, 0.5), rgba(48, 48, 48, 0.32) 45%, rgba(244, 14, 14, 0.07) 70%, transparent);
+    animation-delay: -9s;
+  }
+  @keyframes uv-nebula {
+    from { transform: scale(1) rotate(0deg); opacity: 0.85; }
+    to { transform: scale(1.06) rotate(4deg); opacity: 1; }
+  }
+
+  .uv-galaxy {
+    position: absolute;
+    bottom: 3%;
+    z-index: 1;
+    color: var(--color-text-subtle);
+    font-size: clamp(10px, 1.15cqi, 14px);
+    font-weight: var(--fw-semibold, 600);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+  .uv-galaxy--a { left: 2.2%; }
+  .uv-galaxy--b { right: 2.2%; }
+  .uv-galaxy::before {
+    content: '';
+    display: inline-block;
+    width: 0.55em;
+    height: 0.55em;
+    margin-right: 0.6em;
+    border-radius: 50%;
+    background: var(--uv-red);
+    box-shadow: 0 0 10px var(--uv-red);
+    vertical-align: 0.05em;
+  }
+
+  /* Gemeinsame Platzierung: Koordinaten der alten Zeichnung. */
+  .uv-body,
+  .uv-rock,
+  .uv-astro,
+  .uv-bubble-anchor {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: var(--w);
+  }
+
+  /* Die Sprechblase folgt dem Astronauten, dreht sich aber nicht mit. */
+  .uv-bubble-anchor {
+    z-index: 6;
+    aspect-ratio: 89.93 / 126.22;
+    pointer-events: none;
+  }
+
+  .uv-rock {
+    z-index: 2;
+    pointer-events: none;
+    will-change: transform;
+  }
+  .uv-rock img,
+  .uv-astro img,
+  .uv-body__art {
+    display: block;
+    width: 100%;
+    height: auto;
+    -webkit-user-drag: none;
+  }
+
+  .uv-path {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .uv-path path {
+    fill: none;
+    stroke: var(--uv-red);
+    stroke-width: 1.6;
+    stroke-dasharray: 2 7;
+    stroke-linecap: round;
+    opacity: 0;
+    filter: drop-shadow(0 0 4px rgba(255, 61, 61, 0.8));
+    transition: opacity 0.25s ease;
+    animation: uv-dash 0.9s linear infinite;
+  }
+  .uv-path.is-on path { opacity: 0.95; }
+  @keyframes uv-dash { to { stroke-dashoffset: -18; } }
+  .uv-path__label {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 6;
+    padding: 0.3em 0.7em;
+    border: 1px solid rgba(255, 61, 61, 0.55);
+    border-radius: 999px;
+    background: rgba(8, 8, 10, 0.86);
+    color: #fff;
+    font-size: clamp(10px, 1.05cqi, 13px);
+    font-weight: var(--fw-semibold, 600);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.2s ease;
+  }
+  .uv-path__label.is-on { opacity: 1; }
+
+  .uv-body {
+    z-index: 4;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .uv-body--ring { border-radius: 40%; }
+  /* Die großen Planeten liegen unter den kleinen, damit deren Beschriftung
+     auf dem roten Schein lesbar bleibt. */
+  .uv-body--big { z-index: 3; }
+  .uv-body:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 6px;
+  }
+  .uv-body__in,
+  .uv-body__bob {
+    position: relative;
+    display: block;
+  }
+  .uv-body__bob { animation: uv-bob 7s ease-in-out infinite; animation-delay: calc(var(--i) * -0.9s); }
+  @keyframes uv-bob {
+    0%, 100% { transform: translate3d(0, -1.4%, 0); }
+    50% { transform: translate3d(0, 1.4%, 0); }
+  }
+  .uv-body__art {
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), filter 0.45s ease;
+  }
+  .uv-body:hover .uv-body__art,
+  .uv-body:focus-visible .uv-body__art,
+  .uv-body.is-active .uv-body__art {
+    transform: scale(1.07);
+    filter: drop-shadow(0 0 18px rgba(255, 40, 40, 0.75)) brightness(1.08);
+  }
+
+  /* Landezone um den gewählten Planeten. */
+  .uv-body__bob::after {
+    content: '';
+    position: absolute;
+    inset: -9%;
+    border: 1.5px dashed rgba(255, 255, 255, 0.55);
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(0.85);
+    transition: opacity 0.3s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+  .uv-body--ring .uv-body__bob::after { inset: -10% 18%; }
+  .uv-body.is-active .uv-body__bob::after {
+    opacity: 1;
+    transform: scale(1);
+    animation: uv-spin 14s linear infinite;
+  }
+  @keyframes uv-spin { to { transform: rotate(360deg); } }
+
+  .uv-body__label {
+    position: absolute;
+    left: var(--lx);
+    top: var(--ly);
+    display: grid;
+    gap: 0.1em;
+    color: #fff;
+    font-size: clamp(10px, 1.62cqi, 19px);
+    line-height: 1.15;
+    text-align: left;
+    white-space: nowrap;
+    pointer-events: none;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+  }
+  .uv-body--label-end .uv-body__label {
+    text-align: right;
+    transform: translateX(-100%);
+  }
+  .uv-body__label strong { font-weight: var(--fw-bold, 700); }
+  .uv-body__label span { color: var(--color-muted); font-size: 0.78em; font-weight: 500; }
+  .uv-body__check {
+    display: none;
+    margin-left: 0.35em;
+    color: var(--uv-red) !important;
+    font-size: 0.9em !important;
+  }
+  .uv-body.is-visited .uv-body__check { display: inline; }
+
+  .uv-astro {
+    z-index: 5;
+    cursor: grab;
+    touch-action: none;
+    will-change: transform;
+    filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.6));
+  }
+  .uv-astro.is-grabbed { cursor: grabbing; }
+  .uv-astro img { pointer-events: none; }
+
+  .uv-bubble {
+    position: absolute;
+    left: 50%;
+    bottom: 100%;
+    padding: 0.5em 0.85em;
+    border-radius: 14px;
+    background: #fff;
+    color: #111;
+    font-size: clamp(11px, 1.15cqi, 14px);
+    font-weight: var(--fw-semibold, 600);
+    white-space: nowrap;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    translate: -50% 0;
+    transform: translateY(6px) scale(0.94);
+    transform-origin: center bottom;
+    transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+  .uv-bubble.is-on { opacity: 1; transform: none; }
+  .uv-bubble__tap { display: none; }
+  @media (hover: none) {
+    .uv-bubble__drag { display: none; }
+    .uv-bubble__tap { display: inline; }
+  }
+
+  /* Auftritt, sobald die Szene ins Bild kommt. */
+  :global(.js) .uv:not(.is-live) .uv-body__in,
+  :global(.js) .uv:not(.is-live) .uv-astro img { opacity: 0; }
+  .uv.is-live .uv-body__in { animation: uv-enter 1.2s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--i) * 70ms); }
+  .uv.is-live .uv-astro img { animation: uv-astro-in 1.6s cubic-bezier(0.16, 1, 0.3, 1) both 0.35s; }
+  @keyframes uv-enter {
+    from { opacity: 0; transform: scale(0.55); filter: blur(6px); }
+    to { opacity: 1; transform: none; filter: none; }
+  }
+  @keyframes uv-astro-in {
+    from { opacity: 0; transform: translate3d(0, 60%, 0) rotate(-40deg) scale(0.7); }
+    to { opacity: 1; transform: none; }
+  }
+  .uv.is-flip .uv-astro img { animation: uv-flip 1s cubic-bezier(0.45, 0, 0.2, 1); }
+  @keyframes uv-flip { to { transform: rotate(360deg); } }
+
+  /* Infoleiste unter der Szene. */
+  .uv-hud {
+    display: grid;
+    gap: 0.9rem;
+    padding: clamp(1rem, 2vw, 1.5rem) clamp(1rem, 2.4vw, 2rem);
+    border-top: 1px solid var(--uv-hair);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent);
+  }
+  .uv-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.9rem 2rem;
+    align-items: center;
+    animation: uv-card-in 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .uv-card[hidden] { display: none; }
+  .uv-card[data-uv-card='intro'] { display: block; }
+  .uv-card[data-uv-card='intro'][hidden] { display: none; }
+  @keyframes uv-card-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+  .uv-card p { margin: 0; }
+  .uv-card__kicker {
+    color: var(--uv-red);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold, 600);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .uv-card__title {
+    margin-top: 0.3rem !important;
+    color: #fff;
+    font-size: var(--fs-h4);
+    font-weight: var(--fw-bold, 700);
+    line-height: 1.2;
+  }
+  .uv-card__text {
+    max-width: 72ch;
+    margin-top: 0.4rem !important;
+    color: var(--color-muted);
+    font-size: var(--fs-sm);
+  }
+  .uv-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1.2rem;
+    margin-top: 0.4rem !important;
+    color: var(--color-muted);
+    font-size: var(--fs-sm);
+  }
+  .uv-card__meta span:first-child { color: #fff; font-weight: var(--fw-semibold, 600); }
+  .uv-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .uv-btn {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem 1.15rem;
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius-sm, 10px);
+    background: var(--color-accent-surface);
+    color: #fff;
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold, 600);
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .uv-btn:hover,
+  .uv-btn:focus-visible { background: var(--color-accent-surface-hover); transform: translateY(-1px); }
+  .uv-btn--ghost { border-color: rgba(255, 255, 255, 0.28); background: transparent; }
+  .uv-btn--ghost:hover,
+  .uv-btn--ghost:focus-visible { border-color: #fff; background: rgba(255, 255, 255, 0.06); }
+  .uv-btn:focus-visible,
+  .uv-card__close:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+  .uv-card__close {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    padding: 0;
+    border: 1px solid var(--uv-hair);
+    border-radius: 50%;
+    background: transparent;
+    color: #fff;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .uv-card__close:hover { border-color: rgba(255, 255, 255, 0.5); }
+
+  .uv-progress {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    margin: 0;
+    color: var(--color-text-subtle);
+    font-size: var(--fs-xs);
+  }
+  .uv-progress__done { color: #fff; }
+  .uv-progress__dots { display: inline-flex; gap: 5px; }
+  .uv-progress__dots i {
+    width: 7px;
+    height: 7px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .uv-progress__dots i.is-on {
+    border-color: var(--uv-red);
+    background: var(--uv-red);
+    box-shadow: 0 0 8px var(--uv-red);
+  }
+
+  /* Handy: Hochformat, Galaxien übereinander, Beschriftung unter dem Planeten. */
+  @media (max-width: 720px) {
+    .uv-scene { aspect-ratio: 100 / 195; }
+    .uv-body,
+    .uv-rock,
+    .uv-astro,
+    .uv-bubble-anchor {
+      left: var(--mx);
+      top: var(--my);
+      width: var(--mw);
+    }
+    .uv-rock:not(.uv-rock--m) { display: none; }
+    .uv-nebula--a { left: -30%; top: -4%; width: 150%; height: 52%; }
+    .uv-nebula--b { left: -20%; top: 50%; width: 150%; height: 52%; }
+    .uv-galaxy { bottom: auto; font-size: 11px; }
+    .uv-galaxy--a { top: 1.2%; }
+    .uv-galaxy--b { top: 51.6%; left: 2.2%; right: auto; }
+    .uv-body__label {
+      left: 50%;
+      top: 100%;
+      margin-top: 4px;
+      font-size: 12px;
+      text-align: center;
+      transform: translateX(-50%);
+    }
+    .uv-body--ring .uv-body__label { margin-top: 0; }
+    .uv-body--label-end .uv-body__label { text-align: center; transform: translateX(-50%); }
+    .uv-bubble { top: 100%; right: 20%; bottom: auto; left: auto; translate: none; font-size: 12px; transform-origin: right top; }
+    .uv-card { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .uv-nebula,
+    .uv-body__bob,
+    .uv-path path,
+    .uv.is-live .uv-body__in,
+    .uv.is-live .uv-astro img,
+    .uv-card { animation: none; }
+    :global(.js) .uv:not(.is-live) .uv-body__in,
+    :global(.js) .uv:not(.is-live) .uv-astro img { opacity: 1; }
+    .uv-astro { cursor: default; }
+  }
+</style>
+
+<script>
+  type Body = { el: HTMLButtonElement; id: string; cx: number; cy: number; r: number; d: number; dur: string };
+  type Rock = { el: HTMLElement; hx: number; hy: number; r: number; x: number; y: number; vx: number; vy: number; a: number; va: number };
+  type Star = { x: number; y: number; r: number; l: number; p: number; s: number; a: number };
+  type Spark = { x: number; y: number; vx: number; vy: number; life: number; max: number; size: number; hue: number };
+
+  const TAU = Math.PI * 2;
+  const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+  const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const angleLerp = (a: number, b: number, t: number) => {
+    let d = ((b - a + 540) % 360) - 180;
+    return a + d * t;
+  };
+
+  function initUniverse(root: HTMLElement) {
+    if (root.dataset.uvReady) return;
+    root.dataset.uvReady = '1';
+
+    const scene = root.querySelector<HTMLElement>('[data-uv-scene]')!;
+    const canvas = root.querySelector<HTMLCanvasElement>('[data-uv-sky]')!;
+    const ctx = canvas.getContext('2d');
+    const astro = root.querySelector<HTMLElement>('[data-uv-astro]')!;
+    const bubble = root.querySelector<HTMLElement>('[data-uv-bubble]');
+    const bubbleAnchor = root.querySelector<HTMLElement>('[data-uv-bubble-anchor]');
+    const pathSvg = root.querySelector<SVGSVGElement>('[data-uv-path]')!;
+    const pathEl = pathSvg.querySelector('path')!;
+    const pathLabel = root.querySelector<HTMLElement>('[data-uv-path-label]')!;
+    const cards = Array.from(root.querySelectorAll<HTMLElement>('[data-uv-card]'));
+    const countEl = root.querySelector<HTMLElement>('[data-uv-count]');
+    const progressEl = root.querySelector<HTMLElement>('[data-uv-progress]');
+    const doneEl = root.querySelector<HTMLElement>('[data-uv-done]');
+    const flightPrefix = (root.querySelector('.uv-card__meta span')?.textContent ?? '').split(':')[0];
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    const bodies: Body[] = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-uv-body]')).map((el) => ({
+      el,
+      id: el.dataset.uvBody!,
+      cx: 0,
+      cy: 0,
+      r: 0,
+      d: 0,
+      dur: el.dataset.uvDuration ?? '',
+    }));
+    const rocks: Rock[] = Array.from(root.querySelectorAll<HTMLElement>('[data-uv-rock]')).map((el) => ({
+      el, hx: 0, hy: 0, r: 0, x: 0, y: 0, vx: 0, vy: 0, a: 0, va: (Math.random() - 0.5) * 0.012,
+    }));
+    const visited = new Set<string>();
+
+    // ---- Maße --------------------------------------------------------------
+    let W = 0;
+    let H = 0;
+    let dpr = 1;
+    let hx = 0; // Ruheplatz des Astronauten (Mitte)
+    let hy = 0;
+    let ar = 0; // halbe Breite des Astronauten
+    let stars: Star[] = [];
+
+    const measure = () => {
+      W = scene.clientWidth;
+      H = scene.clientHeight;
+      dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+      if (ctx) {
+        canvas.width = Math.round(W * dpr);
+        canvas.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      pathSvg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+      for (const b of bodies) {
+        const w = b.el.offsetWidth;
+        const h = b.el.offsetHeight;
+        b.cx = b.el.offsetLeft + w / 2;
+        b.cy = b.el.offsetTop + h / 2;
+        b.r = (b.el.classList.contains('uv-body--ring') ? h * 0.5 : Math.min(w, h) * 0.5) * 0.92;
+        b.d = 4 + b.r * 0.08;
+      }
+      for (const r of rocks) {
+        const w = r.el.offsetWidth;
+        r.hx = r.el.offsetLeft + w / 2;
+        r.hy = r.el.offsetTop + r.el.offsetHeight / 2;
+        r.r = w * 0.42;
+      }
+      const prevHx = hx;
+      const prevHy = hy;
+      hx = astro.offsetLeft + astro.offsetWidth / 2;
+      hy = astro.offsetTop + astro.offsetHeight / 2;
+      ar = astro.offsetWidth / 2;
+      if (!prevHx) {
+        ax = hx;
+        ay = hy;
+      } else {
+        ax += hx - prevHx;
+        ay += hy - prevHy;
+      }
+      const count = Math.min(720, Math.round((W * H) / 1500));
+      stars = Array.from({ length: count }, () => {
+        const l = Math.random() < 0.7 ? 0 : Math.random() < 0.75 ? 1 : 2;
+        return { x: Math.random() * W, y: Math.random() * H, r: [0.55, 0.9, 1.35][l] * (0.7 + Math.random() * 0.6), l, p: Math.random() * TAU, s: 0.4 + Math.random() * 1.6, a: 0.35 + Math.random() * 0.6 };
+      });
+      if (mode === 'orbit' && active) startOrbit(active, orbitA);
+      if (!running) draw(performance.now());
+    };
+
+    // ---- Zustand des Astronauten --------------------------------------------
+    type Mode = 'home' | 'drag' | 'free' | 'fly' | 'orbit';
+    let mode: Mode = 'home';
+    let ax = 0;
+    let ay = 0;
+    let vx = 0;
+    let vy = 0;
+    let rot = -8;
+    let spin = 0;
+    let active: Body | null = null;
+    let orbitA = 0;
+    let orbitR = 0;
+    let fly = { t: 0, T: 1, x0: 0, y0: 0, cx: 0, cy: 0, x1: 0, y1: 0, target: null as Body | null, home: false };
+    let freeSince = 0;
+    let px = 0; // geglättete Zeigerposition -1..1
+    let py = 0;
+    let tpx = 0;
+    let tpy = 0;
+    let pointerIn = false;
+    let mx = 0;
+    let my = 0;
+    const sparks: Spark[] = [];
+    let shooting: { x: number; y: number; vx: number; vy: number; life: number } | null = null;
+    let nextShoot = performance.now() + 2500;
+
+    const astroCenter = () => ({ x: ax, y: ay });
+
+    const startOrbit = (b: Body, angle: number) => {
+      mode = 'orbit';
+      active = b;
+      orbitA = angle;
+      orbitR = b.r + astro.offsetHeight * 0.42;
+    };
+
+    const flyTo = (b: Body | null) => {
+      let x1 = hx;
+      let y1 = hy;
+      if (b) {
+        const a = Math.atan2(ay - b.cy, ax - b.cx);
+        const R = b.r + astro.offsetHeight * 0.42;
+        x1 = b.cx + Math.cos(a) * R;
+        y1 = b.cy + Math.sin(a) * R;
+      }
+      const dx = x1 - ax;
+      const dy = y1 - ay;
+      const dist = Math.hypot(dx, dy);
+      const bend = Math.min(140, dist * 0.35);
+      fly = {
+        t: 0,
+        T: clamp(dist * 1.6, 520, 1250),
+        x0: ax,
+        y0: ay,
+        cx: ax + dx / 2 - (dy / (dist || 1)) * bend,
+        cy: ay + dy / 2 + (dx / (dist || 1)) * bend,
+        x1,
+        y1,
+        target: b,
+        home: !b,
+      };
+      mode = 'fly';
+      spin = 0;
+    };
+
+    // ---- Auswahl ------------------------------------------------------------
+    const showCard = (id: string) => {
+      for (const card of cards) card.hidden = card.dataset.uvCard !== id;
+    };
+
+    const markVisited = (b: Body) => {
+      if (visited.has(b.id)) return;
+      visited.add(b.id);
+      b.el.classList.add('is-visited');
+      root.querySelector(`[data-uv-dot="${b.id}"]`)?.classList.add('is-on');
+      if (countEl) countEl.textContent = String(visited.size);
+      if (visited.size === bodies.length) {
+        if (progressEl) progressEl.hidden = true;
+        if (doneEl) doneEl.hidden = false;
+        celebrate();
+      }
+    };
+
+    const select = (b: Body, how: 'click' | 'dock') => {
+      for (const o of bodies) o.el.classList.toggle('is-active', o === b);
+      active = b;
+      showCard(b.id);
+      markVisited(b);
+      hideBubble();
+      if (reduce.matches || !ctx) return;
+      if (how === 'click') {
+        showPath(b);
+        flyTo(b);
+      }
+    };
+
+    const deselect = () => {
+      for (const o of bodies) o.el.classList.remove('is-active');
+      active = null;
+      showCard('intro');
+      hidePath();
+      if (!reduce.matches && mode !== 'drag') flyTo(null);
+    };
+
+    // ---- Flugbahn beim Zeigen auf einen Planeten ------------------------------
+    let pathFor: Body | null = null;
+    const showPath = (b: Body) => {
+      pathFor = b;
+      pathSvg.classList.add('is-on');
+      pathLabel.classList.add('is-on');
+      pathLabel.textContent = `${flightPrefix}: ${b.dur}`;
+      updatePath();
+    };
+    const hidePath = () => {
+      pathFor = null;
+      pathSvg.classList.remove('is-on');
+      pathLabel.classList.remove('is-on');
+    };
+    const updatePath = () => {
+      if (!pathFor) return;
+      const b = pathFor;
+      const dx = b.cx - ax;
+      const dy = b.cy - ay;
+      const dist = Math.hypot(dx, dy) || 1;
+      const ex = b.cx - (dx / dist) * b.r;
+      const ey = b.cy - (dy / dist) * b.r;
+      const bend = Math.min(120, dist * 0.25);
+      const qx = ax + dx / 2 - (dy / dist) * bend;
+      const qy = ay + dy / 2 + (dx / dist) * bend;
+      pathEl.setAttribute('d', `M${ax.toFixed(1)} ${ay.toFixed(1)} Q${qx.toFixed(1)} ${qy.toFixed(1)} ${ex.toFixed(1)} ${ey.toFixed(1)}`);
+      const lx = 0.25 * ax + 0.5 * qx + 0.25 * ex;
+      const ly = 0.25 * ay + 0.5 * qy + 0.25 * ey;
+      pathLabel.style.transform = `translate(${lx.toFixed(1)}px, ${ly.toFixed(1)}px) translate(-50%, -50%)`;
+      if (dist < b.r + ar * 1.6) {
+        pathSvg.classList.remove('is-on');
+        pathLabel.classList.remove('is-on');
+      }
+    };
+
+    for (const b of bodies) {
+      b.el.addEventListener('click', () => select(b, 'click'));
+      b.el.addEventListener('pointerenter', (e) => {
+        if (e.pointerType === 'mouse' && mode !== 'drag' && active !== b) showPath(b);
+      });
+      b.el.addEventListener('pointerleave', () => {
+        if (pathFor === b && mode !== 'fly') hidePath();
+      });
+      b.el.addEventListener('focus', () => {
+        if (active !== b && b.el.matches(':focus-visible')) showPath(b);
+      });
+      b.el.addEventListener('blur', () => {
+        if (pathFor === b && mode !== 'fly') hidePath();
+      });
+    }
+    root.querySelectorAll<HTMLButtonElement>('[data-uv-close]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const last = active;
+        deselect();
+        last?.el.focus({ preventScroll: true });
+      });
+    });
+    root.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && active) {
+        const last = active;
+        deselect();
+        last.el.focus({ preventScroll: true });
+      }
+    });
+
+    // ---- Sprechblase ----------------------------------------------------------
+    let bubbleTimer = 0;
+    const hideBubble = () => {
+      bubble?.classList.remove('is-on');
+      window.clearTimeout(bubbleTimer);
+    };
+    const showBubble = (ms = 5200) => {
+      if (!bubble) return;
+      bubble.classList.add('is-on');
+      window.clearTimeout(bubbleTimer);
+      bubbleTimer = window.setTimeout(hideBubble, ms);
+    };
+
+    // ---- Zeiger: Parallaxe und Greifen ---------------------------------------
+    const local = (e: PointerEvent) => {
+      const r = scene.getBoundingClientRect();
+      return { x: e.clientX - r.left, y: e.clientY - r.top };
+    };
+    scene.addEventListener('pointermove', (e) => {
+      const p = local(e);
+      mx = p.x;
+      my = p.y;
+      pointerIn = e.pointerType === 'mouse';
+      if (pointerIn) {
+        tpx = clamp((p.x / W) * 2 - 1, -1, 1);
+        tpy = clamp((p.y / H) * 2 - 1, -1, 1);
+      }
+    });
+    scene.addEventListener('pointerleave', () => {
+      pointerIn = false;
+      tpx = 0;
+      tpy = 0;
+    });
+
+    let grab = { dx: 0, dy: 0, sx: 0, sy: 0, t0: 0, id: -1, samples: [] as Array<{ x: number; y: number; t: number }> };
+    astro.addEventListener('pointerdown', (e) => {
+      if (reduce.matches || !ctx) return;
+      e.preventDefault();
+      const p = local(e);
+      astro.setPointerCapture(e.pointerId);
+      astro.classList.add('is-grabbed');
+      grab = { dx: ax - p.x, dy: ay - p.y, sx: p.x, sy: p.y, t0: performance.now(), id: e.pointerId, samples: [{ x: p.x, y: p.y, t: performance.now() }] };
+      mode = 'drag';
+      vx = 0;
+      vy = 0;
+      hidePath();
+      hideBubble();
+      wake();
+    });
+    astro.addEventListener('pointermove', (e) => {
+      if (mode !== 'drag' || e.pointerId !== grab.id) return;
+      const p = local(e);
+      ax = clamp(p.x + grab.dx, 0, W);
+      ay = clamp(p.y + grab.dy, 0, H);
+      grab.samples.push({ x: p.x, y: p.y, t: performance.now() });
+      if (grab.samples.length > 6) grab.samples.shift();
+    });
+    const release = (e: PointerEvent) => {
+      if (mode !== 'drag' || e.pointerId !== grab.id) return;
+      astro.classList.remove('is-grabbed');
+      const p = local(e);
+      const now = performance.now();
+      const moved = Math.hypot(p.x - grab.sx, p.y - grab.sy);
+      if (moved < 6 && now - grab.t0 < 300) {
+        // Nur angetippt: kleiner Salto und ein Hinweis.
+        root.classList.remove('is-flip');
+        void root.offsetWidth;
+        root.classList.add('is-flip');
+        showBubble(3200);
+        mode = active ? 'free' : 'home';
+        freeSince = now;
+        return;
+      }
+      const s = grab.samples;
+      const first = s[0];
+      const last = s[s.length - 1];
+      const dt = Math.max(16, last.t - first.t);
+      vx = clamp(((last.x - first.x) / dt) * 16, -38, 38);
+      vy = clamp(((last.y - first.y) / dt) * 16, -38, 38);
+      spin = clamp(vx * 0.6, -14, 14);
+      mode = 'free';
+      freeSince = now;
+      if (active) {
+        for (const o of bodies) o.el.classList.remove('is-active');
+        active = null;
+        showCard('intro');
+      }
+    };
+    astro.addEventListener('pointerup', release);
+    astro.addEventListener('pointercancel', release);
+
+    // ---- Effekte --------------------------------------------------------------
+    const emit = (x: number, y: number, dirX: number, dirY: number, n: number, speed: number, spread = 0.6) => {
+      for (let i = 0; i < n; i++) {
+        const a = Math.atan2(dirY, dirX) + (Math.random() - 0.5) * spread;
+        const v = speed * (0.4 + Math.random() * 0.8);
+        sparks.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 0, max: 380 + Math.random() * 420, size: 1 + Math.random() * 2.2, hue: Math.random() });
+      }
+      if (sparks.length > 420) sparks.splice(0, sparks.length - 420);
+    };
+
+    function celebrate() {
+      if (reduce.matches || !ctx) return;
+      for (let i = 0; i < 6; i++) emit(W / 2, H / 2, Math.cos((i / 6) * TAU), Math.sin((i / 6) * TAU), 30, 5, 1.2);
+      root.classList.remove('is-flip');
+      void root.offsetWidth;
+      root.classList.add('is-flip');
+      wake();
+    }
+
+    // ---- Zeichnen ---------------------------------------------------------------
+    const draw = (now: number) => {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, W, H);
+      const motion = !reduce.matches;
+      const t = now / 1000;
+      const shift = [5, 12, 22];
+      for (const s of stars) {
+        const tw = motion ? 0.62 + 0.38 * Math.sin(t * s.s + s.p) : 1;
+        const x = s.x - px * shift[s.l];
+        const y = s.y - py * shift[s.l];
+        ctx.globalAlpha = s.a * tw;
+        ctx.fillStyle = s.l === 2 && s.p > 5.2 ? '#ffb3b3' : '#ffffff';
+        if (s.r < 1) ctx.fillRect(x, y, s.r * 1.6, s.r * 1.6);
+        else {
+          ctx.beginPath();
+          ctx.arc(x, y, s.r, 0, TAU);
+          ctx.fill();
+        }
+      }
+      ctx.globalAlpha = 1;
+
+      if (!motion) return;
+
+      // Weicher roter Lichtschein am Mauszeiger.
+      if (pointerIn) {
+        const g = ctx.createRadialGradient(mx, my, 0, mx, my, Math.max(W, H) * 0.16);
+        g.addColorStop(0, 'rgba(255, 50, 50, 0.13)');
+        g.addColorStop(1, 'rgba(255, 50, 50, 0)');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+      }
+
+      if (shooting) {
+        const s = shooting;
+        const len = 14;
+        const g = ctx.createLinearGradient(s.x, s.y, s.x - s.vx * len, s.y - s.vy * len);
+        const fade = 1 - s.life / 900;
+        g.addColorStop(0, `rgba(255,255,255,${0.95 * fade})`);
+        g.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.strokeStyle = g;
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(s.x, s.y);
+        ctx.lineTo(s.x - s.vx * len, s.y - s.vy * len);
+        ctx.stroke();
+      }
+
+      ctx.globalCompositeOperation = 'lighter';
+      for (const p of sparks) {
+        const k = 1 - p.life / p.max;
+        ctx.globalAlpha = k * 0.9;
+        ctx.fillStyle = p.hue > 0.55 ? '#ffd2a6' : p.hue > 0.2 ? '#ff4a2e' : '#ffffff';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * (0.4 + k), 0, TAU);
+        ctx.fill();
+      }
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.globalAlpha = 1;
+    };
+
+    // ---- Physik -----------------------------------------------------------------
+    const step = (now: number, dt: number) => {
+      const k = dt / 16.67;
+      px += (tpx - px) * 0.06 * k;
+      py += (tpy - py) * 0.06 * k;
+      const t = now / 1000;
+
+      if (mode === 'home') {
+        const tx = hx + Math.sin(t * 0.7) * ar * 0.18 + px * 10;
+        const ty = hy + Math.sin(t * 1.1) * ar * 0.22 + py * 8;
+        ax += (tx - ax) * 0.04 * k;
+        ay += (ty - ay) * 0.04 * k;
+        rot = angleLerp(rot, -8 + Math.sin(t * 0.6) * 9 + px * 10, 0.05 * k);
+      } else if (mode === 'drag') {
+        // Beim Ziehen neigt er sich in Zugrichtung.
+        const s = grab.samples;
+        const lean = s.length > 1 ? s[s.length - 1].x - s[s.length - 2].x : 0;
+        rot = angleLerp(rot, clamp(lean * 2.5, -35, 35), 0.12 * k);
+      } else if (mode === 'free') {
+        vx *= Math.pow(0.988, k);
+        vy *= Math.pow(0.988, k);
+        if (now - freeSince > 1400) {
+          vx += (hx - ax) * 0.0009 * k;
+          vy += (hy - ay) * 0.0009 * k;
+        }
+        ax += vx * k;
+        ay += vy * k;
+        if (ax < ar * 0.6) { ax = ar * 0.6; vx = Math.abs(vx) * 0.7; }
+        if (ax > W - ar * 0.6) { ax = W - ar * 0.6; vx = -Math.abs(vx) * 0.7; }
+        if (ay < ar * 0.6) { ay = ar * 0.6; vy = Math.abs(vy) * 0.7; }
+        if (ay > H - ar * 0.6) { ay = H - ar * 0.6; vy = -Math.abs(vy) * 0.7; }
+        rot += spin * k;
+        spin *= Math.pow(0.97, k);
+        const speed = Math.hypot(vx, vy);
+        if (speed > 2.5) emit(ax, ay, -vx, -vy, 1, 0.8, 0.9);
+        for (const b of bodies) {
+          if (Math.hypot(ax - b.cx, ay - b.cy) < b.r + ar * 0.45) {
+            emit(ax, ay, ax - b.cx, ay - b.cy, 24, 3.2, 1.6);
+            startOrbit(b, Math.atan2(ay - b.cy, ax - b.cx));
+            select(b, 'dock');
+            break;
+          }
+        }
+        if (mode === 'free' && speed < 0.12 && Math.hypot(ax - hx, ay - hy) < ar * 0.5) mode = 'home';
+      } else if (mode === 'fly') {
+        fly.t = Math.min(1, fly.t + dt / fly.T);
+        const e = ease(fly.t);
+        const u = 1 - e;
+        const nx = u * u * fly.x0 + 2 * u * e * fly.cx + e * e * fly.x1;
+        const ny = u * u * fly.y0 + 2 * u * e * fly.cy + e * e * fly.y1;
+        const dx = nx - ax;
+        const dy = ny - ay;
+        ax = nx;
+        ay = ny;
+        if (Math.hypot(dx, dy) > 0.4) {
+          rot = angleLerp(rot, (Math.atan2(dy, dx) * 180) / Math.PI + 90, 0.14 * k);
+          emit(ax - (dx / (Math.hypot(dx, dy) || 1)) * ar * 0.4, ay - (dy / (Math.hypot(dx, dy) || 1)) * ar * 0.4, -dx, -dy, 2, 1.4, 0.7);
+        }
+        if (fly.t >= 1) {
+          if (fly.target) {
+            startOrbit(fly.target, Math.atan2(ay - fly.target.cy, ax - fly.target.cx));
+            emit(ax, ay, ax - fly.target.cx, ay - fly.target.cy, 16, 2.4, 1.8);
+            if (pathFor === fly.target) hidePath();
+          } else {
+            mode = 'home';
+          }
+        }
+      } else if (mode === 'orbit' && active) {
+        orbitA += (0.00028 * dt * 90) / Math.max(40, orbitR);
+        const tx = active.cx + Math.cos(orbitA) * orbitR;
+        const ty = active.cy + Math.sin(orbitA) * orbitR;
+        ax += (tx - ax) * 0.2 * k;
+        ay += (ty - ay) * 0.2 * k;
+        rot = angleLerp(rot, (orbitA * 180) / Math.PI + 90, 0.1 * k);
+      } else if (mode === 'orbit') {
+        mode = 'home';
+      }
+
+      const move = `translate3d(${(ax - hx).toFixed(1)}px, ${(ay - hy).toFixed(1)}px, 0)`;
+      astro.style.transform = `${move} rotate(${rot.toFixed(1)}deg)`;
+      if (bubbleAnchor) bubbleAnchor.style.transform = move;
+
+      for (const b of bodies) {
+        b.el.style.transform = `translate3d(${(px * b.d).toFixed(2)}px, ${(py * b.d).toFixed(2)}px, 0)`;
+      }
+
+      // Asteroiden: schweben, drehen sich, der Astronaut schubst sie an.
+      for (const r of rocks) {
+        if (!r.el.offsetParent) continue;
+        const cx = r.hx + r.x;
+        const cy = r.hy + r.y;
+        const dx = cx - ax;
+        const dy = cy - ay;
+        const dist = Math.hypot(dx, dy);
+        const min = r.r + ar * 0.5;
+        if (dist < min && dist > 0.01) {
+          const push = (min - dist) * 0.12 + Math.hypot(vx, vy) * 0.15;
+          r.vx += (dx / dist) * push;
+          r.vy += (dy / dist) * push;
+          r.va += (Math.random() - 0.5) * 0.08;
+        }
+        r.vx += -r.x * 0.0035 * k;
+        r.vy += -r.y * 0.0035 * k;
+        r.vx *= Math.pow(0.96, k);
+        r.vy *= Math.pow(0.96, k);
+        r.va *= Math.pow(0.995, k);
+        r.va = clamp(r.va, -0.12, 0.12);
+        if (Math.abs(r.va) < 0.004) r.va = Math.sign(r.va || 1) * 0.004;
+        r.x += r.vx * k;
+        r.y += r.vy * k;
+        r.a += r.va * k;
+        r.el.style.transform = `translate3d(${(r.x - px * 14).toFixed(1)}px, ${(r.y - py * 14).toFixed(1)}px, 0) rotate(${r.a.toFixed(3)}rad)`;
+      }
+
+      for (let i = sparks.length - 1; i >= 0; i--) {
+        const p = sparks[i];
+        p.life += dt;
+        if (p.life >= p.max) {
+          sparks.splice(i, 1);
+          continue;
+        }
+        p.x += p.vx * k;
+        p.y += p.vy * k;
+        p.vx *= Math.pow(0.95, k);
+        p.vy *= Math.pow(0.95, k);
+      }
+
+      if (!shooting && now > nextShoot) {
+        const fromLeft = Math.random() < 0.5;
+        shooting = { x: fromLeft ? Math.random() * W * 0.5 : W * 0.5 + Math.random() * W * 0.5, y: Math.random() * H * 0.35, vx: (fromLeft ? 1 : -1) * (7 + Math.random() * 4), vy: 2.4 + Math.random() * 2, life: 0 };
+      }
+      if (shooting) {
+        shooting.life += dt;
+        shooting.x += shooting.vx * k;
+        shooting.y += shooting.vy * k;
+        if (shooting.life > 900) {
+          shooting = null;
+          nextShoot = now + 3500 + Math.random() * 6000;
+        }
+      }
+
+      updatePath();
+    };
+
+    // ---- Schleife nur, solange die Szene sichtbar ist --------------------------
+    let running = false;
+    let visible = false;
+    let raf = 0;
+    let last = 0;
+    const loop = (now: number) => {
+      const dt = Math.min(48, now - (last || now));
+      last = now;
+      step(now, dt);
+      draw(now);
+      raf = requestAnimationFrame(loop);
+    };
+    function wake() {
+      if (running || reduce.matches || !ctx || !visible || document.hidden) return;
+      running = true;
+      last = 0;
+      raf = requestAnimationFrame(loop);
+    }
+    const sleep = () => {
+      running = false;
+      cancelAnimationFrame(raf);
+    };
+
+    let introduced = false;
+    const io = new IntersectionObserver(
+      (entries) => {
+        visible = entries.some((e) => e.isIntersecting);
+        if (visible) {
+          if (!introduced) {
+            introduced = true;
+            root.classList.add('is-live');
+            if (!reduce.matches) window.setTimeout(() => showBubble(), 1900);
+          }
+          wake();
+        } else sleep();
+      },
+      { threshold: 0.08 },
+    );
+    io.observe(scene);
+    document.addEventListener('visibilitychange', () => (document.hidden ? sleep() : wake()));
+    reduce.addEventListener('change', () => {
+      if (reduce.matches) {
+        sleep();
+        mode = 'home';
+        astro.style.transform = '';
+        if (bubbleAnchor) bubbleAnchor.style.transform = '';
+        for (const b of bodies) b.el.style.transform = '';
+        for (const r of rocks) r.el.style.transform = '';
+        draw(performance.now());
+      } else wake();
+    });
+    new ResizeObserver(() => measure()).observe(scene);
+    measure();
+  }
+
+  const boot = () => document.querySelectorAll<HTMLElement>('[data-uv]').forEach(initUniverse);
+  boot();
+  document.addEventListener('astro:after-swap', boot);
+</script>

@@ -6,7 +6,6 @@ export const programAssets = {
   hero: img('tild6435-3037-4261-b437-346164326231__vadsv.png'),
   accreditation: img('tild6434-6538-4665-a565-663462333933__frame_929517.png'),
   accentCurve: img('tild3730-6132-4863-b462-623032303533__group_11.png'),
-  network: img('tild6630-6335-4734-b539-333937613531__group.svg'),
   consultation: img('tild6466-6536-4065-b832-356661343462__wma_imagevideo_bild1.jpg'),
   diploma: img('tild3365-3962-4030-b130-636430666463__remove-bgai_17248545.png'),
   certification: img('tild6638-6237-4139-a365-313564343662__frame_929518.png'),

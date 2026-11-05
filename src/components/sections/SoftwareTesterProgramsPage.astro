@@ -3,6 +3,7 @@ import coursePopupCopy from '../../../audit/course-popup-copy.json';
 import { legalNav, nav, thanksHref, type Lang } from '../../i18n/config';
 import { pick } from '../../i18n/utils';
 import VideoEmbed from '../ui/VideoEmbed.astro';
+import ProgramUniverse from './ProgramUniverse.astro';
 import { coursePopupActions, coursePopupBlocks, coursePopupCategory } from '../../data/coursePopup';
 import RichText from '../ui/RichText.astro';
 import ReferralField from '../ui/ReferralField.astro';
@@ -201,9 +202,16 @@ const scheduleMonths: Array<[string, string[]]> = schedule
       </div>
     </div>
 
-    <figure class="program-network" data-reveal>
-      <img src={programAssets.network} alt={c.network} width="1440" height="715" loading="lazy" />
-      <figcaption>{content.networkText}</figcaption>
+    <figure class="program-network">
+      <ProgramUniverse
+        lang={lang}
+        courses={courses}
+        individualTitle={content.individualTitle}
+        teamTitle={content.teamTitle}
+        label={c.network}
+        popupId={popupId}
+      />
+      <figcaption data-reveal>{content.networkText}</figcaption>
     </figure>
   </div>
 </section>
@@ -706,12 +714,6 @@ const scheduleMonths: Array<[string, string[]]> = schedule
 
   .program-network {
     margin-top: clamp(4rem, 8vw, 7.5rem);
-  }
-
-  .program-network img {
-    width: 100%;
-    max-height: 670px;
-    object-fit: contain;
   }
 
   .program-network figcaption {
@@ -1451,10 +1453,6 @@ const scheduleMonths: Array<[string, string[]]> = schedule
     .course-card,
     .program-steps__grid li {
       padding-inline: clamp(1.5rem, 2vw, 2.4rem);
-    }
-
-    .program-network img {
-      max-height: 740px;
     }
   }
 
