@@ -880,7 +880,7 @@ const copy = {
     supportIntro: 'You are not on your own with us. The video shows how we support you before, during and after the seminar.',
     videoSoon: 'Video coming soon',
     videoKicker: 'Video',
-    videoCta: 'In 36 seconds: your route to becoming a software tester with a Bildungsgutschein',
+    videoCta: 'In 41 seconds: your route to becoming a software tester with a Bildungsgutschein',
     videoPlay: 'Play video',
     videoAi: 'AI-generated',
     support: [
@@ -1229,7 +1229,7 @@ const copy = {
     supportIntro: 'Бізде сіз жалғыз қалмайсыз. Семинарға дейін, семинар кезінде және одан кейін сізді қалай қолдайтынымызды бейне көрсетеді.',
     videoSoon: 'Бейне жақында',
     videoKicker: 'Бейне',
-    videoCta: '36 секундта: Bildungsgutschein арқылы бағдарламалық тестілеуші болу жолы',
+    videoCta: '48 секундта:Bildungsgutschein арқылы бағдарламалық тестілеуші болу жолы',
     videoPlay: 'Бейнені ойнату',
     videoAi: 'KI арқылы жасалған',
     support: [
@@ -1376,7 +1376,7 @@ const cta = approved ? c.ctaApproved : c.ctaPlanned;
 const formats = [...new Set(bt.massnahmenGeplant.map((m) => m.format))];
 const seals = bt.siegel.filter((s) => s.datei.trim() !== '' && s.breite !== null && s.hoehe !== null);
 const numberFormat = new Intl.NumberFormat(intlLocale);
-const video = bt.begleitVideo;
+const video = bt.begleitVideo[lang];
 
 // Calendar. Until a start date is entered, the configured months render
 // greyed out under a "date coming soon" label; once it is set, only that

@@ -26,7 +26,7 @@
  *                                (beides nötig, sonst erscheint nur Text)
  *   Fachliche Prüfung .......... pruefdatum (ISO 8601)
  *   Zugelassene Maßnahmen ...... massnahmen (erst NACH der Maßnahmenzulassung)
- *   Avatar-Video Begleitung .... begleitVideo.datei (+ poster, Pfad unter /public;
+ *   Avatar-Video Begleitung .... begleitVideo.<de/en/kk>.datei (+ poster, Pfad unter /public;
  *                                leer = Platzhalter "Video folgt")
  *
  * WICHTIG zu den Maßnahmen: Ein Kurs darf erst in `massnahmen` stehen, wenn
@@ -108,6 +108,9 @@ export type NaechsterStart = {
   plaetzeVorOrt: number;
 };
 
+/** Erklärvideo einer Sprachfassung. `datei` leer = Platzhalter "Video folgt". */
+export type BegleitVideo = { datei: string; poster: string; laenge: string };
+
 export const bildungstraeger: {
   fachkundigeStelle: { name: string; ort: string; url: string; urlLabel: string; akkreditierung: string };
   zulassungsart: string;
@@ -135,7 +138,7 @@ export const bildungstraeger: {
   seminar: Seminar;
   naechsterStart: NaechsterStart;
   siegel: Siegel[];
-  begleitVideo: { datei: string; poster: string; laenge: string };
+  begleitVideo: { de: BegleitVideo; en: BegleitVideo; kk: BegleitVideo };
 } = {
   fachkundigeStelle: {
     name: 'GZQ GmbH',
@@ -258,16 +261,33 @@ export const bildungstraeger: {
   ],
 
   // Erklärvideo im Abschnitt "So begleiten wir dich" (vom Team geliefert,
-  // wamocon_seminar_kostenfrei_v03, mit KI erstellt und so gekennzeichnet).
+  // mit KI erstellt und so gekennzeichnet), je Sprache eine eigene Fassung.
   // Es zeigt Förderweg, Begleitung und die Zeit nach dem Seminar und ersetzt
   // die Kacheln dieses Abschnitts. Solange datei leer ist, zeigt die Seite
-  // einen Platzhalter.
+  // einen Platzhalter. Ändert sich die Länge, auch videoCta in
+  // BildungstraegerPage.astro anpassen ("In 36 Sekunden ...").
   begleitVideo: {
-    datei: '/media/bildungstraeger-begleitung.mp4',
-    // Standbild aus Sekunde 5 ("Softwaretester werden, ohne selbst zu zahlen?").
-    poster: '/images/academy/begleitung-poster.webp',
-    // Länge laut Datei: 35,9 s.
-    laenge: '0:36',
+    de: {
+      // wamocon_seminar_kostenfrei_v03, Länge laut Datei: 35,9 s.
+      datei: '/media/bildungstraeger-begleitung.mp4',
+      // Standbild aus Sekunde 5 ("Softwaretester werden, ohne selbst zu zahlen?").
+      poster: '/images/academy/begleitung-poster.webp',
+      laenge: '0:36',
+    },
+    en: {
+      // wamocon_seminar_free_en_v01, Länge laut Datei: 41,1 s.
+      datei: '/media/bildungstraeger-begleitung-en.mp4',
+      // Standbild aus Sekunde 5 ("Become a software tester without paying?").
+      poster: '/images/academy/begleitung-poster-en.webp',
+      laenge: '0:41',
+    },
+    kk: {
+      // wamocon_seminar_kostenfrei_kk_v02, Länge laut Datei: 47,6 s.
+      datei: '/media/bildungstraeger-begleitung-kk.mp4',
+      // Standbild aus Sekunde 7 (Frage nach den Kosten, Gutschein liegt auf).
+      poster: '/images/academy/begleitung-poster-kk.webp',
+      laenge: '0:48',
+    },
   },
 };
 
